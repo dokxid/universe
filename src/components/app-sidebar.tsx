@@ -105,7 +105,7 @@ const available_experiences = [
 
 export function AppSidebar() {
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+    const [value, setValue] = React.useState(available_experiences[0].value)
     return (
         <Sidebar>
 
@@ -119,15 +119,15 @@ export function AppSidebar() {
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={open}
-                                    className="w-[200px] justify-between"
+                                    className="w-full justify-between"
                                 >
                                     {value
                                         ? available_experiences.find((exp) => exp.value === value)?.label
-                                        : "Select framework..."}
+                                        : "Select Story experience..."}
                                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-0">
+                            <PopoverContent className="w-full p-0">
                                 <Command>
                                     <CommandInput placeholder="Search framework..."/>
                                     <CommandList>
@@ -159,6 +159,7 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
+
             <SidebarContent>
 
                 {/* feature sidebar group */}
