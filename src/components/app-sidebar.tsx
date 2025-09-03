@@ -12,10 +12,14 @@ import {
     Map,
     Building2,
     BookOpenText,
-    CircleQuestionMark, ChevronDown,
+    CircleQuestionMark, ChevronsUpDownIcon, CheckIcon,
 } from "lucide-react";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {LngLat, LngLatBounds} from "maplibre-gl";
+import React from "react";
+import { Button } from "./ui/button";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import {cn} from "@/lib/utils";
 
 const feature_items = [
     {
@@ -76,9 +80,10 @@ const about_items = [
     },
 ]
 
-const available_stories = [
+const available_experiences = [
     {
-        title: "Universe Map",
+        label: "Universe Map",
+        value: "universe",
         initial_center: new LngLat(24.750592, 59.44435),
         initial_zoom: 5,
         bounds: new LngLatBounds(
@@ -87,7 +92,8 @@ const available_stories = [
         )
     },
     {
-        title: "Istanbul – Türkiye",
+        label: "Istanbul – Türkiye",
+        value: "istanbul",
         initial_center: new LngLat(41.016388, 28.951681),
         initial_zoom: 12,
         bounds: new LngLatBounds(
@@ -97,9 +103,9 @@ const available_stories = [
     }
 ]
 
-let active_story = available_stories[0]
-
 export function AppSidebar() {
+    const [open, setOpen] = React.useState(false)
+    const [value, setValue] = React.useState("")
     return (
         <Sidebar>
 
@@ -107,21 +113,49 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton>
-                                    {active_story.title}
-                                    <ChevronDown className="ml-auto" />
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-                                {available_stories.map((story, idx) => (
-                                    <DropdownMenuItem key={idx}>
-                                        <span>{story.title}</span>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="w-[200px] justify-between"
+                                >
+                                    {value
+                                        ? available_experiences.find((exp) => exp.value === value)?.label
+                                        : "Select framework..."}
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search framework..."/>
+                                    <CommandList>
+                                        <CommandEmpty>No framework found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {available_experiences.map((exp) => (
+                                                <CommandItem
+                                                    key={exp.value}
+                                                    value={exp.value}
+                                                    onSelect={(currentValue) => {
+                                                        setValue(currentValue === value ? "" : currentValue)
+                                                        setOpen(false)
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            value === exp.value ? "opacity-100" : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {exp.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -134,7 +168,7 @@ export function AppSidebar() {
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton asChild>
                                 <a href={item.url}>
-                                    <item.icon />
+                                    <item.icon/>
                                     <span>{item.title}</span>
                                 </a>
                             </SidebarMenuButton>
@@ -149,7 +183,7 @@ export function AppSidebar() {
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton asChild>
                                 <a href={item.url}>
-                                    <item.icon />
+                                    <item.icon/>
                                     <span>{item.title}</span>
                                 </a>
                             </SidebarMenuButton>
@@ -164,7 +198,7 @@ export function AppSidebar() {
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton asChild>
                                 <a href={item.url}>
-                                    <item.icon />
+                                    <item.icon/>
                                     <span>{item.title}</span>
                                 </a>
                             </SidebarMenuButton>
