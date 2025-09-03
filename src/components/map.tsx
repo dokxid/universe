@@ -1,6 +1,6 @@
 'use client';
 
-import {RMap, RGeolocateControl, RAttributionControl} from 'maplibre-react-components'
+import {RMap, RAttributionControl} from 'maplibre-react-components'
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export default function MyMap() {
@@ -20,12 +20,6 @@ export default function MyMap() {
                     backgroundColor: '#222'
                 }}
             >
-                <RGeolocateControl
-                    position={"top-left"}
-                    showUserLocation={true}
-                    showAccuracyCircle={true}
-                    trackUserLocation={false}
-                />
                 <RAttributionControl position={"bottom-left"}></RAttributionControl>
             </RMap>
         </div>

@@ -18,9 +18,6 @@ export default function Home() {
             <AppSidebar/>
             <main>
 
-                {/* sidebar trigger */}
-                <SidebarTrigger/>
-
                 {/* map */}
                 <div className="absolute z-0">
                     <MyMap></MyMap>
@@ -28,6 +25,9 @@ export default function Home() {
 
                 {/* overlay */}
                 <div className={""}>
+                    <div className={"relative top-5 left-5"}>
+                        <SidebarTrigger/>
+                    </div>
                     {/* vertical widget holder */}
                     <div className={"absolute right-5 bottom-5 flex flex-col gap-3"}>
                         <Button variant={"outline"} size={"sm"} className={""}>

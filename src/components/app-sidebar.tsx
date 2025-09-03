@@ -15,6 +15,7 @@ import {
     CircleQuestionMark, ChevronDown,
 } from "lucide-react";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {LngLat, LngLatBounds} from "maplibre-gl";
 
 const feature_items = [
     {
@@ -75,6 +76,29 @@ const about_items = [
     },
 ]
 
+const available_stories = [
+    {
+        title: "Universe Map",
+        initial_center: new LngLat(24.750592, 59.44435),
+        initial_zoom: 5,
+        bounds: new LngLatBounds(
+            new LngLat(-180, -90),
+            new LngLat(180, 90),
+        )
+    },
+    {
+        title: "Istanbul – Türkiye",
+        initial_center: new LngLat(41.016388, 28.951681),
+        initial_zoom: 12,
+        bounds: new LngLatBounds(
+            new LngLat(90, -90),
+            new LngLat(180, 90),
+        )
+    }
+]
+
+let active_story = available_stories[0]
+
 export function AppSidebar() {
     return (
         <Sidebar>
@@ -86,17 +110,16 @@ export function AppSidebar() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton>
-                                    Select Workspace
+                                    {active_story.title}
                                     <ChevronDown className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-                                <DropdownMenuItem>
-                                    <span>Acme Inc</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <span>Acme Corp.</span>
-                                </DropdownMenuItem>
+                                {available_stories.map((story, idx) => (
+                                    <DropdownMenuItem key={idx}>
+                                        <span>{story.title}</span>
+                                    </DropdownMenuItem>
+                                ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </SidebarMenuItem>
