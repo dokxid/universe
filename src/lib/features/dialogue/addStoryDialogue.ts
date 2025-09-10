@@ -13,11 +13,11 @@ export const addStoryDialogue = createSlice({
     name: 'addStoryDialogue',
     initialState,
     reducers: {
-        toggleOpen: (state, action) => {
-            state.open = action.payload
+        setOpen: (state) => {
+            state.open = !state.open;
         }
     }
 })
 
-export const { toggleOpen } = addStoryDialogue.actions
+export const { setOpen } = addStoryDialogue.actions
 export default addStoryDialogue.reducer

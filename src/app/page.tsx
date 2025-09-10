@@ -6,7 +6,8 @@ import {FilePenLineIcon, SquarePlusIcon} from 'lucide-react'
 import {Button} from "@/components/ui/button"
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/app-sidebar";
-import {useAppSelector} from "@/lib/hooks";
+import {useAppDispatch, useAppSelector} from "@/lib/hooks";
+import {AddStoryDialogue} from "@/components/addStoryDialogue";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map'), {
@@ -17,37 +18,43 @@ export default function Home() {
 
     const addStoryDialogue = useAppSelector(state => state.addStoryDialogue)
     console.log(addStoryDialogue.open)
+    const dispatch = useAppDispatch()
 
     return (
-
+        <main>
+            <AddStoryDialogue
+                isOpen={addStoryDialogue.open}
+                onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
+            >
+            </AddStoryDialogue>
             <SidebarProvider>
                 <AppSidebar/>
-                <main>
 
-                    {/* map */}
-                    <div className="absolute z-0">
-                        <MyMap></MyMap>
+                {/* map */}
+                <div className="absolute z-0">
+                    <MyMap></MyMap>
+                </div>
+
+                {/* overlay */}
+                <div className={""}>
+                    <div className={"relative top-5 left-5"}>
+                        <SidebarTrigger/>
                     </div>
-
-                    {/* overlay */}
-                    <div className={""}>
-                        <div className={"relative top-5 left-5"}>
-                            <SidebarTrigger/>
-                        </div>
-                        {/* vertical widget holder */}
-                        <div className={"absolute right-5 bottom-5 flex flex-col gap-3"}>
-                            <Button variant={"outline"} size={"sm"} className={""}>
-                                <SquarePlusIcon/>
-                                <span>Add Story</span>
-                            </Button>
-                            <Button variant={"outline"} size={"sm"} className={""}>
-                                <FilePenLineIcon/>
-                                <span>View Stories</span>
-                            </Button>
-                        </div>
+                    {/* vertical widget holder */}
+                    <div className={"absolute right-5 bottom-5 flex flex-col gap-3"}>
+                        <Button variant={"outline"} size={"sm"} className={""}
+                                onClick={() => dispatch({type: 'addStoryDialogue/setOpen'})}>
+                            <SquarePlusIcon/>
+                            <span>Add Story</span>
+                        </Button>
+                        <Button variant={"outline"} size={"sm"} className={""}>
+                            <FilePenLineIcon/>
+                            <span>View Stories</span>
+                        </Button>
                     </div>
+                </div>
 
-                </main>
             </SidebarProvider>
+        </main>
     );
 }

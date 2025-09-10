@@ -8,7 +8,7 @@ export default function MyMap() {
         <div className="w-screen h-screen">
             <RMap
                 // mapStyle = "https://tiles.stadiamaps.com/styles/stamen_watercolor.json"
-                mapStyle = "https://tiles.stadiamaps.com/styles/outdoors.json"
+                mapStyle = "https://tiles.stadiamaps.com/styles/stamen_toner.json"
                 initialCenter = {[24.750592, 59.44435]}
                 initialZoom = {5}
                 initialAttributionControl={false}

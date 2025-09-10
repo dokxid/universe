@@ -1,16 +1,16 @@
 import {
-    Dialog,
+    Dialog, DialogClose,
     DialogContent,
-    DialogDescription,
+    DialogDescription, DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
+import {Button} from "@mui/material";
+import {Dispatch, SetStateAction} from "react";
 
-export default function addStoryDialogue() {
+export function AddStoryDialogue({ isOpen, onOpenChange } : { isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>> }) {
     return (
-        <Dialog>
-            <DialogTrigger>Open</DialogTrigger>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -19,6 +19,11 @@ export default function addStoryDialogue() {
                         and remove your data from our servers.
                     </DialogDescription>
                 </DialogHeader>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type={"button"} variant={"text"}>Cancel</Button>
+                    </DialogClose>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )
