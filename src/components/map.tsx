@@ -1,6 +1,6 @@
 'use client';
 
-import {RMap, RAttributionControl} from 'maplibre-react-components'
+import {RMap, RAttributionControl, RNavigationControl} from 'maplibre-react-components'
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export default function MyMap() {
@@ -12,6 +12,7 @@ export default function MyMap() {
                 initialCenter = {[24.750592, 59.44435]}
                 initialZoom = {5}
                 initialAttributionControl={false}
+                dragRotate = {false}
 
                 style={{
                     margin: '0',
@@ -21,6 +22,7 @@ export default function MyMap() {
                 }}
             >
                 <RAttributionControl position={"bottom-left"}></RAttributionControl>
+                <RNavigationControl position={"bottom-left"}></RNavigationControl>
             </RMap>
         </div>
     );
