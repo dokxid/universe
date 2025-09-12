@@ -5,6 +5,7 @@ import {Button} from "@/components/ui/button";
 import {FilePenLineIcon, SquarePlusIcon} from "lucide-react";
 import dynamic from "next/dynamic";
 import {useAppDispatch} from "@/lib/hooks";
+import {setOpen} from "@/lib/features/dialogue/addStoryDialogue";
 
 const Geocoder = dynamic(
     () => import("@mapbox/search-js-react").then(mod => ({default: mod.Geocoder})),
@@ -16,6 +17,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
     const dispatch = useAppDispatch()
     return (
         <div className={"relative w-full h-full"}>
+            {/* navigation widget holder */}
             <div className={"absolute top-5 left-5 flex flex-row gap-3 pointer-events-auto"}>
                 {children}
                 <Geocoder
@@ -30,7 +32,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
             {/* vertical widget holder */}
             <div className={"absolute right-5 bottom-5 flex flex-col gap-3 pointer-events-auto"}>
                 <Button variant={"outline"} size={"sm"} className={""}
-                        onClick={() => dispatch({type: 'addStoryDialogue/setOpen'})}>
+                        onClick={() => dispatch(setOpen())}>
                     <SquarePlusIcon/>
                     <span>Add Story</span>
                 </Button>

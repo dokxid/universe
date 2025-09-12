@@ -28,7 +28,9 @@ export default function Home() {
             >
             </AddStoryDialogue>
             <SidebarProvider className={"relative flex h-screen w-screen"}>
-                <AppSidebar className={"flex-none"}/>
+                <div className={"flex-none"}>
+                    <AppSidebar/>
+                </div>
 
                 <div className="grow relative">
                     {/* map */}

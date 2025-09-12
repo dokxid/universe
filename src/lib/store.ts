@@ -1,9 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {addStoryDialogue} from './features/dialogue/addStoryDialogue'
+import {map} from './features/map/map'
 
 export const makeStore = () => {
     return configureStore({
-        reducer: {addStoryDialogue: addStoryDialogue.reducer},
+        reducer: {addStoryDialogue: addStoryDialogue.reducer, map: map.reducer},
         devTools: true,
     })
 }

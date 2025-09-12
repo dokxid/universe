@@ -20,6 +20,8 @@ import { Button } from "./ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
+import {useAppDispatch} from "@/lib/hooks";
+import {setFlyPosition, setZoomLevel} from "@/lib/features/map/map";
 
 const feature_items = [
     {
@@ -84,7 +86,7 @@ const available_experiences = [
     {
         label: "Universe Map",
         value: "universe",
-        initial_center: new LngLat(24.750592, 59.44435),
+        initial_center: [24.750592, 59.44435],
         initial_zoom: 5,
         bounds: new LngLatBounds(
             new LngLat(-180, -90),
@@ -94,7 +96,7 @@ const available_experiences = [
     {
         label: "Istanbul – Türkiye",
         value: "istanbul",
-        initial_center: new LngLat(41.016388, 28.951681),
+        initial_center: [28.951681, 41.016388],
         initial_zoom: 12,
         bounds: new LngLatBounds(
             new LngLat(90, -90),
@@ -106,6 +108,7 @@ const available_experiences = [
 export function AppSidebar() {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState(available_experiences[0].value)
+    const dispatch = useAppDispatch()
     return (
         <Sidebar>
 
@@ -140,6 +143,8 @@ export function AppSidebar() {
                                                     onSelect={(currentValue) => {
                                                         setValue(currentValue === value ? "" : currentValue)
                                                         setOpen(false)
+                                                        dispatch(setFlyPosition(exp.initial_center))
+                                                        dispatch(setZoomLevel(exp.initial_zoom))
                                                     }}
                                                 >
                                                     <CheckIcon
@@ -208,7 +213,9 @@ export function AppSidebar() {
                 </SidebarGroup>
 
             </SidebarContent>
-            <SidebarFooter/>
+            <SidebarFooter>
+
+            </SidebarFooter>
         </Sidebar>
     )
 }

@@ -5,6 +5,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {useAppDispatch} from "@/lib/hooks";
+import {setFlyPosition} from "@/lib/features/map/map";
 
 
 interface MapContextMenuProps {
@@ -15,6 +17,7 @@ interface MapContextMenuProps {
 }
 
 export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapContextMenuProps) {
+    const dispatch = useAppDispatch()
     return (
         <DropdownMenu open={open} onOpenChange={onOpenChange}>
             <div/>
@@ -33,6 +36,11 @@ export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapConte
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>Create story here</DropdownMenuItem>
                 <DropdownMenuItem>Copy location</DropdownMenuItem>
+                <DropdownMenuItem onClick={() =>
+                    dispatch(setFlyPosition([
+                        Math.floor(Math.random() * 360),
+                        Math.floor(Math.random() * 180 - 90)
+                    ]))}>Fly to random location</DropdownMenuItem>
                 <DropdownMenuItem>Help</DropdownMenuItem>
             </DropdownMenuContent>)}
         </DropdownMenu>
