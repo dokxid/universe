@@ -2,21 +2,28 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup, SidebarGroupLabel,
-    SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
     Book,
-    Users,
+    BookOpenText,
+    Building2,
+    CheckIcon,
+    ChevronsUpDownIcon,
+    CircleQuestionMark,
     ListChecks,
     Map,
-    Building2,
-    BookOpenText,
-    CircleQuestionMark, ChevronsUpDownIcon, CheckIcon, SettingsIcon,
+    SettingsIcon,
+    Users,
 } from "lucide-react";
 import {LngLat, LngLatBounds} from "maplibre-gl";
 import React from "react";
-import { Button } from "./ui/button";
+import {Button} from "./ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
@@ -118,7 +125,7 @@ export function AppSidebar() {
         <Sidebar>
 
             {/* sidebar header */}
-            <SidebarHeader>
+            <SidebarHeader className="mt-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <Popover open={open} onOpenChange={setOpen}>
@@ -127,19 +134,24 @@ export function AppSidebar() {
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={open}
-                                    className="w-full justify-between"
+                                    className="w-full justify-between h-20 bg-primary text-primary-foreground"
                                 >
-                                    {value
-                                        ? available_experiences.find((exp) => exp.value === value)?.label
-                                        : "Select Story experience..."}
+                                    <div className={"flex flex-col text-left"}>
+                                        <p className={"text-xs"}>Current experience:</p>
+                                        <p className={"font-bold"}>
+                                            {value
+                                                ? available_experiences.find((exp) => exp.value === value)?.label
+                                                : "Select Story experience..."}
+                                        </p>
+                                    </div>
                                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-full p-0">
                                 <Command>
-                                    <CommandInput placeholder="Search framework..."/>
+                                    <CommandInput placeholder="Search experience..."/>
                                     <CommandList>
-                                        <CommandEmpty>No framework found.</CommandEmpty>
+                                        <CommandEmpty>No experience found.</CommandEmpty>
                                         <CommandGroup>
                                             {available_experiences.map((exp) => (
                                                 <CommandItem
