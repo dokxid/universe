@@ -12,7 +12,7 @@ import {
     Map,
     Building2,
     BookOpenText,
-    CircleQuestionMark, ChevronsUpDownIcon, CheckIcon,
+    CircleQuestionMark, ChevronsUpDownIcon, CheckIcon, SettingsIcon,
 } from "lucide-react";
 import {LngLat, LngLatBounds} from "maplibre-gl";
 import React from "react";
@@ -38,6 +38,11 @@ const feature_items = [
         title: "Story Experiences",
         url: "#",
         icon: BookOpenText,
+    },
+    {
+        title: "Settings",
+        url: "#",
+        icon: SettingsIcon,
     },
 ]
 
