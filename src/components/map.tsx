@@ -23,9 +23,10 @@ export default function MyMap() {
 
     return (
         <>
-            <div className="w-screen h-screen">
-                <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords} ptrLngLat={ptrLngLat}
-                                className={"absolute z-50"}/>
+            <div className="w-full h-full">
+                <div className={"absolute z-50"}>
+                    <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords} ptrLngLat={ptrLngLat}/>
+                </div>
                 <RMap
                     // mapStyle = "https://tiles.stadiamaps.com/styles/stamen_watercolor.json"
                     mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"

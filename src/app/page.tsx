@@ -2,23 +2,23 @@
 
 import React from "react";
 import dynamic from 'next/dynamic'
-import {FilePenLineIcon, SquarePlusIcon} from 'lucide-react'
-import {Button} from "@/components/ui/button"
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/app-sidebar";
+import {AppSidebar} from "@/components/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {AddStoryDialogue} from "@/components/addStoryDialogue";
+import {MapOverlay} from "@/components/mapOverlay";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map'), {
     ssr: false,
 })
 
+
 export default function Home() {
 
+    const dispatch = useAppDispatch()
     const addStoryDialogue = useAppSelector(state => state.addStoryDialogue)
     console.log(addStoryDialogue.open)
-    const dispatch = useAppDispatch()
 
     return (
         <main>
@@ -27,33 +27,22 @@ export default function Home() {
                 onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
             >
             </AddStoryDialogue>
-            <SidebarProvider>
-                <AppSidebar/>
+            <SidebarProvider className={"relative flex h-screen w-screen"}>
+                <AppSidebar className={"flex-none"}/>
 
-                {/* map */}
-                <div className="absolute z-0">
-                    <MyMap></MyMap>
-                </div>
-
-                {/* overlay */}
-                <div className={""}>
-                    <div className={"relative top-5 left-5"}>
-                        <SidebarTrigger/>
+                <div className="grow relative">
+                    {/* map */}
+                    <div className={"absolute z-20 w-full h-full"}>
+                        <MyMap></MyMap>
                     </div>
-                    {/* vertical widget holder */}
-                    <div className={"absolute right-5 bottom-5 flex flex-col gap-3"}>
-                        <Button variant={"outline"} size={"sm"} className={""}
-                                onClick={() => dispatch({type: 'addStoryDialogue/setOpen'})}>
-                            <SquarePlusIcon/>
-                            <span>Add Story</span>
-                        </Button>
-                        <Button variant={"outline"} size={"sm"} className={""}>
-                            <FilePenLineIcon/>
-                            <span>View Stories</span>
-                        </Button>
+
+                    {/* overlay */}
+                    <div className={"absolute z-30 w-full h-full pointer-events-none"}>
+                        <MapOverlay>
+                            <SidebarTrigger/>
+                        </MapOverlay>
                     </div>
                 </div>
-
             </SidebarProvider>
         </main>
     );

@@ -22,7 +22,7 @@ export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapConte
                 align="start"
                 side="right"
                 sideOffset={0}
-                className="absolute size-auto"
+                className="absolute w-2xs"
                 style={{
                     top: coords.y,
                     left: coords.x,
@@ -32,8 +32,7 @@ export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapConte
                 <DropdownMenuLabel>{ptrLngLat ? ptrLngLat[0].toFixed(4) + ", " + ptrLngLat[1].toFixed(4) : "null"}</DropdownMenuLabel>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>Create story here</DropdownMenuItem>
-                <DropdownMenuItem>Item 2</DropdownMenuItem>
-                <DropdownMenuItem>Item 3</DropdownMenuItem>
+                <DropdownMenuItem>Copy location</DropdownMenuItem>
                 <DropdownMenuItem>Help</DropdownMenuItem>
             </DropdownMenuContent>)}
         </DropdownMenu>
