@@ -43,8 +43,8 @@ export default function MyMap() {
                 </div>
                 <RMap
                     mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
-                    initialCenter={[24.750592, 59.44435]}
-                    initialZoom={5}
+                    initialCenter={mapState.flyPosition}
+                    initialZoom={mapState.zoomLevel}
                     initialAttributionControl={false}
                     // dragRotate={false}
                     style={{

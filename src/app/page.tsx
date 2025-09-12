@@ -7,6 +7,7 @@ import {AppSidebar} from "@/components/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {AddStoryDialogue} from "@/components/addStoryDialogue";
 import {MapOverlay} from "@/components/mapOverlay";
+import {createPortal} from "react-dom";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map'), {
@@ -22,11 +23,12 @@ export default function Home() {
 
     return (
         <main>
-            <AddStoryDialogue
-                isOpen={addStoryDialogue.open}
-                onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
-            >
-            </AddStoryDialogue>
+            {createPortal(
+                <AddStoryDialogue
+                    isOpen={addStoryDialogue.open}
+                    onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
+                ></AddStoryDialogue>, document.body
+            )}
             <SidebarProvider className={"relative flex h-screen w-screen"}>
                 <div className={"flex-none"}>
                     <AppSidebar/>
@@ -41,7 +43,7 @@ export default function Home() {
                     {/* overlay */}
                     <div className={"absolute z-30 w-full h-full pointer-events-none"}>
                         <MapOverlay>
-                            <SidebarTrigger/>
+                            <SidebarTrigger className={"pointer-events-auto size-10 bg-primary text-primary-foreground"}/>
                         </MapOverlay>
                     </div>
                 </div>

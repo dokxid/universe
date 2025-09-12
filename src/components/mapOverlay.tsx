@@ -12,23 +12,31 @@ const Geocoder = dynamic(
     {ssr: false}
 );
 
+const geocoderTheme = {
+    variables: {}
+}
 
 export function MapOverlay({children}: { children: React.ReactNode }) {
+
     const dispatch = useAppDispatch()
+
     return (
         <div className={"relative w-full h-full"}>
+
             {/* navigation widget holder */}
-            <div className={"absolute top-5 left-5 flex flex-row gap-3 pointer-events-auto"}>
+            <div className={"absolute top-5 left-5 flex flex-row gap-3 pointer-events-auto h-10"}>
                 {children}
+                {/* TODO: make own search bar due to styling limitations */}
                 <Geocoder
-                    // if check, in case we don't want to use mapbox token anymore
                     accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
                     options={{
                         language: "en",
                         country: "US"
                     }}
+                    theme={geocoderTheme}
                 />
             </div>
+
             {/* vertical widget holder */}
             <div className={"absolute right-5 bottom-5 flex flex-col gap-3 pointer-events-auto"}>
                 <Button variant={"outline"} size={"sm"} className={""}
@@ -41,6 +49,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
                     <span>View Stories</span>
                 </Button>
             </div>
+
         </div>
     )
 }

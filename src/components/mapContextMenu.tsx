@@ -16,8 +16,14 @@ interface MapContextMenuProps {
     ptrLngLat?: [number, number] | null;
 }
 
+function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard: " + text))
+}
+
 export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapContextMenuProps) {
+
     const dispatch = useAppDispatch()
+
     return (
         <DropdownMenu open={open} onOpenChange={onOpenChange}>
             <div/>
@@ -35,7 +41,10 @@ export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapConte
                 <DropdownMenuLabel>{ptrLngLat ? ptrLngLat[0].toFixed(4) + ", " + ptrLngLat[1].toFixed(4) : "null"}</DropdownMenuLabel>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>Create story here</DropdownMenuItem>
-                <DropdownMenuItem>Copy location</DropdownMenuItem>
+                <DropdownMenuItem onClick={() =>
+                    copyToClipboard(ptrLngLat ? ptrLngLat[0].toFixed(4)
+                        + ", " + ptrLngLat[1].toFixed(4) : "null"
+                    )}>Copy location</DropdownMenuItem>
                 <DropdownMenuItem onClick={() =>
                     dispatch(setFlyPosition([
                         Math.floor(Math.random() * 360),
