@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {AddStoryDialogue} from "@/components/addStoryDialogue";
+import {AddStoryDialog} from "@/components/addStoryDialog";
 import {MapOverlay} from "@/components/mapOverlay";
 import {createPortal} from "react-dom";
 
@@ -19,16 +19,13 @@ export default function Home() {
 
     const dispatch = useAppDispatch()
     const addStoryDialogue = useAppSelector(state => state.addStoryDialogue)
-    console.log(addStoryDialogue.open)
 
     return (
         <main>
-            {createPortal(
-                <AddStoryDialogue
-                    isOpen={addStoryDialogue.open}
-                    onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
-                ></AddStoryDialogue>, document.body
-            )}
+            <AddStoryDialog
+                isOpen={addStoryDialogue.open}
+                onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
+            ></AddStoryDialog>
             <SidebarProvider className={"relative flex h-screen w-screen"}>
                 <div className={"flex-none"}>
                     <AppSidebar/>
@@ -43,7 +40,8 @@ export default function Home() {
                     {/* overlay */}
                     <div className={"absolute z-30 w-full h-full pointer-events-none"}>
                         <MapOverlay>
-                            <SidebarTrigger className={"pointer-events-auto size-10 bg-primary text-primary-foreground"}/>
+                            <SidebarTrigger
+                                className={"pointer-events-auto size-10 bg-primary text-primary-foreground"}/>
                         </MapOverlay>
                     </div>
                 </div>

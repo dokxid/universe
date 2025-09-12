@@ -8,7 +8,7 @@ import {
 import {Button} from "@mui/material";
 import {Dispatch, SetStateAction} from "react";
 
-export function AddStoryDialogue({ isOpen, onOpenChange } : { isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>> }) {
+export function AddStoryDialog({ isOpen, onOpenChange } : { isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>> }) {
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent>
