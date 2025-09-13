@@ -2,10 +2,13 @@
 
 import React from "react";
 import {Button} from "@/components/ui/button";
-import {FilePenLineIcon, SquarePlusIcon} from "lucide-react";
+import {ArrowLeftToLine, FilePenLineIcon, SquarePlusIcon} from "lucide-react";
 import dynamic from "next/dynamic";
-import {useAppDispatch} from "@/lib/hooks";
+import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {setOpen} from "@/lib/features/dialogue/addStoryDialogue";
+import {ExperienceDescriptor} from "@/components/experienceDescriptor";
+import {setCurrentExperience} from "@/lib/features/experiences/experiences";
+import {decrementZoomLevel} from "@/lib/features/map/map";
 
 const Geocoder = dynamic(
     () => import("@mapbox/search-js-react").then(mod => ({default: mod.Geocoder})),
@@ -19,22 +22,35 @@ const geocoderTheme = {
 export function MapOverlay({children}: { children: React.ReactNode }) {
 
     const dispatch = useAppDispatch()
+    const experiencesState = useAppSelector(state => state.experiences)
 
     return (
         <div className={"relative w-full h-full"}>
 
             {/* navigation widget holder */}
-            <div className={"absolute top-5 left-5 flex flex-row gap-3 pointer-events-auto h-10"}>
-                {children}
-                {/* TODO: make own search bar due to styling limitations */}
-                <Geocoder
-                    accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
-                    options={{
-                        language: "en",
-                        country: "US"
-                    }}
-                    theme={geocoderTheme}
-                />
+            <div className={"absolute top-5 left-5 flex flex-col gap-3"}>
+                <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
+                    {children}
+                    {/* TODO: make own search bar due to styling limitations */}
+                    {experiencesState.currentExperience == "universe" && <Geocoder
+                        accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
+                        options={{
+                            language: "en",
+                            country: "US"
+                        }}
+                        theme={geocoderTheme}
+                    />}
+                    {experiencesState.currentExperience != "universe" && <Button
+                        onClick={() => {
+                            dispatch(setCurrentExperience("universe"))
+                            dispatch(decrementZoomLevel())
+                        }}
+                        className={"flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"}>
+                        <ArrowLeftToLine className={"size-4"}/>
+                        <p className={"text-xs"}>Back to universe view</p>
+                    </Button>}
+                </div>
+                {experiencesState.currentExperience != "universe" && <ExperienceDescriptor/>}
             </div>
 
             {/* vertical widget holder */}

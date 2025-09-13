@@ -21,8 +21,11 @@ export const map = createSlice({
         setZoomLevel: (state, action) => {
             state.zoomLevel = action.payload;
         },
+        decrementZoomLevel: (state) => {
+            state.zoomLevel -= 1;
+        }
     }
 })
 
-export const { setFlyPosition, setZoomLevel } = map.actions
+export const {setFlyPosition, setZoomLevel, decrementZoomLevel} = map.actions
 export default map.reducer
