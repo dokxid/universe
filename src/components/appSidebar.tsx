@@ -21,14 +21,17 @@ import {
     SettingsIcon,
     Users,
 } from "lucide-react";
-import {LngLat, LngLatBounds} from "maplibre-gl";
 import React from "react";
 import {Button} from "./ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
-import {useAppDispatch} from "@/lib/hooks";
+import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {setFlyPosition, setZoomLevel} from "@/lib/features/map/map";
+import {useExperiences} from "@/lib/data_hooks/experiencesHook";
+import {Spinner} from "./ui/shadcn-io/spinner";
+import {setCurrentExperience} from "@/lib/features/experiences/experiences";
+import {ExperienceData} from "@/types/api";
 
 const feature_items = [
     {
@@ -94,33 +97,60 @@ const about_items = [
     },
 ]
 
-const available_experiences = [
-    {
-        label: "Universe Map",
-        value: "universe",
-        initial_center: [24.750592, 59.44435],
-        initial_zoom: 5,
-        bounds: new LngLatBounds(
-            new LngLat(-180, -90),
-            new LngLat(180, 90),
-        )
-    },
-    {
-        label: "Istanbul – Türkiye",
-        value: "istanbul",
-        initial_center: [28.951681, 41.016388],
-        initial_zoom: 12,
-        bounds: new LngLatBounds(
-            new LngLat(90, -90),
-            new LngLat(180, 90),
-        )
-    }
-]
 
 export function AppSidebar() {
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState(available_experiences[0].value)
     const dispatch = useAppDispatch()
+    const experiencesState = useAppSelector((state) => state.experiences)
+
+    function ExperiencesList() {
+        const {experiences, isLoading} = useExperiences()
+        if (isLoading) return <Spinner/>
+        // return <h1>Welcome back, {experiences[0].title}</h1>
+        return experiences.map((exp: ExperienceData) => (
+            <CommandItem
+                key={exp._id.toString()}
+                value={exp.slug}
+                onSelect={(selectedValue) => {
+                    if (selectedValue === experiencesState.currentExperience) {
+                        return;
+                    }
+                    dispatch(setCurrentExperience(selectedValue))
+                    setOpen(false)
+                    dispatch(setFlyPosition(exp.center.coordinates))
+                    dispatch(setZoomLevel(exp.initial_zoom))
+                }}
+            >
+                <CheckIcon
+                    className={cn(
+                        "mr-2 h-4 w-4",
+                        experiencesState.currentExperience === exp.slug ? "opacity-100" : "opacity-0"
+                    )}
+                />
+                {exp.title}
+            </CommandItem>
+        ))
+    }
+
+    function CurrentExperienceDescriptor() {
+        const {experiences, isLoading} = useExperiences()
+        if (isLoading) return <Spinner/>
+        const descriptor = experiencesState.currentExperience !== ""
+            ? experiences.find((exp: ExperienceData) => exp.slug === experiencesState.currentExperience)
+            : "Select Story experience..."
+        return (
+            <div className={"flex flex-col text-left w-full text-wrap"}>
+                <p className={"text-xs"}>Current experience:</p>
+                <p className={"font-bold"}>
+                    {descriptor.title}
+                </p>
+                <p className={"text-xs"}>
+                    {descriptor.subtitle ? descriptor.subtitle : ""}
+                </p>
+            </div>
+        )
+    }
+
     return (
         <Sidebar>
 
@@ -134,16 +164,9 @@ export function AppSidebar() {
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={open}
-                                    className="w-full justify-between h-20 bg-primary text-primary-foreground"
+                                    className="w-full justify-between min-h-20 max-h20 bg-primary text-primary-foreground"
                                 >
-                                    <div className={"flex flex-col text-left"}>
-                                        <p className={"text-xs"}>Current experience:</p>
-                                        <p className={"font-bold"}>
-                                            {value
-                                                ? available_experiences.find((exp) => exp.value === value)?.label
-                                                : "Select Story experience..."}
-                                        </p>
-                                    </div>
+                                    <CurrentExperienceDescriptor/>
                                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
                                 </Button>
                             </PopoverTrigger>
@@ -153,26 +176,7 @@ export function AppSidebar() {
                                     <CommandList>
                                         <CommandEmpty>No experience found.</CommandEmpty>
                                         <CommandGroup>
-                                            {available_experiences.map((exp) => (
-                                                <CommandItem
-                                                    key={exp.value}
-                                                    value={exp.value}
-                                                    onSelect={(currentValue) => {
-                                                        setValue(currentValue === value ? "" : currentValue)
-                                                        setOpen(false)
-                                                        dispatch(setFlyPosition(exp.initial_center))
-                                                        dispatch(setZoomLevel(exp.initial_zoom))
-                                                    }}
-                                                >
-                                                    <CheckIcon
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            value === exp.value ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {exp.label}
-                                                </CommandItem>
-                                            ))}
+                                            <ExperiencesList/>
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>

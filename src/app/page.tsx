@@ -7,7 +7,6 @@ import {AppSidebar} from "@/components/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {AddStoryDialog} from "@/components/addStoryDialog";
 import {MapOverlay} from "@/components/mapOverlay";
-import {createPortal} from "react-dom";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map'), {

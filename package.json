@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev_no_turbopack": "next dev",
     "dev_https": "next dev --turbopack --experimental-https",
     "build": "next build --turbopack",
     "start": "next start",
@@ -23,6 +24,7 @@
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.9.0",
     "@types/mapbox-gl": "^3.4.1",
+    "@types/mongodb": "^4.0.7",
     "@types/react-redux": "^7.1.34",
     "@types/redux": "^3.6.0",
     "@workos-inc/authkit-nextjs": "^2.6.0",
@@ -34,10 +36,11 @@
     "cmdk": "^1.1.1",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
-    "lucide-react": "^0.542.0",
+    "lucide-react": "^0.544.0",
     "mapbox-gl": "^3.14.0",
     "maplibre-gl": "^5.7.0",
     "maplibre-react-components": "^0.2.6",
+    "mongodb": "^6.19.0",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -45,6 +48,7 @@
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
     "shadcn": "^3.1.0",
+    "swr": "^2.3.6",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {

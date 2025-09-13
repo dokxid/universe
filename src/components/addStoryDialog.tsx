@@ -1,19 +1,24 @@
 import {
-    Dialog, DialogClose,
+    Dialog,
+    DialogClose,
     DialogContent,
-    DialogDescription, DialogFooter,
+    DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
 import {Button} from "@mui/material";
 import {Dispatch, SetStateAction} from "react";
 
-export function AddStoryDialog({ isOpen, onOpenChange } : { isOpen: boolean; onOpenChange: Dispatch<SetStateAction<boolean>> }) {
+export function AddStoryDialog({isOpen, onOpenChange}: {
+    isOpen: boolean;
+    onOpenChange: Dispatch<SetStateAction<boolean>>
+}) {
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogTitle>Add your story</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. This will permanently delete your account
                         and remove your data from our servers.
