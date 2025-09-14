@@ -6,7 +6,7 @@ import {ArrowLeftToLine, ChevronsDownUp, FilePenLineIcon, SquarePlusIcon} from "
 import dynamic from "next/dynamic";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
-import {ExperienceDescriptor} from "@/components/experienceDescriptor";
+import {ExperienceDescriptor} from "@/components/sidebar/experienceDescriptor";
 import {setCurrentExperience} from "@/lib/features/experiences/experiences";
 import {decrementZoomLevel} from "@/lib/features/map/map";
 

@@ -21,11 +21,11 @@ import {
     Users,
 } from "lucide-react";
 import React from "react";
-import {Button} from "./ui/button";
+import {Button} from "../ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandList} from "@/components/ui/command";
-import {ExperiencesList} from "@/components/experiencesList";
-import {CurrentExperienceDescriptor} from "@/components/currentExperienceDescriptor";
+import {ExperiencesList} from "@/components/sidebar/experiencesList";
+import {CurrentExperienceDescriptor} from "@/components/map/currentExperienceDescriptor";
 import {useAppDispatch} from "@/lib/hooks";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
 import {setCurrentExperience} from "@/lib/features/experiences/experiences";

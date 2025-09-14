@@ -1,5 +1,5 @@
 import {useExperiences} from "@/lib/data_hooks/experiencesHook";
-import {Spinner} from "./ui/shadcn-io/spinner";
+import {Spinner} from "../ui/shadcn-io/spinner";
 import {ExperienceData} from "@/types/api";
 import {CommandItem} from "@/components/ui/command";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";

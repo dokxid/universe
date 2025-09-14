@@ -1,11 +1,10 @@
 'use client';
 
-import {RMap, RAttributionControl, RNavigationControl, useMap} from 'maplibre-react-components'
+import {RAttributionControl, RMap, RNavigationControl, useMap} from 'maplibre-react-components'
 import 'maplibre-gl/dist/maplibre-gl.css';
-import {MapContextMenu} from "@/components/mapContextMenu";
+import {MapContextMenu} from "@/components/map/mapContextMenu";
 import {useRef, useState} from "react";
-import {MapLayerMouseEvent} from "maplibre-gl";
-import { type Map } from "maplibre-gl";
+import {type Map, MapLayerMouseEvent} from "maplibre-gl";
 import {useAppSelector} from "@/lib/hooks";
 
 
@@ -28,6 +27,7 @@ export default function MyMap() {
 
         return null;
     }
+
     const handleContextMenu = (e: MapLayerMouseEvent) => {
         e.preventDefault()
         setCoords({x: e.point.x, y: e.point.y})
@@ -39,7 +39,8 @@ export default function MyMap() {
         <>
             <div className="w-full h-full">
                 <div className={"absolute z-50"}>
-                    <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords} ptrLngLat={ptrLngLat}/>
+                    <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords}
+                                    ptrLngLat={ptrLngLat}/>
                 </div>
                 <RMap
                     mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"

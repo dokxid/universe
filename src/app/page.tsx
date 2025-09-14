@@ -3,16 +3,16 @@
 import React from "react";
 import dynamic from 'next/dynamic'
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/appSidebar";
+import {AppSidebar} from "@/components/sidebar/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {AddStoryDialog} from "@/components/dialog/addStoryDialog";
-import {MapOverlay} from "@/components/mapOverlay";
+import {MapOverlay} from "@/components/map/mapOverlay";
 import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
 import {ListExperiencesDialog} from "@/components/dialog/listExperiencesDialog";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
 
 // make dynamic loading
-const MyMap = dynamic(() => import('../components/map'), {
+const MyMap = dynamic(() => import('../components/map/map'), {
     ssr: false,
 })
 
