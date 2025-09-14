@@ -29,6 +29,7 @@ import {CurrentExperienceDescriptor} from "@/components/map/currentExperienceDes
 import {useAppDispatch} from "@/lib/hooks";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
 import {setCurrentExperience} from "@/lib/features/experiences/experiences";
+import {UserWidget} from "@/components/sidebar/UserWidget";
 
 
 export function AppSidebar() {
@@ -206,7 +207,7 @@ export function AppSidebar() {
 
             </SidebarContent>
             <SidebarFooter>
-
+                <UserWidget/>
             </SidebarFooter>
         </Sidebar>
     )
