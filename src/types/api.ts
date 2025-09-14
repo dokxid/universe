@@ -8,4 +8,5 @@ export type ExperienceData = {
     title: string,
     subtitle: string,
     description: string,
+    featured_image: string,
 }

@@ -47,6 +47,7 @@
     "react-dom": "19.1.0",
     "react-map-gl": "^8.0.4",
     "react-redux": "^9.2.0",
+    "react-resizable-panels": "^3.0.6",
     "redux": "^5.0.1",
     "shadcn": "^3.1.0",
     "swr": "^2.3.6",

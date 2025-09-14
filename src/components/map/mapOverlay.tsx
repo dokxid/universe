@@ -33,28 +33,36 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
                 <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
                     {children}
                     {/* TODO: make own search bar due to styling limitations */}
-                    {experiencesState.currentExperience == "universe" && <Geocoder
-                        accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
-                        options={{
-                            language: "en",
-                            country: "US"
-                        }}
-                        theme={geocoderTheme}
-                    />}
-                    {experiencesState.currentExperience != "universe" && <Button
-                        onClick={() => {
-                            dispatch(setCurrentExperience("universe"))
-                            dispatch(decrementZoomLevel())
-                        }}
-                        className={"flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"}>
-                        <ArrowLeftToLine className={"size-4"}/>
-                        <p className={"text-xs"}>Back to universe view</p>
-                    </Button>}
-                    {experiencesState.currentExperience != "universe" && <Button
-                        onClick={() => setOpenDescriptor(!openDescriptor)}
-                        className={"size-10 bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"}>
-                        <ChevronsDownUp className={"size-4"}/>
-                    </Button>}
+                    {experiencesState.currentExperience == "universe" &&
+                        <Geocoder
+                            accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
+                            options={{
+                                language: "en",
+                                country: "US"
+                            }}
+                            theme={geocoderTheme}
+                        />}
+                    {experiencesState.currentExperience != "universe" &&
+                        <Button
+                            onClick={() => {
+                                dispatch(setCurrentExperience("universe"))
+                                dispatch(decrementZoomLevel())
+                            }}
+                            className={"flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"}
+                        >
+                            <ArrowLeftToLine className={"size-4"}/>
+                            <p className={"text-xs hidden lg:inline-block"}>Back to universe view</p>
+                        </Button>}
+                    {experiencesState.currentExperience != "universe" &&
+                        <Button
+                            onClick={() => setOpenDescriptor(!openDescriptor)}
+                            className={`h-10 flex flex-row gap-2 items-center ${openDescriptor ?
+                                "bg-primary-foreground text-primary hover:bg-primary hover:text-primary-foreground" :
+                                "bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"}`}
+                        >
+                            <ChevronsDownUp className={"size-4"}/>
+                            <p className={"text-xs hidden lg:inline-block"}>{openDescriptor ? "Hide Descriptor" : "Show Descriptor"}</p>
+                        </Button>}
                 </div>
                 {experiencesState.currentExperience != "universe" && openDescriptor && <ExperienceDescriptor/>}
             </div>

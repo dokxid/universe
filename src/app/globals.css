@@ -125,3 +125,9 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* add containers back from tailwindcss v3 */
+@utility container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+}

@@ -7,11 +7,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import {Button} from "@mui/material";
+import {Button} from "@/components/ui/button";
 import {Dispatch, SetStateAction} from "react";
-import {Table, TableBody, TableCaption, TableCell, TableRow} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {useExperiences} from "@/lib/data_hooks/experiencesHook";
 import {Spinner} from "@/components/ui/shadcn-io/spinner";
+import Image from "next/image";
+import {SquareArrowOutUpRight} from "lucide-react";
 
 export function ListExperiencesDialog({isOpen, onOpenChange}: {
     isOpen: boolean;
@@ -22,40 +24,48 @@ export function ListExperiencesDialog({isOpen, onOpenChange}: {
     if (isLoading) return <Spinner/>
 
     return (
-        <div>
-
+        <div className={""}>
             <Dialog open={isOpen} onOpenChange={onOpenChange}>
-                <DialogContent className={"overflow-y-scroll max-h-screen lg:max-w-fit"}>
-                    <DialogHeader>
+                <DialogContent className={"max-h-3/4 lg:max-w-fit flex flex-col"}>
+                    <DialogHeader className={"flex-none"}>
                         <DialogTitle>Story experiences</DialogTitle>
                         <DialogDescription>
-                            This action cannot be undone. This will permanently delete your account
-                            and remove your data from our servers.
+                            Explore our Co-Labs built story experiences. <br/>
+                            They have their own seperate website, to customize their experience a bit more.
                         </DialogDescription>
                     </DialogHeader>
-                    <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
-                        {/*<TableHeader>*/}
-                        {/*    <TableRow>*/}
-                        {/*        <TableHead className="w-[100px]">Image</TableHead>*/}
-                        {/*        <TableHead>Title</TableHead>*/}
-                        {/*        <TableHead>Link</TableHead>*/}
-                        {/*    </TableRow>*/}
-                        {/*</TableHeader>*/}
+                    <Table className={"overflow-y-auto grow table-fixed"}>
+                        <TableHeader>
+                            {/* hidden, because the table header is just used to set the table column width */}
+                            <TableRow className={"collapse"}>
+                                <TableHead className="w-[125px]">Image</TableHead>
+                                <TableHead className={"ml-2"}>Title</TableHead>
+                            </TableRow>
+                        </TableHeader>
                         <TableBody>
-                            {experiences.map((exp) => <TableRow key={exp.slug}>
-                                <TableCell>
-                                    <div className={"size-[100px] bg-accent"}></div>
-                                </TableCell>
-                                <TableCell className="font-medium">{exp.title}</TableCell>
-                                <TableCell><a
-                                    href={"https://" + exp.slug + ".heritagelab.center"}>{exp.slug}.heritagelab.center</a></TableCell>
-                            </TableRow>)}
+                            {experiences.map((exp) =>
+                                <TableRow key={exp.slug}
+                                          className={"cursor-pointer group"}
+                                          onClick={() => window.open("https://" + exp.slug + ".heritagelab.center")}>
+                                    <TableCell className={"max-w-fit"}>
+                                        <div
+                                            className={"size-[100px] transition group-hover:scale-110 bg-accent relative"}>
+                                            <Image src={exp.featured_image} alt={exp.slug + " featured image"}
+                                                   fill={true} className={"object-cover"}/>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="*:text-wrap">
+                                        <p className={"font-bold group-hover:underline"}>{exp.title}
+                                            <SquareArrowOutUpRight className={"size-3 inline-block ml-1 align-top"}/>
+                                        </p>
+                                        <p className={"font-light"}>{exp.subtitle}</p>
+                                    </TableCell>
+                                </TableRow>)}
                         </TableBody>
                     </Table>
-                    <DialogFooter>
+                    <DialogFooter className={"flex-none"}>
                         <DialogClose asChild>
-                            <Button type={"button"} variant={"text"}>Cancel</Button>
+                            <Button type={"button"} variant={"ghost"}>Close</Button>
                         </DialogClose>
                     </DialogFooter>
                 </DialogContent>
