@@ -2,10 +2,10 @@
 
 import React from "react";
 import {Button} from "@/components/ui/button";
-import {ArrowLeftToLine, FilePenLineIcon, SquarePlusIcon} from "lucide-react";
+import {ArrowLeftToLine, ChevronsDownUp, FilePenLineIcon, SquarePlusIcon} from "lucide-react";
 import dynamic from "next/dynamic";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {setOpen} from "@/lib/features/dialogue/addStoryDialogue";
+import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
 import {ExperienceDescriptor} from "@/components/experienceDescriptor";
 import {setCurrentExperience} from "@/lib/features/experiences/experiences";
 import {decrementZoomLevel} from "@/lib/features/map/map";
@@ -23,6 +23,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
 
     const dispatch = useAppDispatch()
     const experiencesState = useAppSelector(state => state.experiences)
+    const [openDescriptor, setOpenDescriptor] = React.useState(true)
 
     return (
         <div className={"relative w-full h-full"}>
@@ -49,14 +50,19 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
                         <ArrowLeftToLine className={"size-4"}/>
                         <p className={"text-xs"}>Back to universe view</p>
                     </Button>}
+                    {experiencesState.currentExperience != "universe" && <Button
+                        onClick={() => setOpenDescriptor(!openDescriptor)}
+                        className={"size-10 bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"}>
+                        <ChevronsDownUp className={"size-4"}/>
+                    </Button>}
                 </div>
-                {experiencesState.currentExperience != "universe" && <ExperienceDescriptor/>}
+                {experiencesState.currentExperience != "universe" && openDescriptor && <ExperienceDescriptor/>}
             </div>
 
             {/* vertical widget holder */}
             <div className={"absolute right-5 bottom-5 flex flex-col gap-3 pointer-events-auto"}>
                 <Button variant={"outline"} size={"sm"} className={""}
-                        onClick={() => dispatch(setOpen())}>
+                        onClick={() => dispatch(setAddStoryDialogOpen())}>
                     <SquarePlusIcon/>
                     <span>Add Story</span>
                 </Button>

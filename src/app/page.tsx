@@ -5,8 +5,11 @@ import dynamic from 'next/dynamic'
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {AddStoryDialog} from "@/components/addStoryDialog";
+import {AddStoryDialog} from "@/components/dialog/addStoryDialog";
 import {MapOverlay} from "@/components/mapOverlay";
+import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
+import {ListExperiencesDialog} from "@/components/dialog/listExperiencesDialog";
+import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map'), {
@@ -17,14 +20,19 @@ const MyMap = dynamic(() => import('../components/map'), {
 export default function Home() {
 
     const dispatch = useAppDispatch()
-    const addStoryDialogue = useAppSelector(state => state.addStoryDialogue)
+    const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
+    const listExperiencesDialog = useAppSelector(state => state.listExperiencesDialog)
 
     return (
         <main>
             <AddStoryDialog
                 isOpen={addStoryDialogue.open}
-                onOpenChange={() => dispatch({type: 'addStoryDialogue/setOpen'})}
-            ></AddStoryDialog>
+                onOpenChange={() => dispatch(setAddStoryDialogOpen())}
+            />
+            <ListExperiencesDialog
+                isOpen={listExperiencesDialog.open}
+                onOpenChange={() => dispatch(setListExperienceDialogOpen())}
+            />
             <SidebarProvider className={"relative flex h-screen w-screen"}>
                 <div className={"flex-none"}>
                     <AppSidebar/>
