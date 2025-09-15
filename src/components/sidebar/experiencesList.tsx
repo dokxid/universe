@@ -3,8 +3,8 @@ import {Spinner} from "../ui/shadcn-io/spinner";
 import {ExperienceData} from "@/types/api";
 import {CommandItem} from "@/components/ui/command";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {setCurrentExperience} from "@/lib/features/experiences/experiences";
-import {setFlyPosition, setZoomLevel} from "@/lib/features/map/map";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
+import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
 import {CheckIcon} from "lucide-react";
 import {cn} from "@/lib/utils";
 

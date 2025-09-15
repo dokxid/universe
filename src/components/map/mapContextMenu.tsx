@@ -7,8 +7,8 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {useAppDispatch} from "@/lib/hooks";
-import {setFlyPosition} from "@/lib/features/map/map";
-import {setAddStoryDialogOpen, setLngLat} from "@/lib/features/dialogue/addStoryDialog";
+import {setFlyPosition} from "@/lib/features/map/mapSlice";
+import {setAddStoryDialogOpen, setLngLat} from "@/lib/features/dialogue/addStoryDialogSlice";
 
 
 interface MapContextMenuProps {

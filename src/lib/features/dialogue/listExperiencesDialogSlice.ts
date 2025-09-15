@@ -5,7 +5,7 @@ const initialState: DialogState = {
     open: false,
 }
 
-export const listExperiencesDialog = createSlice({
+export const listExperiencesDialogSlice = createSlice({
     name: 'listExperiencesDialog',
     initialState,
     reducers: {
@@ -15,5 +15,5 @@ export const listExperiencesDialog = createSlice({
     }
 })
 
-export const {setListExperienceDialogOpen} = listExperiencesDialog.actions
-export default listExperiencesDialog.reducer
+export const {setListExperienceDialogOpen} = listExperiencesDialogSlice.actions
+export default listExperiencesDialogSlice.reducer

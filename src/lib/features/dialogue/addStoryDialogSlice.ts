@@ -12,7 +12,7 @@ const initialState: AddStoryDialogState = {
     latitude: 0,
 }
 
-export const addStoryDialog = createSlice({
+export const addStoryDialogSlice = createSlice({
     name: 'addStoryDialog',
     initialState,
     reducers: {
@@ -26,5 +26,5 @@ export const addStoryDialog = createSlice({
     }
 })
 
-export const {setAddStoryDialogOpen, setLngLat} = addStoryDialog.actions
-export default addStoryDialog.reducer
+export const {setAddStoryDialogOpen, setLngLat} = addStoryDialogSlice.actions
+export default addStoryDialogSlice.reducer

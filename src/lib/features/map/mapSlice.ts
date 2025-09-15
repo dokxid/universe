@@ -10,7 +10,7 @@ const initialState: MapState = {
     zoomLevel: 5,
 }
 
-export const map = createSlice({
+export const mapSlice = createSlice({
     name: 'map',
     initialState,
     reducers: {
@@ -27,5 +27,5 @@ export const map = createSlice({
     }
 })
 
-export const {setFlyPosition, setZoomLevel, decrementZoomLevel} = map.actions
-export default map.reducer
+export const {setFlyPosition, setZoomLevel, decrementZoomLevel} = mapSlice.actions
+export default mapSlice.reducer

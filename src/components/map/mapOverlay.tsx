@@ -5,10 +5,10 @@ import {Button} from "@/components/ui/button";
 import {ArrowLeftToLine, ChevronsDownUp, FilePenLineIcon, SquarePlusIcon} from "lucide-react";
 import dynamic from "next/dynamic";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
+import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
 import {ExperienceDescriptor} from "@/components/sidebar/experienceDescriptor";
-import {setCurrentExperience} from "@/lib/features/experiences/experiences";
-import {decrementZoomLevel} from "@/lib/features/map/map";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
+import {decrementZoomLevel} from "@/lib/features/map/mapSlice";
 
 const Geocoder = dynamic(
     () => import("@mapbox/search-js-react").then(mod => ({default: mod.Geocoder})),

@@ -9,7 +9,7 @@ const initialState: experiencesState = {
     currentExperience: "universe",
 }
 
-export const experiences = createSlice({
+export const experiencesSlice = createSlice({
     name: 'experiences',
     initialState,
     reducers: {
@@ -19,5 +19,5 @@ export const experiences = createSlice({
     }
 })
 
-export const {setCurrentExperience} = experiences.actions
-export default experiences.reducer
+export const {setCurrentExperience} = experiencesSlice.actions
+export default experiencesSlice.reducer

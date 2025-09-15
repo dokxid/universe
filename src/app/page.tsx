@@ -7,9 +7,9 @@ import {AppSidebar} from "@/components/sidebar/appSidebar";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {AddStoryDialog} from "@/components/dialog/addStoryDialog";
 import {MapOverlay} from "@/components/map/mapOverlay";
-import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialog";
+import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
 import {ListExperiencesDialog} from "@/components/dialog/listExperiencesDialog";
-import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
+import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('../components/map/map'), {

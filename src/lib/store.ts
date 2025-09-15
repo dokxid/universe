@@ -1,16 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit'
-import {addStoryDialog} from './features/dialogue/addStoryDialog'
-import {map} from './features/map/map'
-import {experiences} from "@/lib/features/experiences/experiences";
-import {listExperiencesDialog} from "@/lib/features/dialogue/listExperiencesDialog";
+import {addStoryDialogSlice} from './features/dialogue/addStoryDialogSlice'
+import {mapSlice} from './features/map/mapSlice'
+import {experiencesSlice} from "@/lib/features/experiences/experiencesSlice";
+import {listExperiencesDialogSlice} from "@/lib/features/dialogue/listExperiencesDialogSlice";
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            addStoryDialog: addStoryDialog.reducer,
-            listExperiencesDialog: listExperiencesDialog.reducer,
-            map: map.reducer,
-            experiences: experiences.reducer,
+            addStoryDialog: addStoryDialogSlice.reducer,
+            listExperiencesDialog: listExperiencesDialogSlice.reducer,
+            map: mapSlice.reducer,
+            experiences: experiencesSlice.reducer,
         },
         devTools: true,
     })

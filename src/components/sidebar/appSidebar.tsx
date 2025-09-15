@@ -27,8 +27,8 @@ import {Command, CommandEmpty, CommandGroup, CommandInput, CommandList} from "@/
 import {ExperiencesList} from "@/components/sidebar/experiencesList";
 import {CurrentExperienceDescriptor} from "@/components/map/currentExperienceDescriptor";
 import {useAppDispatch} from "@/lib/hooks";
-import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialog";
-import {setCurrentExperience} from "@/lib/features/experiences/experiences";
+import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {UserWidget} from "@/components/sidebar/UserWidget";
 
 
