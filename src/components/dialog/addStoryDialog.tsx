@@ -1,5 +1,4 @@
-import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
-import {Button} from "@mui/material";
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
 import {Dispatch, SetStateAction} from "react";
 import AddStoryForm from "@/components/form/addStoryForm";
 
@@ -21,11 +20,6 @@ export function AddStoryDialog({isOpen, onOpenChange}: {
                     </DialogTitle>
                 </DialogHeader>
                 <AddStoryForm/>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type={"button"} variant={"text"}>Cancel</Button>
-                    </DialogClose>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

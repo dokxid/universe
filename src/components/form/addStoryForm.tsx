@@ -7,6 +7,9 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import {useAppSelector} from "@/lib/hooks";
+import React from "react";
+import {TagPicker} from "@/components/form/tagPicker";
+
 
 export default function AddStoryForm() {
 
@@ -18,8 +21,9 @@ export default function AddStoryForm() {
         "textarea-1": z.string().min(1, {message: "This field is required"}),
         "tel-input-0": z.string(),
         "file-input-2": z.string(),
-        "number-input-0": z.coerce.number().refine(value => value >= -180 && value <= 180, {}),
-        "number-input-1": z.coerce.number().refine(value => value >= -90 && value <= 90, {}),
+        "number-input-0": z.number().refine(value => value >= -180 && value <= 180, {}),
+        "number-input-1": z.number().refine(value => value >= -90 && value <= 90, {}),
+        "tags": z.array(z.string()),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -32,6 +36,7 @@ export default function AddStoryForm() {
             "file-input-2": "",
             "number-input-0": addStoryDialogue.longitude,
             "number-input-1": addStoryDialogue.latitude,
+            "tags": [],
         },
     });
 
@@ -213,33 +218,17 @@ export default function AddStoryForm() {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="submit-button-0"
-                        render={() => (
-                            <FormItem
-                                className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
-                                <FormLabel className="hidden shrink-0">Submit</FormLabel>
-
-                                <div className="w-full">
-                                    <FormControl>
-                                        <Button
-                                            key="submit-button-0"
-                                            id="submit-button-0"
-                                            name=""
-                                            className="w-full"
-                                            type="submit"
-                                            variant="default"
-                                        >
-                                            Submit Story
-                                        </Button>
-                                    </FormControl>
-
-                                    <FormMessage/>
-                                </div>
-                            </FormItem>
-                        )}
-                    />
+                    <FormField render={({field}) => (
+                        <FormItem
+                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                            <FormControl>
+                                <TagPicker {...field}></TagPicker>
+                            </FormControl>
+                        </FormItem>
+                    )} name={"tags"}></FormField>
+                    <div className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                        <Button type="submit" variant="default" className={"w-full"}>Submit</Button>
+                    </div>
                 </div>
             </form>
         </Form>

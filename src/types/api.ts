@@ -1,6 +1,6 @@
 import {ObjectId} from "mongodb";
 
-export type ExperienceData = {
+type ExperienceData = {
     _id: ObjectId,
     slug: string,
     center: { coordinates: [number, number] },
@@ -10,3 +10,11 @@ export type ExperienceData = {
     description: string,
     featured_image: string,
 }
+
+type TagData = {
+    _id: ObjectId,
+    name: string,
+    unesco_tag: boolean,
+}
+
+export type {ExperienceData, TagData}

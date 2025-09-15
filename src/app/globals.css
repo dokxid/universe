@@ -126,6 +126,12 @@
     }
 }
 
+@layer components {
+    .command-list {
+        min-height: 20px;
+    }
+}
+
 /* add containers back from tailwindcss v3 */
 @utility container {
     margin-inline: auto;

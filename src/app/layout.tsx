@@ -4,6 +4,7 @@ import "./globals.css";
 import React from "react";
 import StoreProvider from "@/app/StoreProvider"
 import {AuthKitProvider} from "@workos-inc/authkit-nextjs/components";
+import {Toaster} from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({children,}: Readonly<{
                     className={`${geistSans.variable} ${geistMono.variable} antialiased`}
                 >
                 {children}
+                <Toaster/>
                 </body>
                 </html>
             </StoreProvider>
