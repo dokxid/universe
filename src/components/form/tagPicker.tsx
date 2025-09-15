@@ -30,8 +30,6 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
         }
     }, [tags, value]);
 
-    if (isLoading) return <Spinner/>
-
     const handleMouseEnter = () => {
         setTagPickerOpen(true);
         console.log(tags)
@@ -49,6 +47,8 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
         setTagPickerOpen(false);
         onChange?.(newTags.map(tag => tag.name));
     };
+
+    if (isLoading) return <Spinner/>
 
     return (
         <div className={"col-span-12 col-start-auto space-y-0 items-start"}>

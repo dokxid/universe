@@ -1,11 +1,14 @@
 'use client';
 
-import {RAttributionControl, RMap, RNavigationControl, useMap} from 'maplibre-react-components'
+import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap} from 'maplibre-react-components'
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {MapContextMenu} from "@/components/map/mapContextMenu";
 import {useRef, useState} from "react";
 import {type Map, MapLayerMouseEvent} from "maplibre-gl";
 import {useAppSelector} from "@/lib/hooks";
+import {useStories} from "@/lib/data_hooks/storiesHook";
+import {Spinner} from "@/components/ui/shadcn-io/spinner";
+import CustomMarker from "@/components/map/customMarker";
 
 
 export default function MyMap() {
@@ -15,6 +18,7 @@ export default function MyMap() {
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null)
     const mapDOM = useRef(null)
     const mapState = useAppSelector(state => state.map)
+    const {stories, isLoading} = useStories()
 
     function ChildComponent() {
         // This component is inside RMap.
@@ -34,6 +38,8 @@ export default function MyMap() {
         setPtrLngLat([e.lngLat.lng, e.lngLat.lat])
         setCtxMenuOpen(true)
     }
+
+    if (isLoading) return <Spinner/>
 
     return (
         <>
@@ -57,6 +63,13 @@ export default function MyMap() {
                     onContextMenu={handleContextMenu}
                     ref={mapDOM}
                 >
+                    {stories.map((story) =>
+                        <RMarker
+                            longitude={story.longitude}
+                            latitude={story.latitude}
+                            key={story._id.toString()}
+                        ><CustomMarker/></RMarker>
+                    )}
                     <ChildComponent/>
                     <RAttributionControl position={"bottom-left"}></RAttributionControl>
                     <RNavigationControl position={"bottom-left"}></RNavigationControl>
