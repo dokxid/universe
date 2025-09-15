@@ -5,43 +5,55 @@ import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {useAppSelector} from "@/lib/hooks";
+import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import React from "react";
 import {TagPicker} from "@/components/form/tagPicker";
 import {TiptapEditor} from "@/components/form/tiptapEditor";
+import {toast} from "sonner";
+import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
 
 
 export default function AddStoryForm() {
 
     const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
+    const dispatch = useAppDispatch()
 
     const formSchema = z.object({
-        "text-0": z.string(),
-        "text-input-0": z.string().min(1, {message: "This field is required"}),
-        "textarea-1": z.string().min(1, {message: "This field is required"}),
-        "tel-input-0": z.string(),
-        "file-input-2": z.string(),
-        "number-input-0": z.number().refine(value => value >= -180 && value <= 180, {}),
-        "number-input-1": z.number().refine(value => value >= -90 && value <= 90, {}),
-        "tags": z.array(z.string()),
+        title: z.string().min(1, {message: "This field is required"}),
+        content: z.string().min(1, {message: "This field is required"}),
+        year: z.string().refine(value => value.length <= 4, {message: "Year must be 4 or less digits"}),
+        featuredImage: z.string(),
+        longitude: z.number().refine(value => value >= -180 && value <= 180, {}),
+        latitude: z.number().refine(value => value >= -90 && value <= 90, {}),
+        tags: z.array(z.string()),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            "text-0": "",
-            "text-input-0": "",
-            "textarea-1": "",
-            "tel-input-0": "",
-            "file-input-2": "",
-            "number-input-0": addStoryDialogue.longitude,
-            "number-input-1": addStoryDialogue.latitude,
-            "tags": [],
+            title: "",
+            content: "",
+            year: "",
+            featuredImage: "",
+            longitude: addStoryDialogue.longitude,
+            latitude: addStoryDialogue.latitude,
+            tags: [],
         },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        fetch("/api/stories", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        }).then(() => {
+                toast.success("Story added successfully!")
+                dispatch(setAddStoryDialogOpen())
+            },
+            () => toast.error("Failed to add story. Please try again later."))
     }
 
     function onReset() {
@@ -59,7 +71,7 @@ export default function AddStoryForm() {
                 <div className="grid grid-cols-12 gap-4">
                     <FormField
                         control={form.control}
-                        name="text-input-0"
+                        name="title"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -69,10 +81,10 @@ export default function AddStoryForm() {
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="text-input-0"
+                                                key="title"
                                                 placeholder=""
                                                 type="text"
-                                                id="text-input-0"
+                                                id="title"
                                                 className=" "
                                                 {...field}
                                             />
@@ -86,7 +98,7 @@ export default function AddStoryForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="textarea-1"
+                        name="content"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -94,7 +106,7 @@ export default function AddStoryForm() {
 
                                 <FormControl>
                                     <div className={"w-full h-100"}>
-                                        <TiptapEditor key={"textarea-1"} id={"textarea-1"}
+                                        <TiptapEditor key={"content"} id={"content"}
                                                       placeholder={""} {...field}></TiptapEditor>
                                     </div>
                                 </FormControl>
@@ -104,7 +116,7 @@ export default function AddStoryForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="tel-input-0"
+                        name="year"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -114,10 +126,10 @@ export default function AddStoryForm() {
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="tel-input-0"
+                                                key="year"
                                                 placeholder=""
                                                 type="tel"
-                                                id="tel-input-0"
+                                                id="year"
                                                 className=" "
                                                 {...field}
                                             />
@@ -131,7 +143,7 @@ export default function AddStoryForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="file-input-2"
+                        name="featured-image"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -143,10 +155,10 @@ export default function AddStoryForm() {
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="file-input-2"
+                                                key="featured-image"
                                                 placeholder=""
                                                 type="file"
-                                                id="file-input-2"
+                                                id="featured-image"
                                                 className=" "
                                                 {...field}
                                             />
@@ -160,7 +172,7 @@ export default function AddStoryForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="number-input-0"
+                        name="longitude"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -170,10 +182,10 @@ export default function AddStoryForm() {
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="number-input-0"
+                                                key="longitude"
                                                 placeholder=""
                                                 type="number"
-                                                id="number-input-0"
+                                                id="longitude"
                                                 className=" "
                                                 {...field}
                                             />
@@ -187,7 +199,7 @@ export default function AddStoryForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="number-input-1"
+                        name="latitude"
                         render={({field}) => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -197,10 +209,10 @@ export default function AddStoryForm() {
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="number-input-1"
+                                                key="latitude"
                                                 placeholder=""
                                                 type="number"
-                                                id="number-input-1"
+                                                id="latitude"
                                                 className=" "
                                                 {...field}
                                             />
