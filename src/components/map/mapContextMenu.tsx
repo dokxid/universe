@@ -1,12 +1,14 @@
 import React from "react";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {useAppDispatch} from "@/lib/hooks";
 import {setFlyPosition} from "@/lib/features/map/map";
+import {setAddStoryDialogOpen, setLngLat} from "@/lib/features/dialogue/addStoryDialog";
 
 
 interface MapContextMenuProps {
@@ -40,7 +42,10 @@ export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapConte
             >
                 <DropdownMenuLabel>{ptrLngLat ? ptrLngLat[0].toFixed(4) + ", " + ptrLngLat[1].toFixed(4) : "null"}</DropdownMenuLabel>
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem>Create story here</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                    dispatch(setLngLat(ptrLngLat ? ptrLngLat : [0, 0]))
+                    dispatch(setAddStoryDialogOpen())
+                }}>Create story here</DropdownMenuItem>
                 <DropdownMenuItem onClick={() =>
                     copyToClipboard(ptrLngLat ? ptrLngLat[0].toFixed(4)
                         + ", " + ptrLngLat[1].toFixed(4) : "null"
