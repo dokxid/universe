@@ -11,10 +11,12 @@ import {TagPicker} from "@/components/form/tagPicker";
 import {TiptapEditor} from "@/components/form/tiptapEditor";
 import {toast} from "sonner";
 import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
+import {useAuth} from "@workos-inc/authkit-nextjs/components";
 
 
 export default function AddStoryForm() {
 
+    const {user} = useAuth();
     const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
     const dispatch = useAppDispatch()
 
@@ -26,6 +28,7 @@ export default function AddStoryForm() {
         longitude: z.number().refine(value => value >= -180 && value <= 180, {}),
         latitude: z.number().refine(value => value >= -90 && value <= 90, {}),
         tags: z.array(z.string()),
+        author: z.string()
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -38,6 +41,7 @@ export default function AddStoryForm() {
             longitude: addStoryDialogue.longitude,
             latitude: addStoryDialogue.latitude,
             tags: [],
+            author: user?.id || "unknown",
         },
     });
 
@@ -82,7 +86,7 @@ export default function AddStoryForm() {
                                         <div className="relative w-full">
                                             <Input
                                                 key="title"
-                                                placeholder=""
+                                                placeholder="Enter your title..."
                                                 type="text"
                                                 id="title"
                                                 className=" "
@@ -127,7 +131,7 @@ export default function AddStoryForm() {
                                         <div className="relative w-full">
                                             <Input
                                                 key="year"
-                                                placeholder=""
+                                                placeholder="Enter the stories year..."
                                                 type="tel"
                                                 id="year"
                                                 className=" "
@@ -170,6 +174,14 @@ export default function AddStoryForm() {
                             </FormItem>
                         )}
                     />
+                    <FormField render={({field}) => (
+                        <FormItem
+                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                            <FormControl>
+                                <TagPicker {...field}></TagPicker>
+                            </FormControl>
+                        </FormItem>
+                    )} name={"tags"}></FormField>
                     <FormField
                         control={form.control}
                         name="longitude"
@@ -224,14 +236,6 @@ export default function AddStoryForm() {
                             </FormItem>
                         )}
                     />
-                    <FormField render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
-                            <FormControl>
-                                <TagPicker {...field}></TagPicker>
-                            </FormControl>
-                        </FormItem>
-                    )} name={"tags"}></FormField>
                     <div className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                         <Button type="submit" variant="default" className={"w-full"}>Submit</Button>
                     </div>

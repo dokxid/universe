@@ -51,7 +51,7 @@ export function ListExperiencesDialog({isOpen, onOpenChange}: {
                                         <div
                                             className={"size-[100px] transition group-hover:scale-110 bg-accent relative"}>
                                             <Image src={exp.featured_image} alt={exp.slug + " featured image"}
-                                                   fill={true} className={"object-cover"}/>
+                                                   fill={true} sizes={"(max-width: 100px)"} className={"object-cover"}/>
                                         </div>
                                     </TableCell>
                                     <TableCell className="*:text-wrap">

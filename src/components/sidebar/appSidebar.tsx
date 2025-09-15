@@ -29,7 +29,7 @@ import {CurrentExperienceDescriptor} from "@/components/map/currentExperienceDes
 import {useAppDispatch} from "@/lib/hooks";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
 import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
-import {UserWidget} from "@/components/sidebar/UserWidget";
+import {UserWidget} from "@/components/sidebar/userWidget";
 
 
 export function AppSidebar() {

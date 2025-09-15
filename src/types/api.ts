@@ -17,4 +17,16 @@ type TagData = {
     unesco_tag: boolean,
 }
 
-export type {ExperienceData, TagData}
+type StoryData = {
+    _id: ObjectId,
+    author: string,
+    content: string,
+    title: string,
+    latitude: number,
+    longitude: number,
+    tags: string[],
+    year: number,
+    featuredImage: string,
+}
+
+export type {ExperienceData, TagData, StoryData}

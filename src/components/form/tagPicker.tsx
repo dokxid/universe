@@ -57,11 +57,11 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                 <div className={"flex flex-wrap gap-1 mt-1"}>
                     {inputTags.map((tag) => <Badge
                         key={tag.name + "_input"}
-                        variant={"outline"}
+                        variant={"default"}
                         onClick={() => {
                             handleTagRemove(tag)
                         }}
-                        className={"cursor-pointer group hover:text-destructive hover:hover:bg-accent dark:hover:bg-accent/50"}
+                        className={"cursor-pointer group hover:text-destructive h-7 hover:hover:bg-accent dark:hover:bg-accent/50"}
                     >
                         <p>{tag.name}</p>
                         <X/>
@@ -70,7 +70,7 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                         <Badge
                             onClick={handleMouseEnter}
                             variant={"outline"}
-                            className={(tagPickerOpen ? "bg-primary text-primary-foreground" : "bg-primary-foreground text-primary") + " cursor-pointer"}
+                            className={(tagPickerOpen ? "bg-primary text-primary-foreground" : "bg-primary-foreground text-primary") + " h-7 cursor-pointer"}
                         >Add Tag<PlusIcon/></Badge>
                     </PopoverTrigger>
                 </div>
