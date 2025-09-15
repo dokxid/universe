@@ -4,11 +4,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import {useAppSelector} from "@/lib/hooks";
 import React from "react";
 import {TagPicker} from "@/components/form/tagPicker";
+import {TiptapEditor} from "@/components/form/tiptapEditor";
 
 
 export default function AddStoryForm() {
@@ -54,7 +54,7 @@ export default function AddStoryForm() {
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 onReset={onReset}
-                className="space-y-8 @container"
+                className="space-y-8 @container overflow-y-auto max-h-[calc(100vh-10rem)]"
             >
                 <div className="grid grid-cols-12 gap-4">
                     <FormField
@@ -92,19 +92,13 @@ export default function AddStoryForm() {
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormLabel className="flex shrink-0">Description</FormLabel>
 
-                                <div className="w-full">
-                                    <FormControl>
-                                        <Textarea
-                                            key="textarea-1"
-                                            id="textarea-1"
-                                            placeholder=""
-                                            className=""
-                                            {...field}
-                                        />
-                                    </FormControl>
-
-                                    <FormMessage/>
-                                </div>
+                                <FormControl>
+                                    <div className={"w-full h-100"}>
+                                        <TiptapEditor key={"textarea-1"} id={"textarea-1"}
+                                                      placeholder={""} {...field}></TiptapEditor>
+                                    </div>
+                                </FormControl>
+                                <FormMessage/>
                             </FormItem>
                         )}
                     />

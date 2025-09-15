@@ -5,6 +5,7 @@ import React from "react";
 import StoreProvider from "@/app/StoreProvider"
 import {AuthKitProvider} from "@workos-inc/authkit-nextjs/components";
 import {Toaster} from "sonner";
+import {TooltipProvider} from "@/components/ui/tooltip";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -26,16 +27,17 @@ export default function RootLayout({children,}: Readonly<{
 }>) {
     return (
         <AuthKitProvider>
-
             <StoreProvider>
-                <html lang="en">
-                <body
-                    className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-                >
-                {children}
-                <Toaster/>
-                </body>
-                </html>
+                <TooltipProvider>
+                    <html lang="en">
+                    <body
+                        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                    >
+                    {children}
+                    <Toaster/>
+                    </body>
+                    </html>
+                </TooltipProvider>
             </StoreProvider>
         </AuthKitProvider>
     );
