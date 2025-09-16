@@ -10,6 +10,11 @@ import {MapOverlay} from "@/components/map/mapOverlay";
 import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
 import {ListExperiencesDialog} from "@/components/dialog/listExperiencesDialog";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
+import {useParams} from "next/navigation";
+import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
+import {useExperience} from "@/lib/data_hooks/experiencesHook";
+import {Spinner} from "@/components/ui/shadcn-io/spinner";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('@/components/map/map'), {
@@ -17,11 +22,19 @@ const MyMap = dynamic(() => import('@/components/map/map'), {
 })
 
 
-export default function Home() {
+export default function LabHome() {
 
+    const params = useParams<{ labSlug: string }>()
+    const {experience, isLoading} = useExperience(params!.labSlug)
     const dispatch = useAppDispatch()
     const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
     const listExperiencesDialog = useAppSelector(state => state.listExperiencesDialog)
+
+    if (isLoading) return <Spinner/>
+
+    dispatch(setCurrentExperience(params!.labSlug))
+    dispatch(setFlyPosition(experience.center.coordinates))
+    dispatch(setZoomLevel(experience.initial_zoom))
 
     return (
         <main>

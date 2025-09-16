@@ -11,6 +11,7 @@ const s3Client = new S3Client({
 
 async function uploadFile(file: File, key: string, slug: string): Promise<void> {
     try {
+
         // Convert File to Buffer using the stream() method
         const bytes = await file.stream();
         const chunks = [];
@@ -26,6 +27,7 @@ async function uploadFile(file: File, key: string, slug: string): Promise<void> 
         // Combine all chunks into a single Buffer
         const buffer = Buffer.concat(chunks.map(chunk => Buffer.from(chunk)));
 
+        // Upload the Buffer to S3
         await s3Client.send(new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
             Body: buffer,
@@ -33,7 +35,7 @@ async function uploadFile(file: File, key: string, slug: string): Promise<void> 
             ContentType: file.type,
             ContentLength: file.size,
         }));
-        console.log(key + " uploaded successfully");
+       
     } catch (err) {
         console.error(`Failed to upload ${key}:`, err);
         throw err;
