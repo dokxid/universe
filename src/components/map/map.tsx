@@ -68,7 +68,7 @@ export default function MyMap() {
                             longitude={story.longitude}
                             latitude={story.latitude}
                             key={story._id.toString()}
-                        ><CustomMarker/></RMarker>
+                        ><CustomMarker story={story}/></RMarker>
                     )}
                     <ChildComponent/>
                     <RAttributionControl position={"bottom-left"}></RAttributionControl>

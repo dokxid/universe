@@ -10,7 +10,7 @@ export function ExperienceDescriptor() {
     if (isLoading) return <div></div>
     return (
         <ResizablePanelGroup direction={"vertical"} className={"min-h-150 md:min-h-200"}>
-            <ResizablePanel defaultSize={25} className={"min-h-80 rounded-md"}>
+            <ResizablePanel defaultSize={25} className={"min-h-80 rounded-md shadow-xl"}>
                 <article
                     className={"prose prose-sm lg:prose-base h-full bg-primary-foreground text-primary p-5 text-wrap pointer-events-auto flex flex-col"}>
                     <h1 className={"mb-2"}>{experience.title}</h1>

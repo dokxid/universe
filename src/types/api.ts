@@ -27,6 +27,7 @@ type StoryData = {
     tags: string[],
     year: number,
     featuredImage: string,
+    experience: string,
 }
 
 export type {ExperienceData, TagData, StoryData}

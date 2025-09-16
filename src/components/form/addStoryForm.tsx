@@ -18,17 +18,21 @@ export default function AddStoryForm() {
 
     const {user} = useAuth();
     const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
+    const experiencesState = useAppSelector(state => state.experiences)
     const dispatch = useAppDispatch()
+
+    // Add state for the uncontrolled file input
+    const [featuredImage, setFeaturedImage] = React.useState<File | null>(null);
 
     const formSchema = z.object({
         title: z.string().min(1, {message: "This field is required"}),
         content: z.string().min(1, {message: "This field is required"}),
-        year: z.string().refine(value => value.length <= 4, {message: "Year must be 4 or less digits"}),
-        featuredImage: z.string(),
+        year: z.coerce.number<number>().refine(value => value >= 0 && value <= 2100, {}),
         longitude: z.number().refine(value => value >= -180 && value <= 180, {}),
         latitude: z.number().refine(value => value >= -90 && value <= 90, {}),
         tags: z.array(z.string()),
-        author: z.string()
+        author: z.string(),
+        experience: z.string().min(1, {message: "This field is required"}),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -36,23 +40,32 @@ export default function AddStoryForm() {
         defaultValues: {
             title: "",
             content: "",
-            year: "",
-            featuredImage: "",
+            year: 0,
             longitude: addStoryDialogue.longitude,
             latitude: addStoryDialogue.latitude,
             tags: [],
             author: user?.id || "unknown",
+            experience: experiencesState.currentExperience
         },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        // Include the featuredImage in your submission logic
+        const formData = new FormData()
+        formData.append("title", values.title);
+        formData.append("content", values.content);
+        formData.append("year", values.year.toString());
+        formData.append("longitude", values.longitude.toFixed(4));
+        formData.append("latitude", values.latitude.toFixed(4));
+        formData.append("tags", JSON.stringify(values.tags));
+        formData.append("author", values.author);
+        formData.append("experience", values.experience);
+        formData.append("featuredImage", featuredImage as File);
+        console.log(formData);
         fetch("/api/stories", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
+            body: formData,
         }).then(() => {
                 toast.success("Story added successfully!")
                 dispatch(setAddStoryDialogOpen())
@@ -63,7 +76,14 @@ export default function AddStoryForm() {
     function onReset() {
         form.reset();
         form.clearErrors();
+        setFeaturedImage(null); // Reset the uncontrolled state
     }
+
+    // Add handler for file input change
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null;
+        setFeaturedImage(file);
+    };
 
     return (
         <Form {...form}>
@@ -132,7 +152,7 @@ export default function AddStoryForm() {
                                             <Input
                                                 key="year"
                                                 placeholder="Enter the stories year..."
-                                                type="tel"
+                                                type="number"
                                                 id="year"
                                                 className=" "
                                                 {...field}
@@ -146,29 +166,26 @@ export default function AddStoryForm() {
                         )}
                     />
                     <FormField
-                        control={form.control}
-                        name="featured-image"
-                        render={({field}) => (
+                        name="featuredImage"
+                        render={() => (
                             <FormItem
                                 className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormLabel className="flex shrink-0">
                                     Featured picture
                                 </FormLabel>
-
                                 <div className="w-full">
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
-                                                key="featured-image"
+                                                key="featuredImage"
                                                 placeholder=""
                                                 type="file"
-                                                id="featured-image"
+                                                id="featuredImage"
                                                 className=" "
-                                                {...field}
+                                                onChange={handleFileChange}
                                             />
                                         </div>
                                     </FormControl>
-
                                     <FormMessage/>
                                 </div>
                             </FormItem>
@@ -181,7 +198,7 @@ export default function AddStoryForm() {
                                 <TagPicker {...field}></TagPicker>
                             </FormControl>
                         </FormItem>
-                    )} name={"tags"}></FormField>
+                    )} name={"tags"}/>
                     <FormField
                         control={form.control}
                         name="longitude"
@@ -225,6 +242,34 @@ export default function AddStoryForm() {
                                                 placeholder=""
                                                 type="number"
                                                 id="latitude"
+                                                className=""
+                                                {...field}
+                                            />
+                                        </div>
+                                    </FormControl>
+
+                                    <FormMessage/>
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="experience"
+                        render={({field}) => (
+                            <FormItem
+                                className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                                <FormLabel className="flex shrink-0">in experience:</FormLabel>
+
+                                <div className="w-full">
+                                    <FormControl>
+                                        <div className="relative w-full">
+                                            <Input
+                                                key="experience"
+                                                placeholder=""
+                                                type="text"
+                                                id="experience"
+                                                disabled={true}
                                                 className=" "
                                                 {...field}
                                             />
@@ -237,7 +282,7 @@ export default function AddStoryForm() {
                         )}
                     />
                     <div className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
-                        <Button type="submit" variant="default" className={"w-full"}>Submit</Button>
+                        <Button type="submit" variant="default" className={"w-full cursor-pointer"}>Submit</Button>
                     </div>
                 </div>
             </form>
