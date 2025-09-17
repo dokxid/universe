@@ -24,6 +24,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
     const dispatch = useAppDispatch()
     const experiencesState = useAppSelector(state => state.experiences)
     const [openDescriptor, setOpenDescriptor] = React.useState(true)
+    console.log(experiencesState.currentExperience)
 
     return (
         <div className={"relative w-full h-full"}>
