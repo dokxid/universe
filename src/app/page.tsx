@@ -25,9 +25,12 @@ export default function Home() {
     const {experience, isLoading} = useExperience(labSlug)
     const dispatch = useAppDispatch()
 
+    // initialize experience unconditionally
+    dispatch(setCurrentExperience(labSlug))
+
     if (isLoading) return <Spinner></Spinner>
 
-    dispatch(setCurrentExperience(labSlug))
+    // fly to experience center after fetching
     dispatch(setFlyPosition(experience.center.coordinates))
     dispatch(setZoomLevel(experience.initial_zoom))
 

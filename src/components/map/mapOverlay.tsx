@@ -65,7 +65,8 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
                             <p className={"text-xs hidden lg:inline-block"}>{openDescriptor ? "Hide Descriptor" : "Show Descriptor"}</p>
                         </Button>}
                 </div>
-                {experiencesState.currentExperience != "universe" && openDescriptor && <ExperienceDescriptor/>}
+                {experiencesState.currentExperience != "universe" && openDescriptor &&
+                    <ExperienceDescriptor setOpen={setOpenDescriptor}/>}
             </div>
 
             {/* vertical widget holder */}
