@@ -14,11 +14,11 @@ export default function S3Image({experience, fileName}: { experience: string, fi
     if (imageUrl != null) src = imageUrl.url; else return <p>No image available</p>;
 
     return (
-        <div>
+        <div className={"relative w-full h-full"}>
             <Image
                 src={src}
                 alt="s3url"
-                priority={false}
+                priority={true}
                 fill
                 sizes="(min-width: 808px) 50vw, 100vw"
                 style={{
