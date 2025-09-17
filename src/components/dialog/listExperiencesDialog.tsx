@@ -11,7 +11,6 @@ import {Button} from "@/components/ui/button";
 import {Dispatch, SetStateAction} from "react";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {useExperiences} from "@/lib/data_hooks/experiencesHook";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
 import Image from "next/image";
 import {SquareArrowOutUpRight} from "lucide-react";
 
@@ -21,7 +20,7 @@ export function ListExperiencesDialog({isOpen, onOpenChange}: {
 }) {
 
     const {experiences, isLoading} = useExperiences()
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <></>
 
     return (
         <div className={""}>
