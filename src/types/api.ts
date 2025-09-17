@@ -30,4 +30,8 @@ type StoryData = {
     experience: string,
 }
 
-export type {ExperienceData, TagData, StoryData}
+type ImageData = {
+    url: string,
+}
+
+export type {ExperienceData, TagData, StoryData, ImageData}
