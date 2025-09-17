@@ -30,6 +30,7 @@ import {useAppDispatch} from "@/lib/hooks";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
 import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {UserWidget} from "@/components/sidebar/userWidget";
+import { setSettingsDialogOpen } from "@/lib/features/dialogue/settingsDialogSlice";
 
 
 export function AppSidebar() {
@@ -62,7 +63,7 @@ export function AppSidebar() {
         {
             title: "Settings",
             action() {
-                dispatch(setListExperienceDialogOpen())
+                dispatch(setSettingsDialogOpen())
             },
             icon: SettingsIcon,
         },
