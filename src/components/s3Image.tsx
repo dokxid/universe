@@ -1,37 +1,29 @@
 'use client'
 import Image from 'next/image'
-import useSWR from 'swr'
+import {useImageURL} from "@/lib/data_hooks/imageHook";
 
-const fetcher = async (url: string) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Failed to fetch image');
-    }
-    return await response.text();
-}
 
 export default function S3Image({experience, fileName}: { experience: string, fileName: string }) {
-    const {data: imageUrl, error, isLoading} = useSWR(
-        `/api/images/${experience}/${fileName}`,
-        fetcher
-    );
 
+    const {imageUrl, isError, isLoading} = useImageURL(experience, fileName)
     if (isLoading) return <p>Loading image...</p>;
-    if (error) return <p>Error loading image</p>;
-
+    if (isError) return <p>Error loading image</p>;
     let src
-    console.log(imageUrl)
-    if (imageUrl != null) {
-        src = JSON.parse(imageUrl).url
-    }
+
+    if (imageUrl != null) src = imageUrl.url; else return <p>No image available</p>;
 
     return (
         <div>
-            {imageUrl ? (
-                <Image src={src} alt="s3url" width='600' height='600'/>
-            ) : (
-                <p>No image available</p>
-            )}
+            <Image
+                src={src}
+                alt="s3url"
+                priority={false}
+                fill
+                sizes="(min-width: 808px) 50vw, 100vw"
+                style={{
+                    objectFit: 'cover', // cover, contain, none
+                }}
+            />
         </div>
     );
 }
