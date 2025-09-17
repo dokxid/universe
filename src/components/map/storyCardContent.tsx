@@ -2,13 +2,14 @@ import S3Image from "@/components/s3Image";
 import {Interweave} from "interweave";
 
 export function StoryCardContent(props: { experience: string, fileName: string, title: string, content: string }) {
-    return <div className={"overflow-y-auto max-h-[300px]"}>
-        <div className={"relative h-[150px] w-full"}>
+    return <div className={"max-h-[300px] flex flex-col gap-2"}>
+        <h1 className={"text-lg font-bold"}>{props.title}</h1>
+        <div className={"relative h-[150px] w-full flex justify-center items-center shrink-0"}>
             <S3Image experience={props.experience} fileName={props.fileName}/>
         </div>
-        <article className={"prose prose-sm lg:prose-base"}>
-            <h1 className={"font-bold mb-0"}>{props.title}</h1>
-            <Interweave content={props.content}/>
+        <article className={"bg-card text-card-foreground text-wrap grow"}>
+            <Interweave content={props.content} className={"text-ellipsis line-clamp-3"}/>
+            <a href={"/story/" + props.experience + "/" + props.fileName} className={"text-sm underline"}>Read more</a>
         </article>
     </div>;
 }

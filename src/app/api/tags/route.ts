@@ -1,12 +1,11 @@
 import {clientPromise} from "@/lib/mongodb/connections";
-import type {NextApiRequest, NextApiResponse} from 'next'
 
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
     const client = await clientPromise;
     const db = client.db("hl-universe");
     const collection = db.collection("tags");
 
     const experiences = await collection.find({}).toArray();
-    res.status(200).json(experiences);
+    return Response.json(experiences)
 }

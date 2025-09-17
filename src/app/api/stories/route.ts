@@ -35,7 +35,7 @@ async function uploadFile(file: File, key: string, slug: string): Promise<void> 
             ContentType: file.type,
             ContentLength: file.size,
         }));
-       
+
     } catch (err) {
         console.error(`Failed to upload ${key}:`, err);
         throw err;

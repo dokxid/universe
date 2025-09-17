@@ -30,7 +30,7 @@ export default function LabHome() {
     const addStoryDialogue = useAppSelector(state => state.addStoryDialog)
     const listExperiencesDialog = useAppSelector(state => state.listExperiencesDialog)
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <div className={"flex justify-center items-center"}><Spinner/></div>
 
     dispatch(setCurrentExperience(params!.labSlug))
     dispatch(setFlyPosition(experience.center.coordinates))

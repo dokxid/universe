@@ -3,7 +3,7 @@
 import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap} from 'maplibre-react-components'
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {MapContextMenu} from "@/components/map/mapContextMenu";
-import {useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {type Map, MapLayerMouseEvent} from "maplibre-gl";
 import {useAppSelector} from "@/lib/hooks";
 import {useStories} from "@/lib/data_hooks/storiesHook";
@@ -39,11 +39,12 @@ export default function MyMap() {
         setCtxMenuOpen(true)
     }
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <div className={"flex w-full h-full justify-center items-center"}>
+        <Spinner/></div>
 
     return (
         <>
-            <div className="w-full h-full">
+            <div className={"w-full h-full"}>
                 <div className={"absolute z-50"}>
                     <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords}
                                     ptrLngLat={ptrLngLat}/>
