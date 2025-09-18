@@ -6,6 +6,7 @@ import StoreProvider from "@/app/StoreProvider"
 import {AuthKitProvider} from "@workos-inc/authkit-nextjs/components";
 import {Toaster} from "sonner";
 import {TooltipProvider} from "@/components/ui/tooltip";
+import {DialogProvider} from "@/components/dialog/dialogProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -22,17 +23,18 @@ export const metadata: Metadata = {
     description: "Explore cultures, their history and stories",
 };
 
-export default function RootLayout({children,}: Readonly<{
+export default function RootLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <AuthKitProvider>
             <StoreProvider>
                 <TooltipProvider>
-                    <html lang="en">
+                    <html lang="en" suppressHydrationWarning>
                     <body
                         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
                     >
+                    <DialogProvider/>
                     {children}
                     <Toaster/>
                     </body>

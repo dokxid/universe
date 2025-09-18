@@ -13,6 +13,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {useExperiences} from "@/lib/data_hooks/experiencesHook";
 import Image from "next/image";
 import {SquareArrowOutUpRight} from "lucide-react";
+import Link from "next/link";
 
 export function ListExperiencesDialog({isOpen, onOpenChange}: {
     isOpen: boolean;
@@ -45,7 +46,7 @@ export function ListExperiencesDialog({isOpen, onOpenChange}: {
                             {experiences.map((exp) =>
                                 <TableRow key={exp.slug}
                                           className={"cursor-pointer group"}
-                                          onClick={() => window.open("https://" + exp.slug + ".heritagelab.center")}>
+                                >
                                     <TableCell className={"max-w-fit"}>
                                         <div
                                             className={"size-[100px] transition group-hover:scale-110 bg-accent relative"}>
@@ -54,10 +55,13 @@ export function ListExperiencesDialog({isOpen, onOpenChange}: {
                                         </div>
                                     </TableCell>
                                     <TableCell className="*:text-wrap">
-                                        <p className={"font-bold group-hover:underline"}>{exp.title}
-                                            <SquareArrowOutUpRight className={"size-3 inline-block ml-1 align-top"}/>
-                                        </p>
-                                        <p className={"font-light"}>{exp.subtitle}</p>
+                                        <Link href={`/lab/${exp.slug}`}>
+                                            <p className={"font-bold group-hover:underline"}>{exp.title}
+                                                <SquareArrowOutUpRight
+                                                    className={"size-3 inline-block ml-1 align-top"}/>
+                                            </p>
+                                            <p className={"font-light"}>{exp.subtitle}</p>
+                                        </Link>
                                     </TableCell>
                                 </TableRow>)}
                         </TableBody>

@@ -16,7 +16,6 @@ export const mapSlice = createSlice({
     reducers: {
         setFlyPosition: (state, action) => {
             state.flyPosition = action.payload;
-            console.log("flying to: " + state.flyPosition)
         },
         setZoomLevel: (state, action) => {
             state.zoomLevel = action.payload;

@@ -9,6 +9,7 @@ import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice
 import {ExperienceDescriptor} from "@/components/map/experienceDescriptor";
 import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {decrementZoomLevel} from "@/lib/features/map/mapSlice";
+import {useParams} from "next/navigation";
 
 const Geocoder = dynamic(
     () => import("@mapbox/search-js-react").then(mod => ({default: mod.Geocoder})),
@@ -21,6 +22,7 @@ const geocoderTheme = {
 
 export function MapOverlay({children}: { children: React.ReactNode }) {
 
+    const labSlug = useParams<{ labSlug: string }>().labSlug || "universe"
     const dispatch = useAppDispatch()
     const experiencesState = useAppSelector(state => state.experiences)
     const [openDescriptor, setOpenDescriptor] = React.useState(true)
@@ -43,7 +45,7 @@ export function MapOverlay({children}: { children: React.ReactNode }) {
                             }}
                             theme={geocoderTheme}
                         />}
-                    {experiencesState.currentExperience != "universe" &&
+                    {labSlug == "universe" && experiencesState.currentExperience != "universe" &&
                         <Button
                             onClick={() => {
                                 dispatch(setCurrentExperience("universe"))

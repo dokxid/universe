@@ -4,14 +4,12 @@ import React from "react";
 import dynamic from 'next/dynamic'
 import {SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/sidebar/appSidebar";
-import {useAppDispatch} from "@/lib/hooks";
 import {MapOverlay} from "@/components/map/mapOverlay";
-import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
-import {useExperience} from "@/lib/data_hooks/experiencesHook";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
+import {useAppDispatch} from "@/lib/hooks";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {useParams} from "next/navigation";
-import {DialogProvider} from "@/components/dialog/dialogProvider";
+import {useExperience} from "@/lib/data_hooks/experiencesHook";
 
 // make dynamic loading
 const MyMap = dynamic(() => import('@/components/map/map'), {
@@ -22,13 +20,13 @@ const MyMap = dynamic(() => import('@/components/map/map'), {
 export default function Home() {
 
     const labSlug = useParams<{ labSlug: string }>().labSlug || "universe"
-    const {experience, isLoading} = useExperience(labSlug)
     const dispatch = useAppDispatch()
 
     // initialize experience unconditionally
     dispatch(setCurrentExperience(labSlug))
+    const {experience, isLoading} = useExperience(labSlug)
 
-    if (isLoading) return <Spinner></Spinner>
+    if (isLoading) return <div></div>
 
     // fly to experience center after fetching
     dispatch(setFlyPosition(experience.center.coordinates))
@@ -36,7 +34,6 @@ export default function Home() {
 
     return (
         <main>
-            <DialogProvider/>
             <SidebarProvider className={"relative flex h-screen w-screen"}>
                 <div className={"flex-none"}>
                     <AppSidebar/>

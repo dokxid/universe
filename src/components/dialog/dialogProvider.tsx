@@ -1,3 +1,5 @@
+'use client'
+
 import {AddStoryDialog} from "@/components/dialog/addStoryDialog";
 import {setAddStoryDialogOpen} from "@/lib/features/dialogue/addStoryDialogSlice";
 import {ListExperiencesDialog} from "@/components/dialog/listExperiencesDialog";

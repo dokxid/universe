@@ -44,7 +44,7 @@ export function UserWidget() {
                 <Avatar>
                     <AvatarImage></AvatarImage>
                     <AvatarFallback>
-                        {(user.firstName && user.lastName) ? user.firstName[0] + user.lastName[0] : ""}
+                        {(user.firstName && user.lastName) ? (user.firstName[0] + user.lastName[0]).toUpperCase() : ""}
                     </AvatarFallback>
                 </Avatar>
                 <div className={"text-sm flex flex-col grow"}>

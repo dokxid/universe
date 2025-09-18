@@ -25,16 +25,19 @@ import {Button} from "../ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandList} from "@/components/ui/command";
 import {ExperiencesList} from "@/components/sidebar/experiencesList";
-import {CurrentExperienceDescriptor} from "@/components/map/currentExperienceDescriptor";
+import {CurrentExperienceDescriptor} from "@/components/sidebar/currentExperienceDescriptor";
 import {useAppDispatch} from "@/lib/hooks";
 import {setListExperienceDialogOpen} from "@/lib/features/dialogue/listExperiencesDialogSlice";
 import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
 import {UserWidget} from "@/components/sidebar/userWidget";
-import { setSettingsDialogOpen } from "@/lib/features/dialogue/settingsDialogSlice";
+import {setSettingsDialogOpen} from "@/lib/features/dialogue/settingsDialogSlice";
+import {useParams} from "next/navigation";
 
 
 export function AppSidebar() {
 
+    const labSlug = useParams<{ labSlug: string }>().labSlug || "universe"
+    console.log(labSlug)
     const dispatch = useAppDispatch()
     const [open, setOpen] = React.useState(false)
 
@@ -128,7 +131,7 @@ export function AppSidebar() {
         <Sidebar>
 
             {/* sidebar header */}
-            <SidebarHeader className="mt-3">
+            {(labSlug == "universe") && <SidebarHeader className="mt-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <Popover open={open} onOpenChange={setOpen}>
@@ -157,7 +160,7 @@ export function AppSidebar() {
                         </Popover>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarHeader>
+            </SidebarHeader>}
 
             <SidebarContent>
 
