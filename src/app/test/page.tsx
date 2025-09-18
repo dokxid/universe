@@ -1,0 +1,19 @@
+import { getLabStoriesDTO, getPublicStoriesDTO } from "@/data/story-dto";
+import { UserWidget } from "@/components/sidebar/userWidget";
+
+export default async function TestPage() {
+    const stories = await getLabStoriesDTO("test");
+
+    return (
+        <>
+            <div className={"w-sm p-4"}>
+                <UserWidget />
+            </div>
+            <div>
+                {stories.map((story, index) => (
+                    <li key={index}>{story.title}</li>
+                ))}
+            </div>
+        </>
+    );
+}

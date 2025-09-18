@@ -1,12 +1,12 @@
-import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import React from "react";
-import StoreProvider from "@/app/StoreProvider"
-import {AuthKitProvider} from "@workos-inc/authkit-nextjs/components";
-import {Toaster} from "sonner";
-import {TooltipProvider} from "@/components/ui/tooltip";
-import {DialogProvider} from "@/components/dialog/dialogProvider";
+import StoreProvider from "@/app/StoreProvider";
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
+import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { DialogProvider } from "@/components/dialog/dialogProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -23,7 +23,9 @@ export const metadata: Metadata = {
     description: "Explore cultures, their history and stories",
 };
 
-export default function RootLayout({children}: Readonly<{
+export default async function RootLayout({
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (

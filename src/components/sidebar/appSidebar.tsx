@@ -37,7 +37,6 @@ import {useParams} from "next/navigation";
 export function AppSidebar() {
 
     const labSlug = useParams<{ labSlug: string }>().labSlug || "universe"
-    console.log(labSlug)
     const dispatch = useAppDispatch()
     const [open, setOpen] = React.useState(false)
 
