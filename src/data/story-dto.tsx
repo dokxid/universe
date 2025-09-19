@@ -1,10 +1,9 @@
 import "server-only";
-import { getCurrentUser, isEditor } from "./auth";
+import { getCurrentUser, isUserActive, isUserMember } from "./auth";
 import { User, WorkOS } from "@workos-inc/node";
 import { clientPromise } from "@/lib/mongodb/connections";
 import { ExperienceData, StoryData } from "@/types/api";
 
-const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
 const client = await clientPromise
     .then((client) => {
         return client;
@@ -37,50 +36,34 @@ async function getStories(
                 experiences
                     .filter((experience) => experience.slug == experienceSlug)
                     .pop()?.stories ?? [];
-            return await canSeePrivateStory(viewer, experienceSlug)
+            return (await canSeePrivateStory(viewer, experienceSlug))
                 ? filteredStories
-                : filteredStories.filter((story) => !story.draft && !story.published);
+                : filteredStories.filter(
+                      (story) => !story.draft && !story.published
+                  );
         }
         let stories: StoryData[];
-        stories = experiences.flatMap((experience) => experience.stories).filter((story) => !story.draft && story.published);
+        stories = experiences
+            .flatMap((experience) => experience.stories)
+            .filter((story) => !story.draft && story.published);
         return stories;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
+function canCreateStory(viewer: User, experienceSlug: string) {
+    canSeePrivateStory(viewer, experienceSlug);
+}
+
 function canSeePublicStory(viewer: User) {
     return true;
 }
 
-async function canSeePrivateStory(viewer: User, experienceSlug: string) {
-    const client = await clientPromise;
-    const db = client.db("hl-universe");
-    const experience = await db
-        .collection("experiences")
-        .findOne({ slug: experienceSlug });
-
-    if (!experience) {
-        return false;
-    }
-    const organizationId = experience.organizationId;
-    const membership = await workos.userManagement
-        .listOrganizationMemberships({
-            userId: viewer.id,
-            organizationId: organizationId,
-        })
-        .then((membership) => {
-            const membershipToReturn = membership.data.pop();
-            if (membershipToReturn === undefined) {
-                throw new Error("no membership found");
-            }
-            return membershipToReturn;
-        })
-        .catch((err) => {
-            throw new Error(err);
-        });
-
-    return membership.status == "active" && isEditor(membership.role.slug);
+export async function canSeePrivateStory(viewer: User, experienceSlug: string) {
+    const isActive = await isUserActive(viewer, experienceSlug);
+    const isMember = await isUserMember(viewer, experienceSlug);
+    return isActive && isMember;
 }
 
 export function getPublicStoriesDTO() {
@@ -89,8 +72,6 @@ export function getPublicStoriesDTO() {
 
 export async function getLabStoriesDTO(experienceSlug: string) {
     const currentUser = await getCurrentUser();
-    if (!currentUser) {
-        throw new Error("Not authenticated");
-    }
+    if (!currentUser) throw new Error("Not authenticated");
     return getStories(currentUser, experienceSlug);
 }

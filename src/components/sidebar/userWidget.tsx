@@ -3,8 +3,6 @@
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { signOutAction } from "@/actions/auth";
 import Link from "next/link";
-import { getSignInUrl, getSignUpUrl } from "@workos-inc/authkit-nextjs";
-import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings } from "lucide-react";
 
