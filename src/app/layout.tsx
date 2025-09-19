@@ -33,13 +33,13 @@ export default async function RootLayout({
             <StoreProvider>
                 <TooltipProvider>
                     <html lang="en" suppressHydrationWarning>
-                    <body
-                        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-                    >
-                    <DialogProvider/>
-                    {children}
-                    <Toaster/>
-                    </body>
+                        <body
+                            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                        >
+                            <DialogProvider />
+                            {children}
+                            <Toaster />
+                        </body>
                     </html>
                 </TooltipProvider>
             </StoreProvider>

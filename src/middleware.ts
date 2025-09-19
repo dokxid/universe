@@ -1,6 +1,8 @@
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextResponse } from "next/server";
 
+const CSP_ENABLED = false
+
 export default async function middleware(req: any, event: any) {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
@@ -37,12 +39,15 @@ export default async function middleware(req: any, event: any) {
         .replace(/\s{2,}/g, " ")
         .trim();
 
+    if (!CSP_ENABLED) {
+        return response
+    }
+
     response.headers.set("x-nonce", nonce);
     response.headers.set(
         "Content-Security-Policy",
         contentSecurityPolicyHeaderValue
     );
-
     return response;
 }
 

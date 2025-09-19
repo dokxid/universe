@@ -1,4 +1,4 @@
-import { getLabStoriesDTO, getPublicStoriesDTO } from "@/data/story-dto";
+import { getLabStoriesDTO } from "@/data/dto/story-dto";
 import { UserWidget } from "@/components/sidebar/userWidget";
 
 export default async function TestPage() {

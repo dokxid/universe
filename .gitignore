@@ -28,7 +28,7 @@ yarn.lock
 package-lock.json
 
 # jetbrains
-.idea
+/.idea
 
 # debug
 npm-debug.log*

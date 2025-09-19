@@ -1,34 +1,21 @@
-"use client";
+"use server";
 
-import React from "react";
-import dynamic from "next/dynamic";
+import React, { Suspense } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/appSidebar";
 import { MapOverlay } from "@/components/map/mapOverlay";
-import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
-import { useAppDispatch } from "@/lib/hooks";
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
-import { useParams } from "next/navigation";
-import { useExperience } from "@/lib/data_hooks/experiencesHook";
+import { getExperienceDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
+import { MapPanel } from "@/components/map/mapPanel";
 
-// make dynamic loading
-const MyMap = dynamic(() => import("@/components/map/map"), {
-    ssr: false,
-});
-
-export default function Home() {
-    const labSlug = useParams<{ labSlug: string }>().labSlug || "universe";
-    const dispatch = useAppDispatch();
-
-    // initialize experience unconditionally
-    dispatch(setCurrentExperience(labSlug));
-    const { experience, isLoading } = useExperience(labSlug);
-
-    if (isLoading) return <div></div>;
-
-    // fly to experience center after fetching
-    dispatch(setFlyPosition(experience.center.coordinates));
-    dispatch(setZoomLevel(experience.initial_zoom));
+export default async function Home({
+    params,
+}: {
+    params: Promise<{ labSlug: string }>;
+}) {
+    const { labSlug } = await params;
+    const storiesPromise = getPublicStoriesDTO();
+    const experiencePromise = getExperienceDTO(labSlug ?? "universe");
+    // console.log(`resolved promise: ${await storiesPromise}`)
 
     return (
         <main>
@@ -40,7 +27,13 @@ export default function Home() {
                 <div className="grow relative">
                     {/* map */}
                     <div className={"absolute z-20 w-full h-full"}>
-                        <MyMap></MyMap>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <MapPanel
+                                labSlug={labSlug ?? "universe"}
+                                experiencePromise={experiencePromise}
+                                storiesPromise={storiesPromise}
+                            ></MapPanel>
+                        </Suspense>
                     </div>
 
                     {/* overlay */}

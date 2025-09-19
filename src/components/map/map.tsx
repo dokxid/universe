@@ -1,24 +1,31 @@
-'use client';
+"use client";
 
-import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap} from 'maplibre-react-components'
-import 'maplibre-gl/dist/maplibre-gl.css';
-import {MapContextMenu} from "@/components/map/mapContextMenu";
-import React, {useRef, useState} from "react";
-import {type Map, MapLayerMouseEvent} from "maplibre-gl";
-import {useAppSelector} from "@/lib/hooks";
-import {useStories} from "@/lib/data_hooks/storiesHook";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
+import {
+    RAttributionControl,
+    RMap,
+    RMarker,
+    RNavigationControl,
+    useMap,
+} from "maplibre-react-components";
+import "maplibre-gl/dist/maplibre-gl.css";
+import { MapContextMenu } from "@/components/map/mapContextMenu";
+import React, { Suspense, use, useRef, useState } from "react";
+import { type Map, MapLayerMouseEvent } from "maplibre-gl";
+import { useAppSelector } from "@/lib/hooks";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import CustomMarker from "@/components/map/customMarker";
 
-
-export default function MyMap() {
-
-    const [ctxMenuOpen, setCtxMenuOpen] = useState(false)
-    const [coords, setCoords] = useState<{ x: number; y: number } | null>(null)
-    const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null)
-    const mapDOM = useRef(null)
-    const mapState = useAppSelector(state => state.map)
-    const {stories, isLoading} = useStories()
+export default function MyMap({
+    storiesPromise,
+}: {
+    storiesPromise: Promise<string>;
+}) {
+    const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
+    const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
+    const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
+    const mapDOM = useRef(null);
+    const mapState = useAppSelector((state) => state.map);
+    const stories = JSON.parse(use(storiesPromise));
 
     function ChildComponent() {
         // This component is inside RMap.
@@ -27,27 +34,28 @@ export default function MyMap() {
         map.flyTo({
             center: mapState.flyPosition,
             zoom: mapState.zoomLevel,
-        })
+        });
 
         return null;
     }
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
-        e.preventDefault()
-        setCoords({x: e.point.x, y: e.point.y})
-        setPtrLngLat([e.lngLat.lng, e.lngLat.lat])
-        setCtxMenuOpen(true)
-    }
-
-    if (isLoading) return <div className={"flex w-full h-full justify-center items-center"}>
-        <Spinner/></div>
+        e.preventDefault();
+        setCoords({ x: e.point.x, y: e.point.y });
+        setPtrLngLat([e.lngLat.lng, e.lngLat.lat]);
+        setCtxMenuOpen(true);
+    };
 
     return (
         <>
             <div className={"w-full h-full"}>
                 <div className={"absolute z-50"}>
-                    <MapContextMenu open={ctxMenuOpen} onOpenChange={setCtxMenuOpen} coords={coords}
-                                    ptrLngLat={ptrLngLat}/>
+                    <MapContextMenu
+                        open={ctxMenuOpen}
+                        onOpenChange={setCtxMenuOpen}
+                        coords={coords}
+                        ptrLngLat={ptrLngLat}
+                    />
                 </div>
                 <RMap
                     mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
@@ -56,27 +64,44 @@ export default function MyMap() {
                     initialAttributionControl={false}
                     // dragRotate={false}
                     style={{
-                        margin: '0',
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#222'
+                        margin: "0",
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "#222",
                     }}
                     onContextMenu={handleContextMenu}
                     ref={mapDOM}
                 >
-                    {stories.map((story) =>
-                        <RMarker
-                            longitude={story.longitude}
-                            latitude={story.latitude}
-                            key={story._id.toString()}
-                        ><CustomMarker story={story}/></RMarker>
-                    )}
-                    <ChildComponent/>
-                    <RAttributionControl position={"bottom-left"}></RAttributionControl>
-                    <RNavigationControl position={"bottom-left"}></RNavigationControl>
+                    <Suspense
+                        fallback={
+                            <div
+                                className={
+                                    "flex w-full h-full justify-center items-center"
+                                }
+                            >
+                                <Spinner />
+                            </div>
+                        }
+                    >
+                        {stories.map((story, index) => (
+                            <RMarker
+                                longitude={story.longitude}
+                                latitude={story.latitude}
+                                key={index.toString()}
+                            >
+                                <CustomMarker story={story} />
+                            </RMarker>
+                        ))}
+                    </Suspense>
+                    <ChildComponent />
+                    <RAttributionControl
+                        position={"bottom-left"}
+                    ></RAttributionControl>
+                    <RNavigationControl
+                        position={"bottom-left"}
+                    ></RNavigationControl>
                 </RMap>
             </div>
         </>
-    )
-        ;
+    );
 }
