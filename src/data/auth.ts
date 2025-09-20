@@ -2,7 +2,9 @@ import { withAuth } from "@workos-inc/authkit-nextjs";
 import { cache } from "react";
 import { UserRole } from "@/types/user";
 import { User, WorkOS } from "@workos-inc/node";
-import { clientPromise } from "@/lib/mongodb/connections";
+import { connect } from "http2";
+import dbConnect from "@/lib/mongodb/connections";
+import { getExperienceDTO } from "./dto/story-dto";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
 
@@ -53,12 +55,8 @@ export async function isAdmin(
 }
 
 async function getUserExperienceRelation(viewer: User, experienceSlug: string) {
-    const client = await clientPromise;
-    const db = client.db("hl-universe");
-    const experience = await db
-        .collection("experiences")
-        .findOne({ slug: experienceSlug });
-    if (!experience) throw new Error("experience not found");
+    dbConnect();
+    const experience = await getExperienceDTO(experienceSlug);
     const organizationId = experience.organizationId;
     return await workos.userManagement
         .listOrganizationMemberships({

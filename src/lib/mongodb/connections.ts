@@ -1,52 +1,51 @@
-import {MongoClient, ServerApiVersion} from "mongodb";
+import mongoose from "mongoose";
 
 declare global {
-    var _mongoClientPromise: Promise<MongoClient> | undefined;
+    var mongoose: any; // This must be a `var` and not a `let / const`
 }
 
-// connection uri and options
-if (!process.env.MONGODB_URL) {
-    throw new Error('please make sure to setup the .env like explained in the README.md')
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
 }
-const uri = "mongodb://" + process.env.MONGODB_USERNAME + ":" + process.env.MONGODB_PWD + "@" + process.env.MONGODB_URL;
-const options = {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
+
+async function dbConnect() {
+    // throw error if no .env variable for mongodb_url
+    if (!process.env.MONGODB_URL) {
+        throw new Error(
+            "please make sure to setup the .env like explained in the README.md"
+        );
     }
-}
 
-let client: MongoClient
-let clientPromise: Promise<MongoClient>
+    // compose uri
+    const uri =
+        "mongodb://" +
+        process.env.MONGODB_USERNAME +
+        ":" +
+        process.env.MONGODB_PWD +
+        "@" +
+        process.env.MONGODB_URL;
 
-// In dev, use a global variable so the client isn’t constantly recreated
-// In production, always create a new client
-if (process.env.NODE_ENV === "development") {
-    // Then use without type assertion:
-    if (!global._mongoClientPromise) {
-        client = new MongoClient(uri, options);
-        global._mongoClientPromise = client.connect();
+    if (cached.conn) {
+        return cached.conn;
     }
-    clientPromise = global._mongoClientPromise;
-} else {
-    client = new MongoClient(uri, options);
-    clientPromise = client.connect();
-}
-
-async function run() {
+    if (!cached.promise) {
+        const opts = {
+            bufferCommands: false,
+        };
+        cached.promise = mongoose.connect(uri, opts).then((mongoose) => {
+            return mongoose;
+        });
+    }
     try {
-        // Use the clientPromise instead of calling client.connect() directly
-        const connectedClient = await clientPromise;
-
-        // Send a ping to confirm a successful connection
-        await connectedClient.db("admin").command({ping: 1});
-        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        cached.conn = await cached.promise;
     } catch (e) {
-        console.error(e);
+        cached.promise = null;
+        throw e;
     }
+
+    return cached.conn;
 }
 
-run().catch(console.dir);
-
-export {clientPromise}
+export default dbConnect;

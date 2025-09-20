@@ -6,14 +6,14 @@ import {StoryCardContent} from "@/components/map/storyCardContent";
 import {HoverCardArrow} from "@radix-ui/react-hover-card";
 
 
-function CustomMarker({story}: { story: StoryData }) {
+function CustomMarker({story, experienceSlug}: { story: StoryData, experienceSlug: string }) {
     return (
         <HoverCard>
             <HoverCardTrigger>
                 <MapPin size={30} fill={"#DBA726"} className={"cursor-pointer"}/>
             </HoverCardTrigger>
             <HoverCardContent>
-                <StoryCardContent experience={story.experience} fileName={story.featuredImage} title={story.title}
+                <StoryCardContent experience={"test"} fileName={story.featuredImage} title={story.title}
                                   content={story.content}/>
                 <HoverCardArrow/>
             </HoverCardContent>

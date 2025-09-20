@@ -1,12 +1,11 @@
+import StoreProvider from "@/app/StoreProvider";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import React from "react";
-import StoreProvider from "@/app/StoreProvider";
-import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import { Toaster } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { DialogProvider } from "@/components/dialog/dialogProvider";
+import "./globals.css";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -24,8 +23,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
+    modal,
     children,
 }: Readonly<{
+    modal: React.ReactNode;
     children: React.ReactNode;
 }>) {
     return (
@@ -36,8 +37,10 @@ export default async function RootLayout({
                         <body
                             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
                         >
-                            <DialogProvider />
-                            {children}
+                            <main>
+                                <div>{modal}</div>
+                                <div>{children}</div>
+                            </main>
                             <Toaster />
                         </body>
                     </html>

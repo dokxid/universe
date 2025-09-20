@@ -5,7 +5,8 @@ import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import dynamic from "next/dynamic";
 import { Suspense, use } from "react";
-import { ExperienceData } from "@/types/api";
+import { ExperienceData, StoryData } from "@/types/api";
+import { FlattenMaps } from "mongoose";
 
 // make dynamic loading
 const MyMap = dynamic(() => import("@/components/map/map"), {
@@ -13,28 +14,28 @@ const MyMap = dynamic(() => import("@/components/map/map"), {
 });
 
 export function MapPanel({
-    storiesPromise,
-    experiencePromise,
+    storiesSerialized,
+    experienceSerialized,
     labSlug,
 }: {
-    storiesPromise: Promise<string>;
-    experiencePromise: Promise<string>;
+    storiesSerialized: string; // JSON stringified StoryData[]
+    experienceSerialized: string; // JSON stringified ExperienceData
     labSlug: string;
 }) {
-    const dispatch = useAppDispatch();
-    const experience = use(experiencePromise);
-    const data = JSON.parse(experience) as ExperienceData;
+    const stories = JSON.parse(storiesSerialized) as StoryData[];
+    const experience = JSON.parse(experienceSerialized) as ExperienceData;
 
+    const dispatch = useAppDispatch();
     // initialize experience unconditionally
     dispatch(setCurrentExperience(labSlug));
 
-    // fly to experience center after fetching
-    dispatch(setFlyPosition(data.center.coordinates));
-    dispatch(setZoomLevel(data.initial_zoom));
-
     return (
         <Suspense fallback={<div>loading stories...</div>}>
-            <MyMap storiesPromise={storiesPromise}></MyMap>
+            <MyMap
+                stories={stories}
+                experience={experience}
+                labSlug={labSlug}
+            ></MyMap>
         </Suspense>
     );
 }

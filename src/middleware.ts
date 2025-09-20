@@ -53,5 +53,5 @@ export default async function middleware(req: any, event: any) {
 
 // Match against pages that require authentication
 export const config = {
-    matcher: ["/", "/account/:page*", "/images/:page*", "/lab/:page*", "/test"],
+    matcher: ["/", "/account/:page*", "/images/:page*", "/lab/:page*", "/test", "/addstory"],
 };

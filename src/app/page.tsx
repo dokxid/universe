@@ -1,27 +1,31 @@
 "use server";
 
-import React, { Suspense } from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/appSidebar";
 import { MapOverlay } from "@/components/map/mapOverlay";
-import { getExperienceDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
 import { MapPanel } from "@/components/map/mapPanel";
+import { AppSidebar } from "@/components/sidebar/appSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { getExperienceDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
+import { Suspense } from "react";
 
 export default async function Home({
     params,
 }: {
     params: Promise<{ labSlug: string }>;
 }) {
-    const { labSlug } = await params;
+    let { labSlug } = await params;
+    labSlug = labSlug ?? "universe";
     const storiesPromise = getPublicStoriesDTO();
     const experiencePromise = getExperienceDTO(labSlug ?? "universe");
-    // console.log(`resolved promise: ${await storiesPromise}`)
+
+    const [storiesSerialized, experienceSerialized] = await Promise.all([
+        storiesPromise,
+        experiencePromise,
+    ]);
 
     return (
-        <main>
             <SidebarProvider className={"relative flex h-screen w-screen"}>
                 <div className={"flex-none"}>
-                    <AppSidebar />
+                    <AppSidebar labSlug={labSlug} />
                 </div>
 
                 <div className="grow relative">
@@ -30,8 +34,8 @@ export default async function Home({
                         <Suspense fallback={<div>Loading...</div>}>
                             <MapPanel
                                 labSlug={labSlug ?? "universe"}
-                                experiencePromise={experiencePromise}
-                                storiesPromise={storiesPromise}
+                                experienceSerialized={experienceSerialized}
+                                storiesSerialized={storiesSerialized}
                             ></MapPanel>
                         </Suspense>
                     </div>
@@ -42,16 +46,17 @@ export default async function Home({
                             "absolute z-30 w-full h-full pointer-events-none"
                         }
                     >
-                        <MapOverlay>
-                            <SidebarTrigger
-                                className={
-                                    "pointer-events-auto size-10 bg-primary text-primary-foreground"
-                                }
-                            />
-                        </MapOverlay>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <MapOverlay>
+                                <SidebarTrigger
+                                    className={
+                                        "pointer-events-auto size-10 bg-primary text-primary-foreground"
+                                    }
+                                />
+                            </MapOverlay>
+                        </Suspense>
                     </div>
                 </div>
             </SidebarProvider>
-        </main>
     );
 }

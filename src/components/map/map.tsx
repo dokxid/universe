@@ -9,23 +9,30 @@ import {
 } from "maplibre-react-components";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MapContextMenu } from "@/components/map/mapContextMenu";
-import React, { Suspense, use, useRef, useState } from "react";
+import React, { Suspense, use, useEffect, useRef, useState } from "react";
 import { type Map, MapLayerMouseEvent } from "maplibre-gl";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import CustomMarker from "@/components/map/customMarker";
+import { ExperienceData, StoryData } from "@/types/api";
+import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
+import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
 
 export default function MyMap({
-    storiesPromise,
+    stories,
+    experience,
+    labSlug,
 }: {
-    storiesPromise: Promise<string>;
+    stories: StoryData[];
+    experience: ExperienceData;
+    labSlug: string;
 }) {
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const mapDOM = useRef(null);
     const mapState = useAppSelector((state) => state.map);
-    const stories = JSON.parse(use(storiesPromise));
+    const dispatch = useAppDispatch();
 
     function ChildComponent() {
         // This component is inside RMap.
@@ -45,6 +52,10 @@ export default function MyMap({
         setPtrLngLat([e.lngLat.lng, e.lngLat.lat]);
         setCtxMenuOpen(true);
     };
+
+    // fly to experience center after fetching
+    dispatch(setFlyPosition(experience.center.coordinates));
+    dispatch(setZoomLevel(experience.initial_zoom));
 
     return (
         <>
@@ -89,7 +100,7 @@ export default function MyMap({
                                 latitude={story.latitude}
                                 key={index.toString()}
                             >
-                                <CustomMarker story={story} />
+                                <CustomMarker story={story} experienceSlug={labSlug} />
                             </RMarker>
                         ))}
                     </Suspense>

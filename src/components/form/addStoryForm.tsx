@@ -23,7 +23,7 @@ import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { submitStory } from "@/actions/submitStory";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
-import { submitStoryFormSchema } from "@/data/formSchemas";
+import { submitStoryFormSchema } from "@/types/formSchemas";
 
 export default function AddStoryForm() {
     const { user } = useAuth();
