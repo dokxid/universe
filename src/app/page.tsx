@@ -1,8 +1,8 @@
 "use server";
 
-import { MapOverlay } from "@/app/components/map/mapOverlay";
-import { MapPanel } from "@/app/components/map/mapPanel";
-import { AppSidebar } from "@/app/components/sidebar/appSidebar";
+import { MapOverlay } from "@/app/components/map/map-overlay";
+import { MapPanel } from "@/app/components/map/map-panel";
+import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getExperienceDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";

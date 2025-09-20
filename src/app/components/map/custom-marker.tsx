@@ -2,7 +2,7 @@ import {memo} from "react";
 import {MapPin} from "lucide-react";
 import {HoverCard, HoverCardContent, HoverCardTrigger} from "@/components/ui/hover-card";
 import {StoryData} from "@/types/api";
-import {StoryCardContent} from "@/app/components/map/storyCardContent";
+import {StoryCardContent} from "@/app/components/map/story-card-content";
 import {HoverCardArrow} from "@radix-ui/react-hover-card";
 
 

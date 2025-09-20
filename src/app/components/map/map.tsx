@@ -2,12 +2,12 @@
 
 import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap,} from "maplibre-react-components";
 import "maplibre-gl/dist/maplibre-gl.css";
-import {MapContextMenu} from "@/app/components/map/mapContextMenu";
+import {MapContextMenu} from "@/app/components/map/map-context-menu";
 import React, {Suspense, useRef, useState} from "react";
 import {type Map, MapLayerMouseEvent} from "maplibre-gl";
 import {useAppDispatch, useAppSelector} from "@/lib/hooks";
 import {Spinner} from "@/components/ui/shadcn-io/spinner";
-import CustomMarker from "@/app/components/map/customMarker";
+import CustomMarker from "@/app/components/map/custom-marker";
 import {ExperienceData, StoryData} from "@/types/api";
 import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
 
