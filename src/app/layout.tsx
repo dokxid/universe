@@ -1,22 +1,11 @@
-import StoreProvider from "@/app/StoreProvider";
+import StoreProvider from "@/app/store-provider";
 import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import React from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
-
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -31,7 +20,7 @@ export default function RootLayout({ children, modal }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={"antialiased"}
             >
                 <AuthKitProvider>
                     <StoreProvider>
