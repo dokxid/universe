@@ -5,12 +5,12 @@ import { ItemGroup } from "./item-group";
 const featureItems: SidebarItemGroup = [
     {
         title: "Universe Map",
-        href: "/addstory",
+        href: "/add-story",
         icon: Map,
     },
     {
         title: "Co-Labs / Research Teams",
-        href: "/addstory",
+        href: "/add-story",
         icon: Building2,
     },
     {

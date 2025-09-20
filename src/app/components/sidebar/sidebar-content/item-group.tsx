@@ -8,7 +8,6 @@ import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import Link from "next/link";
 
 export function ItemGroup({ items }: { items: SidebarItemGroup }) {
-    console.log(items);
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Team</SidebarGroupLabel>
@@ -17,7 +16,7 @@ export function ItemGroup({ items }: { items: SidebarItemGroup }) {
                     <SidebarMenuButton asChild>
                         <Link
                             href={item.href}
-                            className="flex items-start w-full"
+                            className="flex items-center w-full"
                         >
                             <item.icon />
                             <span>{item.title}</span>

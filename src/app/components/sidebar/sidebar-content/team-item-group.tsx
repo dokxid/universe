@@ -5,17 +5,17 @@ import { ItemGroup } from "./item-group";
 const teamItems: SidebarItemGroup = [
     {
         title: "Manage Team",
-        href: "/addstory",
+        href: "/add-story",
         icon: Users,
     },
     {
         title: "Manage Stories",
-        href: "/addstory",
+        href: "/add-story",
         icon: Book,
     },
     {
         title: "Elevation Requests",
-        href: "/addstory",
+        href: "/add-story",
         icon: ListChecks,
     },
 ];

@@ -5,22 +5,22 @@ import { ItemGroup } from "./item-group";
 const aboutItems: SidebarItemGroup = [
     {
         title: "About Universe",
-        href: "/addstory",
+        href: "/add-story",
         icon: CircleQuestionMark,
     },
     {
         title: "How to use",
-        href: "/addstory",
+        href: "/add-story",
         icon: CircleQuestionMark,
     },
     {
         title: "Heritage Lab CIE Website",
-        href: "/addstory",
+        href: "/add-story",
         icon: CircleQuestionMark,
     },
     {
         title: "Copyright Notices",
-        href: "/addstory",
+        href: "/add-story",
         icon: CircleQuestionMark,
     },
 ];

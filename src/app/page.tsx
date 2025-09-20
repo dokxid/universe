@@ -14,7 +14,6 @@ export default async function Home({
 }) {
     const experienceSlug = (await params.labSlug) ?? "universe";
     const storiesPromise = getPublicStoriesDTO();
-    console.log("experienceSlug: ", experienceSlug);
     const experiencePromise = getExperienceDTO(experienceSlug);
 
     const [storiesSerialized, experienceSerialized] = await Promise.all([

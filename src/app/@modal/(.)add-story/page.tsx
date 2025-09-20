@@ -1,7 +1,5 @@
-"use client";
-
 import AddStoryForm from "@/app/components/form/addStoryForm";
-import {Dialog} from "@/app/components/modal/dialog";
+import { Dialog } from "@/app/components/modal/dialog";
 
 export default function Page() {
     return (
@@ -9,7 +7,7 @@ export default function Page() {
             title="Add Your Story"
             description="Enter your story details below:"
         >
-            <AddStoryForm/>
+            <AddStoryForm />
         </Dialog>
     );
 }

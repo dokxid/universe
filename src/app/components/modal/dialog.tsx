@@ -1,15 +1,19 @@
 "use client";
 
-import {Dialog as CNDialog, DialogContent, DialogTitle,} from "@/components/ui/dialog";
-import {DialogDescription} from "@radix-ui/react-dialog";
-import {useRouter} from "next/navigation";
-import {ScrollArea} from "../../../components/ui/scroll-area";
+import {
+    Dialog as CNDialog,
+    DialogContent,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { useRouter } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function Dialog({
-                           children,
-                           title,
-                           description,
-                       }: {
+    children,
+    title,
+    description,
+}: {
     children: React.ReactNode;
     title: string;
     description: string;
