@@ -1,5 +1,4 @@
 import { CommandItem } from "@/components/ui/command";
-import { useExperiences } from "@/lib/data_hooks/experiencesHook";
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -9,14 +8,13 @@ import { CheckIcon } from "lucide-react";
 
 export function ExperiencesList({
     setOpen,
-    experiences
+    experiences,
 }: {
     setOpen: (open: boolean) => void;
     experiences: ExperienceData[];
 }) {
     const dispatch = useAppDispatch();
     const experiencesState = useAppSelector((state) => state.experiences);
-    console.log("ExperiencesList render with experiences:", experiences);
     return experiences.map((exp: ExperienceData, index: number) => (
         <CommandItem
             key={index}
@@ -39,7 +37,7 @@ export function ExperiencesList({
                         : "opacity-0"
                 )}
             />
-            {exp.slug + " " + exp.title}
+            {exp.title}
         </CommandItem>
     ));
 }

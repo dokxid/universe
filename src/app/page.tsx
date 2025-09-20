@@ -40,9 +40,7 @@ export default async function Home({
                     {/* overlay */}
                     <div className="absolute z-30 w-full h-full pointer-events-none">
                         <Suspense fallback={<div>Loading...</div>}>
-                            <MapOverlay>
-                                <SidebarTrigger className="pointer-events-auto size-10 bg-primary text-primary-foreground" />
-                            </MapOverlay>
+                            <MapOverlay></MapOverlay>
                         </Suspense>
                     </div>
                 </div>

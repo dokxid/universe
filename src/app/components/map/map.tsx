@@ -1,21 +1,27 @@
 "use client";
 
-import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap,} from "maplibre-react-components";
-import "maplibre-gl/dist/maplibre-gl.css";
-import {MapContextMenu} from "@/app/components/map/map-context-menu";
-import React, {Suspense, useRef, useState} from "react";
-import {type Map, MapLayerMouseEvent} from "maplibre-gl";
-import {useAppDispatch, useAppSelector} from "@/lib/hooks";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
 import CustomMarker from "@/app/components/map/custom-marker";
-import {ExperienceData, StoryData} from "@/types/api";
-import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
+import { MapContextMenu } from "@/app/components/map/map-context-menu";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { ExperienceData, StoryData } from "@/types/api";
+import { type Map, MapLayerMouseEvent } from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import {
+    RAttributionControl,
+    RMap,
+    RMarker,
+    RNavigationControl,
+    useMap,
+} from "maplibre-react-components";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 export default function MyMap({
-                                  stories,
-                                  experience,
-                                  labSlug,
-                              }: {
+    stories,
+    experience,
+    labSlug,
+}: {
     stories: StoryData[];
     experience: ExperienceData;
     labSlug: string;
@@ -31,24 +37,34 @@ export default function MyMap({
         // This component is inside RMap.
         // your MapLibre map instance is always defined and cannot be null.
         const map: Map = useMap();
-        map.flyTo({
-            center: mapState.flyPosition,
-            zoom: mapState.zoomLevel,
-        });
+        useEffect(() => {
+            if (!map) return;
+            try {
+                map.flyTo({
+                    center: mapState.flyPosition,
+                    zoom: mapState.zoomLevel,
+                });
+            } catch (err) {
+                // ignore map errors during rapid updates
+            }
+        }, [map, mapState.flyPosition, mapState.zoomLevel]);
 
         return null;
     }
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
         e.preventDefault();
-        setCoords({x: e.point.x, y: e.point.y});
+        setCoords({ x: e.point.x, y: e.point.y });
         setPtrLngLat([e.lngLat.lng, e.lngLat.lat]);
         setCtxMenuOpen(true);
     };
 
-    // fly to experience center after fetching
-    dispatch(setFlyPosition(experience.center.coordinates));
-    dispatch(setZoomLevel(experience.initial_zoom));
+    // fly to experience center after fetching (run after render)
+    useEffect(() => {
+        if (!experience) return;
+        dispatch(setFlyPosition(experience.center.coordinates));
+        dispatch(setZoomLevel(experience.initial_zoom));
+    }, [dispatch, experience]);
 
     return (
         <>
@@ -83,7 +99,7 @@ export default function MyMap({
                                     "flex w-full h-full justify-center items-center"
                                 }
                             >
-                                <Spinner/>
+                                <Spinner />
                             </div>
                         }
                     >
@@ -93,11 +109,14 @@ export default function MyMap({
                                 latitude={story.latitude}
                                 key={index.toString()}
                             >
-                                <CustomMarker story={story} experienceSlug={labSlug}/>
+                                <CustomMarker
+                                    story={story}
+                                    experienceSlug={labSlug}
+                                />
                             </RMarker>
                         ))}
                     </Suspense>
-                    <ChildComponent/>
+                    <ChildComponent />
                     <RAttributionControl
                         position={"bottom-left"}
                     ></RAttributionControl>

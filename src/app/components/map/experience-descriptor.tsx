@@ -6,21 +6,27 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useExperience } from "@/lib/data_hooks/experiencesHook";
 import { useAppSelector } from "@/lib/hooks";
+import { ExperienceData } from "@/types/models/experiences";
 import { X } from "lucide-react";
+
+type ExperienceDescriptorProps = {
+    setOpen: (open: boolean) => void;
+    experiences: ExperienceData[];
+};
 
 export function ExperienceDescriptor({
     setOpen,
-}: {
-    setOpen: (open: boolean) => void;
-}) {
+    experiences,
+}: ExperienceDescriptorProps) {
     const experiencesState = useAppSelector((state) => state.experiences);
-    const { experience, isLoading } = useExperience(
-        experiencesState.currentExperience
-    );
-
-    if (isLoading) return <div></div>;
+    const currentExperience = experiences.find(
+        (exp) => exp.slug === experiencesState.currentExperience
+    ) || {
+        title: "No title found",
+        subtitle: "No subtitle found",
+        description: "<p>No description found</p>",
+    };
 
     return (
         <ResizablePanelGroup
@@ -37,7 +43,7 @@ export function ExperienceDescriptor({
                     }
                 >
                     <div className={"flex flex-row justify-between"}>
-                        <h1 className={"mb-2"}>{experience.title}</h1>
+                        <h1 className={"mb-2"}>{currentExperience.title}</h1>
                         <Button
                             variant={"ghost"}
                             onClick={() => setOpen(false)}
@@ -46,8 +52,10 @@ export function ExperienceDescriptor({
                         </Button>
                     </div>
                     <div className={"overflow-y-auto h-fit"}>
-                        <p className={"lead mt-2"}>{experience.subtitle}</p>
-                        <p>{experience.description}</p>
+                        <p className={"lead mt-2"}>
+                            {currentExperience.subtitle}
+                        </p>
+                        <p>{currentExperience.description}</p>
                     </div>
                 </article>
             </ResizablePanel>
