@@ -16,7 +16,6 @@ import {
     Book,
     BookOpenText,
     Building2,
-    CircleQuestionMark,
     ListChecks,
     Map,
     SettingsIcon,
@@ -25,72 +24,15 @@ import {
 import Link from "next/link";
 import { Suspense } from "react";
 import { CurrentExperienceSelector } from "./currentExperienceSelector";
+import { AboutItemGroup } from "./sidebar-content/about-item-group";
+import { TeamItemGroup } from "./sidebar-content/team-item-group";
+import { FeatureItemGroup } from "./sidebar-content/feature-item-group";
 
-export async function AppSidebar({ labSlug = "universe" }: { labSlug?: string }) {
-    const feature_items = [
-        {
-            title: "Universe Map",
-            href: "/addstory",
-            icon: Map,
-        },
-        {
-            title: "Co-Labs / Research Teams",
-            href: "/addstory",
-            icon: Building2,
-        },
-        {
-            title: "Story Experiences",
-            href: "/experiences",
-            icon: BookOpenText,
-        },
-        {
-            title: "Settings",
-            href: "/settings",
-            icon: SettingsIcon,
-        },
-    ];
-
-    const team_items = [
-        {
-            title: "Manage Team",
-            href: "/addstory",
-            icon: Users,
-        },
-        {
-            title: "Manage Stories",
-            href: "/addstory",
-            icon: Book,
-        },
-        {
-            title: "Elevation Requests",
-            href: "/addstory",
-            icon: ListChecks,
-        },
-    ];
-
-    const about_items = [
-        {
-            title: "About Universe",
-            href: "/addstory",
-            icon: CircleQuestionMark,
-        },
-        {
-            title: "How to use",
-            href: "/addstory",
-            icon: CircleQuestionMark,
-        },
-        {
-            title: "Heritage Lab CIE Website",
-            href: "/addstory",
-            icon: CircleQuestionMark,
-        },
-        {
-            title: "Copyright Notices",
-            href: "/addstory",
-            icon: CircleQuestionMark,
-        },
-    ];
-
+export async function AppSidebar({
+    labSlug = "universe",
+}: {
+    labSlug?: string;
+}) {
     const experiencesPromise = getExperiencesDTO();
 
     return (
@@ -113,53 +55,9 @@ export async function AppSidebar({ labSlug = "universe" }: { labSlug?: string })
             )}
 
             <SidebarContent>
-                {/* feature sidebar group */}
-                <SidebarGroup>
-                    <SidebarGroupLabel>Features</SidebarGroupLabel>
-                    {feature_items.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                                <Link
-                                    href={item.href}
-                                    className="flex items-start w-full"
-                                >
-                                    <item.icon />
-                                    <span>{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarGroup>
-
-                {/* team sidebar group */}
-                <SidebarGroup>
-                    <SidebarGroupLabel>Team</SidebarGroupLabel>
-                    {team_items.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                                <a>
-                                    <item.icon />
-                                    <span>{item.title}</span>
-                                </a>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarGroup>
-
-                {/* about sidebar group */}
-                <SidebarGroup>
-                    <SidebarGroupLabel>Team</SidebarGroupLabel>
-                    {about_items.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild>
-                                <a>
-                                    <item.icon />
-                                    <span>{item.title}</span>
-                                </a>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
-                </SidebarGroup>
+                <FeatureItemGroup />
+                <TeamItemGroup />
+                <AboutItemGroup />
             </SidebarContent>
             <SidebarFooter>
                 <UserWidget />
