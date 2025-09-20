@@ -1,32 +1,19 @@
-import { CurrentExperienceSelectorSkeleton } from "@/app/components/sidebar/currentExperienceSelectorSkeleton";
 import { UserWidget } from "@/app/components/sidebar/userWidget";
+import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
-    SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { getExperiencesDTO } from "@/data/dto/story-dto";
-import {
-    Book,
-    BookOpenText,
-    Building2,
-    ListChecks,
-    Map,
-    SettingsIcon,
-    Users,
-} from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
 import { CurrentExperienceSelector } from "./currentExperienceSelector";
 import { AboutItemGroup } from "./sidebar-content/about-item-group";
-import { TeamItemGroup } from "./sidebar-content/team-item-group";
 import { FeatureItemGroup } from "./sidebar-content/feature-item-group";
+import { TeamItemGroup } from "./sidebar-content/team-item-group";
 
 export async function AppSidebar({
     labSlug = "universe",
