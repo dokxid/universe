@@ -1,13 +1,13 @@
-import { Dialog as CNDialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+"use client";
+
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "../ui/card";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+    Dialog as CNDialog,
+    DialogContent,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { DialogDescription } from "@radix-ui/react-dialog";
 import { useRouter } from "next/navigation";
+import { ScrollArea } from "../ui/scroll-area";
 
 export function Dialog({
     children,
@@ -26,20 +26,13 @@ export function Dialog({
             onOpenChange={() => {
                 router.back();
             }}
-            
         >
-            <VisuallyHidden>
-                <DialogTitle>{title}</DialogTitle>
-            </VisuallyHidden>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{title}</CardTitle>
-                        <CardDescription>{description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>{children}</CardContent>
-                </Card>
+            <DialogContent className={"overflow-y-auto"}>
+                <div className={"max-h-[80vh] flex flex-col gap-4"}>
+                    <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>{description}</DialogDescription>
+                    <ScrollArea>{children}</ScrollArea>
+                </div>
             </DialogContent>
         </CNDialog>
     );

@@ -1,7 +1,7 @@
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextResponse } from "next/server";
 
-const CSP_ENABLED = false
+const CSP_ENABLED = false;
 
 export default async function middleware(req: any, event: any) {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -40,7 +40,7 @@ export default async function middleware(req: any, event: any) {
         .trim();
 
     if (!CSP_ENABLED) {
-        return response
+        return response;
     }
 
     response.headers.set("x-nonce", nonce);
@@ -53,5 +53,14 @@ export default async function middleware(req: any, event: any) {
 
 // Match against pages that require authentication
 export const config = {
-    matcher: ["/", "/account/:page*", "/images/:page*", "/lab/:page*", "/test", "/addstory"],
+    matcher: [
+        "/",
+        "/account/:page*",
+        "/images/:page*",
+        "/lab/:page*",
+        "/test",
+        "/addstory",
+        "/settings",
+        "/experiences",
+    ],
 };

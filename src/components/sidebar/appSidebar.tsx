@@ -38,12 +38,12 @@ export async function AppSidebar({ labSlug }: { labSlug: string }) {
         },
         {
             title: "Story Experiences",
-            href: "/addstory",
+            href: "/experiences",
             icon: BookOpenText,
         },
         {
             title: "Settings",
-            href: "/addstory",
+            href: "/settings",
             icon: SettingsIcon,
         },
     ];

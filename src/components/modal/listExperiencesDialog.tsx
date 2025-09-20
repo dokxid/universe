@@ -1,118 +1,55 @@
-"use client";
+"use server";
 
-import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { useExperiences } from "@/lib/data_hooks/experiencesHook";
+import { getExperiencesDTO } from "@/data/dto/story-dto";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Dispatch, SetStateAction } from "react";
 
-export function ListExperiencesDialog({
-    isOpen,
-    onOpenChange,
-}: {
-    isOpen: boolean;
-    onOpenChange: Dispatch<SetStateAction<boolean>>;
-}) {
-    const { experiences, isLoading } = useExperiences();
-    if (isLoading) return <></>;
+export async function ListExperiencesDialog() {
+    const experiences = await getExperiencesDTO();
 
     return (
-        <div className={""}>
-            <Dialog open={isOpen} onOpenChange={onOpenChange}>
-                <DialogContent
-                    className={"max-h-3/4 lg:max-w-fit flex flex-col"}
-                >
-                    <DialogHeader className={"flex-none"}>
-                        <DialogTitle>Story experiences</DialogTitle>
-                        <DialogDescription>
-                            Explore our Co-Labs built story experiences. <br />
-                            They have their own seperate website, to customize
-                            their experience a bit more.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <Table className={"overflow-y-auto grow table-fixed"}>
-                        <TableHeader>
-                            {/* hidden, because the table header is just used to set the table column width */}
-                            <TableRow className={"collapse"}>
-                                <TableHead className="w-[125px]">
-                                    Image
-                                </TableHead>
-                                <TableHead className={"ml-2"}>Title</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {experiences.map((exp) => (
-                                <TableRow
-                                    key={exp.slug}
-                                    className={"cursor-pointer group"}
+        <table className="w-full border-collapse table-auto h-fit">
+            <thead className="sr-only">
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody className="">
+                {experiences.map((exp) => (
+                    <tr key={exp.slug} className="group border-b hover:bg-muted h-[120px]">
+                        <td>
+                            <div className="relative w-[100px] h-[100px]">
+                                <Image
+                                    src={exp.featured_image}
+                                    alt={exp.slug + " featured image"}
+                                    fill={true}
+                                    sizes={"(max-width: 100px)"}
+                                    className={"object-cover"}
+                                />
+                            </div>
+                        </td>
+                        <td>
+                            <Link href={`/lab/${exp.slug}`} className={"ml-5 flex flex-col h-full justify-center"}>
+                                <p
+                                    className={
+                                        "font-bold group-hover:underline"
+                                    }
                                 >
-                                    <TableCell className={"max-w-fit"}>
-                                        <div
-                                            className={
-                                                "size-[100px] transition group-hover:scale-110 bg-accent relative"
-                                            }
-                                        >
-                                            <Image
-                                                src={exp.featured_image}
-                                                alt={
-                                                    exp.slug + " featured image"
-                                                }
-                                                fill={true}
-                                                sizes={"(max-width: 100px)"}
-                                                className={"object-cover"}
-                                            />
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="*:text-wrap">
-                                        <Link href={`/lab/${exp.slug}`}>
-                                            <p
-                                                className={
-                                                    "font-bold group-hover:underline"
-                                                }
-                                            >
-                                                {exp.title}
-                                                <SquareArrowOutUpRight
-                                                    className={
-                                                        "size-3 inline-block ml-1 align-top"
-                                                    }
-                                                />
-                                            </p>
-                                            <p className={"font-light"}>
-                                                {exp.subtitle}
-                                            </p>
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <DialogFooter className={"flex-none"}>
-                        <DialogClose asChild>
-                            <Button type={"button"} variant={"ghost"}>
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+                                    {exp.title}
+                                    <SquareArrowOutUpRight
+                                        className={
+                                            "size-3 inline-block ml-1 align-top"
+                                        }
+                                    />
+                                </p>
+                                <p className={"font-light"}>{exp.subtitle}</p>
+                            </Link>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
     );
 }
