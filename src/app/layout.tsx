@@ -17,35 +17,37 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+type RootLayoutProps = {
+    children: React.ReactNode;
+    modal?: React.ReactNode;
+};
+
 export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
-
-export default async function RootLayout({
-    modal,
+export default function RootLayout({
     children,
-}: Readonly<{
-    modal: React.ReactNode;
-    children: React.ReactNode;
-}>) {
+    modal,
+}: RootLayoutProps) {
+
     return (
-        <AuthKitProvider>
-            <StoreProvider>
-                <TooltipProvider>
-                    <html lang="en" suppressHydrationWarning>
-                        <body
-                            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-                        >
+        <html lang="en" suppressHydrationWarning>
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+                <AuthKitProvider>
+                    <StoreProvider>
+                        <TooltipProvider>
                             <main>
                                 <div>{modal}</div>
                                 <div>{children}</div>
+                                <Toaster />
                             </main>
-                            <Toaster />
-                        </body>
-                    </html>
-                </TooltipProvider>
-            </StoreProvider>
-        </AuthKitProvider>
+                        </TooltipProvider>
+                    </StoreProvider>
+                </AuthKitProvider>
+            </body>
+        </html>
     );
 }

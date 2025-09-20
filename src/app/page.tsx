@@ -23,40 +23,37 @@ export default async function Home({
     ]);
 
     return (
-            <SidebarProvider className={"relative flex h-screen w-screen"}>
-                <div className={"flex-none"}>
-                    <AppSidebar labSlug={labSlug} />
+        <SidebarProvider className={"relative flex h-screen w-screen"}>
+            <AppSidebar labSlug={labSlug} />
+            <div className="grow relative">
+                {/* map */}
+                <div className={"absolute z-20 w-full h-full"}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <MapPanel
+                            labSlug={labSlug ?? "universe"}
+                            experienceSerialized={experienceSerialized}
+                            storiesSerialized={storiesSerialized}
+                        ></MapPanel>
+                    </Suspense>
                 </div>
 
-                <div className="grow relative">
-                    {/* map */}
-                    <div className={"absolute z-20 w-full h-full"}>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <MapPanel
-                                labSlug={labSlug ?? "universe"}
-                                experienceSerialized={experienceSerialized}
-                                storiesSerialized={storiesSerialized}
-                            ></MapPanel>
-                        </Suspense>
-                    </div>
-
-                    {/* overlay */}
-                    <div
-                        className={
-                            "absolute z-30 w-full h-full pointer-events-none"
-                        }
-                    >
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <MapOverlay>
-                                <SidebarTrigger
-                                    className={
-                                        "pointer-events-auto size-10 bg-primary text-primary-foreground"
-                                    }
-                                />
-                            </MapOverlay>
-                        </Suspense>
-                    </div>
+                {/* overlay */}
+                <div
+                    className={
+                        "absolute z-30 w-full h-full pointer-events-none"
+                    }
+                >
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <MapOverlay>
+                            <SidebarTrigger
+                                className={
+                                    "pointer-events-auto size-10 bg-primary text-primary-foreground"
+                                }
+                            />
+                        </MapOverlay>
+                    </Suspense>
                 </div>
-            </SidebarProvider>
+            </div>
+        </SidebarProvider>
     );
 }

@@ -4,6 +4,13 @@ import { getExperiencesDTO } from "@/data/dto/story-dto";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
+
+export async function ListExperiencesSkeleton() {
+    return (
+        <Skeleton className={"w-full h-[200px]"} />
+    )
+}
 
 export async function ListExperiencesDialog() {
     const experiences = await getExperiencesDTO();
