@@ -1,4 +1,4 @@
-import { UserWidget } from "@/app/components/sidebar/userWidget";
+import { UserWidget } from "@/app/components/sidebar/user-widget";
 import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
 import {
     Sidebar,
@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/sidebar";
 import { getExperiencesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";
-import { CurrentExperienceSelector } from "./currentExperienceSelector";
-import { AboutItemGroup } from "./sidebar-content/about-item-group";
-import { FeatureItemGroup } from "./sidebar-content/feature-item-group";
-import { TeamItemGroup } from "./sidebar-content/team-item-group";
+import { CurrentExperienceSelector } from "@/app/components/sidebar/current-experience-selector";
+import { FeatureItemGroup } from "@/app/components/sidebar/sidebar-content/feature-item-group";
+import { TeamItemGroup } from "@/app/components/sidebar/sidebar-content/team-item-group";
+import { AboutItemGroup } from "@/app/components/sidebar/sidebar-content/about-item-group";
 
 export async function AppSidebar({
     labSlug = "universe",

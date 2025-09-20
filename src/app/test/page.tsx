@@ -1,5 +1,5 @@
 import {getLabStoriesDTO} from "@/data/dto/story-dto";
-import {UserWidget} from "@/app/components/sidebar/userWidget";
+import {UserWidget} from "@/app/components/sidebar/user-widget";
 
 export default async function TestPage() {
     const stories = await getLabStoriesDTO("test");

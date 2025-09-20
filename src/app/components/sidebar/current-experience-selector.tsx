@@ -5,10 +5,10 @@ import React, { use } from "react";
 import {Button} from "@/components/ui/button";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandList,} from "@/components/ui/command";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
-import CurrentExperienceDescriptor from "./currentExperienceDescriptor";
-import {ExperiencesList} from "./experiencesList";
+import CurrentExperienceDescriptor from "./current-experience-descriptor";
 import {useAppSelector} from "@/lib/hooks";
 import {ExperienceData} from "@/types/api";
+import { ExperiencesList } from "@/app/components/sidebar/experiences-list";
 
 export function CurrentExperienceSelector({experiencesPromise}: { experiencesPromise: Promise<string> }) {
     const experiencesState = useAppSelector((state) => state.experiences);

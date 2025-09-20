@@ -1,5 +1,5 @@
 import StoreProvider from "@/app/StoreProvider";
-import { SidebarLayout } from "@/app/components/sidebar/sidebarWrapper";
+import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
