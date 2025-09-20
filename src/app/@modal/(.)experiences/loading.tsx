@@ -1,11 +1,10 @@
-import { DialogSkeleton } from "@/components/modal/dialogSkeleton";
-import { ListExperiencesSkeleton } from "@/components/modal/listExperiencesDialog";
-import { Skeleton } from "@/components/ui/skeleton";
+import {DialogSkeleton} from "@/app/components/modal/dialogSkeleton";
+import {ListExperiencesSkeleton} from "@/app/components/modal/listExperiencesDialog";
 
 export default function Loading() {
     return (
         <DialogSkeleton>
-            <ListExperiencesSkeleton />
+            <ListExperiencesSkeleton/>
         </DialogSkeleton>
     )
 }

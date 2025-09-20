@@ -1,5 +1,5 @@
-import { getLabStoriesDTO } from "@/data/dto/story-dto";
-import { UserWidget } from "@/components/sidebar/userWidget";
+import {getLabStoriesDTO} from "@/data/dto/story-dto";
+import {UserWidget} from "@/app/components/sidebar/userWidget";
 
 export default async function TestPage() {
     const stories = await getLabStoriesDTO("test");
@@ -7,7 +7,7 @@ export default async function TestPage() {
     return (
         <>
             <div className={"w-sm p-4"}>
-                <UserWidget />
+                <UserWidget/>
             </div>
             <div>
                 {stories.map((story, index) => (

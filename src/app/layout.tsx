@@ -1,4 +1,5 @@
 import StoreProvider from "@/app/StoreProvider";
+import { SidebarLayout } from "@/app/components/sidebar/sidebarWrapper";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
@@ -26,11 +27,7 @@ export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
-export default function RootLayout({
-    children,
-    modal,
-}: RootLayoutProps) {
-
+export default function RootLayout({ children, modal }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <body
@@ -40,9 +37,11 @@ export default function RootLayout({
                     <StoreProvider>
                         <TooltipProvider>
                             <main>
-                                <div>{modal}</div>
-                                <div>{children}</div>
-                                <Toaster />
+                                <SidebarLayout>
+                                    <div>{modal}</div>
+                                    <div className="flex grow">{children}</div>
+                                    <Toaster />
+                                </SidebarLayout>
                             </main>
                         </TooltipProvider>
                     </StoreProvider>

@@ -1,28 +1,21 @@
 "use client";
 
-import {
-    RAttributionControl,
-    RMap,
-    RMarker,
-    RNavigationControl,
-    useMap,
-} from "maplibre-react-components";
+import {RAttributionControl, RMap, RMarker, RNavigationControl, useMap,} from "maplibre-react-components";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { MapContextMenu } from "@/components/map/mapContextMenu";
-import React, { Suspense, use, useEffect, useRef, useState } from "react";
-import { type Map, MapLayerMouseEvent } from "maplibre-gl";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import CustomMarker from "@/components/map/customMarker";
-import { ExperienceData, StoryData } from "@/types/api";
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
-import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
+import {MapContextMenu} from "@/app/components/map/mapContextMenu";
+import React, {Suspense, useRef, useState} from "react";
+import {type Map, MapLayerMouseEvent} from "maplibre-gl";
+import {useAppDispatch, useAppSelector} from "@/lib/hooks";
+import {Spinner} from "@/components/ui/shadcn-io/spinner";
+import CustomMarker from "@/app/components/map/customMarker";
+import {ExperienceData, StoryData} from "@/types/api";
+import {setFlyPosition, setZoomLevel} from "@/lib/features/map/mapSlice";
 
 export default function MyMap({
-    stories,
-    experience,
-    labSlug,
-}: {
+                                  stories,
+                                  experience,
+                                  labSlug,
+                              }: {
     stories: StoryData[];
     experience: ExperienceData;
     labSlug: string;
@@ -48,7 +41,7 @@ export default function MyMap({
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
         e.preventDefault();
-        setCoords({ x: e.point.x, y: e.point.y });
+        setCoords({x: e.point.x, y: e.point.y});
         setPtrLngLat([e.lngLat.lng, e.lngLat.lat]);
         setCtxMenuOpen(true);
     };
@@ -90,7 +83,7 @@ export default function MyMap({
                                     "flex w-full h-full justify-center items-center"
                                 }
                             >
-                                <Spinner />
+                                <Spinner/>
                             </div>
                         }
                     >
@@ -100,11 +93,11 @@ export default function MyMap({
                                 latitude={story.latitude}
                                 key={index.toString()}
                             >
-                                <CustomMarker story={story} experienceSlug={labSlug} />
+                                <CustomMarker story={story} experienceSlug={labSlug}/>
                             </RMarker>
                         ))}
                     </Suspense>
-                    <ChildComponent />
+                    <ChildComponent/>
                     <RAttributionControl
                         position={"bottom-left"}
                     ></RAttributionControl>

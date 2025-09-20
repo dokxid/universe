@@ -1,14 +1,14 @@
 import "server-only";
-import { getCurrentUser, isUserActive, isUserMember } from "../auth";
-import { User } from "@workos-inc/node";
+import {isUserActive, isUserMember} from "../auth";
+import {User} from "@workos-inc/node";
 import dbConnect from "@/lib/mongodb/connections";
-import { StoryData } from "@/types/api";
-import { submitStoryFormSchema } from "@/types/formSchemas";
-import { z } from "zod";
-import { errorSanitizer } from "@/lib/utils/errorSanitizer";
-import { nanoid } from "nanoid";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { fromEnv } from "@aws-sdk/credential-provider-env";
+import {StoryData} from "@/types/api";
+import {submitStoryFormSchema} from "@/types/formSchemas";
+import {z} from "zod";
+import {errorSanitizer} from "@/lib/utils/errorSanitizer";
+import {nanoid} from "nanoid";
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {fromEnv} from "@aws-sdk/credential-provider-env";
 import Experience from "@/types/models/experiences";
 
 const s3Client = new S3Client({
@@ -29,7 +29,7 @@ export async function uploadFile(
         // Read all chunks from the stream
         const reader = bytes.getReader();
         while (true) {
-            const { done, value } = await reader.read();
+            const {done, value} = await reader.read();
             if (done) break;
             chunks.push(value);
         }
@@ -57,7 +57,7 @@ async function getExperiences() {
     try {
         await dbConnect();
         const experiences = await Experience.find({}).exec();
-        return experiences.map((exp) => exp.toJSON());
+        return JSON.stringify(experiences.map((exp) => exp.toJSON()));
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
@@ -74,7 +74,7 @@ async function getExperience(experienceSlug: string) {
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
-                (err instanceof Error ? err.message : "Unknown error")
+            (err instanceof Error ? err.message : "Unknown error")
         );
     }
 }
@@ -110,7 +110,7 @@ async function getLabStories(experienceSlug: string) {
 
 async function getPublicStories() {
     try {
-        const experiences = await getExperiences();
+        const experiences = JSON.parse(await getExperiences());
         const filteredStories = experiences
             .flatMap((experience) => experience.stories)
             .filter(
@@ -125,7 +125,7 @@ async function getPublicStories() {
 
 async function insertStory(storyToInsert: StoryData, experienceSlug: string) {
     dbConnect();
-    const experience = new Experience({ slug: experienceSlug });
+    const experience = new Experience({slug: experienceSlug});
     experience.stories.push(storyToInsert);
     await experience.save();
 }
@@ -152,7 +152,7 @@ export async function getLabStoriesDTO(experienceSlug: string) {
     return getLabStories(experienceSlug);
 }
 
-export async function getExperiencesDTO() {
+export async function getExperiencesDTO(): Promise<string> {
     return getExperiences();
 }
 
@@ -174,7 +174,7 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         Object.fromEntries(formData)
     );
     if (!validationResult.success) {
-        return { errors: z.treeifyError(validationResult.error) };
+        return {errors: z.treeifyError(validationResult.error)};
     }
 
     // prepare the data for insertion

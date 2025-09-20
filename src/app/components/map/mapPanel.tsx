@@ -1,23 +1,21 @@
 "use client";
 
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
-import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import {setCurrentExperience} from "@/lib/features/experiences/experiencesSlice";
+import {useAppDispatch} from "@/lib/hooks";
 import dynamic from "next/dynamic";
-import { Suspense, use } from "react";
-import { ExperienceData, StoryData } from "@/types/api";
-import { FlattenMaps } from "mongoose";
+import {Suspense} from "react";
+import {ExperienceData, StoryData} from "@/types/api";
 
 // make dynamic loading
-const MyMap = dynamic(() => import("@/components/map/map"), {
+const MyMap = dynamic(() => import("@/app/components/map/map"), {
     ssr: false,
 });
 
 export function MapPanel({
-    storiesSerialized,
-    experienceSerialized,
-    labSlug,
-}: {
+                             storiesSerialized,
+                             experienceSerialized,
+                             labSlug,
+                         }: {
     storiesSerialized: string; // JSON stringified StoryData[]
     experienceSerialized: string; // JSON stringified ExperienceData
     labSlug: string;

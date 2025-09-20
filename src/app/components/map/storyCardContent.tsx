@@ -1,4 +1,4 @@
-import S3Image from "@/components/s3Image";
+import S3Image from "@/app/components/s3Image";
 import {Interweave} from "interweave";
 
 export function StoryCardContent(props: { experience: string, fileName: string, title: string, content: string }) {

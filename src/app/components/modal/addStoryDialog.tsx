@@ -1,6 +1,6 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
 import {Dispatch, SetStateAction} from "react";
-import AddStoryForm from "@/components/form/addStoryForm";
+import AddStoryForm from "@/app/components/form/addStoryForm";
 
 export function AddStoryDialog({isOpen, onOpenChange}: {
     isOpen: boolean;

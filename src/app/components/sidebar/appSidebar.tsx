@@ -1,4 +1,5 @@
-import { UserWidget } from "@/components/sidebar/userWidget";
+import { CurrentExperienceSelectorSkeleton } from "@/app/components/sidebar/currentExperienceSelectorSkeleton";
+import { UserWidget } from "@/app/components/sidebar/userWidget";
 import {
     Sidebar,
     SidebarContent,
@@ -22,9 +23,10 @@ import {
     Users,
 } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import { CurrentExperienceSelector } from "./currentExperienceSelector";
 
-export async function AppSidebar({ labSlug }: { labSlug: string }) {
+export async function AppSidebar({ labSlug = "universe" }: { labSlug?: string }) {
     const feature_items = [
         {
             title: "Universe Map",
@@ -89,16 +91,22 @@ export async function AppSidebar({ labSlug }: { labSlug: string }) {
         },
     ];
 
-    const experiencePromise = getExperiencesDTO();
+    const experiencesPromise = getExperiencesDTO();
 
     return (
         <Sidebar>
             {/* sidebar header */}
-            {labSlug == "universe" && (
+            {labSlug === "universe" && (
                 <SidebarHeader className="mt-3">
                     <SidebarMenu>
                         <SidebarMenuItem>
-                            <CurrentExperienceSelector />
+                            <Suspense
+                                fallback={<CurrentExperienceSelectorSkeleton />}
+                            >
+                                <CurrentExperienceSelector
+                                    experiencesPromise={experiencesPromise}
+                                />
+                            </Suspense>
                         </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarHeader>

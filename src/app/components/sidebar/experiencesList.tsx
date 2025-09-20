@@ -1,5 +1,3 @@
-"use client";
-
 import { CommandItem } from "@/components/ui/command";
 import { useExperiences } from "@/lib/data_hooks/experiencesHook";
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
@@ -8,23 +6,23 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { ExperienceData } from "@/types/api";
 import { CheckIcon } from "lucide-react";
-import { Spinner } from "../ui/shadcn-io/spinner";
 
 export function ExperiencesList({
     setOpen,
+    experiences
 }: {
     setOpen: (open: boolean) => void;
+    experiences: ExperienceData[];
 }) {
     const dispatch = useAppDispatch();
     const experiencesState = useAppSelector((state) => state.experiences);
-    const { experiences, isLoading } = useExperiences();
-    if (isLoading) return <Spinner />;
+    console.log("ExperiencesList render with experiences:", experiences);
     return experiences.map((exp: ExperienceData, index: number) => (
         <CommandItem
             key={index}
             value={exp.slug}
             onSelect={(selectedValue) => {
-                if (selectedValue === experiencesState.currentExperience) {
+                if (selectedValue == experiencesState.currentExperience) {
                     return;
                 }
                 dispatch(setCurrentExperience(selectedValue));
@@ -41,7 +39,7 @@ export function ExperiencesList({
                         : "opacity-0"
                 )}
             />
-            {exp.title}
+            {exp.slug + " " + exp.title}
         </CommandItem>
     ));
 }
