@@ -1,23 +1,30 @@
 "use client";
 
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {useAppDispatch, useAppSelector} from "@/lib/hooks";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import React from "react";
-import {TagPicker} from "@/app/components/form/tagPicker";
-import {TiptapEditor} from "@/app/components/form/tiptapEditor";
-import {useAuth} from "@workos-inc/authkit-nextjs/components";
-import {submitStory} from "@/actions/submitStory";
-import {Checkbox} from "../../../components/ui/checkbox";
-import {Label} from "../../../components/ui/label";
-import {submitStoryFormSchema} from "@/types/formSchemas";
+import { TagPicker } from "@/app/components/form/tag-picker";
+import { TiptapEditor } from "@/app/components/form/tiptap-editor";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { submitStory } from "@/actions/submitStory";
+import { Checkbox } from "../../../components/ui/checkbox";
+import { Label } from "../../../components/ui/label";
+import { submitStoryFormSchema } from "@/types/formSchemas";
 
 export default function AddStoryForm() {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const addStoryDialogue = useAppSelector((state) => state.addStoryDialog);
     const experiencesState = useAppSelector((state) => state.experiences);
     const dispatch = useAppDispatch();
@@ -92,9 +99,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="title"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Story title
                             </FormLabel>
@@ -110,7 +116,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -118,9 +124,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="content"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Description
                             </FormLabel>
@@ -130,16 +135,15 @@ export default function AddStoryForm() {
                                     <TiptapEditor {...field}></TiptapEditor>
                                 </div>
                             </FormControl>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
                 <FormField
                     control={form.control}
                     name="year"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Year
                             </FormLabel>
@@ -155,7 +159,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -163,8 +167,7 @@ export default function AddStoryForm() {
                 <FormField
                     name="featuredImage"
                     render={() => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Featured picture
                             </FormLabel>
@@ -177,7 +180,7 @@ export default function AddStoryForm() {
                                         />
                                     </div>
                                 </FormControl>
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -185,9 +188,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="tags"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormControl>
                                 <TagPicker {...field}></TagPicker>
                             </FormControl>
@@ -197,9 +199,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="longitude"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Longitude
                             </FormLabel>
@@ -211,7 +212,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -219,9 +220,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="latitude"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 Latitude
                             </FormLabel>
@@ -233,7 +233,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -241,9 +241,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="draft"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <div className="w-full">
                                 <FormControl>
                                     <div className="relative w-full">
@@ -259,7 +258,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}
@@ -267,9 +266,8 @@ export default function AddStoryForm() {
                 <FormField
                     control={form.control}
                     name="experience"
-                    render={({field}) => (
-                        <FormItem
-                            className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                    render={({ field }) => (
+                        <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                             <FormLabel className="flex shrink-0">
                                 in experience:
                             </FormLabel>
@@ -286,7 +284,7 @@ export default function AddStoryForm() {
                                     </div>
                                 </FormControl>
 
-                                <FormMessage/>
+                                <FormMessage />
                             </div>
                         </FormItem>
                     )}

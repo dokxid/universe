@@ -1,4 +1,4 @@
-import AddStoryForm from "@/app/components/form/addStoryForm";
+import AddStoryForm from "@/app/components/form/add-story-form";
 import { Dialog } from "@/app/components/modal/dialog";
 
 export default function Page() {
