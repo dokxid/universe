@@ -62,6 +62,7 @@ export const config = {
         "/addstory",
         "/settings",
         "/experiences",
+        "/map",
         "/stories/create",
     ],
 };

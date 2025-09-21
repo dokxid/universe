@@ -55,9 +55,9 @@ export function ItemGroup({
                                         key={dropdownItem.title}
                                         asChild
                                     >
-                                        <Link href={dropdownItem.href}>
+                                        <a href={dropdownItem.href}>
                                             <span>{dropdownItem.title}</span>
-                                        </Link>
+                                        </a>
                                     </DropdownMenuItem>
                                 ))}
                             </DropdownMenuContent>

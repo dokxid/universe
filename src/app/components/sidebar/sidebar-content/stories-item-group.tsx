@@ -7,7 +7,7 @@ const storiesItems: SidebarItemGroup = [
         title: "Editor Dashboard",
         href: "/editor-dashboard",
         icon: LayoutDashboard,
-        dropdownItems: [{ title: "Add Story", href: "/add-story" }],
+        dropdownItems: [{ title: "Add Story", href: "/stories/create" }],
     },
     {
         title: "Manage Stories",
@@ -16,7 +16,7 @@ const storiesItems: SidebarItemGroup = [
     },
     {
         title: "Elevation Requests",
-        href: "/add-story",
+        href: "/stories/elevation-requests",
         icon: ListCheck,
     },
 ];

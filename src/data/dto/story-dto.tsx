@@ -1,5 +1,4 @@
 import dbConnect from "@/lib/mongodb/connections";
-import { errorSanitizer } from "@/lib/utils/errorSanitizer";
 import { StoryData } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/formSchemas";
 import Experience from "@/types/models/experiences";
@@ -10,7 +9,6 @@ import { nanoid } from "nanoid";
 import "server-only";
 import { z } from "zod";
 import { isUserActive, isUserMember } from "../auth";
-import { th } from "zod/v4/locales";
 
 const s3Client = new S3Client({
     region: process.env.AWS_REGION,
@@ -112,8 +110,9 @@ async function getLabStories(experienceSlug: string) {
 async function getPublicStories() {
     try {
         const experiences = JSON.parse(await getExperiences());
-        const filteredStories = experiences
+        const flatStories = experiences
             .flatMap((experience) => experience.stories)
+        const filteredStories = flatStories
             .filter(
                 (story: { draft: any; published: any }) =>
                     !story.draft && story.published
@@ -187,7 +186,7 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         tags: JSON.parse(rawData.tags as string),
         author: rawData.author as string,
         experience: rawData.experience as string,
-        draft: Boolean(rawData.draft),
+        draft: rawData.draft === "true",
     };
     const file = formData.get("file") as File;
     if (!file) {
@@ -216,9 +215,10 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         draft: data.draft,
 
         // hardcoded stuff
-        visible_universe: false,
-        published: false,
+        visible_universe: true,
+        published: true,
     };
+    console.log(JSON.stringify(storyToInsert));
 
     try {
         // Upload the file and insert the story

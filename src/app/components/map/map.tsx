@@ -32,6 +32,7 @@ export default function MyMap({
     const mapDOM = useRef(null);
     const mapState = useAppSelector((state) => state.map);
     const dispatch = useAppDispatch();
+    console.log(JSON.stringify(stories));
 
     function ChildComponent() {
         // This component is inside RMap.

@@ -27,8 +27,6 @@ import { z } from "zod";
 export default function AddStoryForm() {
     const { user } = useAuth();
     const addStoryDialogue = useAppSelector((state) => state.addStoryDialog);
-    const experiencesState = useAppSelector((state) => state.experiences);
-    const dispatch = useAppDispatch();
 
     const [featuredImage, setFeaturedImage] = React.useState<File | null>(null);
 
@@ -97,7 +95,7 @@ export default function AddStoryForm() {
     };
 
     return (
-        <div className={"w-full overflow-auto"}>
+        <div className={"max-w-xl overflow-auto"}>
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit, (e) => {

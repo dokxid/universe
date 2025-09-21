@@ -27,7 +27,7 @@ export async function AppSidebar({
         <Sidebar variant="inset">
             {/* sidebar header */}
             {labSlug === "universe" && (
-                <SidebarHeader className="mt-3">
+                <SidebarHeader className="">
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <Suspense

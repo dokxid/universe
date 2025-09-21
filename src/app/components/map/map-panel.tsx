@@ -1,5 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { ExperienceData, StoryData } from "@/types/api";
@@ -29,12 +33,14 @@ export function MapPanel({
     }, []);
 
     return (
-        <Suspense fallback={<div>loading stories...</div>}>
-            <MyMap
-                stories={stories}
-                experience={experience}
-                labSlug={labSlug}
-            ></MyMap>
-        </Suspense>
+        <>
+            <Suspense fallback={<div>loading stories...</div>}>
+                <MyMap
+                    stories={stories}
+                    experience={experience}
+                    labSlug={labSlug}
+                ></MyMap>
+            </Suspense>
+        </>
     );
 }
