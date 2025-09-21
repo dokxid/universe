@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { ExperienceData } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import React, { use } from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
@@ -36,7 +36,7 @@ export function CurrentExperienceSelector({
         (exp) => exp.slug === (searchParams.get("exp") ?? "universe")
     );
     if (!experience) {
-        throw new Error("No experience found.");
+        redirect("/universe/map");
     }
     return (
         <Popover open={open} onOpenChange={setOpen}>

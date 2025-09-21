@@ -29,10 +29,16 @@ export default function MyMap({
 }) {
     const searchParams = useSearchParams();
     const experience = useMemo(() => {
-        return experiences.find(
+        const exp = experiences.find(
             (exp) => exp.slug === (searchParams.get("exp") ?? "universe")
         );
-    }, [searchParams, experiences]);
+        if (!exp) {
+            throw new Error(
+                "Experience not found, not even fallback 'universe'"
+            );
+        }
+        return exp;
+    }, [searchParams.get("exp")]);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
@@ -61,7 +67,7 @@ export default function MyMap({
     };
 
     useEffect(() => {
-        if (!experience) return;
+        if (experience.slug === "universe") return;
         dispatch(setFlyPosition(experience.center.coordinates));
         dispatch(setZoomLevel(experience.initial_zoom));
     }, [experience]);

@@ -8,10 +8,13 @@ import { Suspense } from "react";
 
 export default async function Map({
     params,
+    searchParams,
 }: {
     params: Promise<{ slug: string }>;
+    searchParams: { [key: string]: string | string[] | undefined };
 }) {
     const { slug } = await params;
+    const experienceSearchParam = (await searchParams).exp;
     const experienceSlug = slug ?? "universe";
     const storiesPromise = getPublicStoriesDTO();
     const experiencesPromise = getExperiencesDTO();
@@ -40,7 +43,10 @@ export default async function Map({
                     {/* overlay */}
                     <div className="absolute z-30 w-full h-full pointer-events-none">
                         <Suspense fallback={<div>Loading...</div>}>
-                            <MapOverlay slug={experienceSlug} />
+                            <MapOverlay
+                                slug={experienceSlug}
+                                experienceSearchParam={experienceSearchParam}
+                            />
                         </Suspense>
                     </div>
                 </div>
