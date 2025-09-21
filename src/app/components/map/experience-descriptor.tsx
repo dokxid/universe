@@ -6,27 +6,19 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useAppSelector } from "@/lib/hooks";
 import { ExperienceData } from "@/types/models/experiences";
 import { X } from "lucide-react";
 
 type ExperienceDescriptorProps = {
     setOpen: (open: boolean) => void;
-    experiences: ExperienceData[];
+    experience: ExperienceData;
 };
 
 export function ExperienceDescriptor({
     setOpen,
-    experiences,
+    experience,
 }: ExperienceDescriptorProps) {
-    const experiencesState = useAppSelector((state) => state.experiences);
-    const currentExperience = experiences.find(
-        (exp) => exp.slug === experiencesState.currentExperience
-    ) || {
-        title: "No title found",
-        subtitle: "No subtitle found",
-        description: "<p>No description found</p>",
-    };
+    const currentExperience = experience;
 
     return (
         <ResizablePanelGroup

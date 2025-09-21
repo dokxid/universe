@@ -17,17 +17,13 @@ import {
 import { getExperiencesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";
 
-export async function AppSidebar({
-    labSlug = "universe",
-}: {
-    labSlug?: string;
-}) {
+export async function AppSidebar({ slug = "universe" }: { slug?: string }) {
     const experiencesPromise = getExperiencesDTO();
 
     return (
         <Sidebar variant="inset">
             {/* sidebar header */}
-            {labSlug === "universe" && (
+            {slug === "universe" && (
                 <SidebarHeader className="">
                     <SidebarMenu>
                         <SidebarMenuItem>

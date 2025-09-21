@@ -1,4 +1,4 @@
 import { redirect } from "next/navigation";
-export default async function Home({ params }) {
-    redirect("/map");
+export default async function Index({ params }) {
+    redirect("/universe/map");
 }

@@ -3,34 +3,35 @@
 import { MapOverlay } from "@/app/components/map/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { getExperienceDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
+import { getExperiencesDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";
 
-export default async function Home({
+export default async function Map({
     params,
 }: {
-    params: { labSlug?: Promise<string> };
+    params: Promise<{ slug: string }>;
 }) {
-    const experienceSlug = (await params.labSlug) ?? "universe";
+    const { slug } = await params;
+    const experienceSlug = slug ?? "universe";
     const storiesPromise = getPublicStoriesDTO();
-    const experiencePromise = getExperienceDTO(experienceSlug);
+    const experiencesPromise = getExperiencesDTO();
 
-    const [storiesSerialized, experienceSerialized] = await Promise.all([
+    const [storiesSerialized, experiencesSerialized] = await Promise.all([
         storiesPromise,
-        experiencePromise,
+        experiencesPromise,
     ]);
 
     return (
         <div className="w-screen h-screen flex">
-            <AppSidebar labSlug={experienceSlug} />
+            <AppSidebar slug={experienceSlug} />
             <div className="flex grow">
                 <div className="grow relative">
                     {/* map */}
                     <div className="absolute z-20 w-full h-full">
                         <Suspense fallback={<div>Loading...</div>}>
                             <MapPanel
-                                labSlug={experienceSlug}
-                                experienceSerialized={experienceSerialized}
+                                experienceSlug={experienceSlug}
+                                experiencesSerialized={experiencesSerialized}
                                 storiesSerialized={storiesSerialized}
                             />
                         </Suspense>
@@ -39,7 +40,7 @@ export default async function Home({
                     {/* overlay */}
                     <div className="absolute z-30 w-full h-full pointer-events-none">
                         <Suspense fallback={<div>Loading...</div>}>
-                            <MapOverlay></MapOverlay>
+                            <MapOverlay slug={experienceSlug} />
                         </Suspense>
                     </div>
                 </div>

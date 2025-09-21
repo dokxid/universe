@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { ExperienceData } from "@/types/models/experiences";
 import { ArrowLeftToLine, ChevronsDownUp } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useParams } from "next/navigation";
 import React from "react";
 
 const Geocoder = dynamic(
@@ -24,16 +23,25 @@ const geocoderTheme = {
     variables: {},
 };
 
-export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
-    const labSlug = useParams<{ labSlug: string }>().labSlug || "universe";
+export function VerticalWidgetHolder({
+    experience,
+    slug,
+}: {
+    experience: string;
+    slug: string;
+}) {
     const experiencesState = useAppSelector((state) => state.experiences);
     const dispatch = useAppDispatch();
     const [openDescriptor, setOpenDescriptor] = React.useState(true);
-    const experiencesParsed: ExperienceData[] = JSON.parse(experiences);
+    const experienceParsed: ExperienceData = JSON.parse(experience);
+
     return (
         <>
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
-                <SidebarTrigger variant={"secondary"} className="pointer-events-auto size-10" />
+                <SidebarTrigger
+                    variant={"secondary"}
+                    className="pointer-events-auto size-10"
+                />
                 {experiencesState.currentExperience == "universe" && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
@@ -44,7 +52,7 @@ export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
                         theme={geocoderTheme}
                     />
                 )}
-                {labSlug == "universe" &&
+                {slug == "universe" &&
                     experiencesState.currentExperience != "universe" && (
                         <Button
                             onClick={() => {
@@ -83,7 +91,7 @@ export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
                 openDescriptor && (
                     <ExperienceDescriptor
                         setOpen={setOpenDescriptor}
-                        experiences={experiencesParsed}
+                        experience={experienceParsed}
                     />
                 )}
         </>

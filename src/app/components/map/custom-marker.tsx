@@ -1,4 +1,4 @@
-import { StoryCardContent } from "@/app/components/map/story-card-content";
+import { StoryCardContent } from "@/app/components/map/map-overlay/story-card-content";
 import {
     HoverCard,
     HoverCardContent,

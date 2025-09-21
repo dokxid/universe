@@ -15,41 +15,41 @@ import {
     RNavigationControl,
     useMap,
 } from "maplibre-react-components";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 export default function MyMap({
     stories,
-    experience,
-    labSlug,
+    experiences,
+    experienceSlug,
 }: {
     stories: StoryData[];
-    experience: ExperienceData;
-    labSlug: string;
+    experiences: ExperienceData[];
+    experienceSlug: string;
 }) {
+    const searchParams = useSearchParams();
+    const experience = useMemo(() => {
+        return experiences.find(
+            (exp) => exp.slug === (searchParams.get("exp") ?? "universe")
+        );
+    }, [searchParams, experiences]);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const mapDOM = useRef(null);
     const mapState = useAppSelector((state) => state.map);
     const dispatch = useAppDispatch();
-    console.log(JSON.stringify(stories));
 
     function ChildComponent() {
         // This component is inside RMap.
         // your MapLibre map instance is always defined and cannot be null.
         const map: Map = useMap();
         useEffect(() => {
-            if (!map) return;
-            try {
-                map.flyTo({
-                    center: mapState.flyPosition,
-                    zoom: mapState.zoomLevel,
-                });
-            } catch (err) {
-                // ignore map errors during rapid updates
-            }
-        }, [map, mapState.flyPosition, mapState.zoomLevel]);
-
+            map.flyTo({
+                center: mapState.flyPosition,
+                zoom: mapState.zoomLevel,
+            });
+        }, [mapState.flyPosition, mapState.zoomLevel]);
         return null;
     }
 
@@ -60,12 +60,11 @@ export default function MyMap({
         setCtxMenuOpen(true);
     };
 
-    // fly to experience center after fetching (run after render)
     useEffect(() => {
         if (!experience) return;
         dispatch(setFlyPosition(experience.center.coordinates));
         dispatch(setZoomLevel(experience.initial_zoom));
-    }, [dispatch, experience]);
+    }, [experience]);
 
     return (
         <>
@@ -88,7 +87,7 @@ export default function MyMap({
                         margin: "0",
                         width: "100%",
                         height: "100%",
-                        backgroundColor: "#222",
+                        backgroundColor: "var(--primary)",
                     }}
                     onContextMenu={handleContextMenu}
                     ref={mapDOM}
@@ -108,11 +107,11 @@ export default function MyMap({
                             <RMarker
                                 longitude={story.longitude}
                                 latitude={story.latitude}
-                                key={index.toString()}
+                                key={index}
                             >
                                 <CustomMarker
                                     story={story}
-                                    experienceSlug={labSlug}
+                                    experienceSlug={experienceSlug}
                                 />
                             </RMarker>
                         ))}

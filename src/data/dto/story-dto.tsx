@@ -6,6 +6,7 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 import { User } from "@workos-inc/node";
 import { nanoid } from "nanoid";
+import { cache } from "react";
 import "server-only";
 import { z } from "zod";
 import { isUserActive, isUserMember } from "../auth";
@@ -110,13 +111,13 @@ async function getLabStories(experienceSlug: string) {
 async function getPublicStories() {
     try {
         const experiences = JSON.parse(await getExperiences());
-        const flatStories = experiences
-            .flatMap((experience) => experience.stories)
-        const filteredStories = flatStories
-            .filter(
-                (story: { draft: any; published: any }) =>
-                    !story.draft && story.published
-            );
+        const flatStories = experiences.flatMap(
+            (experience) => experience.stories
+        );
+        const filteredStories = flatStories.filter(
+            (story: { draft: any; published: any }) =>
+                !story.draft && story.published
+        );
         return JSON.stringify(filteredStories);
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
@@ -158,9 +159,9 @@ export async function getLabStoriesDTO(experienceSlug: string) {
     return getLabStories(experienceSlug);
 }
 
-export async function getExperiencesDTO(): Promise<string> {
+export const getExperiencesDTO = cache(async (): Promise<string> => {
     return getExperiences();
-}
+});
 
 export async function getExperienceDTO(experienceSlug: string) {
     return getExperience(experienceSlug);

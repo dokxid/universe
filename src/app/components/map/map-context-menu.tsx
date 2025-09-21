@@ -7,11 +7,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { setLngLat } from "@/lib/features/dialogue/addStoryDialogSlice";
 import { setFlyPosition } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
 interface MapContextMenuProps {

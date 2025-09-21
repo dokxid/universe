@@ -5,7 +5,7 @@ import { ItemGroup } from "./item-group";
 const featureItems: SidebarItemGroup = [
     {
         title: "Universe Map",
-        href: "/map",
+        href: "/universe/map",
         icon: Map,
     },
     {

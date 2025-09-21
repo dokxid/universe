@@ -9,7 +9,7 @@ export default async function middleware(req: any, event: any) {
     let response = await authkitMiddleware({
         middlewareAuth: {
             enabled: true,
-            unauthenticatedPaths: ["/", "/test"],
+            unauthenticatedPaths: ["/:slug/map"],
         },
     })(req, event);
 
@@ -54,15 +54,15 @@ export default async function middleware(req: any, event: any) {
 // Match against pages that require authentication
 export const config = {
     matcher: [
-        "/",
-        "/account/:page*",
-        "/images/:page*",
-        "/lab/:page*",
-        "/test",
-        "/addstory",
-        "/settings",
-        "/experiences",
-        "/map",
-        "/stories/create",
+        "/:slug/",
+        "/:slug/account/:page*",
+        "/:slug/images/:page*",
+        "/:slug/lab/:page*",
+        "/:slug/test",
+        "/:slug/addstory",
+        "/:slug/settings",
+        "/:slug/experiences",
+        "/:slug/map",
+        "/:slug/stories/create",
     ],
 };
