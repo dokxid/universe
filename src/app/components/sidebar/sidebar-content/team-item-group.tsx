@@ -1,9 +1,8 @@
-import { SidebarGroupAction } from "@/components/ui/sidebar";
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { Link, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { ItemGroup } from "./item-group";
 
-const teamItems: SidebarItemGroup = [
+const adminItems: SidebarItemGroup = [
     {
         title: "Manage Team",
         href: "/add-story",
@@ -13,7 +12,6 @@ const teamItems: SidebarItemGroup = [
 
 export function TeamItemGroup() {
     return (
-        <ItemGroup items={teamItems} groupLabel="Team">
-        </ItemGroup>
+        <ItemGroup items={adminItems} groupLabel="Admin Features"></ItemGroup>
     );
 }

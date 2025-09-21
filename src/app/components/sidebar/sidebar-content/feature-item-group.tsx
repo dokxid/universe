@@ -1,5 +1,5 @@
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { BookOpenText, Building2, Map, SettingsIcon } from "lucide-react";
+import { BookOpenText, Building2, List, Map, SettingsIcon } from "lucide-react";
 import { ItemGroup } from "./item-group";
 
 const featureItems: SidebarItemGroup = [
@@ -23,10 +23,13 @@ const featureItems: SidebarItemGroup = [
         href: "/settings",
         icon: SettingsIcon,
     },
+    {
+        title: "Story List",
+        href: "/stories",
+        icon: List,
+    },
 ];
 
 export function FeatureItemGroup() {
-    return (
-        <ItemGroup items={featureItems} groupLabel="Features"></ItemGroup>
-    )
+    return <ItemGroup items={featureItems} groupLabel="Features"></ItemGroup>;
 }
