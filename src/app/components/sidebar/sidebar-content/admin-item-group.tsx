@@ -1,12 +1,17 @@
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { Users } from "lucide-react";
+import { Settings, Users } from "lucide-react";
 import { ItemGroup } from "./item-group";
 
 const adminItems: SidebarItemGroup = [
     {
-        title: "Manage Team",
-        href: "/add-story",
+        title: "Manage Members",
+        href: "/members/manage",
         icon: Users,
+    },
+    {
+        title: "Experience Settings",
+        href: "/experience/manage",
+        icon: Settings,
     },
 ];
 
