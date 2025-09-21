@@ -1,6 +1,7 @@
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { CircleQuestionMark } from "lucide-react";
+import { CircleQuestionMark, Link } from "lucide-react";
 import { ItemGroup } from "./item-group";
+import { SidebarGroupAction } from "@/components/ui/sidebar";
 
 const aboutItems: SidebarItemGroup = [
     {
@@ -26,5 +27,8 @@ const aboutItems: SidebarItemGroup = [
 ];
 
 export function AboutItemGroup() {
-    return <ItemGroup items={aboutItems} />;
+    return (
+        <ItemGroup items={aboutItems} groupLabel="About">
+        </ItemGroup>
+    );
 }

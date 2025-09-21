@@ -1,5 +1,6 @@
+import { SidebarGroupAction } from "@/components/ui/sidebar";
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { Book, ListChecks, Users } from "lucide-react";
+import { Link, Users } from "lucide-react";
 import { ItemGroup } from "./item-group";
 
 const teamItems: SidebarItemGroup = [
@@ -8,18 +9,11 @@ const teamItems: SidebarItemGroup = [
         href: "/add-story",
         icon: Users,
     },
-    {
-        title: "Manage Stories",
-        href: "/add-story",
-        icon: Book,
-    },
-    {
-        title: "Elevation Requests",
-        href: "/add-story",
-        icon: ListChecks,
-    },
 ];
 
 export function TeamItemGroup() {
-    return <ItemGroup items={teamItems} />;
+    return (
+        <ItemGroup items={teamItems} groupLabel="Team">
+        </ItemGroup>
+    );
 }

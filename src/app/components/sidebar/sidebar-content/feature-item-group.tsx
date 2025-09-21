@@ -26,5 +26,7 @@ const featureItems: SidebarItemGroup = [
 ];
 
 export function FeatureItemGroup() {
-    return <ItemGroup items={featureItems} />;
+    return (
+        <ItemGroup items={featureItems} groupLabel="Features"></ItemGroup>
+    )
 }

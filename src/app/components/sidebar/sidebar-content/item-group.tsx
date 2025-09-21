@@ -1,21 +1,38 @@
-import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenuBadge,
+    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { ChevronRightIcon } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export function ItemGroup({ items }: { items: SidebarItemGroup }) {
+export function ItemGroup({
+    children,
+    items,
+    groupLabel,
+}: {
+    children?: React.ReactNode;
+    items: SidebarItemGroup;
+    groupLabel: string;
+}) {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Team</SidebarGroupLabel>
+            <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
+            {children}
             {items.map((item) => (
-                <SidebarMenuItem key={item.title} className={ "flex flex-row justify-between" }>
+                <SidebarMenuItem
+                    key={item.title}
+                    className={"flex flex-row justify-between items-center"}
+                >
                     <SidebarMenuButton asChild>
                         <Link
                             href={item.href}
@@ -25,11 +42,27 @@ export function ItemGroup({ items }: { items: SidebarItemGroup }) {
                             <span>{item.title}</span>
                         </Link>
                     </SidebarMenuButton>
-                    <Button variant={"ghost"} size={"icon"} className={"p-0"}>
-                        <a href={item.href}>
-                            <ChevronRightIcon size="16" />
-                        </a>
-                    </Button>
+                    {item.dropdownItems && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <SidebarMenuAction>
+                                    <MoreHorizontal />
+                                </SidebarMenuAction>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent side="right" align="start">
+                                {item.dropdownItems.map((dropdownItem) => (
+                                    <DropdownMenuItem
+                                        key={dropdownItem.title}
+                                        asChild
+                                    >
+                                        <Link href={dropdownItem.href}>
+                                            <span>{dropdownItem.title}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </SidebarMenuItem>
             ))}
         </SidebarGroup>
