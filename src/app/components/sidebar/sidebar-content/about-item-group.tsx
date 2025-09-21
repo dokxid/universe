@@ -1,34 +1,25 @@
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { CircleQuestionMark, Link } from "lucide-react";
+import { CircleQuestionMark } from "lucide-react";
 import { ItemGroup } from "./item-group";
-import { SidebarGroupAction } from "@/components/ui/sidebar";
 
 const aboutItems: SidebarItemGroup = [
     {
         title: "About Universe",
-        href: "/add-story",
+        href: "/about#about-universe",
         icon: CircleQuestionMark,
     },
     {
         title: "How to use",
-        href: "/add-story",
-        icon: CircleQuestionMark,
-    },
-    {
-        title: "Heritage Lab CIE Website",
-        href: "/add-story",
+        href: "/about#how-to-use",
         icon: CircleQuestionMark,
     },
     {
         title: "Copyright Notices",
-        href: "/add-story",
+        href: "/about#copyright-notices",
         icon: CircleQuestionMark,
     },
 ];
 
 export function AboutItemGroup() {
-    return (
-        <ItemGroup items={aboutItems} groupLabel="About">
-        </ItemGroup>
-    );
+    return <ItemGroup items={aboutItems} groupLabel="About"></ItemGroup>;
 }
