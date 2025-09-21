@@ -1,11 +1,6 @@
-import {clientPromise} from "@/lib/mongodb/connections";
-
+import { getExperiencesDTO } from "@/data/dto/story-dto";
 
 export async function GET() {
-    const client = await clientPromise;
-    const db = client.db("hl-universe");
-    const collection = db.collection("experiences");
-
-    const experiences = await collection.find({}).toArray();
-    return Response.json(experiences)
+    const experiences = JSON.parse(await getExperiencesDTO())
+    return Response.json(experiences);
 }

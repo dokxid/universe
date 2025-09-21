@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+certificates
 
 # production
 /build
@@ -25,6 +26,9 @@
 *.pem
 yarn.lock
 package-lock.json
+
+# jetbrains
+/.idea
 
 # debug
 npm-debug.log*
@@ -42,4 +46,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-certificates
+# mongodb playgrounds
+*.mongodb.js

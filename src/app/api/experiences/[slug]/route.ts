@@ -1,12 +1,12 @@
-import {clientPromise} from "@/lib/mongodb/connections";
-import type {NextApiRequest, NextApiResponse} from 'next'
+import { getExperienceDTO } from "@/data/dto/story-dto";
+import { NextRequest } from "next/server";
 
+export async function GET(
+    req: NextRequest,
+    ctx: RouteContext<"/api/experiences/[slug]">
+) {
+    const { slug } = await ctx.params;
+    const experience = await getExperienceDTO(slug);
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-    const {slug} = req.query
-    const client = await clientPromise;
-    const db = client.db("hl-universe");
-    const experience = await db.collection("experiences").findOne({slug: slug});
-
-    res.status(200).json(experience);
+    return Response.json(experience);
 }

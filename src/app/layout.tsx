@@ -1,44 +1,49 @@
-import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
-import "./globals.css";
+import { ThemeProvider } from "@/app/components/providers/theme-provider";
+import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
+import StoreProvider from "@/app/store-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
+import type { Metadata } from "next";
 import React from "react";
-import StoreProvider from "@/app/StoreProvider"
-import {AuthKitProvider} from "@workos-inc/authkit-nextjs/components";
-import {Toaster} from "sonner";
-import {TooltipProvider} from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
+import "./globals.css";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
+type RootLayoutProps = {
+    children: React.ReactNode;
+    modal?: React.ReactNode;
+};
 
 export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
-
-export default function RootLayout({children,}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({ children, modal }: RootLayoutProps) {
     return (
-        <AuthKitProvider>
-            <StoreProvider>
-                <TooltipProvider>
-                    <html lang="en">
-                    <body
-                        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-                    >
-                    {children}
-                    <Toaster/>
-                    </body>
-                    </html>
-                </TooltipProvider>
-            </StoreProvider>
-        </AuthKitProvider>
+        <html lang="en" suppressHydrationWarning>
+            <body className={"antialiased"}>
+                <AuthKitProvider>
+                    <StoreProvider>
+                        <TooltipProvider>
+                            <main>
+                                <ThemeProvider
+                                    attribute="class"
+                                    defaultTheme="system"
+                                    enableSystem
+                                    disableTransitionOnChange
+                                >
+                                    <SidebarLayout>
+                                        <div>{modal}</div>
+                                        <div className="flex grow">
+                                            {children}
+                                        </div>
+                                        <Toaster />
+                                    </SidebarLayout>
+                                </ThemeProvider>
+                            </main>
+                        </TooltipProvider>
+                    </StoreProvider>
+                </AuthKitProvider>
+            </body>
+        </html>
     );
 }

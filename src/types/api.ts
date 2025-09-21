@@ -1,37 +1,36 @@
-import {ObjectId} from "mongodb";
-
 type ExperienceData = {
-    _id: ObjectId,
-    slug: string,
-    center: { coordinates: [number, number] },
-    initial_zoom: number,
-    title: string,
-    subtitle: string,
-    description: string,
-    featured_image: string,
-}
+    slug: string;
+    center: { coordinates: [number, number] };
+    initial_zoom: number;
+    title: string;
+    subtitle: string;
+    description: string;
+    featured_image: string;
+    stories: StoryData[];
+    organization_id: string;
+};
 
 type TagData = {
-    _id: ObjectId,
-    name: string,
-    unesco_tag: boolean,
-}
+    name: string;
+    unesco_tag: boolean;
+};
 
 type StoryData = {
-    _id: ObjectId,
-    author: string,
-    content: string,
-    title: string,
-    latitude: number,
-    longitude: number,
-    tags: string[],
-    year: number,
-    featuredImage: string,
-    experience: string,
-}
+    author: string;
+    content: string;
+    draft: boolean;
+    published: boolean;
+    title: string;
+    latitude: number;
+    longitude: number;
+    tags: string[];
+    year: number;
+    featured_image_url: string;
+    visible_universe: boolean;
+};
 
 type ImageData = {
-    url: string,
-}
+    url: string;
+};
 
-export type {ExperienceData, TagData, StoryData, ImageData}
+export type { ExperienceData, ImageData, StoryData, TagData };

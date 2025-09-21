@@ -1,0 +1,131 @@
+"use client";
+
+import CustomMarker from "@/app/components/map/custom-marker";
+import { MapContextMenu } from "@/app/components/map/map-context-menu";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { ExperienceData, StoryData } from "@/types/api";
+import { type Map, MapLayerMouseEvent } from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+import {
+    RAttributionControl,
+    RMap,
+    RMarker,
+    RNavigationControl,
+    useMap,
+} from "maplibre-react-components";
+import { Suspense, useEffect, useRef, useState } from "react";
+
+export default function MyMap({
+    stories,
+    experience,
+    labSlug,
+}: {
+    stories: StoryData[];
+    experience: ExperienceData;
+    labSlug: string;
+}) {
+    const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
+    const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
+    const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
+    const mapDOM = useRef(null);
+    const mapState = useAppSelector((state) => state.map);
+    const dispatch = useAppDispatch();
+    console.log(JSON.stringify(stories));
+
+    function ChildComponent() {
+        // This component is inside RMap.
+        // your MapLibre map instance is always defined and cannot be null.
+        const map: Map = useMap();
+        useEffect(() => {
+            if (!map) return;
+            try {
+                map.flyTo({
+                    center: mapState.flyPosition,
+                    zoom: mapState.zoomLevel,
+                });
+            } catch (err) {
+                // ignore map errors during rapid updates
+            }
+        }, [map, mapState.flyPosition, mapState.zoomLevel]);
+
+        return null;
+    }
+
+    const handleContextMenu = (e: MapLayerMouseEvent) => {
+        e.preventDefault();
+        setCoords({ x: e.point.x, y: e.point.y });
+        setPtrLngLat([e.lngLat.lng, e.lngLat.lat]);
+        setCtxMenuOpen(true);
+    };
+
+    // fly to experience center after fetching (run after render)
+    useEffect(() => {
+        if (!experience) return;
+        dispatch(setFlyPosition(experience.center.coordinates));
+        dispatch(setZoomLevel(experience.initial_zoom));
+    }, [dispatch, experience]);
+
+    return (
+        <>
+            <div className={"w-full h-full"}>
+                <div className={"absolute z-50"}>
+                    <MapContextMenu
+                        open={ctxMenuOpen}
+                        onOpenChange={setCtxMenuOpen}
+                        coords={coords}
+                        ptrLngLat={ptrLngLat}
+                    />
+                </div>
+                <RMap
+                    mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
+                    initialCenter={mapState.flyPosition}
+                    initialZoom={mapState.zoomLevel}
+                    initialAttributionControl={false}
+                    // dragRotate={false}
+                    style={{
+                        margin: "0",
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "#222",
+                    }}
+                    onContextMenu={handleContextMenu}
+                    ref={mapDOM}
+                >
+                    <Suspense
+                        fallback={
+                            <div
+                                className={
+                                    "flex w-full h-full justify-center items-center"
+                                }
+                            >
+                                <Spinner />
+                            </div>
+                        }
+                    >
+                        {stories.map((story, index) => (
+                            <RMarker
+                                longitude={story.longitude}
+                                latitude={story.latitude}
+                                key={index.toString()}
+                            >
+                                <CustomMarker
+                                    story={story}
+                                    experienceSlug={labSlug}
+                                />
+                            </RMarker>
+                        ))}
+                    </Suspense>
+                    <ChildComponent />
+                    <RAttributionControl
+                        position={"bottom-left"}
+                    ></RAttributionControl>
+                    <RNavigationControl
+                        position={"bottom-left"}
+                    ></RNavigationControl>
+                </RMap>
+            </div>
+        </>
+    );
+}
