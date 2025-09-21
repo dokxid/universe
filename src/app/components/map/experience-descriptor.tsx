@@ -39,7 +39,7 @@ export function ExperienceDescriptor({
             >
                 <article
                     className={
-                        "prose prose-sm lg:prose-base h-full bg-primary-foreground text-primary p-5 text-wrap pointer-events-auto flex flex-col"
+                        "prose prose-sm lg:prose-base dark:prose-invert h-full bg-primary-foreground text-primary p-5 text-wrap pointer-events-auto flex flex-col"
                     }
                 >
                     <div className={"flex flex-row justify-between"}>

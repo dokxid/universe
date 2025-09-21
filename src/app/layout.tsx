@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { ThemeProvider } from "@/app/components/providers/theme-provider";
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -26,11 +27,13 @@ export default function RootLayout({ children, modal }: RootLayoutProps) {
                     <StoreProvider>
                         <TooltipProvider>
                             <main>
-                                <SidebarLayout>
-                                    <div>{modal}</div>
-                                    <div className="flex grow">{children}</div>
-                                    <Toaster />
-                                </SidebarLayout>
+                                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                                    <SidebarLayout>
+                                        <div>{modal}</div>
+                                        <div className="flex grow">{children}</div>
+                                        <Toaster />
+                                    </SidebarLayout>
+                                </ThemeProvider>
                             </main>
                         </TooltipProvider>
                     </StoreProvider>

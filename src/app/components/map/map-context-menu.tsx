@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -6,10 +7,12 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {useAppDispatch} from "@/lib/hooks";
-import {setFlyPosition} from "@/lib/features/map/mapSlice";
-import {setAddStoryDialogOpen, setLngLat} from "@/lib/features/dialogue/addStoryDialogSlice";
-
+import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { setLngLat } from "@/lib/features/dialogue/addStoryDialogSlice";
+import { setFlyPosition } from "@/lib/features/map/mapSlice";
+import { useAppDispatch } from "@/lib/hooks";
+import { ChevronRightIcon } from "lucide-react";
+import Link from "next/link";
 
 interface MapContextMenuProps {
     open?: boolean;
@@ -19,44 +22,83 @@ interface MapContextMenuProps {
 }
 
 function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard: " + text))
+    navigator.clipboard
+        .writeText(text)
+        .then(() => alert("Copied to clipboard: " + text));
 }
 
-export function MapContextMenu({coords, open, onOpenChange, ptrLngLat}: MapContextMenuProps) {
-
-    const dispatch = useAppDispatch()
+export function MapContextMenu({
+    coords,
+    open,
+    onOpenChange,
+    ptrLngLat,
+}: MapContextMenuProps) {
+    const dispatch = useAppDispatch();
 
     return (
         <DropdownMenu open={open} onOpenChange={onOpenChange}>
-            <div/>
-            {coords && (<DropdownMenuContent
-                align="start"
-                side="right"
-                sideOffset={0}
-                className="absolute w-2xs"
-                style={{
-                    top: coords.y,
-                    left: coords.x,
-                    transform: "translate(0, 0)",
-                }}
-            >
-                <DropdownMenuLabel>{ptrLngLat ? ptrLngLat[0].toFixed(4) + ", " + ptrLngLat[1].toFixed(4) : "null"}</DropdownMenuLabel>
-                <DropdownMenuSeparator/>
-                <DropdownMenuItem onClick={() => {
-                    dispatch(setLngLat(ptrLngLat ? ptrLngLat : [0, 0]))
-                    dispatch(setAddStoryDialogOpen())
-                }}>Create story here</DropdownMenuItem>
-                <DropdownMenuItem onClick={() =>
-                    copyToClipboard(ptrLngLat ? ptrLngLat[0].toFixed(4)
-                        + ", " + ptrLngLat[1].toFixed(4) : "null"
-                    )}>Copy location</DropdownMenuItem>
-                <DropdownMenuItem onClick={() =>
-                    dispatch(setFlyPosition([
-                        Math.floor(Math.random() * 360),
-                        Math.floor(Math.random() * 180 - 90)
-                    ]))}>Fly to random location</DropdownMenuItem>
-                <DropdownMenuItem>Help</DropdownMenuItem>
-            </DropdownMenuContent>)}
+            {coords && (
+                <DropdownMenuContent
+                    align="start"
+                    side="right"
+                    sideOffset={0}
+                    className="absolute w-2xs"
+                    style={{
+                        top: coords.y,
+                        left: coords.x,
+                        transform: "translate(0, 0)",
+                    }}
+                >
+                    <DropdownMenuLabel>
+                        {ptrLngLat
+                            ? ptrLngLat[0].toFixed(4) +
+                              ", " +
+                              ptrLngLat[1].toFixed(4)
+                            : "null"}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link
+                            href={"/stories/create"}
+                            scroll={false}
+                            prefetch={true}
+                            onClick={() =>
+                                dispatch(
+                                    setLngLat(ptrLngLat ? ptrLngLat : [0, 0])
+                                )
+                            }
+                        >
+                            Create story here
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() =>
+                            copyToClipboard(
+                                ptrLngLat
+                                    ? ptrLngLat[0].toFixed(4) +
+                                          ", " +
+                                          ptrLngLat[1].toFixed(4)
+                                    : "null"
+                            )
+                        }
+                    >
+                        Copy location
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() =>
+                            dispatch(
+                                setFlyPosition([
+                                    Math.floor(Math.random() * 360),
+                                    Math.floor(Math.random() * 180 - 90),
+                                ])
+                            )
+                        }
+                    >
+                        Fly to random location
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>Help</DropdownMenuItem>
+                </DropdownMenuContent>
+            )}
         </DropdownMenu>
-    )
+    );
 }

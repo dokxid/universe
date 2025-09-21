@@ -10,7 +10,8 @@ export interface StoryData extends mongoose.Document {
     longitude: number;
     tags: string[];
     year: number;
-    featuredImage: string;
+    featured_image_url: string;  
+    visible_universe: boolean;
 }
 
 export interface ExperienceData extends mongoose.Document {
@@ -20,7 +21,8 @@ export interface ExperienceData extends mongoose.Document {
     title: string;
     subtitle: string;
     description: string;
-    featured_image: string;
+    featured_image_url: string;
+    organization_id: string;
     stories: StoryData[];
 }
 
@@ -34,6 +36,8 @@ const storySchema = new Schema({
     longitude: Number,
     tags: [String],
     year: Number,
+    visible_universe: Boolean,
+    featured_image_url: String,
 });
 
 const experienceSchema = new Schema({
@@ -53,7 +57,7 @@ const experienceSchema = new Schema({
     title: String,
     subtitle: String,
     description: String,
-    featured_image: String,
+    featured_image_url: String,
     stories: [storySchema],
     organization_id: String,
 });

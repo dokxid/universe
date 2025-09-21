@@ -33,7 +33,7 @@ export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
     return (
         <>
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
-                <SidebarTrigger className="pointer-events-auto size-10 bg-primary text-primary-foreground" />
+                <SidebarTrigger variant={"secondary"} className="pointer-events-auto size-10" />
                 {experiencesState.currentExperience == "universe" && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Content } from "@tiptap/react";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
+import { Content } from "@tiptap/react";
+import { useEffect, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 
 export const TiptapEditor = ({ value, onChange }: ControllerRenderProps) => {
@@ -19,7 +19,7 @@ export const TiptapEditor = ({ value, onChange }: ControllerRenderProps) => {
         <MinimalTiptapEditor
             value={textInput}
             onChange={handleEditorChange}
-            className="w-full h-full prose prose-sm"
+            className="w-full h-full prose prose-sm dark:prose-invert"
             editorContentClassName="p-5"
             output="html"
             placeholder="Enter your description..."

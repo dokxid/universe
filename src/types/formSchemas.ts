@@ -14,5 +14,4 @@ export const submitStoryFormSchema = z.object({
     author: z.string(),
     draft: z.boolean(),
     experience: z.string().min(1, {message: "This field is required"}),
-    file: z.file().mime(["image/png", "image/jpeg"]),
 });

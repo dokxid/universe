@@ -23,7 +23,7 @@ export async function AppSidebar({
     const experiencesPromise = getExperiencesDTO();
 
     return (
-        <Sidebar>
+        <Sidebar variant="inset">
             {/* sidebar header */}
             {labSlug === "universe" && (
                 <SidebarHeader className="mt-3">

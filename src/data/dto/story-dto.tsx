@@ -1,15 +1,16 @@
-import "server-only";
-import {isUserActive, isUserMember} from "../auth";
-import {User} from "@workos-inc/node";
 import dbConnect from "@/lib/mongodb/connections";
-import {StoryData} from "@/types/api";
-import {submitStoryFormSchema} from "@/types/formSchemas";
-import {z} from "zod";
-import {errorSanitizer} from "@/lib/utils/errorSanitizer";
-import {nanoid} from "nanoid";
-import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
-import {fromEnv} from "@aws-sdk/credential-provider-env";
+import { errorSanitizer } from "@/lib/utils/errorSanitizer";
+import { StoryData } from "@/types/api";
+import { submitStoryFormSchema } from "@/types/formSchemas";
 import Experience from "@/types/models/experiences";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { fromEnv } from "@aws-sdk/credential-provider-env";
+import { User } from "@workos-inc/node";
+import { nanoid } from "nanoid";
+import "server-only";
+import { z } from "zod";
+import { isUserActive, isUserMember } from "../auth";
+import { th } from "zod/v4/locales";
 
 const s3Client = new S3Client({
     region: process.env.AWS_REGION,
@@ -29,7 +30,7 @@ export async function uploadFile(
         // Read all chunks from the stream
         const reader = bytes.getReader();
         while (true) {
-            const {done, value} = await reader.read();
+            const { done, value } = await reader.read();
             if (done) break;
             chunks.push(value);
         }
@@ -74,7 +75,7 @@ async function getExperience(experienceSlug: string) {
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
-            (err instanceof Error ? err.message : "Unknown error")
+                (err instanceof Error ? err.message : "Unknown error")
         );
     }
 }
@@ -124,10 +125,16 @@ async function getPublicStories() {
 }
 
 async function insertStory(storyToInsert: StoryData, experienceSlug: string) {
-    dbConnect();
-    const experience = new Experience({slug: experienceSlug});
-    experience.stories.push(storyToInsert);
-    await experience.save();
+    try {
+        dbConnect();
+        Experience.findOneAndUpdate(
+            { slug: experienceSlug },
+            { $push: { stories: storyToInsert } },
+            { safe: true, upsert: false }
+        ).exec();
+    } catch (err) {
+        console.error("Error inserting story:", err);
+    }
 }
 
 function canCreateStory(viewer: User, experienceSlug: string) {
@@ -169,38 +176,55 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         );
     }
 
-    // validate the form data
-    const validationResult = submitStoryFormSchema.safeParse(
-        Object.fromEntries(formData)
-    );
+    // Preprocess the FormData into the correct types
+    const rawData = Object.fromEntries(formData);
+    const processedData = {
+        title: rawData.title as string,
+        content: rawData.content as string,
+        year: parseInt(rawData.year as string, 10),
+        longitude: parseFloat(rawData.longitude as string),
+        latitude: parseFloat(rawData.latitude as string),
+        tags: JSON.parse(rawData.tags as string),
+        author: rawData.author as string,
+        experience: rawData.experience as string,
+        draft: Boolean(rawData.draft),
+    };
+    const file = formData.get("file") as File;
+    if (!file) {
+        throw new Error("File is required and must be a valid file.");
+    }
+
+    // Validate the processed data
+    const validationResult = submitStoryFormSchema.safeParse(processedData);
     if (!validationResult.success) {
-        return {errors: z.treeifyError(validationResult.error)};
+        console.log(z.prettifyError(validationResult.error));
+        throw new Error(z.prettifyError(validationResult.error));
     }
 
     // prepare the data for insertion
     const data = validationResult.data;
-    console.log("data to be inserted: " + JSON.stringify(data));
-    const uploadedFileName = `${data.experience}_${nanoid()}_${data.file.name}`;
-    const storyToInsert = {
-        author: data.author,
+    const uploadedFileName = `${data.experience}_${nanoid()}_${file.name}`;
+    const storyToInsert: StoryData = {
+        author: user.id,
         content: data.content,
         title: data.title,
         latitude: data.latitude,
         longitude: data.longitude,
         tags: data.tags,
         year: data.year,
-        featuredImage: uploadedFileName,
+        featured_image_url: uploadedFileName,
         draft: data.draft,
 
         // hardcoded stuff
         visible_universe: false,
+        published: false,
     };
-    const file = data.file as File;
 
     try {
+        // Upload the file and insert the story
         await uploadFile(file, uploadedFileName, data.experience);
-        await insertStory(storyToInsert);
+        await insertStory(storyToInsert, data.experience);
     } catch (e) {
-        return errorSanitizer(e);
+        console.error("Error submitting story:", e);
     }
 }

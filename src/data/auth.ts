@@ -1,9 +1,9 @@
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { cache } from "react";
-import { UserRole } from "@/types/user";
-import { User, WorkOS } from "@workos-inc/node";
-import { connect } from "http2";
 import dbConnect from "@/lib/mongodb/connections";
+import { ExperienceData } from "@/types/api";
+import { UserRole } from "@/types/user";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { User, WorkOS } from "@workos-inc/node";
+import { cache } from "react";
 import { getExperienceDTO } from "./dto/story-dto";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
@@ -17,17 +17,20 @@ export async function isUserActive(
     viewer: User,
     experienceSlug: string
 ): Promise<boolean> {
-    await getUserExperienceRelation(viewer, experienceSlug).then((relation) => {
-        return relation.status == "active";
-    });
-    return false;
+    return await getUserExperienceRelation(viewer, experienceSlug)
+        .then((relation) => {
+            return relation.status == "active";
+        })
+        .catch((err) => {
+            throw new Error(err);
+        });
 }
 
 export async function isUserMember(
     viewer: User,
     experienceSlug: string
 ): Promise<boolean> {
-    await getUserExperienceRelation(viewer, experienceSlug)
+    return await getUserExperienceRelation(viewer, experienceSlug)
         .then((relation) => {
             return (
                 relation.role.slug == UserRole.MEMBER ||
@@ -37,7 +40,6 @@ export async function isUserMember(
         .catch((err) => {
             throw new Error(err);
         });
-    return false;
 }
 
 export async function isAdmin(
@@ -56,20 +58,16 @@ export async function isAdmin(
 
 async function getUserExperienceRelation(viewer: User, experienceSlug: string) {
     dbConnect();
-    const experience = await getExperienceDTO(experienceSlug);
-    const organizationId = experience.organizationId;
-    return await workos.userManagement
-        .listOrganizationMemberships({
-            userId: viewer.id,
-            organizationId: organizationId,
-        })
-        .then((membership) => {
-            const membershipToReturn = membership.data.pop();
-            if (membershipToReturn === undefined)
-                throw new Error("no membership found");
-            return membershipToReturn;
-        })
-        .catch((err) => {
-            throw new Error(err);
-        });
+    const experience = JSON.parse(
+        await getExperienceDTO(experienceSlug)
+    ) as ExperienceData;
+    const organizationId = experience.organization_id;
+    const membership = await workos.userManagement.listOrganizationMemberships({
+        userId: viewer.id,
+        organizationId: organizationId,
+    });
+    const membershipToReturn = membership.data.pop();
+    if (membershipToReturn === undefined)
+        throw new Error("no membership found");
+    return membershipToReturn;
 }

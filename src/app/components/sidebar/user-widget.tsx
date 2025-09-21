@@ -1,10 +1,11 @@
 "use client";
 
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { signOutAction } from "@/actions/auth";
-import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { Settings } from "lucide-react";
+import { ThemeSwitchButton } from "@/app/components/sidebar/theme-switch-button";
+import Link from "next/link";
 
 export function UserWidget() {
     const { user, loading } = useAuth();
@@ -53,6 +54,7 @@ export function UserWidget() {
                         </button>
                     </form>
                 </div>
+                <ThemeSwitchButton />
                 <Settings strokeWidth={2} className={"size-5"} />
             </div>
         </>

@@ -31,7 +31,6 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
 
     const handleMouseEnter = () => {
         setTagPickerOpen(true);
-        console.log(tags);
     };
 
     const handleTagRemove = (tagToRemove: TagData) => {

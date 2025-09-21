@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 type ExperienceData = {
     slug: string;
     center: { coordinates: [number, number] };
@@ -9,6 +7,7 @@ type ExperienceData = {
     description: string;
     featured_image: string;
     stories: StoryData[];
+    organization_id: string;
 };
 
 type TagData = {
@@ -26,11 +25,12 @@ type StoryData = {
     longitude: number;
     tags: string[];
     year: number;
-    featuredImage: string;
+    featured_image_url: string;
+    visible_universe: boolean;
 };
 
 type ImageData = {
     url: string;
 };
 
-export type { ExperienceData, TagData, StoryData, ImageData };
+export type { ExperienceData, ImageData, StoryData, TagData };
