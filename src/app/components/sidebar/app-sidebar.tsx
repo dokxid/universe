@@ -1,9 +1,9 @@
 import { CurrentExperienceSelector } from "@/app/components/sidebar/current-experience-selector";
 import { AboutItemGroup } from "@/app/components/sidebar/sidebar-content/about-item-group";
+import { AdminItemGroup } from "@/app/components/sidebar/sidebar-content/admin-item-group";
+import { EditorItemGroup } from "@/app/components/sidebar/sidebar-content/editor-item-group";
 import { FeatureItemGroup } from "@/app/components/sidebar/sidebar-content/feature-item-group";
 import { LinksItemGroup } from "@/app/components/sidebar/sidebar-content/links-item-group";
-import { StoriesItemGroup } from "@/app/components/sidebar/sidebar-content/stories-item-group";
-import { TeamItemGroup } from "@/app/components/sidebar/sidebar-content/team-item-group";
 import { UserWidget } from "@/app/components/sidebar/user-widget";
 import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
 import {
@@ -45,8 +45,8 @@ export async function AppSidebar({
 
             <SidebarContent>
                 <FeatureItemGroup />
-                <StoriesItemGroup />
-                <TeamItemGroup />
+                <EditorItemGroup />
+                <AdminItemGroup />
                 <AboutItemGroup />
                 <LinksItemGroup />
             </SidebarContent>

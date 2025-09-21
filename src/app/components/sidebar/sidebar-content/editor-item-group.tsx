@@ -21,7 +21,7 @@ const editorItems: SidebarItemGroup = [
     },
 ];
 
-export function StoriesItemGroup() {
+export function EditorItemGroup() {
     return (
         <ItemGroup items={editorItems} groupLabel="Editor Features"></ItemGroup>
     );

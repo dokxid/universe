@@ -10,7 +10,7 @@ const adminItems: SidebarItemGroup = [
     },
 ];
 
-export function TeamItemGroup() {
+export function AdminItemGroup() {
     return (
         <ItemGroup items={adminItems} groupLabel="Admin Features"></ItemGroup>
     );
