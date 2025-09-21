@@ -6,7 +6,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { decrementZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { ExperienceData } from "@/types/models/experiences";
-import { ArrowLeftToLine, ChevronsDownUp } from "lucide-react";
+import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback } from "react";
@@ -36,12 +36,12 @@ export function VerticalWidgetHolder({
         (slug === "universe" && !expParam) || expParam === "universe";
     const router = useRouter();
     const pathname = usePathname();
-    const dispatch = useAppDispatch();
-    const [openDescriptor, setOpenDescriptor] = React.useState(true);
     const experienceParsed: ExperienceData = JSON.parse(experience);
 
-    // Get a new searchParams string by merging the current
-    // searchParams with a provided key/value pair
+    // hooks
+    const dispatch = useAppDispatch();
+    const [openDescriptor, setOpenDescriptor] = React.useState(true);
+
     const createQueryString = useCallback(
         (name: string, value: string) => {
             const params = new URLSearchParams(searchParams.toString());
@@ -57,8 +57,11 @@ export function VerticalWidgetHolder({
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
                 <SidebarTrigger
                     variant={"secondary"}
-                    className="pointer-events-auto size-10"
+                    className="pointer-events-auto size-10 hover:ring-2"
                 />
+                <Button variant={"secondary"} className="size-10 hover:ring-2">
+                    <Funnel />
+                </Button>
                 {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}

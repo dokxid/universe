@@ -63,6 +63,6 @@ export const config = {
         "/:slug/settings",
         "/:slug/experiences",
         "/:slug/map",
-        "/:slug/stories/create",
+        "/:slug/stories/:page*",
     ],
 };
