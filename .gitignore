@@ -24,8 +24,6 @@ certificates
 # misc
 .DS_Store
 *.pem
-yarn.lock
-package-lock.json
 
 # jetbrains
 /.idea
