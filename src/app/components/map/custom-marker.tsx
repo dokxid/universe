@@ -21,8 +21,10 @@ function CustomMarker({
             <HoverCardTrigger>
                 <MapPin
                     size={30}
-                    fill={"#DBA726"}
+                    fill={"#D7263D"}
                     className={"cursor-pointer"}
+                    strokeWidth={1}
+                    stroke={"#FFFFFF"}
                 />
             </HoverCardTrigger>
             <HoverCardContent>
