@@ -1,18 +1,13 @@
+import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
-import {
-    ExperienceData,
-    NewStoryData,
-    StoryData,
-    StoryDataDTO,
-} from "@/types/api";
+import { NewStoryData, StoryData, StoryDataDTO } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import Experience from "@/types/models/experiences";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 import { User } from "@workos-inc/node";
 import { nanoid } from "nanoid";
-import { cache } from "react";
 import "server-only";
 import { z } from "zod";
 import { isUserActive, isUserMember } from "../auth";
@@ -59,34 +54,8 @@ export async function uploadFile(
     }
 }
 
-async function getExperiences() {
-    try {
-        await dbConnect();
-        const experiences = await Experience.find({}).exec();
-        return experiences.map((exp) => exp.toJSON());
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function getExperience(experienceSlug: string): Promise<ExperienceData> {
-    try {
-        await dbConnect();
-        const experience = await Experience.findOne({
-            slug: experienceSlug,
-        }).exec();
-        if (!experience) throw new Error("experience not found");
-        return experience.toJSON();
-    } catch (err) {
-        throw new Error(
-            "couldn't fetch experience: " +
-                (err instanceof Error ? err.message : "Unknown error")
-        );
-    }
-}
-
 async function getLabPrivateStories(viewer: User, experienceSlug: string) {
-    if (!(await canSeePrivateStory(viewer, experienceSlug))) {
+    if (!(await canViewPrivateStory(viewer, experienceSlug))) {
         throw new Error("You do not have permission to view these stories.");
     }
     try {
@@ -147,14 +116,18 @@ async function insertStory(
 }
 
 function canCreateStory(viewer: User, experienceSlug: string) {
-    return canSeePrivateStory(viewer, experienceSlug);
+    return canViewPrivateStory(viewer, experienceSlug);
 }
 
-function canSeePublicStory(viewer: User) {
+function canEditStory(viewer: User, experienceSlug: string) {
+    return canViewPrivateStory(viewer, experienceSlug);
+}
+
+function canViewPublicStory(viewer: User) {
     return true;
 }
 
-async function canSeePrivateStory(viewer: User, experienceSlug: string) {
+async function canViewPrivateStory(viewer: User, experienceSlug: string) {
     const isActive = await isUserActive(viewer, experienceSlug);
     const isMember = await isUserMember(viewer, experienceSlug);
     return isActive && isMember;
@@ -207,24 +180,6 @@ export async function getLabStoriesDTO(
         return JSON.stringify(stories);
     } catch (err) {
         console.error("Error fetching lab stories:", err);
-        return "<error>";
-    }
-}
-
-export const getExperiencesDTO = cache(async (): Promise<string> => {
-    try {
-        return JSON.stringify(await getExperiences());
-    } catch (err) {
-        console.error("Error fetching experiences:", err);
-        return "<error>";
-    }
-});
-
-export async function getExperienceDTO(experienceSlug: string) {
-    try {
-        return JSON.stringify(await getExperience(experienceSlug));
-    } catch (err) {
-        console.error(`Error fetching experience ${experienceSlug}:`, err);
         return "<error>";
     }
 }
