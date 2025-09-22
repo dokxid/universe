@@ -10,7 +10,7 @@ export interface StoryData extends mongoose.Document {
     longitude: number;
     tags: string[];
     year: number;
-    featured_image_url: string;  
+    featured_image_url: string;
     visible_universe: boolean;
 }
 
@@ -26,22 +26,25 @@ export interface ExperienceData extends mongoose.Document {
     stories: StoryData[];
 }
 
-const storySchema = new Schema({
-    author: String,
-    content: String,
-    draft: Boolean,
-    published: Boolean,
-    title: String,
-    latitude: Number,
-    longitude: Number,
-    tags: [String],
-    year: Number,
-    visible_universe: Boolean,
-    featured_image_url: String,
-});
+const storySchema = new Schema(
+    {
+        author: { type: String, required: true },
+        content: { type: String, required: true },
+        draft: { type: Boolean, required: true },
+        published: { type: Boolean, required: true },
+        title: { type: String, required: true },
+        latitude: { type: Number, required: true },
+        longitude: { type: Number, required: true },
+        tags: { type: [String], required: true },
+        year: { type: Number, required: true },
+        visible_universe: { type: Boolean, required: true },
+        featured_image_url: { type: String, required: true },
+    },
+    { timestamps: true }
+);
 
 const experienceSchema = new Schema({
-    slug: String,
+    slug: { type: String, required: true },
     center: {
         type: {
             type: String,
@@ -53,13 +56,13 @@ const experienceSchema = new Schema({
             required: true,
         },
     },
-    initial_zoom: Number,
-    title: String,
-    subtitle: String,
-    description: String,
-    featured_image_url: String,
-    stories: [storySchema],
-    organization_id: String,
+    initial_zoom: { type: Number, required: true },
+    title: { type: String, required: true },
+    subtitle: { type: String, required: true },
+    description: { type: String, required: true },
+    featured_image_url: { type: String, required: true },
+    stories: { type: [storySchema], required: true },
+    organization_id: { type: String, required: true },
 });
 
 export default mongoose.models.Experience ||

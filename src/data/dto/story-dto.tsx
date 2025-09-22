@@ -1,6 +1,12 @@
+import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
-import { StoryData } from "@/types/api";
-import { submitStoryFormSchema } from "@/types/formSchemas";
+import {
+    ExperienceData,
+    NewStoryData,
+    StoryData,
+    StoryDataDTO,
+} from "@/types/api";
+import { submitStoryFormSchema } from "@/types/form-schemas";
 import Experience from "@/types/models/experiences";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
@@ -57,20 +63,20 @@ async function getExperiences() {
     try {
         await dbConnect();
         const experiences = await Experience.find({}).exec();
-        return JSON.stringify(experiences.map((exp) => exp.toJSON()));
+        return experiences.map((exp) => exp.toJSON());
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
-async function getExperience(experienceSlug: string) {
+async function getExperience(experienceSlug: string): Promise<ExperienceData> {
     try {
         await dbConnect();
         const experience = await Experience.findOne({
             slug: experienceSlug,
         }).exec();
         if (!experience) throw new Error("experience not found");
-        return JSON.stringify(experience.toJSON());
+        return experience.toJSON();
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
@@ -89,28 +95,28 @@ async function getLabPrivateStories(viewer: User, experienceSlug: string) {
             experiences
                 .filter((experience) => experience.slug == experienceSlug)
                 .pop()?.stories ?? [];
-        return filteredStories.map((story) => story.toJSON());
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function getLabStories(experienceSlug: string) {
-    try {
-        const experiences = await getExperiences();
-        const filteredStories = experiences
-            .filter((experience) => experience.slug == experienceSlug)
-            .pop()
-            ?.stories.map((story) => story.toJSON());
         return JSON.stringify(filteredStories);
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
-async function getPublicStories() {
+async function getLabStories(experienceSlug: string): Promise<StoryData[]> {
     try {
-        const experiences = JSON.parse(await getExperiences());
+        const experiences = await getExperiences();
+        const filteredStories =
+            experiences
+                .filter((experience) => experience.slug == experienceSlug)
+                .pop()?.stories ?? [];
+        return filteredStories;
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
+async function getPublicStories(): Promise<StoryData[]> {
+    try {
+        const experiences = await getExperiences();
         const flatStories = experiences.flatMap(
             (experience) => experience.stories
         );
@@ -118,13 +124,16 @@ async function getPublicStories() {
             (story: { draft: any; published: any }) =>
                 !story.draft && story.published
         );
-        return JSON.stringify(filteredStories);
+        return filteredStories;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
-async function insertStory(storyToInsert: StoryData, experienceSlug: string) {
+async function insertStory(
+    storyToInsert: NewStoryData,
+    experienceSlug: string
+) {
     try {
         dbConnect();
         Experience.findOneAndUpdate(
@@ -152,19 +161,72 @@ async function canSeePrivateStory(viewer: User, experienceSlug: string) {
 }
 
 export async function getPublicStoriesDTO() {
-    return getPublicStories();
+    try {
+        const storiesToReturn = await getPublicStories();
+        return JSON.stringify(storiesToReturn);
+    } catch (err) {
+        console.error("Error fetching public stories:", err);
+        return "<error>";
+    }
 }
 
-export async function getLabStoriesDTO(experienceSlug: string) {
-    return getLabStories(experienceSlug);
+export async function getLabStoriesDTO(
+    experienceSlug: string
+): Promise<string> {
+    try {
+        const stories = (await getLabStories(experienceSlug)) as StoryDataDTO[];
+
+        // get all authors and fetch their user data
+        const authors = stories.map((story) => story.author);
+        const uniqueAuthors = [...new Set(authors)];
+        let users = [];
+        for (const author of uniqueAuthors) {
+            try {
+                const user = await workos.userManagement.getUser(author);
+                users.push(user);
+            } catch (err) {
+                console.error(`Error fetching user ${author}:`, err);
+            }
+        }
+
+        // map author ids to user data
+        const authorMap: { [key: string]: string } = {};
+        users.forEach((user) => {
+            authorMap[user.id] = user.firstName + " " + user.lastName;
+        });
+
+        // replace author ids with user data in stories
+        stories.forEach((story) => {
+            if (authorMap[story.author]) {
+                story.author_name = authorMap[story.author];
+            } else {
+                story.author_name = "Unknown Author";
+            }
+        });
+
+        return JSON.stringify(stories);
+    } catch (err) {
+        console.error("Error fetching lab stories:", err);
+        return "<error>";
+    }
 }
 
 export const getExperiencesDTO = cache(async (): Promise<string> => {
-    return getExperiences();
+    try {
+        return JSON.stringify(await getExperiences());
+    } catch (err) {
+        console.error("Error fetching experiences:", err);
+        return "<error>";
+    }
 });
 
 export async function getExperienceDTO(experienceSlug: string) {
-    return getExperience(experienceSlug);
+    try {
+        return JSON.stringify(await getExperience(experienceSlug));
+    } catch (err) {
+        console.error(`Error fetching experience ${experienceSlug}:`, err);
+        return "<error>";
+    }
 }
 
 export async function submitStoryDTO(formData: FormData, user: User) {
@@ -204,7 +266,7 @@ export async function submitStoryDTO(formData: FormData, user: User) {
     // prepare the data for insertion
     const data = validationResult.data;
     const uploadedFileName = `${data.experience}_${nanoid()}_${file.name}`;
-    const storyToInsert: StoryData = {
+    const storyToInsert: NewStoryData = {
         author: user.id,
         content: data.content,
         title: data.title,
@@ -219,7 +281,6 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         visible_universe: true,
         published: true,
     };
-    console.log(JSON.stringify(storyToInsert));
 
     try {
         // Upload the file and insert the story

@@ -35,7 +35,7 @@ export async function ListExperiencesDialog() {
                         </td>
                         <td>
                             <Link
-                                href={`/lab/${exp.slug}`}
+                                href={`/${exp.slug}/map`}
                                 className={
                                     "ml-5 flex flex-col h-full justify-center"
                                 }

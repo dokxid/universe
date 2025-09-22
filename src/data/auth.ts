@@ -1,12 +1,13 @@
+import "server-only";
+
+import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
 import { ExperienceData } from "@/types/api";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
-import { User, WorkOS } from "@workos-inc/node";
+import { User } from "@workos-inc/node";
 import { cache } from "react";
 import { getExperienceDTO } from "./dto/story-dto";
-
-const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
 
 export const getCurrentUser = cache(async () => {
     const { user } = await withAuth({ ensureSignedIn: true });

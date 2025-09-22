@@ -6,5 +6,9 @@ interface SidebarLayoutProps {
 }
 
 export function SidebarLayout({ children }: SidebarLayoutProps) {
-    return <SidebarProvider className="relative">{children}</SidebarProvider>;
+    return (
+        <SidebarProvider className="relative w-screen h-screen">
+            {children}
+        </SidebarProvider>
+    );
 }

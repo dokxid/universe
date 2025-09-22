@@ -83,53 +83,55 @@ export default function MyMap({
                         ptrLngLat={ptrLngLat}
                     />
                 </div>
-                <RMap
-                    mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
-                    initialCenter={mapState.flyPosition}
-                    initialZoom={mapState.zoomLevel}
-                    initialAttributionControl={false}
-                    // dragRotate={false}
-                    style={{
-                        margin: "0",
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "var(--primary)",
-                    }}
-                    onContextMenu={handleContextMenu}
-                    ref={mapDOM}
-                >
-                    <Suspense
-                        fallback={
-                            <div
-                                className={
-                                    "flex w-full h-full justify-center items-center"
-                                }
-                            >
-                                <Spinner />
-                            </div>
-                        }
+                <div className={"sepia h-full w-full brightness-50"}>
+                    <RMap
+                        mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
+                        initialCenter={mapState.flyPosition}
+                        initialZoom={mapState.zoomLevel}
+                        initialAttributionControl={false}
+                        // dragRotate={false}
+                        style={{
+                            margin: "0",
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "var(--primary)",
+                        }}
+                        onContextMenu={handleContextMenu}
+                        ref={mapDOM}
                     >
-                        {stories.map((story, index) => (
-                            <RMarker
-                                longitude={story.longitude}
-                                latitude={story.latitude}
-                                key={index}
-                            >
-                                <CustomMarker
-                                    story={story}
-                                    experienceSlug={experienceSlug}
-                                />
-                            </RMarker>
-                        ))}
-                    </Suspense>
-                    <ChildComponent />
-                    <RAttributionControl
-                        position={"bottom-left"}
-                    ></RAttributionControl>
-                    <RNavigationControl
-                        position={"bottom-left"}
-                    ></RNavigationControl>
-                </RMap>
+                        <Suspense
+                            fallback={
+                                <div
+                                    className={
+                                        "flex w-full h-full justify-center items-center"
+                                    }
+                                >
+                                    <Spinner />
+                                </div>
+                            }
+                        >
+                            {stories.map((story, index) => (
+                                <RMarker
+                                    longitude={story.longitude}
+                                    latitude={story.latitude}
+                                    key={index}
+                                >
+                                    <CustomMarker
+                                        story={story}
+                                        experienceSlug={experienceSlug}
+                                    />
+                                </RMarker>
+                            ))}
+                        </Suspense>
+                        <ChildComponent />
+                        <RAttributionControl
+                            position={"bottom-left"}
+                        ></RAttributionControl>
+                        <RNavigationControl
+                            position={"bottom-left"}
+                        ></RNavigationControl>
+                    </RMap>
+                </div>
             </div>
         </>
     );

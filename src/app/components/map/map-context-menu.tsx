@@ -57,7 +57,7 @@ export function MapContextMenu({
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                         <Link
-                            href={"/stories/create"}
+                            href={"stories/create"}
                             scroll={false}
                             prefetch={true}
                             onClick={() =>

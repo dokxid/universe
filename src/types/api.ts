@@ -27,10 +27,25 @@ type StoryData = {
     year: number;
     featured_image_url: string;
     visible_universe: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 };
+
+type NewStoryData = Omit<StoryData, "createdAt" | "updatedAt">;
+
+interface StoryDataDTO extends StoryData {
+    author_name: string;
+}
 
 type ImageData = {
     url: string;
 };
 
-export type { ExperienceData, ImageData, StoryData, TagData };
+export type {
+    ExperienceData,
+    ImageData,
+    NewStoryData,
+    StoryData,
+    StoryDataDTO,
+    TagData,
+};
