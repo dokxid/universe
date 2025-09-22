@@ -14,7 +14,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getExperiencesDTO } from "@/data/dto/story-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Suspense } from "react";
 
 export async function AppSidebar({ slug = "universe" }: { slug?: string }) {

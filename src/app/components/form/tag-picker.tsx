@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
-import {useTags} from "@/lib/data_hooks/tagsHook";
-import {TagData} from "@/types/api";
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import { useEffect, useState } from "react";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useTags } from "@/lib/data_hooks/tagsHook";
+import { Tag } from "@/types/api";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
     Command,
     CommandEmpty,
@@ -10,14 +10,14 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
+    CommandSeparator
 } from "@/components/ui/command";
-import {PlusIcon, X} from "lucide-react";
-import {Badge} from "../../../components/ui/badge";
-import {ControllerRenderProps} from "react-hook-form";
+import { PlusIcon, X } from "lucide-react";
+import { Badge } from "../../../components/ui/badge";
+import { ControllerRenderProps } from "react-hook-form";
 
 export function TagPicker({value = [], onChange}: ControllerRenderProps) {
-    const [inputTags, setInputTags] = useState<TagData[]>([]);
+    const [inputTags, setInputTags] = useState<Tag[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
     const {tags, isLoading} = useTags();
 
@@ -33,13 +33,13 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
         setTagPickerOpen(true);
     };
 
-    const handleTagRemove = (tagToRemove: TagData) => {
+    const handleTagRemove = (tagToRemove: Tag) => {
         const newTags = inputTags.filter((t) => t !== tagToRemove);
         setInputTags(newTags);
         onChange?.(newTags.map((tag) => tag.name));
     };
 
-    const handleTagAdd = (tagToAdd: TagData) => {
+    const handleTagAdd = (tagToAdd: Tag) => {
         const newTags = [...inputTags, tagToAdd];
         setInputTags(newTags);
         setTagPickerOpen(false);
@@ -100,7 +100,7 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                                             tag.unesco_tag &&
                                             !inputTags.includes(tag)
                                     )
-                                    .map((tag: TagData) => (
+                                    .map((tag: Tag) => (
                                         <CommandItem
                                             key={tag.name + "_unesco_tag"}
                                             onSelect={() => handleTagAdd(tag)}
@@ -117,7 +117,7 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                                             !tag.unesco_tag &&
                                             !inputTags.includes(tag)
                                     )
-                                    .map((tag: TagData) => (
+                                    .map((tag: Tag) => (
                                         <CommandItem
                                             key={tag.name + "_custom_tag"}
                                             onSelect={() => handleTagAdd(tag)}

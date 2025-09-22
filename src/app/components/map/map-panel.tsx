@@ -2,7 +2,7 @@
 
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { ExperienceData, StoryData } from "@/types/api";
+import { Experience, Story } from "@/types/api";
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 
@@ -20,8 +20,8 @@ export function MapPanel({
     experiencesSerialized: string; // JSON stringified ExperienceData[]
     experienceSlug: string;
 }) {
-    const stories = JSON.parse(storiesSerialized) as StoryData[];
-    const experiences = JSON.parse(experiencesSerialized) as ExperienceData[];
+    const stories = JSON.parse(storiesSerialized) as Story[];
+    const experiences = JSON.parse(experiencesSerialized) as Experience[];
     const dispatch = useAppDispatch();
 
     useEffect(() => {

@@ -1,5 +1,5 @@
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperienceDTO } from "@/data/dto/story-dto";
+import { getExperienceDTO } from "@/data/dto/experience-dto";
 
 export async function MapOverlay({
     slug,

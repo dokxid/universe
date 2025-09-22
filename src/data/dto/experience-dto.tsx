@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/mongodb/connections";
-import { ExperienceData } from "@/types/api";
+import { Experience } from "@/types/api";
 import Experience from "@/types/models/experiences";
 import { cache } from "react";
 
@@ -15,7 +15,7 @@ export async function getExperiences() {
 
 export async function getExperience(
     experienceSlug: string
-): Promise<ExperienceData> {
+): Promise<Experience> {
     try {
         await dbConnect();
         const experience = await Experience.findOne({

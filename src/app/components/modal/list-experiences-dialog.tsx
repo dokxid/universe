@@ -1,6 +1,6 @@
 "use server";
 
-import { getExperiencesDTO } from "@/data/dto/story-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

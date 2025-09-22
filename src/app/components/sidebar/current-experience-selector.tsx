@@ -2,19 +2,9 @@
 
 import { ExperiencesList } from "@/app/components/sidebar/experiences-list";
 import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { ExperienceData } from "@/types/api";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
 import React, { use } from "react";
@@ -27,7 +17,7 @@ export function CurrentExperienceSelector({
 }) {
     const [open, setOpen] = React.useState(false);
     const searchParams = useSearchParams();
-    const data = JSON.parse(use(experiencesPromise)) as ExperienceData[];
+    const data = JSON.parse(use(experiencesPromise)) as Experience[];
     const safeData = data.map((item) => ({
         ...item,
         stories: [...item.stories],

@@ -1,7 +1,7 @@
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
-import { NewStoryData, StoryData, StoryDataDTO } from "@/types/api";
+import { NewStoryData, Story, StoryDataDTO } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import Experience from "@/types/models/experiences";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
@@ -70,7 +70,7 @@ async function getLabPrivateStories(viewer: User, experienceSlug: string) {
     }
 }
 
-async function getLabStories(experienceSlug: string): Promise<StoryData[]> {
+async function getLabStories(experienceSlug: string): Promise<Story[]> {
     try {
         const experiences = await getExperiences();
         const filteredStories =
@@ -83,7 +83,7 @@ async function getLabStories(experienceSlug: string): Promise<StoryData[]> {
     }
 }
 
-async function getPublicStories(): Promise<StoryData[]> {
+async function getPublicStories(): Promise<Story[]> {
     try {
         const experiences = await getExperiences();
         const flatStories = experiences.flatMap(
@@ -105,7 +105,7 @@ async function insertStory(
 ) {
     try {
         dbConnect();
-        Experience.findOneAndUpdate(
+        await Experience.findOneAndUpdate(
             { slug: experienceSlug },
             { $push: { stories: storyToInsert } },
             { safe: true, upsert: false }
@@ -119,8 +119,9 @@ function canCreateStory(viewer: User, experienceSlug: string) {
     return canViewPrivateStory(viewer, experienceSlug);
 }
 
-function canEditStory(viewer: User, experienceSlug: string) {
-    return canViewPrivateStory(viewer, experienceSlug);
+function canEditStory(viewer: User, story: Story) {
+    // TODO: add is user == author check
+    return false;
 }
 
 function canViewPublicStory(viewer: User) {

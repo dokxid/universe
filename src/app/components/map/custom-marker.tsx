@@ -1,10 +1,6 @@
 import { StoryCardContent } from "@/app/components/map/map-overlay/story-card-content";
-import {
-    HoverCard,
-    HoverCardContent,
-    HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { StoryData } from "@/types/api";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Story } from "@/types/api";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";
@@ -13,7 +9,7 @@ function CustomMarker({
     story,
     experienceSlug,
 }: {
-    story: StoryData;
+    story: Story;
     experienceSlug: string;
 }) {
     return (

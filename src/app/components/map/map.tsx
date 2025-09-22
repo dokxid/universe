@@ -5,16 +5,10 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { ExperienceData, StoryData } from "@/types/api";
+import { Experience, Story } from "@/types/api";
 import { type Map, MapLayerMouseEvent } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import {
-    RAttributionControl,
-    RMap,
-    RMarker,
-    RNavigationControl,
-    useMap,
-} from "maplibre-react-components";
+import { RAttributionControl, RMap, RMarker, RNavigationControl, useMap } from "maplibre-react-components";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,8 +17,8 @@ export default function MyMap({
     experiences,
     experienceSlug,
 }: {
-    stories: StoryData[];
-    experiences: ExperienceData[];
+    stories: Story[];
+    experiences: Experience[];
     experienceSlug: string;
 }) {
     const searchParams = useSearchParams();

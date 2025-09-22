@@ -8,13 +8,13 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { StoryData } from "@/types/api";
+import { Story } from "@/types/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-export const columns: ColumnDef<StoryData>[] = [
+export const columns: ColumnDef<Story>[] = [
     {
         id: "select",
         header: ({ table }) => (

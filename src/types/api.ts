@@ -1,4 +1,4 @@
-type ExperienceData = {
+export type Experience = {
     slug: string;
     center: { coordinates: [number, number] };
     initial_zoom: number;
@@ -6,16 +6,16 @@ type ExperienceData = {
     subtitle: string;
     description: string;
     featured_image: string;
-    stories: StoryData[];
+    stories: Story[];
     organization_id: string;
 };
 
-type TagData = {
+export type Tag = {
     name: string;
     unesco_tag: boolean;
 };
 
-type StoryData = {
+export type Story = {
     author: string;
     content: string;
     draft: boolean;
@@ -31,21 +31,12 @@ type StoryData = {
     updatedAt: Date;
 };
 
-type NewStoryData = Omit<StoryData, "createdAt" | "updatedAt">;
+export type NewStoryData = Omit<Story, "createdAt" | "updatedAt">;
 
-interface StoryDataDTO extends StoryData {
+export interface StoryDataDTO extends Story {
     author_name: string;
 }
 
-type ImageData = {
+export type ImageURL = {
     url: string;
-};
-
-export type {
-    ExperienceData,
-    ImageData,
-    NewStoryData,
-    StoryData,
-    StoryDataDTO,
-    TagData,
 };

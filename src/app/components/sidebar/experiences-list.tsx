@@ -1,7 +1,7 @@
 import { CommandItem } from "@/components/ui/command";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
-import { ExperienceData } from "@/types/api";
+import { Experience } from "@/types/api";
 import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
@@ -11,7 +11,7 @@ export function ExperiencesList({
     experiences,
 }: {
     setOpen: (open: boolean) => void;
-    experiences: ExperienceData[];
+    experiences: Experience[];
 }) {
     const router = useRouter();
     const pathname = usePathname();
@@ -31,7 +31,7 @@ export function ExperiencesList({
         [searchParams]
     );
 
-    return experiences.map((exp: ExperienceData, index: number) => (
+    return experiences.map((exp: Experience, index: number) => (
         <CommandItem
             key={index}
             value={exp.slug}

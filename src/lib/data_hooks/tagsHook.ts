@@ -1,11 +1,11 @@
-import {fetcher} from "@/lib/data_hooks/fetcher";
+import { fetcher } from "@/lib/data_hooks/fetcher";
 import useSWR from "swr";
-import {TagData} from "@/types/api";
+import { Tag } from "@/types/api";
 
 export function useTags() {
     const {data, error, isLoading} = useSWR(`/api/tags`, fetcher)
     return {
-        tags: data as TagData[],
+        tags: data as Tag[],
         isLoading,
         isError: error
     }

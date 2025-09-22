@@ -2,12 +2,12 @@ import "server-only";
 
 import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
-import { ExperienceData } from "@/types/api";
+import { Experience } from "@/types/api";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";
 import { cache } from "react";
-import { getExperienceDTO } from "./dto/story-dto";
+import { getExperienceDTO } from "./dto/experience-dto";
 
 export const getCurrentUser = cache(async () => {
     const { user } = await withAuth({ ensureSignedIn: true });
@@ -61,7 +61,7 @@ async function getUserExperienceRelation(viewer: User, experienceSlug: string) {
     dbConnect();
     const experience = JSON.parse(
         await getExperienceDTO(experienceSlug)
-    ) as ExperienceData;
+    ) as Experience;
     const organizationId = experience.organization_id;
     const membership = await workos.userManagement.listOrganizationMemberships({
         userId: viewer.id,

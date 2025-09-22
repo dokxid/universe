@@ -3,10 +3,11 @@
 import { MapOverlay } from "@/app/components/map/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { getExperiencesDTO, getPublicStoriesDTO } from "@/data/dto/story-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getPublicStoriesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";
 
-export default async function Map({
+export default async function MapView({
     params,
     searchParams,
 }: {
