@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
+
 export type Experience = {
+    _id: string;
     slug: string;
     center: { coordinates: [number, number] };
     initial_zoom: number;
@@ -11,11 +14,13 @@ export type Experience = {
 };
 
 export type Tag = {
+    _id: string;
     name: string;
     unesco_tag: boolean;
 };
 
 export type Story = {
+    _id: string;
     author: string;
     content: string;
     draft: boolean;

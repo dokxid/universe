@@ -10,12 +10,12 @@ import { ExperienceData } from "@/types/models/experiences";
 import { X } from "lucide-react";
 
 type ExperienceDescriptorProps = {
-    setOpen: (open: boolean) => void;
+    setOpenAction: (open: boolean) => void;
     experience: ExperienceData;
 };
 
 export function ExperienceDescriptor({
-    setOpen,
+    setOpenAction,
     experience,
 }: ExperienceDescriptorProps) {
     const currentExperience = experience;
@@ -38,7 +38,7 @@ export function ExperienceDescriptor({
                         <h1 className={"mb-2"}>{currentExperience.title}</h1>
                         <Button
                             variant={"ghost"}
-                            onClick={() => setOpen(false)}
+                            onClick={() => setOpenAction(false)}
                         >
                             <X></X>
                         </Button>

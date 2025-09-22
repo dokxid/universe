@@ -1,12 +1,12 @@
 import dbConnect from "@/lib/mongodb/connections";
 import { Experience } from "@/types/api";
-import Experience from "@/types/models/experiences";
+import ExperienceModel from "@/types/models/experiences";
 import { cache } from "react";
 
-export async function getExperiences() {
+export async function getExperiences(): Promise<Experience[]> {
     try {
         await dbConnect();
-        const experiences = await Experience.find({}).exec();
+        const experiences = await ExperienceModel.find({}).exec();
         return experiences.map((exp) => exp.toJSON());
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
@@ -18,7 +18,7 @@ export async function getExperience(
 ): Promise<Experience> {
     try {
         await dbConnect();
-        const experience = await Experience.findOne({
+        const experience = await ExperienceModel.findOne({
             slug: experienceSlug,
         }).exec();
         if (!experience) throw new Error("experience not found");
@@ -40,7 +40,9 @@ export const getExperiencesDTO = cache(async (): Promise<string> => {
     }
 });
 
-export async function getExperienceDTO(experienceSlug: string) {
+export async function getExperienceDTO(
+    experienceSlug: string
+): Promise<string> {
     try {
         return JSON.stringify(await getExperience(experienceSlug));
     } catch (err) {

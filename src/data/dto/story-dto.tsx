@@ -3,10 +3,11 @@ import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
 import { NewStoryData, Story, StoryDataDTO } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
-import Experience from "@/types/models/experiences";
+import ExperienceModel from "@/types/models/experiences";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { fromEnv } from "@aws-sdk/credential-provider-env";
 import { User } from "@workos-inc/node";
+import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 import "server-only";
 import { z } from "zod";
@@ -83,6 +84,26 @@ async function getLabStories(experienceSlug: string): Promise<Story[]> {
     }
 }
 
+async function getStory(storyId: mongoose.Types.ObjectId): Promise<Story> {
+    try {
+        await dbConnect();
+
+        const result = await ExperienceModel.aggregate([
+            { $unwind: "$stories" },
+            { $match: { "stories._id": storyId } },
+            { $replaceRoot: { newRoot: "$stories" } },
+        ]).exec();
+
+        if (!result || result.length === 0) {
+            throw new Error("Story not found");
+        }
+
+        return result[0];
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
 async function getPublicStories(): Promise<Story[]> {
     try {
         const experiences = await getExperiences();
@@ -105,7 +126,7 @@ async function insertStory(
 ) {
     try {
         dbConnect();
-        await Experience.findOneAndUpdate(
+        await ExperienceModel.findOneAndUpdate(
             { slug: experienceSlug },
             { $push: { stories: storyToInsert } },
             { safe: true, upsert: false }
@@ -181,6 +202,19 @@ export async function getLabStoriesDTO(
         return JSON.stringify(stories);
     } catch (err) {
         console.error("Error fetching lab stories:", err);
+        return "<error>";
+    }
+}
+
+export async function getStoryDTO(id: string): Promise<string> {
+    try {
+        // parse serializable id to mongoose.Types.ObjectId
+        const objectId = new mongoose.Types.ObjectId(id);
+        const story = await getStory(objectId);
+
+        return JSON.stringify(story);
+    } catch (err) {
+        console.error("Error fetching story:", err);
         return "<error>";
     }
 }

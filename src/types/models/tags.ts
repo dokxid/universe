@@ -1,14 +1,13 @@
-import mongoose, { model, models } from "mongoose";
+import { Tag } from "@/types/api";
+import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-export interface TagData extends mongoose.Document {
-    name: string;
-    unesco_tag: boolean;
-}
+export interface TagData extends Omit<Tag, "_id">, mongoose.Document {}
 
 const tagSchema = new Schema({
     name: String,
     unesco_tag: Boolean,
 });
 
-export default mongoose.models.Tag || mongoose.model("Tag", tagSchema, "tags");
+export default mongoose.models.TagModel ||
+    mongoose.model("TagModel", tagSchema, "tags");

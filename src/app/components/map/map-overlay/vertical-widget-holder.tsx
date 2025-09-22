@@ -112,7 +112,7 @@ export function VerticalWidgetHolder({
             </div>
             {!isUniverseView && openDescriptor && (
                 <ExperienceDescriptor
-                    setOpen={setOpenDescriptor}
+                    setOpenAction={setOpenDescriptor}
                     experience={experienceParsed}
                 />
             )}

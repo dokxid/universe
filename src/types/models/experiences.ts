@@ -1,30 +1,11 @@
+import { Experience, Story } from "@/types/api";
 import mongoose, { Schema } from "mongoose";
 
-export interface StoryData extends mongoose.Document {
-    author: string;
-    content: string;
-    draft: boolean;
-    published: boolean;
-    title: string;
-    latitude: number;
-    longitude: number;
-    tags: string[];
-    year: number;
-    featured_image_url: string;
-    visible_universe: boolean;
-}
+export interface StoryData extends Omit<Story, "_id">, mongoose.Document {}
 
-export interface ExperienceData extends mongoose.Document {
-    slug: string;
-    center: { coordinates: [number, number] };
-    initial_zoom: number;
-    title: string;
-    subtitle: string;
-    description: string;
-    featured_image_url: string;
-    organization_id: string;
-    stories: StoryData[];
-}
+export interface ExperienceData
+    extends Omit<Experience, "_id">,
+        mongoose.Document {}
 
 const storySchema = new Schema(
     {
@@ -65,5 +46,5 @@ const experienceSchema = new Schema({
     organization_id: { type: String, required: true },
 });
 
-export default mongoose.models.Experience ||
-    mongoose.model("Experience", experienceSchema, "experiences");
+export default mongoose.models.ExperienceModel ||
+    mongoose.model("ExperienceModel", experienceSchema, "experiences");

@@ -16,17 +16,17 @@ export function FeatureItemGroup() {
         },
         {
             title: "Co-Labs",
-            href: "/labs",
+            href: `/${slug}/labs`,
             icon: Building2,
         },
         {
             title: "Story Experiences",
-            href: "/experiences",
+            href: `/${slug}/experiences`,
             icon: BookOpenText,
         },
         {
             title: "Settings",
-            href: "/settings",
+            href: `/${slug}/settings`,
             icon: SettingsIcon,
         },
         {

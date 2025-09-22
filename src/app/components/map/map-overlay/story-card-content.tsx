@@ -1,5 +1,5 @@
 import S3Image from "@/app/components/s3-image";
-import { Interweave } from "interweave";
+import parse from "html-react-parser";
 
 export function StoryCardContent(props: {
     experience: string;
@@ -21,10 +21,7 @@ export function StoryCardContent(props: {
                 />
             </div>
             <article className={"bg-card text-card-foreground text-wrap grow"}>
-                <Interweave
-                    content={props.content}
-                    className={"text-ellipsis line-clamp-3"}
-                />
+                <div className="prose-content">{parse(props.content)}</div>
                 <a
                     href={"/story/" + props.experience + "/" + props.fileName}
                     className={"text-sm underline"}

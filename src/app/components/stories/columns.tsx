@@ -8,11 +8,13 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Story } from "@/types/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const columns: ColumnDef<Story>[] = [
     {
@@ -83,6 +85,8 @@ export const columns: ColumnDef<Story>[] = [
         id: "actions",
         cell: ({ row }) => {
             const story = row.original;
+            const pathname = usePathname();
+            const slug = pathname.split("/")[1];
 
             return (
                 <DropdownMenu>
@@ -95,7 +99,11 @@ export const columns: ColumnDef<Story>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                            <Link href={`/${slug}/stories/${story._id}`}>
+                                View story
+                            </Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                             View payment details
                         </DropdownMenuItem>
