@@ -57,6 +57,19 @@ export async function isAdmin(
     return false;
 }
 
+export function isSuperAdmin(viewer: User): boolean {
+    return false;
+}
+
+export async function isUserPartOfOrganization(
+    viewer: User,
+    experienceSlug: string
+) {
+    const isActive = await isUserActive(viewer, experienceSlug);
+    const isMember = await isUserMember(viewer, experienceSlug);
+    return isActive && isMember;
+}
+
 async function getUserExperienceRelation(viewer: User, experienceSlug: string) {
     dbConnect();
     const experience = JSON.parse(

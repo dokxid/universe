@@ -8,7 +8,13 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience, Story } from "@/types/api";
 import { type Map, MapLayerMouseEvent } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { RAttributionControl, RMap, RMarker, RNavigationControl, useMap } from "maplibre-react-components";
+import {
+    RAttributionControl,
+    RMap,
+    RMarker,
+    RNavigationControl,
+    useMap,
+} from "maplibre-react-components";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
@@ -77,7 +83,7 @@ export default function MyMap({
                         ptrLngLat={ptrLngLat}
                     />
                 </div>
-                <div className={"sepia h-full w-full brightness-50"}>
+                <div className={"h-full w-full dark:brightness-50 dark:sepia"}>
                     <RMap
                         mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
                         initialCenter={mapState.flyPosition}

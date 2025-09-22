@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 export type Experience = {
     _id: string;
     slug: string;
@@ -36,10 +34,11 @@ export type Story = {
     updatedAt: Date;
 };
 
-export type NewStoryData = Omit<Story, "createdAt" | "updatedAt">;
+export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;
 
-export interface StoryDataDTO extends Story {
-    author_name: string;
+export interface StoryDTO extends Story {
+    author_name?: string;
+    experience?: string;
 }
 
 export type ImageURL = {

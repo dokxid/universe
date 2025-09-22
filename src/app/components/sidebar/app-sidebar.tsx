@@ -14,14 +14,18 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import { Experience } from "@/types/api";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 
-export async function AppSidebar({ slug = "universe" }: { slug?: string }) {
+export async function AppSidebar({ slug }: { slug: string }) {
     const experiencesPromise = getExperiencesDTO();
+    const experience = JSON.parse(await getExperienceDTO(slug)) as Experience;
 
     return (
-        <Sidebar variant="inset">
+        <Sidebar variant={"inset"}>
             {/* sidebar header */}
             {slug === "universe" && (
                 <SidebarHeader className="">
@@ -39,10 +43,29 @@ export async function AppSidebar({ slug = "universe" }: { slug?: string }) {
                 </SidebarHeader>
             )}
 
+            {slug !== "universe" && (
+                <SidebarHeader className="flex flex-col items-start border-b px-4 py-3">
+                    <Link href="/universe/map">
+                        <p className="text-xs text-muted-foreground flex flex-row items-center">
+                            <ChevronLeft className="inline mr-2" size={10} />
+                            Back to universe view
+                        </p>
+                    </Link>
+                    <h1 className="font-semibold">{experience.title}</h1>
+                    <p className="text-xs text-muted-foreground">
+                        {experience.subtitle}
+                    </p>
+                </SidebarHeader>
+            )}
+
             <SidebarContent>
                 <FeatureItemGroup />
-                <EditorItemGroup />
-                <AdminItemGroup />
+                {slug !== "universe" && (
+                    <>
+                        <EditorItemGroup />
+                        <AdminItemGroup />
+                    </>
+                )}
                 <AboutItemGroup />
                 <LinksItemGroup />
             </SidebarContent>

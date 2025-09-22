@@ -12,7 +12,6 @@ export default async function StoryDetails({
     const { slug, id: storyId } = await params;
     const storySerialized = await getStoryDTO(storyId);
     const story = JSON.parse(storySerialized) as Story;
-    console.log("Story:", story);
 
     return (
         <div className="w-full h-full flex">

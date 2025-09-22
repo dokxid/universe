@@ -10,7 +10,7 @@ export function FeatureItemGroup() {
     const slug = pathname.split("/")[1];
     const featureItems: SidebarItemGroup = [
         {
-            title: "Universe Map",
+            title: "Map View",
             href: `/${slug}/map`,
             icon: Map,
         },
@@ -21,12 +21,12 @@ export function FeatureItemGroup() {
         },
         {
             title: "Story Experiences",
-            href: `/${slug}/experiences`,
+            href: `/experiences`,
             icon: BookOpenText,
         },
         {
             title: "Settings",
-            href: `/${slug}/settings`,
+            href: `/settings`,
             icon: SettingsIcon,
         },
         {
