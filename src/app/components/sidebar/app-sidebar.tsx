@@ -14,6 +14,7 @@ import {
     SidebarMenu,
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getCurrentUserOptional, isUserAdmin, isUserMember } from "@/data/auth";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Experience } from "@/types/api";
 import { ChevronLeft } from "lucide-react";
@@ -23,6 +24,9 @@ import { Suspense } from "react";
 export async function AppSidebar({ slug }: { slug: string }) {
     const experiencesPromise = getExperiencesDTO();
     const experience = JSON.parse(await getExperienceDTO(slug)) as Experience;
+    const user = await getCurrentUserOptional();
+    const isEditor = user && (await isUserMember(user, slug));
+    const isAdmin = user && (await isUserAdmin(user, slug));
 
     return (
         <Sidebar variant={"inset"}>
@@ -60,17 +64,13 @@ export async function AppSidebar({ slug }: { slug: string }) {
 
             <SidebarContent>
                 <FeatureItemGroup />
-                {slug !== "universe" && (
-                    <>
-                        <EditorItemGroup />
-                        <AdminItemGroup />
-                    </>
-                )}
+                {isEditor && <EditorItemGroup />}
+                {isAdmin && <AdminItemGroup />}
                 <AboutItemGroup />
                 <LinksItemGroup />
             </SidebarContent>
-            <SidebarFooter>
-                <UserWidget />
+            <SidebarFooter className={"px-4 py-3 border-t"}>
+                <UserWidget slug={slug} />
             </SidebarFooter>
         </Sidebar>
     );

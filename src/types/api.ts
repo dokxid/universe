@@ -8,7 +8,8 @@ export type Experience = {
     description: string;
     featured_image: string;
     stories: Story[];
-    organization_id: string;
+    organization_id?: string;
+    connection_id?: string;
 };
 
 export type Tag = {
@@ -43,4 +44,9 @@ export interface StoryDTO extends Story {
 
 export type ImageURL = {
     url: string;
+};
+
+export type ExperienceSignInDTO = {
+    organization_id?: string;
+    connection_id?: string;
 };

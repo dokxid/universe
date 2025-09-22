@@ -1,4 +1,4 @@
-import { getExperienceDTO } from "@/data/dto/story-dto";
+import { getExperienceDTO } from "@/data/dto/experience-dto";
 import { NextRequest } from "next/server";
 
 export async function GET(

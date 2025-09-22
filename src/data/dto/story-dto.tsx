@@ -2,8 +2,8 @@ import "server-only";
 
 import {
     getCurrentUser,
-    isSuperAdmin,
     isUserPartOfOrganization,
+    isUserSuperAdmin,
 } from "@/data/auth";
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
@@ -41,7 +41,7 @@ function canUserCreateStory(user: User, experienceSlug: string) {
 }
 
 function canUserEditStory(user: User, story: StoryDTO) {
-    if (isSuperAdmin(user)) return true;
+    if (isUserSuperAdmin(user)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
 }
@@ -148,82 +148,58 @@ async function insertStory(
 }
 
 export async function getPublicStoriesDTO() {
-    try {
-        const experiences = await getExperiences();
-        const flatStories = experiences.flatMap(
-            (experience) => experience.stories
-        );
-        const filteredStories = flatStories.filter(
-            (story: { draft: any; published: any }) =>
-                !story.draft && story.published
-        );
-        return JSON.stringify(filteredStories);
-    } catch (err) {
-        console.error("Error fetching public stories:", err);
-        return "<error>";
-    }
+    const experiences = await getExperiences();
+    const flatStories = experiences.flatMap((experience) => experience.stories);
+    const filteredStories = flatStories.filter(
+        (story: { draft: any; published: any }) =>
+            !story.draft && story.published
+    );
+    return JSON.stringify(filteredStories);
 }
 
 export async function getLabPublicStoriesDTO(
     experienceSlug: string
 ): Promise<string> {
-    try {
-        const stories = await getLabPrivateStories(experienceSlug);
-        const filteredStories = stories.filter(isPublicStory);
-        const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
-            filteredStories
-        );
-        return JSON.stringify(sanitizedStories);
-    } catch (err) {
-        console.error("Error fetching lab public stories:", err);
-        return "<error>";
-    }
+    const stories = await getLabPrivateStories(experienceSlug);
+    const filteredStories = stories.filter(isPublicStory);
+    const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
+        filteredStories
+    );
+    return JSON.stringify(sanitizedStories);
 }
 
 export async function getLabPrivateStoriesDTO(
     experienceSlug: string
 ): Promise<string> {
-    try {
-        const user = await getCurrentUser();
-        if (!user) {
-            redirect(
-                "/login?returnTo=/" + experienceSlug + "/stories/dashboard"
-            );
-        }
-        const stories = await getLabPrivateStories(experienceSlug);
-        const filteredStories = stories.filter((story) =>
-            canUserViewStory(user, story)
-        );
-
-        // get all authors and fetch their user data
-        const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
-            filteredStories
-        );
-
-        return JSON.stringify(sanitizedStories);
-    } catch (err) {
-        console.error("Error fetching lab stories:", err);
-        return "<error>";
+    const user = await getCurrentUser();
+    if (!user) {
+        redirect("/login?returnTo=/" + experienceSlug + "/stories/dashboard");
     }
+    const stories = await getLabPrivateStories(experienceSlug);
+    const filteredStories = stories.filter((story) =>
+        canUserViewStory(user, story)
+    );
+
+    // get all authors and fetch their user data
+    const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
+        filteredStories
+    );
+
+    return JSON.stringify(sanitizedStories);
 }
 
 export async function getStoryDTO(id: string): Promise<string> {
-    try {
-        const user = await getCurrentUser();
+    const user = await getCurrentUser();
 
-        // parse serializable id to mongoose.Types.ObjectId
-        const objectId = new mongoose.Types.ObjectId(id);
-        const queryResult = await queryStory(objectId);
+    // parse serializable id to mongoose.Types.ObjectId
+    const objectId = new mongoose.Types.ObjectId(id);
+    const queryResult = await queryStory(objectId);
 
-        if (!canUserViewStory(user, queryResult)) {
-            redirect("/login?returnTo=/stories/" + id);
-        }
-
-        return JSON.stringify(queryResult);
-    } catch (err) {
-        console.error("Error fetching story:", err);
-        return "<error>";
+    if (!canUserViewStory(user, queryResult)) {
+        redirect("/login?returnTo=/stories/" + id);
     }
+
+    return JSON.stringify(queryResult);
 }
 
 export async function submitStoryDTO(formData: FormData, user: User) {

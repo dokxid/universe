@@ -50,3 +50,16 @@ export async function getExperienceDTO(
         return "<error>";
     }
 }
+
+export async function getExperienceSignInDTO(experienceSlug: string) {
+    try {
+        const experience = await getExperience(experienceSlug);
+        return {
+            organization_id: experience.organization_id,
+            connection_id: experience.connection_id,
+        };
+    } catch (err) {
+        console.error(`Error fetching experience ${experienceSlug}:`, err);
+        return null;
+    }
+}

@@ -64,6 +64,7 @@ export default async function middleware(req: any, event: any) {
 // Match against pages that require authentication
 export const config = {
     matcher: [
+        "/:slug/map",
         "/:slug/account/:page*",
         "/:slug/lab/:page*",
         "/:slug/stories/create",
