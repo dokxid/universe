@@ -1,5 +1,6 @@
 "use client";
 
+import { DataTableColumnHeader } from "@/app/components/stories/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -69,23 +70,33 @@ export const columns: ColumnDef<Story>[] = [
     },
     {
         accessorKey: "title",
-        header: "Title",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Title" />
+        ),
     },
     {
         accessorKey: "author_name",
-        header: "Author",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Author" />
+        ),
     },
     {
         accessorKey: "published",
-        header: "Published",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Published" />
+        ),
     },
     {
         accessorKey: "visible_universe",
-        header: "Elevated",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Visible Universe" />
+        ),
     },
     {
         accessorKey: "createdAt",
-        header: "Created At",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Created At" />
+        ),
         cell: ({ row }) => {
             const story = row.original;
             return (
@@ -97,7 +108,9 @@ export const columns: ColumnDef<Story>[] = [
     },
     {
         accessorKey: "updatedAt",
-        header: "Updated At",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Updated At" />
+        ),
         cell: ({ row }) => {
             const story = row.original;
             return (

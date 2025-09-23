@@ -8,6 +8,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 
 export function Dialog({
@@ -29,10 +30,11 @@ export function Dialog({
             }}
         >
             <DialogOverlay />
-            <DialogContent className={"overflow-y-auto"}>
+            <DialogContent className={"overflow-y"}>
                 <div className={"max-h-[80vh] flex flex-col gap-4"}>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
+                    <Separator />
                     <ScrollArea className="**:focus-visible:!ring-transparent **:focus-visible:shadow-none **:focus-within:shadow-none focus-within:!ring-transparent **:focus-within:ring-0">
                         {children}
                     </ScrollArea>

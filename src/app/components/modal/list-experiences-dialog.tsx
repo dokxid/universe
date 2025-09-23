@@ -10,7 +10,7 @@ export async function ListExperiencesDialog() {
     const experiences = JSON.parse(await getExperiencesDTO());
 
     return (
-        <table className="w-full border-collapse table-auto h-fit">
+        <table className="w-fit border-collapse table-auto h-fit">
             <thead className="sr-only">
                 <tr>
                     <th>Image</th>
@@ -24,7 +24,7 @@ export async function ListExperiencesDialog() {
                         className="group border-b hover:bg-muted h-[120px]"
                     >
                         <td>
-                            <div className="relative w-[100px] h-[100px]">
+                            <div className="relative w-[100px] h-[100px] rounded-sm overflow-hidden">
                                 <Image
                                     src={exp.featured_image}
                                     alt={exp.slug + " featured image"}

@@ -26,6 +26,7 @@ export function MapPanel({
 
     useEffect(() => {
         dispatch(setCurrentExperience(experienceSlug));
+        console.log("Set current experience to", experienceSlug);
     }, [dispatch, experienceSlug]);
 
     return (

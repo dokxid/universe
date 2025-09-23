@@ -18,18 +18,39 @@ export async function MapOverlay({
     return (
         <div className={"relative w-full h-full p-4"}>
             <div className="relative w-full h-full">
+                {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
                     <VerticalWidgetHolder
                         experience={experience}
                         slug={experienceSlug}
                     />
                 </div>
+
+                {/* top right */}
                 <div
                     className={
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
                     {/* <StoryDetails /> */}
+                </div>
+
+                {/* bottom right */}
+                <div
+                    className={"absolute bottom-0 right-0 flex flex-col gap-3"}
+                >
+                    <div
+                        className={
+                            "flex flex-col gap-3 pointer-events-auto w-10"
+                        }
+                    >
+                        {/* <Button
+                            variant={"secondary_custom"}
+                            className={"size-10"}
+                        >
+                            <Plus size={10} />
+                        </Button> */}
+                    </div>
                 </div>
             </div>
         </div>

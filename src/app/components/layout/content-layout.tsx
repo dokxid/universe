@@ -45,7 +45,7 @@ export default function ContentLayout({
                         </Breadcrumb>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 items-start">
+                <div className="flex flex-1 flex-col gap-4 p-4 items-start overflow-y-auto">
                     {children}
                 </div>
             </SidebarInset>

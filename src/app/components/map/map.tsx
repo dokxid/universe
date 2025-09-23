@@ -29,7 +29,7 @@ export default function MyMap({
 }) {
     const searchParams = useSearchParams();
     const experience = useMemo(() => {
-        if (!searchParams)
+        if (searchParams.size === 0)
             return experiences.find((exp) => exp.slug === experienceSlug);
         const exp = experiences.find(
             (exp) => exp.slug === searchParams.get("exp")
@@ -41,6 +41,7 @@ export default function MyMap({
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const mapDOM = useRef(null);
     const mapState = useAppSelector((state) => state.map);
+    const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
     function ChildComponent() {
@@ -81,9 +82,9 @@ export default function MyMap({
                         ptrLngLat={ptrLngLat}
                     />
                 </div>
-                <div className={"h-full w-full dark:brightness-50 dark:sepia"}>
+                <div className={"h-full w-full"}>
                     <RMap
-                        mapStyle="https://tiles.stadiamaps.com/styles/stamen_toner.json"
+                        mapStyle={settingsState.mapTiles}
                         initialCenter={mapState.flyPosition}
                         initialZoom={mapState.zoomLevel}
                         initialAttributionControl={false}
@@ -94,6 +95,8 @@ export default function MyMap({
                             height: "100%",
                             backgroundColor: "var(--primary)",
                         }}
+                        doubleClickZoom={false}
+                        onDblClick={handleContextMenu}
                         onContextMenu={handleContextMenu}
                         ref={mapDOM}
                     >

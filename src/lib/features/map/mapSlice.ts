@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface MapState {
     flyPosition: [number, number];
@@ -8,10 +8,10 @@ export interface MapState {
 const initialState: MapState = {
     flyPosition: [24.750592, 59.44435],
     zoomLevel: 5,
-}
+};
 
 export const mapSlice = createSlice({
-    name: 'map',
+    name: "map",
     initialState,
     reducers: {
         setFlyPosition: (state, action) => {
@@ -22,9 +22,10 @@ export const mapSlice = createSlice({
         },
         decrementZoomLevel: (state) => {
             state.zoomLevel -= 1;
-        }
-    }
-})
+        },
+    },
+});
 
-export const {setFlyPosition, setZoomLevel, decrementZoomLevel} = mapSlice.actions
-export default mapSlice.reducer
+export const { setFlyPosition, setZoomLevel, decrementZoomLevel } =
+    mapSlice.actions;
+export default mapSlice.reducer;
