@@ -1,4 +1,5 @@
-type ExperienceData = {
+export type Experience = {
+    _id: string;
     slug: string;
     center: { coordinates: [number, number] };
     initial_zoom: number;
@@ -6,16 +7,19 @@ type ExperienceData = {
     subtitle: string;
     description: string;
     featured_image: string;
-    stories: StoryData[];
-    organization_id: string;
+    stories: Story[];
+    organization_id?: string;
+    connection_id?: string;
 };
 
-type TagData = {
+export type Tag = {
+    _id: string;
     name: string;
     unesco_tag: boolean;
 };
 
-type StoryData = {
+export type Story = {
+    _id: string;
     author: string;
     content: string;
     draft: boolean;
@@ -27,10 +31,22 @@ type StoryData = {
     year: number;
     featured_image_url: string;
     visible_universe: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
-type ImageData = {
+export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;
+
+export interface StoryDTO extends Story {
+    author_name: string;
+    experience: string;
+}
+
+export type ImageURL = {
     url: string;
 };
 
-export type { ExperienceData, ImageData, StoryData, TagData };
+export type ExperienceSignInDTO = {
+    organization_id?: string;
+    connection_id?: string;
+};

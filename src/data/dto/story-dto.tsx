@@ -1,132 +1,141 @@
-import dbConnect from "@/lib/mongodb/connections";
-import { StoryData } from "@/types/api";
-import { submitStoryFormSchema } from "@/types/formSchemas";
-import Experience from "@/types/models/experiences";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { fromEnv } from "@aws-sdk/credential-provider-env";
-import { User } from "@workos-inc/node";
-import { nanoid } from "nanoid";
 import "server-only";
+
+import {
+    getCurrentUser,
+    isUserPartOfOrganization,
+    isUserSuperAdmin,
+} from "@/data/auth";
+import { getExperiences } from "@/data/dto/experience-dto";
+import { workos } from "@/lib/auth";
+import { uploadFile } from "@/lib/aws/s3";
+import dbConnect from "@/lib/mongodb/connections";
+import { Experience, NewStoryData, Story, StoryDTO } from "@/types/api";
+import { submitStoryFormSchema } from "@/types/form-schemas";
+import ExperienceModel from "@/types/models/experiences";
+import { User } from "@workos-inc/node";
+import mongoose from "mongoose";
+import { nanoid } from "nanoid";
+import { redirect } from "next/navigation";
 import { z } from "zod";
-import { isUserActive, isUserMember } from "../auth";
 
-const s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: fromEnv(),
-});
+function isPublicStory(story: Story) {
+    return !story.draft && story.published;
+}
 
-export async function uploadFile(
-    file: File,
-    key: string,
-    slug: string
-): Promise<void> {
+function isStoryOwner(viewer: User, story: StoryDTO) {
+    return viewer.id === story.author;
+}
+
+async function canUserViewStory(user: User, story: StoryDTO) {
+    if (isPublicStory(story)) {
+        return true;
+    }
+    if (await canUserEditStory(user, story)) {
+        return true;
+    }
+    return false;
+}
+
+function canUserCreateStory(user: User, experienceSlug: string) {
+    return isUserPartOfOrganization(user, experienceSlug);
+}
+
+async function canUserEditStory(user: User, story: StoryDTO) {
+    if (await isUserSuperAdmin(user, story.experience)) return true;
+    if (isStoryOwner(user, story)) return true;
+    return false;
+}
+
+async function fetchAndMapAuthorsForStoryDTO(
+    stories: StoryDTO[]
+): Promise<StoryDTO[]> {
+    // get unique author ids
+    const authors = stories.map((story) => story.author);
+    const uniqueAuthors = [...new Set(authors)];
+    const users = [];
+    for (const author of uniqueAuthors) {
+        try {
+            const user = await workos.userManagement.getUser(author);
+            users.push(user);
+        } catch (err) {
+            console.error(`Error fetching user ${author}:`, err);
+        }
+    }
+
+    // map author ids to user data
+    const authorMap: { [key: string]: string } = {};
+    users.forEach((user) => {
+        authorMap[user.id] = user.firstName + " " + user.lastName;
+    });
+
+    // replace author ids with user data in stories
+    stories.forEach((story) => {
+        if (authorMap[story.author]) {
+            story.author_name = authorMap[story.author];
+        } else {
+            story.author_name = "Unknown Author";
+        }
+    });
+
+    return stories;
+}
+
+async function getLabPrivateStories(
+    experienceSlug: string
+): Promise<StoryDTO[]> {
     try {
-        // Convert File to Buffer using the stream() method
-        const bytes = await file.stream();
-        const chunks = [];
+        const experiences = await getExperiences();
+        const experience = experiences.find(
+            (experience) => experience.slug == experienceSlug
+        );
+        if (!experience) {
+            throw new Error("Experience not found");
+        }
+        const stories = experience.stories.map((story) => ({
+            ...story,
+            experience: experienceSlug,
+        })) as StoryDTO[];
+        return stories;
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
 
-        // Read all chunks from the stream
-        const reader = bytes.getReader();
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            chunks.push(value);
+async function queryStory(storyId: mongoose.Types.ObjectId): Promise<StoryDTO> {
+    try {
+        await dbConnect();
+
+        const queryResult = (await ExperienceModel.aggregate([
+            { $unwind: "$stories" },
+            { $match: { "stories._id": storyId } },
+        ]).exec()) as Experience[];
+
+        // detect if no story was found
+        if (!queryResult || queryResult.length === 0) {
+            throw new Error("Story not found");
         }
 
-        // Combine all chunks into a single Buffer
-        const buffer = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+        // add experience slug and author name to story dto
+        const queriedStory: StoryDTO = queryResult[0]
+            .stories as unknown as StoryDTO;
+        queriedStory.experience = queryResult[0].slug;
+        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([
+            queriedStory,
+        ]);
 
-        // Upload the Buffer to S3
-        await s3Client.send(
-            new PutObjectCommand({
-                Bucket: process.env.AWS_BUCKET_NAME,
-                Body: buffer,
-                Key: `${slug}/${key}`,
-                ContentType: file.type,
-                ContentLength: file.size,
-            })
-        );
-    } catch (err) {
-        console.error(`Failed to upload ${key}:`, err);
-        throw err;
-    }
-}
-
-async function getExperiences() {
-    try {
-        await dbConnect();
-        const experiences = await Experience.find({}).exec();
-        return JSON.stringify(experiences.map((exp) => exp.toJSON()));
+        return storyWithAuthor[0];
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
-async function getExperience(experienceSlug: string) {
-    try {
-        await dbConnect();
-        const experience = await Experience.findOne({
-            slug: experienceSlug,
-        }).exec();
-        if (!experience) throw new Error("experience not found");
-        return JSON.stringify(experience.toJSON());
-    } catch (err) {
-        throw new Error(
-            "couldn't fetch experience: " +
-                (err instanceof Error ? err.message : "Unknown error")
-        );
-    }
-}
-
-async function getLabPrivateStories(viewer: User, experienceSlug: string) {
-    if (!(await canSeePrivateStory(viewer, experienceSlug))) {
-        throw new Error("You do not have permission to view these stories.");
-    }
-    try {
-        const experiences = await getExperiences();
-        const filteredStories =
-            experiences
-                .filter((experience) => experience.slug == experienceSlug)
-                .pop()?.stories ?? [];
-        return filteredStories.map((story) => story.toJSON());
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function getLabStories(experienceSlug: string) {
-    try {
-        const experiences = await getExperiences();
-        const filteredStories = experiences
-            .filter((experience) => experience.slug == experienceSlug)
-            .pop()
-            ?.stories.map((story) => story.toJSON());
-        return JSON.stringify(filteredStories);
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function getPublicStories() {
-    try {
-        const experiences = JSON.parse(await getExperiences());
-        const flatStories = experiences
-            .flatMap((experience) => experience.stories)
-        const filteredStories = flatStories
-            .filter(
-                (story: { draft: any; published: any }) =>
-                    !story.draft && story.published
-            );
-        return JSON.stringify(filteredStories);
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function insertStory(storyToInsert: StoryData, experienceSlug: string) {
+async function insertStory(
+    storyToInsert: NewStoryData,
+    experienceSlug: string
+) {
     try {
         dbConnect();
-        Experience.findOneAndUpdate(
+        await ExperienceModel.findOneAndUpdate(
             { slug: experienceSlug },
             { $push: { stories: storyToInsert } },
             { safe: true, upsert: false }
@@ -136,40 +145,70 @@ async function insertStory(storyToInsert: StoryData, experienceSlug: string) {
     }
 }
 
-function canCreateStory(viewer: User, experienceSlug: string) {
-    return canSeePrivateStory(viewer, experienceSlug);
-}
-
-function canSeePublicStory(viewer: User) {
-    return true;
-}
-
-async function canSeePrivateStory(viewer: User, experienceSlug: string) {
-    const isActive = await isUserActive(viewer, experienceSlug);
-    const isMember = await isUserMember(viewer, experienceSlug);
-    return isActive && isMember;
-}
-
 export async function getPublicStoriesDTO() {
-    return getPublicStories();
+    const experiences = await getExperiences();
+    const flatStories = experiences.flatMap((experience) => experience.stories);
+    const filteredStories = flatStories.filter(
+        (story: { draft: boolean; published: boolean }) =>
+            !story.draft && story.published
+    );
+    return JSON.stringify(filteredStories);
 }
 
-export async function getLabStoriesDTO(experienceSlug: string) {
-    return getLabStories(experienceSlug);
+export async function getLabPublicStoriesDTO(
+    experienceSlug: string
+): Promise<string> {
+    const stories = await getLabPrivateStories(experienceSlug);
+    const filteredStories = stories.filter(isPublicStory);
+    const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
+        filteredStories
+    );
+    return JSON.stringify(sanitizedStories);
 }
 
-export async function getExperiencesDTO(): Promise<string> {
-    return getExperiences();
+export async function getLabPrivateStoriesDTO(
+    experienceSlug: string
+): Promise<string> {
+    const user = await getCurrentUser();
+    if (!user) {
+        redirect("/login?returnTo=/" + experienceSlug + "/stories/dashboard");
+    }
+    const stories = await getLabPrivateStories(experienceSlug);
+    const filteredStories = stories.filter(
+        async (story) => await canUserViewStory(user, story)
+    );
+
+    // get all authors and fetch their user data
+    const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
+        filteredStories
+    );
+
+    return JSON.stringify(sanitizedStories);
 }
 
-export async function getExperienceDTO(experienceSlug: string) {
-    return getExperience(experienceSlug);
+export async function getStoryDTO(id: string): Promise<string> {
+    const user = await getCurrentUser();
+
+    // validate id before creating ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new Error("Invalid story id format.");
+    }
+
+    // parse serializable id to mongoose.Types.ObjectId
+    const objectId = new mongoose.Types.ObjectId(id);
+    const queryResult = await queryStory(objectId);
+
+    if (!canUserViewStory(user, queryResult)) {
+        redirect("/login?returnTo=/stories/" + id);
+    }
+
+    return JSON.stringify(queryResult);
 }
 
 export async function submitStoryDTO(formData: FormData, user: User) {
     // check if the user has permission to create a story for the given experience
     const experienceSlug = formData.get("experience") as string;
-    if (!(await canCreateStory(user, experienceSlug))) {
+    if (!(await canUserCreateStory(user, experienceSlug))) {
         throw new Error(
             "You do not have permission to create a story for this experience."
         );
@@ -196,14 +235,13 @@ export async function submitStoryDTO(formData: FormData, user: User) {
     // Validate the processed data
     const validationResult = submitStoryFormSchema.safeParse(processedData);
     if (!validationResult.success) {
-        console.log(z.prettifyError(validationResult.error));
         throw new Error(z.prettifyError(validationResult.error));
     }
 
     // prepare the data for insertion
     const data = validationResult.data;
     const uploadedFileName = `${data.experience}_${nanoid()}_${file.name}`;
-    const storyToInsert: StoryData = {
+    const storyToInsert: NewStoryData = {
         author: user.id,
         content: data.content,
         title: data.title,
@@ -218,7 +256,6 @@ export async function submitStoryDTO(formData: FormData, user: User) {
         visible_universe: true,
         published: true,
     };
-    console.log(JSON.stringify(storyToInsert));
 
     try {
         // Upload the file and insert the story

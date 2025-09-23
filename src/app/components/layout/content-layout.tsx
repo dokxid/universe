@@ -11,15 +11,19 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function ContentLayout({
+    slug,
+    feature,
     children,
 }: {
+    slug: string;
+    feature: string;
     children: React.ReactNode;
 }) {
     return (
         <div className="w-full h-full flex">
-            <AppSidebar />
+            <AppSidebar slug={slug} />
             <SidebarInset>
-                <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+                <header className="flex h-16 shrink-0 gap-2 border-b">
                     <div className="flex items-center gap-2 px-3">
                         <SidebarTrigger />
                         <Separator
@@ -30,20 +34,18 @@ export default function ContentLayout({
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
                                     <BreadcrumbLink href="#">
-                                        Universe
+                                        {slug}
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator className="hidden md:block" />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>
-                                        Submit Story
-                                    </BreadcrumbPage>
+                                    <BreadcrumbPage>{feature}</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 justify-center">
+                <div className="flex flex-1 flex-col gap-4 p-4 items-start">
                     {children}
                 </div>
             </SidebarInset>

@@ -1,6 +1,7 @@
 "use server";
 
-import { getExperiencesDTO } from "@/data/dto/story-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { Experience } from "@/types/api";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +18,7 @@ export async function ListExperiencesDialog() {
                 </tr>
             </thead>
             <tbody className="">
-                {experiences.map((exp) => (
+                {experiences.map((exp: Experience) => (
                     <tr
                         key={exp.slug}
                         className="group border-b hover:bg-muted h-[120px]"
@@ -35,7 +36,7 @@ export async function ListExperiencesDialog() {
                         </td>
                         <td>
                             <Link
-                                href={`/lab/${exp.slug}`}
+                                href={`/${exp.slug}/map`}
                                 className={
                                     "ml-5 flex flex-col h-full justify-center"
                                 }

@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { submitStoryFormSchema } from "@/types/formSchemas";
+import { useAppSelector } from "@/lib/hooks";
+import { submitStoryFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import React from "react";
@@ -63,10 +63,7 @@ export default function AddStoryForm() {
             formData.append("experience", values.experience);
             formData.append("draft", values.draft.toString());
             formData.append("file", featuredImage as File);
-            console.log("FormData entries:");
-            for (const [key, value] of formData.entries()) {
-                console.log(key, value); // Debugging log
-            }
+
             submitStory(formData, user).then(
                 () => {
                     toast.success("Story added successfully!");
@@ -91,7 +88,6 @@ export default function AddStoryForm() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null;
         setFeaturedImage(file);
-        console.log("Selected file:", file);
     };
 
     return (

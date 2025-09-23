@@ -1,38 +1,50 @@
 import { CommandItem } from "@/components/ui/command";
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
-import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
-import { ExperienceData } from "@/types/api";
+import { Experience } from "@/types/api";
 import { CheckIcon } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 
 export function ExperiencesList({
     setOpen,
     experiences,
+    currentExperience,
 }: {
     setOpen: (open: boolean) => void;
-    experiences: ExperienceData[];
+    experiences: Experience[];
+    currentExperience: Experience;
 }) {
-    const dispatch = useAppDispatch();
-    const experiencesState = useAppSelector((state) => state.experiences);
-    return experiences.map((exp: ExperienceData, index: number) => (
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    // Get a new searchParams string by merging the current
+    // searchParams with a provided key/value pair
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set(name, value);
+
+            return params.toString();
+        },
+        [searchParams]
+    );
+
+    return experiences.map((exp: Experience, index: number) => (
         <CommandItem
             key={index}
             value={exp.slug}
             onSelect={(selectedValue) => {
-                if (selectedValue == experiencesState.currentExperience) {
-                    return;
-                }
-                dispatch(setCurrentExperience(selectedValue));
+                router.push(
+                    pathname + "?" + createQueryString("exp", selectedValue)
+                );
                 setOpen(false);
-                dispatch(setFlyPosition(exp.center.coordinates));
-                dispatch(setZoomLevel(exp.initial_zoom));
             }}
         >
             <CheckIcon
                 className={cn(
                     "mr-2 h-4 w-4",
-                    experiencesState.currentExperience === exp.slug
+                    currentExperience.slug === exp.slug
                         ? "opacity-100"
                         : "opacity-0"
                 )}

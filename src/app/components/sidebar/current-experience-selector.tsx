@@ -14,9 +14,9 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAppSelector } from "@/lib/hooks";
-import { ExperienceData } from "@/types/api";
+import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
+import { redirect, useSearchParams } from "next/navigation";
 import React, { use } from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
@@ -25,22 +25,19 @@ export function CurrentExperienceSelector({
 }: {
     experiencesPromise: Promise<string>;
 }) {
-    const experiencesState = useAppSelector((state) => state.experiences);
-    const data = JSON.parse(use(experiencesPromise)) as ExperienceData[];
+    const [open, setOpen] = React.useState(false);
+    const searchParams = useSearchParams();
+    const data = JSON.parse(use(experiencesPromise)) as Experience[];
     const safeData = data.map((item) => ({
         ...item,
         stories: [...item.stories],
     }));
-    const experience = safeData
-        .filter(
-            (experience) =>
-                experience.slug === experiencesState.currentExperience
-        )
-        .pop();
+    const experience = safeData.find(
+        (exp) => exp.slug === (searchParams.get("exp") ?? "universe")
+    );
     if (!experience) {
-        throw new Error("No experience found.");
+        redirect("/universe/map");
     }
-    const [open, setOpen] = React.useState(false);
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -62,6 +59,7 @@ export function CurrentExperienceSelector({
                         <CommandGroup>
                             <ExperiencesList
                                 experiences={safeData}
+                                currentExperience={experience}
                                 setOpen={setOpen}
                             />
                         </CommandGroup>

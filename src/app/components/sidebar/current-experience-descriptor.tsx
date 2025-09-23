@@ -1,7 +1,7 @@
-import {ExperienceData} from "@/types/api";
+import { Experience } from "@/types/api";
 
 export default function CurrentExperienceDescriptor(
-    {experience}: { experience: ExperienceData }
+    {experience}: { experience: Experience }
 ) {
 
     return (

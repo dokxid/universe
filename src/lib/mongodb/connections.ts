@@ -1,17 +1,22 @@
 import mongoose from "mongoose";
 
+interface MongooseCache {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+}
+
+// Extend global to include mongoose cache
 declare global {
-    var mongoose: any; // This must be a `var` and not a `let / const`
+    var mongoose: MongooseCache | undefined;
 }
 
-let cached = global.mongoose;
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
-if (!cached) {
-    cached = global.mongoose = { conn: null, promise: null };
+if (!global.mongoose) {
+    global.mongoose = cached;
 }
 
-async function dbConnect() {
-    // throw error if no .env variable for mongodb_url
+async function dbConnect(): Promise<typeof mongoose> {
     if (!process.env.MONGODB_URL) {
         throw new Error(
             "please make sure to setup the .env like explained in the README.md"
@@ -30,22 +35,18 @@ async function dbConnect() {
     if (cached.conn) {
         return cached.conn;
     }
+
     if (!cached.promise) {
-        const opts = {
-            bufferCommands: false,
-        };
-        cached.promise = mongoose.connect(uri, opts).then((mongoose) => {
-            return mongoose;
-        });
-    }
-    try {
-        cached.conn = await cached.promise;
-    } catch (e) {
-        cached.promise = null;
-        throw e;
+        cached.promise = mongoose.connect(uri);
     }
 
-    return cached.conn;
+    try {
+        cached.conn = await cached.promise;
+        return cached.conn;
+    } catch (error) {
+        cached.promise = null;
+        throw error;
+    }
 }
 
 export default dbConnect;

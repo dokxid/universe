@@ -1,15 +1,28 @@
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
-import { NextResponse } from "next/server";
+import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const CSP_ENABLED = false;
+const SLUG_PATH_PREFIX = "/:slug";
 
-export default async function middleware(req: any, event: any) {
+const unauthenticatedPaths = [
+    "/map",
+    "/stories",
+    "/stories/:id",
+    "/experiences",
+];
+
+export default async function middleware(
+    req: NextRequest,
+    event: NextFetchEvent
+) {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
     let response = await authkitMiddleware({
         middlewareAuth: {
             enabled: true,
-            unauthenticatedPaths: ["/", "/test"],
+            unauthenticatedPaths: unauthenticatedPaths.map(
+                (path) => SLUG_PATH_PREFIX + path
+            ),
         },
     })(req, event);
 
@@ -54,15 +67,12 @@ export default async function middleware(req: any, event: any) {
 // Match against pages that require authentication
 export const config = {
     matcher: [
-        "/",
-        "/account/:page*",
-        "/images/:page*",
-        "/lab/:page*",
-        "/test",
-        "/addstory",
-        "/settings",
-        "/experiences",
-        "/map",
-        "/stories/create",
+        "/:slug/map",
+        "/:slug/account/:page*",
+        "/:slug/lab/:page*",
+        "/:slug/stories/create",
+        "/:slug/stories/manage",
+        "/:slug/stories/dashboard",
+        "/:slug/stories/:id",
     ],
 };

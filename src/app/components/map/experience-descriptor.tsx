@@ -6,27 +6,19 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useAppSelector } from "@/lib/hooks";
-import { ExperienceData } from "@/types/models/experiences";
+import { ExperienceModelData } from "@/types/models/experiences";
 import { X } from "lucide-react";
 
 type ExperienceDescriptorProps = {
-    setOpen: (open: boolean) => void;
-    experiences: ExperienceData[];
+    setOpenAction: (open: boolean) => void;
+    experience: ExperienceModelData;
 };
 
 export function ExperienceDescriptor({
-    setOpen,
-    experiences,
+    setOpenAction,
+    experience,
 }: ExperienceDescriptorProps) {
-    const experiencesState = useAppSelector((state) => state.experiences);
-    const currentExperience = experiences.find(
-        (exp) => exp.slug === experiencesState.currentExperience
-    ) || {
-        title: "No title found",
-        subtitle: "No subtitle found",
-        description: "<p>No description found</p>",
-    };
+    const currentExperience = experience;
 
     return (
         <ResizablePanelGroup
@@ -46,7 +38,7 @@ export function ExperienceDescriptor({
                         <h1 className={"mb-2"}>{currentExperience.title}</h1>
                         <Button
                             variant={"ghost"}
-                            onClick={() => setOpen(false)}
+                            onClick={() => setOpenAction(false)}
                         >
                             <X></X>
                         </Button>

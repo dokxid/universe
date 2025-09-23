@@ -1,28 +1,24 @@
-import { StoryCardContent } from "@/app/components/map/story-card-content";
+import { StoryCardContent } from "@/app/components/map/map-overlay/story-card-content";
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { StoryData } from "@/types/api";
+import { Story } from "@/types/api";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";
 
-function CustomMarker({
-    story,
-    experienceSlug,
-}: {
-    story: StoryData;
-    experienceSlug: string;
-}) {
+function CustomMarker({ story }: { story: Story }) {
     return (
-        <HoverCard>
+        <HoverCard openDelay={10}>
             <HoverCardTrigger>
                 <MapPin
                     size={30}
-                    fill={"#DBA726"}
+                    fill={"#D7263D"}
                     className={"cursor-pointer"}
+                    strokeWidth={1}
+                    stroke={"#FFFFFF"}
                 />
             </HoverCardTrigger>
             <HoverCardContent>

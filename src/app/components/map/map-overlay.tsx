@@ -1,13 +1,28 @@
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperiencesDTO } from "@/data/dto/story-dto";
+import { getExperienceDTO } from "@/data/dto/experience-dto";
 
-export async function MapOverlay() {
-    const experiences = await getExperiencesDTO();
+export async function MapOverlay({
+    slug,
+    experienceSearchParam,
+}: {
+    slug: string;
+    experienceSearchParam: string | string[] | undefined;
+}) {
+    const experienceSlug = slug ?? "universe";
+    const selectedExperience =
+        experienceSearchParam && !Array.isArray(experienceSearchParam)
+            ? experienceSearchParam
+            : slug;
+    const experience = await getExperienceDTO(selectedExperience);
+
     return (
         <div className={"relative w-full h-full p-4"}>
             <div className="relative w-full h-full">
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
-                    <VerticalWidgetHolder experiences={experiences} />
+                    <VerticalWidgetHolder
+                        experience={experience}
+                        slug={experienceSlug}
+                    />
                 </div>
                 <div
                     className={

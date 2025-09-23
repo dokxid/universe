@@ -10,7 +10,7 @@ const linksItems: SidebarItemGroup = [
     },
     {
         title: "CIE Website",
-        href: "https://www.heritage-activities.org/",
+        href: "https://heritage-activities.org/",
         icon: Globe,
     },
 ];

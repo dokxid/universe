@@ -3,14 +3,13 @@
 import { ExperienceDescriptor } from "@/app/components/map/experience-descriptor";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { decrementZoomLevel } from "@/lib/features/map/mapSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { ExperienceData } from "@/types/models/experiences";
-import { ArrowLeftToLine, ChevronsDownUp } from "lucide-react";
+import { useAppDispatch } from "@/lib/hooks";
+import { Experience } from "@/types/api";
+import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useParams } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback } from "react";
 
 const Geocoder = dynamic(
     () =>
@@ -24,17 +23,46 @@ const geocoderTheme = {
     variables: {},
 };
 
-export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
-    const labSlug = useParams<{ labSlug: string }>().labSlug || "universe";
-    const experiencesState = useAppSelector((state) => state.experiences);
+export function VerticalWidgetHolder({
+    experience,
+    slug,
+}: {
+    experience: string;
+    slug: string;
+}) {
+    const searchParams = useSearchParams();
+    const expParam = searchParams.get("exp");
+    const isUniverseView =
+        (slug === "universe" && !expParam) || expParam === "universe";
+    const router = useRouter();
+    const pathname = usePathname();
+    const experienceParsed: Experience = JSON.parse(experience);
+
+    // hooks
     const dispatch = useAppDispatch();
     const [openDescriptor, setOpenDescriptor] = React.useState(true);
-    const experiencesParsed: ExperienceData[] = JSON.parse(experiences);
+
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set(name, value);
+
+            return params.toString();
+        },
+        [searchParams]
+    );
+
     return (
         <>
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
-                <SidebarTrigger variant={"secondary"} className="pointer-events-auto size-10" />
-                {experiencesState.currentExperience == "universe" && (
+                <SidebarTrigger
+                    variant={"secondary"}
+                    className="pointer-events-auto size-10 hover:ring-2"
+                />
+                <Button variant={"secondary"} className="size-10 hover:ring-2">
+                    <Funnel />
+                </Button>
+                {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
                         options={{
@@ -44,24 +72,27 @@ export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
                         theme={geocoderTheme}
                     />
                 )}
-                {labSlug == "universe" &&
-                    experiencesState.currentExperience != "universe" && (
-                        <Button
-                            onClick={() => {
-                                dispatch(setCurrentExperience("universe"));
-                                dispatch(decrementZoomLevel());
-                            }}
-                            className={
-                                "flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"
-                            }
-                        >
-                            <ArrowLeftToLine className={"size-4"} />
-                            <p className={"text-xs hidden lg:inline-block"}>
-                                Back to universe view
-                            </p>
-                        </Button>
-                    )}
-                {experiencesState.currentExperience != "universe" && (
+                {slug == "universe" && !isUniverseView && (
+                    <Button
+                        onClick={() => {
+                            router.push(
+                                pathname +
+                                    "?" +
+                                    createQueryString("exp", "universe")
+                            );
+                            dispatch(decrementZoomLevel());
+                        }}
+                        className={
+                            "flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"
+                        }
+                    >
+                        <ArrowLeftToLine className={"size-4"} />
+                        <p className={"text-xs hidden lg:inline-block"}>
+                            Back to universe view
+                        </p>
+                    </Button>
+                )}
+                {!isUniverseView && (
                     <Button
                         onClick={() => setOpenDescriptor(!openDescriptor)}
                         className={`h-10 flex flex-row gap-2 items-center ${
@@ -79,13 +110,12 @@ export function VerticalWidgetHolder({ experiences }: { experiences: string }) {
                     </Button>
                 )}
             </div>
-            {experiencesState.currentExperience != "universe" &&
-                openDescriptor && (
-                    <ExperienceDescriptor
-                        setOpen={setOpenDescriptor}
-                        experiences={experiencesParsed}
-                    />
-                )}
+            {!isUniverseView && openDescriptor && (
+                <ExperienceDescriptor
+                    setOpenAction={setOpenDescriptor}
+                    experience={experienceParsed}
+                />
+            )}
         </>
     );
 }
