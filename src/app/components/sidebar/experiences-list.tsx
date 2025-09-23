@@ -1,5 +1,4 @@
 import { CommandItem } from "@/components/ui/command";
-import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { Experience } from "@/types/api";
 import { CheckIcon } from "lucide-react";
@@ -9,14 +8,15 @@ import { useCallback } from "react";
 export function ExperiencesList({
     setOpen,
     experiences,
+    currentExperience,
 }: {
     setOpen: (open: boolean) => void;
     experiences: Experience[];
+    currentExperience: Experience;
 }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const experiencesState = useAppSelector((state) => state.experiences);
 
     // Get a new searchParams string by merging the current
     // searchParams with a provided key/value pair
@@ -44,7 +44,7 @@ export function ExperiencesList({
             <CheckIcon
                 className={cn(
                     "mr-2 h-4 w-4",
-                    experiencesState.currentExperience === exp.slug
+                    currentExperience.slug === exp.slug
                         ? "opacity-100"
                         : "opacity-0"
                 )}

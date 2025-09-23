@@ -2,8 +2,18 @@
 
 import { ExperiencesList } from "@/app/components/sidebar/experiences-list";
 import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandList,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
@@ -49,6 +59,7 @@ export function CurrentExperienceSelector({
                         <CommandGroup>
                             <ExperiencesList
                                 experiences={safeData}
+                                currentExperience={experience}
                                 setOpen={setOpen}
                             />
                         </CommandGroup>
