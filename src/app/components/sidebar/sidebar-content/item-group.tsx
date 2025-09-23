@@ -36,7 +36,8 @@ export function ItemGroup({
                     <SidebarMenuButton asChild>
                         <Link
                             href={item.href}
-                            className="flex items-center w-full"
+                            className={"flex items-center w-full"}
+                            aria-label={item.title}
                         >
                             <item.icon />
                             <span>{item.title}</span>
@@ -49,10 +50,15 @@ export function ItemGroup({
                                     <MoreHorizontal />
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent side="right" align="start">
+                            <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                aria-label={"Dropdown area for " + item.title}
+                            >
                                 {item.dropdownItems.map((dropdownItem) => (
                                     <DropdownMenuItem
                                         key={dropdownItem.title}
+                                        aria-label={dropdownItem.title}
                                         asChild
                                     >
                                         <a href={dropdownItem.href}>

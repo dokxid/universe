@@ -5,6 +5,23 @@ const nextConfig: NextConfig = {
     // added because my node activated from ~/ instead of directory root
     outputFileTracingRoot: path.join(__dirname),
 
+    async redirects() {
+        return [
+            // Basic redirect
+            {
+                source: "/",
+                destination: "/universe/map",
+                permanent: true,
+            },
+            // Wildcard path matching
+            {
+                source: "/:slug",
+                destination: "/:slug/map",
+                permanent: true,
+            },
+        ];
+    },
+
     images: {
         remotePatterns: [
             // images taken from the heritagelab.center site

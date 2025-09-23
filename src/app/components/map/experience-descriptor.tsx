@@ -7,7 +7,8 @@ import {
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Experience } from "@/types/api";
-import { X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
+import Link from "next/link";
 
 type ExperienceDescriptorProps = {
     setOpenAction: (open: boolean) => void;
@@ -35,7 +36,16 @@ export function ExperienceDescriptor({
                     }
                 >
                     <div className={"flex flex-row justify-between"}>
-                        <h1 className={"mb-2"}>{currentExperience.title}</h1>
+                        <h1 className={"mb-2 "}>
+                            <Link href={`/${currentExperience.slug}/map`}>
+                                {currentExperience.title}
+                                <ChevronRight
+                                    className="inline ml-2"
+                                    size={20}
+                                    strokeWidth={3}
+                                />
+                            </Link>
+                        </h1>
                         <Button
                             variant={"ghost"}
                             onClick={() => setOpenAction(false)}

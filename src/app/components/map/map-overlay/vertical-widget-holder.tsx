@@ -82,8 +82,9 @@ export function VerticalWidgetHolder({
                             );
                             dispatch(decrementZoomLevel());
                         }}
+                        variant={"secondary"}
                         className={
-                            "flex flex-row gap-2 items-center bg-primary text-primary-foreground h-10 hover:bg-primary-foreground hover:text-primary"
+                            "flex flex-row gap-2 items-center h-10 hover:ring-2"
                         }
                     >
                         <ArrowLeftToLine className={"size-4"} />
@@ -95,10 +96,10 @@ export function VerticalWidgetHolder({
                 {!isUniverseView && (
                     <Button
                         onClick={() => setOpenDescriptor(!openDescriptor)}
-                        className={`h-10 flex flex-row gap-2 items-center ${
+                        className={`h-10 flex flex-row gap-2 items-center hover:ring-2 ${
                             openDescriptor
-                                ? "bg-primary-foreground text-primary hover:bg-primary hover:text-primary-foreground"
-                                : "bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                                ? "bg-primary text-primary-foreground hover:bg-primary hover:ring-secondary"
+                                : "bg-secondary text-secondary-foreground hover:bg-secondary hover:ring-primary"
                         }`}
                     >
                         <ChevronsDownUp className={"size-4"} />

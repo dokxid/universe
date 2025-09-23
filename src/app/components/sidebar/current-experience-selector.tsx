@@ -46,6 +46,7 @@ export function CurrentExperienceSelector({
                     role={"combobox"}
                     aria-expanded={open}
                     className={"w-full justify-between min-h-20 max-h20"}
+                    aria-label={"Experience Selector"}
                 >
                     <CurrentExperienceDescriptor experience={experience} />
                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

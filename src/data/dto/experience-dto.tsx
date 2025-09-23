@@ -46,8 +46,11 @@ export async function getExperienceDTO(
     try {
         return JSON.stringify(await getExperience(experienceSlug));
     } catch (err) {
-        console.error(`Error fetching experience ${experienceSlug}:`, err);
-        return "<error>";
+        throw new Error(
+            `Error fetching experience ${experienceSlug}: ${
+                err instanceof Error ? err.message : "Unknown error"
+            }`
+        );
     }
 }
 
@@ -59,7 +62,10 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
             connection_id: experience.connection_id,
         };
     } catch (err) {
-        console.error(`Error fetching experience ${experienceSlug}:`, err);
-        return null;
+        throw new Error(
+            `Error fetching experience ${experienceSlug}: ${
+                err instanceof Error ? err.message : "Unknown error"
+            }`
+        );
     }
 }

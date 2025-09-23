@@ -39,6 +39,7 @@ export async function isUserMember(
     experienceSlug: string
 ): Promise<boolean> {
     try {
+        if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelation(
             viewer,
             experienceSlug
@@ -57,6 +58,7 @@ export async function isUserAdmin(
     experienceSlug: string
 ): Promise<boolean> {
     try {
+        if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelation(
             viewer,
             experienceSlug
