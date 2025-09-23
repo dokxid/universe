@@ -16,8 +16,8 @@ export function MapPanel({
     experiencesSerialized,
     experienceSlug,
 }: {
-    storiesSerialized: string; // JSON stringified StoryData[]
-    experiencesSerialized: string; // JSON stringified ExperienceData[]
+    storiesSerialized: string;
+    experiencesSerialized: string;
     experienceSlug: string;
 }) {
     const stories = JSON.parse(storiesSerialized) as Story[];

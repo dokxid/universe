@@ -174,8 +174,8 @@ export async function getLabPrivateStoriesDTO(
         redirect("/login?returnTo=/" + experienceSlug + "/stories/dashboard");
     }
     const stories = await getLabPrivateStories(experienceSlug);
-    const filteredStories = stories.filter((story) =>
-        canUserViewStory(user, story)
+    const filteredStories = stories.filter(
+        async (story) => await canUserViewStory(user, story)
     );
 
     // get all authors and fetch their user data
@@ -188,6 +188,11 @@ export async function getLabPrivateStoriesDTO(
 
 export async function getStoryDTO(id: string): Promise<string> {
     const user = await getCurrentUser();
+
+    // validate id before creating ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw new Error("Invalid story id format.");
+    }
 
     // parse serializable id to mongoose.Types.ObjectId
     const objectId = new mongoose.Types.ObjectId(id);

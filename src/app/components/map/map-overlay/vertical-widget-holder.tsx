@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { decrementZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { ExperienceData } from "@/types/models/experiences";
+import { Experience } from "@/types/api";
 import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -36,7 +36,7 @@ export function VerticalWidgetHolder({
         (slug === "universe" && !expParam) || expParam === "universe";
     const router = useRouter();
     const pathname = usePathname();
-    const experienceParsed: ExperienceData = JSON.parse(experience);
+    const experienceParsed: Experience = JSON.parse(experience);
 
     // hooks
     const dispatch = useAppDispatch();

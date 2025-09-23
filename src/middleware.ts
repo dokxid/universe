@@ -2,7 +2,7 @@ import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const CSP_ENABLED = false;
-const PATH_PREFIX = "/:slug";
+const SLUG_PATH_PREFIX = "/:slug";
 
 const unauthenticatedPaths = [
     "/map",
@@ -21,7 +21,7 @@ export default async function middleware(
         middlewareAuth: {
             enabled: true,
             unauthenticatedPaths: unauthenticatedPaths.map(
-                (path) => PATH_PREFIX + path
+                (path) => SLUG_PATH_PREFIX + path
             ),
         },
     })(req, event);

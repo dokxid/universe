@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 
 export interface StoryData extends Omit<Story, "_id">, mongoose.Document {}
 
-export interface ExperienceData
+export interface ExperienceModelData
     extends Omit<Experience, "_id">,
         mongoose.Document {}
 

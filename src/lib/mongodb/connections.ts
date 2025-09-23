@@ -16,7 +16,7 @@ if (!global.mongoose) {
     global.mongoose = cached;
 }
 
-async function connectToDatabase(): Promise<typeof mongoose> {
+async function dbConnect(): Promise<typeof mongoose> {
     if (!process.env.MONGODB_URL) {
         throw new Error(
             "please make sure to setup the .env like explained in the README.md"
@@ -37,12 +37,6 @@ async function connectToDatabase(): Promise<typeof mongoose> {
     }
 
     if (!cached.promise) {
-        if (!uri) {
-            throw new Error(
-                "Please define the MONGODB_URI environment variable"
-            );
-        }
-
         cached.promise = mongoose.connect(uri);
     }
 
@@ -55,4 +49,4 @@ async function connectToDatabase(): Promise<typeof mongoose> {
     }
 }
 
-export default connectToDatabase;
+export default dbConnect;

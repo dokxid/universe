@@ -2,7 +2,7 @@ import { Tag } from "@/types/api";
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-export interface TagData extends Omit<Tag, "_id">, mongoose.Document {}
+export interface TagModelData extends Omit<Tag, "_id">, mongoose.Document {}
 
 const tagSchema = new Schema({
     name: String,

@@ -6,12 +6,12 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { ExperienceData } from "@/types/models/experiences";
+import { ExperienceModelData } from "@/types/models/experiences";
 import { X } from "lucide-react";
 
 type ExperienceDescriptorProps = {
     setOpenAction: (open: boolean) => void;
-    experience: ExperienceData;
+    experience: ExperienceModelData;
 };
 
 export function ExperienceDescriptor({

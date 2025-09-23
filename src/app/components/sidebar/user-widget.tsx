@@ -7,10 +7,6 @@ import { Settings } from "lucide-react";
 import Link from "next/link";
 
 export async function UserWidget({ slug }: { slug: string }) {
-    // if (slug === "universe") {
-    //     return <></>;
-    // }
-
     const user = await getCurrentUserOptional();
 
     if (!user) {
