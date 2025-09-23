@@ -31,7 +31,6 @@ export async function UserWidget({ slug }: { slug: string }) {
         );
     }
 
-    console.log(await isUserPartOfOrganization(user, slug));
     if ((await isUserPartOfOrganization(user, slug)) === false) {
         return (
             <div

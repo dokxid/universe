@@ -29,10 +29,10 @@ export default function MyMap({
 }) {
     const searchParams = useSearchParams();
     const experience = useMemo(() => {
+        if (!searchParams)
+            return experiences.find((exp) => exp.slug === experienceSlug);
         const exp = experiences.find(
-            (exp) =>
-                exp.slug === (searchParams.get("exp") || experienceSlug) ||
-                exp.slug === "universe"
+            (exp) => exp.slug === searchParams.get("exp")
         );
         return exp;
     }, [experienceSlug, experiences, searchParams]);
@@ -47,12 +47,13 @@ export default function MyMap({
         // This component is inside RMap.
         // your MapLibre map instance is always defined and cannot be null.
         const map: Map = useMap();
+        const mapState = useAppSelector((state) => state.map);
         useEffect(() => {
             map.flyTo({
                 center: mapState.flyPosition,
                 zoom: mapState.zoomLevel,
             });
-        }, [map]);
+        }, [map, mapState.flyPosition, mapState.zoomLevel]);
         return null;
     }
 

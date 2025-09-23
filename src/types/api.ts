@@ -38,8 +38,8 @@ export type Story = {
 export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;
 
 export interface StoryDTO extends Story {
-    author_name?: string;
-    experience?: string;
+    author_name: string;
+    experience: string;
 }
 
 export type ImageURL = {

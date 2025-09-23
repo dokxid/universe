@@ -11,7 +11,7 @@ import { memo } from "react";
 
 function CustomMarker({ story }: { story: Story }) {
     return (
-        <HoverCard>
+        <HoverCard openDelay={10}>
             <HoverCardTrigger>
                 <MapPin
                     size={30}

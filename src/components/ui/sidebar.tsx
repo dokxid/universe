@@ -106,7 +106,7 @@ function SidebarProvider({
         () => ({
             state,
             open,
-            setAddStoryDialogOpen: setOpen,
+            setOpen,
             isMobile,
             openMobile,
             setOpenMobile,

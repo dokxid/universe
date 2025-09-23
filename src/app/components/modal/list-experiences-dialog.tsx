@@ -1,6 +1,7 @@
 "use server";
 
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { Experience } from "@/types/api";
 import { SquareArrowOutUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +18,7 @@ export async function ListExperiencesDialog() {
                 </tr>
             </thead>
             <tbody className="">
-                {experiences.map((exp) => (
+                {experiences.map((exp: Experience) => (
                     <tr
                         key={exp.slug}
                         className="group border-b hover:bg-muted h-[120px]"

@@ -26,11 +26,11 @@ function isStoryOwner(viewer: User, story: StoryDTO) {
     return viewer.id === story.author;
 }
 
-function canUserViewStory(user: User, story: StoryDTO) {
+async function canUserViewStory(user: User, story: StoryDTO) {
     if (isPublicStory(story)) {
         return true;
     }
-    if (canUserEditStory(user, story)) {
+    if (await canUserEditStory(user, story)) {
         return true;
     }
     return false;
@@ -40,8 +40,8 @@ function canUserCreateStory(user: User, experienceSlug: string) {
     return isUserPartOfOrganization(user, experienceSlug);
 }
 
-function canUserEditStory(user: User, story: StoryDTO) {
-    if (isUserSuperAdmin(user)) return true;
+async function canUserEditStory(user: User, story: StoryDTO) {
+    if (await isUserSuperAdmin(user, story.experience)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
 }
@@ -109,8 +109,6 @@ async function queryStory(storyId: mongoose.Types.ObjectId): Promise<StoryDTO> {
             { $unwind: "$stories" },
             { $match: { "stories._id": storyId } },
         ]).exec()) as Experience[];
-
-        console.log("Query Result:", queryResult);
 
         // detect if no story was found
         if (!queryResult || queryResult.length === 0) {
@@ -232,7 +230,6 @@ export async function submitStoryDTO(formData: FormData, user: User) {
     // Validate the processed data
     const validationResult = submitStoryFormSchema.safeParse(processedData);
     if (!validationResult.success) {
-        console.log(z.prettifyError(validationResult.error));
         throw new Error(z.prettifyError(validationResult.error));
     }
 

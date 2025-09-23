@@ -3,7 +3,7 @@ import ContentLayout from "@/app/components/layout/content-layout";
 
 export default function Page() {
     return (
-        <ContentLayout>
+        <ContentLayout slug={"universe"} feature={"Create story"}>
             <AddStoryForm />
         </ContentLayout>
     );
