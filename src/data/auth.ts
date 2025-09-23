@@ -67,8 +67,19 @@ export async function isUserAdmin(
     }
 }
 
-export function isUserSuperAdmin(viewer: User): boolean {
-    return false;
+export async function isUserSuperAdmin(
+    viewer: User,
+    experienceSlug: string
+): Promise<boolean> {
+    try {
+        const userRelation = await getUserExperienceRelation(
+            viewer,
+            experienceSlug
+        );
+        return userRelation.role.slug === UserRole.SUPERADMIN;
+    } catch {
+        return false;
+    }
 }
 
 export async function isUserPartOfOrganization(

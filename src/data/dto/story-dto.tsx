@@ -52,7 +52,7 @@ async function fetchAndMapAuthorsForStoryDTO(
     // get unique author ids
     const authors = stories.map((story) => story.author);
     const uniqueAuthors = [...new Set(authors)];
-    let users = [];
+    const users = [];
     for (const author of uniqueAuthors) {
         try {
             const user = await workos.userManagement.getUser(author);
@@ -151,7 +151,7 @@ export async function getPublicStoriesDTO() {
     const experiences = await getExperiences();
     const flatStories = experiences.flatMap((experience) => experience.stories);
     const filteredStories = flatStories.filter(
-        (story: { draft: any; published: any }) =>
+        (story: { draft: boolean; published: boolean }) =>
             !story.draft && story.published
     );
     return JSON.stringify(filteredStories);

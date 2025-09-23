@@ -1,5 +1,5 @@
 import { CommandItem } from "@/components/ui/command";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { Experience } from "@/types/api";
 import { CheckIcon } from "lucide-react";
@@ -16,7 +16,6 @@ export function ExperiencesList({
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const dispatch = useAppDispatch();
     const experiencesState = useAppSelector((state) => state.experiences);
 
     // Get a new searchParams string by merging the current

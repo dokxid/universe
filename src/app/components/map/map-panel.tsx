@@ -26,7 +26,7 @@ export function MapPanel({
 
     useEffect(() => {
         dispatch(setCurrentExperience(experienceSlug));
-    }, []);
+    }, [dispatch, experienceSlug]);
 
     return (
         <>

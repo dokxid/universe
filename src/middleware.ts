@@ -1,5 +1,5 @@
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
-import { NextResponse } from "next/server";
+import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const CSP_ENABLED = false;
 const PATH_PREFIX = "/:slug";
@@ -11,7 +11,10 @@ const unauthenticatedPaths = [
     "/experiences",
 ];
 
-export default async function middleware(req: any, event: any) {
+export default async function middleware(
+    req: NextRequest,
+    event: NextFetchEvent
+) {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
     let response = await authkitMiddleware({
@@ -70,5 +73,6 @@ export const config = {
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
+        "/:slug/stories/:id",
     ],
 };
