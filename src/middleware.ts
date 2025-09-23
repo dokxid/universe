@@ -68,6 +68,8 @@ export default async function middleware(
 export const config = {
     matcher: [
         "/:slug/map",
+        "/:slug/experiences",
+        "/:slug/settings",
         "/:slug/account/:page*",
         "/:slug/lab/:page*",
         "/:slug/stories/create",

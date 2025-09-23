@@ -21,12 +21,12 @@ export function FeatureItemGroup() {
         },
         {
             title: "Story Experiences",
-            href: `/experiences`,
+            href: `/${slug}/experiences`,
             icon: BookOpenText,
         },
         {
             title: "Settings",
-            href: `/settings`,
+            href: `/${slug}/settings`,
             icon: SettingsIcon,
         },
         {
