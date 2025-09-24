@@ -1,7 +1,8 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
-import { useAppSelector } from "@/lib/hooks";
+import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience, StoryDTO } from "@/types/api";
 import { DeckProps, LayersList, MapViewState } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -69,6 +70,7 @@ export function DeckGLMap({
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
     const [connections, setConnections] = useState<DataType[]>([]);
+    const dispatch = useAppDispatch();
 
     // too many react hooks
     const experience = useMemo(() => {
@@ -132,6 +134,7 @@ export function DeckGLMap({
 
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
+        dispatch(setSelectedStoryId(story._id));
     };
 
     function getTaggedConnections(

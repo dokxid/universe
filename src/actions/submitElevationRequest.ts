@@ -1,0 +1,18 @@
+"use server";
+
+import { submitElevationRequestDTO } from "@/data/dto/story-dto";
+import { User } from "@workos-inc/node";
+
+export async function submitElevationRequest(
+    storyId: string,
+    user: User | null,
+    slug: string
+) {
+    try {
+        // case user is null, return error
+        if (!user) throw new Error("You must be logged in to submit a story.");
+        return await submitElevationRequestDTO(storyId, user, slug);
+    } catch (error) {
+        return JSON.stringify(error);
+    }
+}

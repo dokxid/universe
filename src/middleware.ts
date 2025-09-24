@@ -99,6 +99,7 @@ export const config = {
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
+        "/:slug/stories/edit/:id",
         "/:slug/stories/:id",
         "/:slug/team/:page*",
     ],

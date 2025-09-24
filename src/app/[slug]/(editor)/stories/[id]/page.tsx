@@ -1,13 +1,17 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 import S3Image from "@/app/components/s3-image";
-import { getStoryDTO } from "@/data/dto/story-dto";
+import { getCurrentUserOptional } from "@/data/auth";
+import { canUserEditStory, getStoryDTO } from "@/data/dto/story-dto";
 import parse from "html-react-parser";
+import { PenLine } from "lucide-react";
+import Link from "next/link";
 
 export default async function StoryDetails({
     params,
 }: {
     params: Promise<{ slug: string; id: string }>;
 }) {
+    const user = await getCurrentUserOptional();
     const { slug, id: storyId } = await params;
     const storySerialized = await getStoryDTO(storyId);
     const story = await storySerialized;
@@ -21,7 +25,18 @@ export default async function StoryDetails({
                 />
             </div>
             <div className="flex-1 p-4 px-8 prose dark:prose-invert">
-                <h1>{story.title}</h1>
+                <h1>
+                    {story.title}
+                    {(await canUserEditStory(user, story)) && (
+                        <Link href={`/${slug}/stories/edit/${story._id}`}>
+                            <PenLine
+                                className={
+                                    "ml-4 inline stroke-accent hover:stroke-primary transition-all hover:cursor-pointer"
+                                }
+                            />
+                        </Link>
+                    )}
+                </h1>
                 <p className="text-sm text-gray-500 mb-4">
                     By {story.author_name} | Published on{" "}
                     {new Date(story.createdAt).toLocaleDateString()}

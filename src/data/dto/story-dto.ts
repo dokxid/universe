@@ -3,6 +3,7 @@ import "server-only";
 import {
     getCurrentUser,
     getCurrentUserOptional,
+    isUserAdmin,
     isUserMember,
     isUserPartOfOrganization,
     isUserSuperAdmin,
@@ -11,7 +12,13 @@ import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
 import { uploadFile } from "@/lib/aws/s3";
 import dbConnect from "@/lib/mongodb/connections";
-import { Experience, NewStoryData, Story, StoryDTO } from "@/types/api";
+import {
+    ElevationRequestData,
+    Experience,
+    NewStoryData,
+    Story,
+    StoryDTO,
+} from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import ExperienceModel from "@/types/models/experiences";
 import { User } from "@workos-inc/node";
@@ -46,7 +53,7 @@ function canUserCreateStory(user: User | null, experienceSlug: string) {
     return isUserPartOfOrganization(user, experienceSlug);
 }
 
-async function canUserEditStory(user: User | null, story: StoryDTO) {
+export async function canUserEditStory(user: User | null, story: StoryDTO) {
     if (await isUserSuperAdmin(user, story.experience)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
@@ -138,6 +145,22 @@ async function insertStory(
         ).exec();
     } catch (err) {
         console.error("Error inserting story:", err);
+    }
+}
+
+async function insertElevationRequest(
+    requestToInsert: ElevationRequestData,
+    storyId: mongoose.Types.ObjectId
+) {
+    try {
+        dbConnect();
+        await ExperienceModel.findOneAndUpdate(
+            { "stories._id": storyId },
+            { $push: { "stories.$.elevation_requests": requestToInsert } }
+        ).exec();
+    } catch (err) {
+        console.error("Error inserting elevation request:", err);
+        throw err; // Re-throw to propagate the error
     }
 }
 
@@ -275,6 +298,7 @@ export async function submitStoryDTO(formData: FormData, user: User | null) {
         draft: data.draft,
 
         // hardcoded stuff
+        elevation_requests: [],
         visible_universe: true,
         published: true,
     };
@@ -285,5 +309,30 @@ export async function submitStoryDTO(formData: FormData, user: User | null) {
         await insertStory(storyToInsert, data.experience);
     } catch (e) {
         console.error("Error submitting story:", e);
+    }
+}
+
+export async function submitElevationRequestDTO(
+    storyID: string,
+    user: User | null,
+    slug: string
+) {
+    try {
+        if (!isUserAdmin(user, slug)) {
+            throw new Error("You must be an admin to request elevation.");
+        }
+        const requestToInsert: ElevationRequestData = {
+            status: "pending",
+        };
+        // validate id before creating ObjectId
+        if (!mongoose.Types.ObjectId.isValid(storyID)) {
+            throw new Error("Invalid story id format.");
+        }
+
+        // parse serializable id to mongoose.Types.ObjectId
+        const objectId = new mongoose.Types.ObjectId(storyID);
+        await insertElevationRequest(requestToInsert, objectId);
+    } catch (err) {
+        console.error("Error submitting elevation request:", err);
     }
 }

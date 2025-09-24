@@ -1,11 +1,9 @@
-import dbConnect from "@/lib/mongodb/connections";
-import experiences from "@/types/models/experiences";
+import { getExperienceDTO } from "@/data/dto/experience-dto";
 
-await dbConnect();
-const exp = await experiences.find({}).lean();
+const a = await getExperienceDTO("test");
 
 export async function GET() {
-    return new Response(JSON.stringify(exp), {
+    return new Response(JSON.stringify(a), {
         status: 200,
         headers: {
             "Content-Type": "application/json",

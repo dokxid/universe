@@ -23,7 +23,7 @@ export default function S3Image({
     else return <p>No image available</p>;
 
     return (
-        <div className={"relative w-full aspect-video"}>
+        <div className={"relative w-full h-full aspect-video"}>
             <Link
                 href={`/${experience}/images/${fileName}`}
                 className={"relative block w-full h-full"}

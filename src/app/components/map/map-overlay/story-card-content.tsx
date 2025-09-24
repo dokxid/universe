@@ -31,7 +31,9 @@ export function StoryCardContent({ story }: { story: StoryDTO }) {
                 </div>
             )}
             <article className={"bg-card text-card-foreground text-wrap grow"}>
-                <div className="prose-content">{parse(story.content)}</div>
+                <div className="prose-content max-h-10 overflow-hidden">
+                    {parse(story.content)}
+                </div>
                 <a
                     href={"/" + story.experience + "/stories/" + story._id}
                     className={"text-sm underline"}
