@@ -25,8 +25,7 @@ export type Story = {
     draft: boolean;
     published: boolean;
     title: string;
-    latitude: number;
-    longitude: number;
+    location: { type: string; coordinates: [number, number] };
     tags: string[];
     year: number;
     featured_image_url: string;

@@ -3,11 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface MapState {
     flyPosition: [number, number];
     zoomLevel: number;
+    tags: string[];
 }
 
 const initialState: MapState = {
     flyPosition: [24.750592, 59.44435],
     zoomLevel: 5,
+    tags: [],
 };
 
 export const mapSlice = createSlice({
@@ -23,9 +25,12 @@ export const mapSlice = createSlice({
         decrementZoomLevel: (state) => {
             state.zoomLevel -= 1;
         },
+        setTags: (state, action: { payload: string[] }) => {
+            state.tags = action.payload;
+        },
     },
 });
 
-export const { setFlyPosition, setZoomLevel, decrementZoomLevel } =
+export const { setFlyPosition, setZoomLevel, decrementZoomLevel, setTags } =
     mapSlice.actions;
 export default mapSlice.reducer;

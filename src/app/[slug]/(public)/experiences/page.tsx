@@ -1,5 +1,7 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 import { ListExperiencesDialog } from "@/app/components/modal/list-experiences-dialog";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { Suspense } from "react";
 
 export default async function ExperiencesPage({
     params,
@@ -7,9 +9,12 @@ export default async function ExperiencesPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
+
     return (
         <ContentLayout slug={slug} feature={"Experiences"}>
-            <ListExperiencesDialog />
+            <Suspense fallback={<div>Loading...</div>}>
+                <ListExperiencesDialog />
+            </Suspense>
         </ContentLayout>
     );
 }

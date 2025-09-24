@@ -21,7 +21,7 @@ import React from "react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+    data: string; // JSON stringified array of TData
 }
 
 export function DataTable<TData, TValue>({
@@ -29,8 +29,9 @@ export function DataTable<TData, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
+    const dataFetched = JSON.parse(data) as TData[];
     const table = useReactTable({
-        data,
+        data: dataFetched,
         columns,
         getCoreRowModel: getCoreRowModel(),
         onSortingChange: setSorting,

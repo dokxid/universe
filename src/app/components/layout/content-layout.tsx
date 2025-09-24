@@ -9,15 +9,18 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export default function ContentLayout({
     slug,
     feature,
     children,
+    className,
 }: {
     slug: string;
     feature: string;
     children: React.ReactNode;
+    className?: string;
 }) {
     return (
         <div className="w-full h-full flex">
@@ -33,7 +36,7 @@ export default function ContentLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
+                                    <BreadcrumbLink href={`/${slug}`}>
                                         {slug}
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
@@ -45,7 +48,12 @@ export default function ContentLayout({
                         </Breadcrumb>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 items-start overflow-y-auto">
+                <div
+                    className={cn(
+                        "flex flex-1 flex-col gap-4 p-4 items-start overflow-y-auto",
+                        className
+                    )}
+                >
                     {children}
                 </div>
             </SidebarInset>

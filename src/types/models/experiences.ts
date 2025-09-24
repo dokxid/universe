@@ -14,8 +14,17 @@ const storySchema = new Schema(
         draft: { type: Boolean, required: true },
         published: { type: Boolean, required: true },
         title: { type: String, required: true },
-        latitude: { type: Number, required: true },
-        longitude: { type: Number, required: true },
+        center: {
+            type: {
+                type: String,
+                enum: ["Point"],
+                required: true,
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
+        },
         tags: { type: [String], required: true },
         year: { type: Number, required: true },
         visible_universe: { type: Boolean, required: true },

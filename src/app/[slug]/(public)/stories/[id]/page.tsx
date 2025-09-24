@@ -1,7 +1,6 @@
-import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { SidebarInset } from "@/components/ui/sidebar";
+import ContentLayout from "@/app/components/layout/content-layout";
+import S3Image from "@/app/components/s3-image";
 import { getStoryDTO } from "@/data/dto/story-dto";
-import { Story } from "@/types/api";
 import parse from "html-react-parser";
 
 export default async function StoryDetails({
@@ -11,17 +10,24 @@ export default async function StoryDetails({
 }) {
     const { slug, id: storyId } = await params;
     const storySerialized = await getStoryDTO(storyId);
-    const story = JSON.parse(storySerialized) as Story;
+    const story = await storySerialized;
 
     return (
-        <div className="w-full h-full flex">
-            <AppSidebar slug={slug} />
-            <SidebarInset>
-                <div className="flex-1 p-4 prose dark:prose-invert">
-                    <h1>{story.title}</h1>
-                    <div className="prose-content">{parse(story.content)}</div>
-                </div>
-            </SidebarInset>
-        </div>
+        <ContentLayout slug={slug} feature={"Experiences"} className={"p-0"}>
+            <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
+                <S3Image
+                    experience={story.experience}
+                    fileName={story.featured_image_url}
+                />
+            </div>
+            <div className="flex-1 p-4 px-8 prose dark:prose-invert">
+                <h1>{story.title}</h1>
+                <p className="text-sm text-gray-500 mb-4">
+                    By {story.author_name} | Published on{" "}
+                    {new Date(story.createdAt).toLocaleDateString()}
+                </p>
+                <div className="prose-content">{parse(story.content)}</div>
+            </div>
+        </ContentLayout>
     );
 }

@@ -1,8 +1,3 @@
-import { useEffect, useState } from "react";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import { useTags } from "@/lib/data_hooks/tagsHook";
-import { Tag } from "@/types/api";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
     Command,
     CommandEmpty,
@@ -10,24 +5,48 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator
+    CommandSeparator,
 } from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useTags } from "@/lib/data_hooks/tagsHook";
+import { Tag } from "@/types/api";
 import { PlusIcon, X } from "lucide-react";
-import { Badge } from "../../../components/ui/badge";
+import { useEffect, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
+import { Badge } from "../../../components/ui/badge";
 
-export function TagPicker({value = [], onChange}: ControllerRenderProps) {
+// Base component - no form binding
+interface TagPickerProps {
+    selectedTags?: string[];
+    onTagsChange?: (tags: string[]) => void;
+    className?: string;
+    showLabel?: boolean;
+}
+
+export function TagPicker({
+    selectedTags = [],
+    onTagsChange,
+    className,
+    showLabel = true,
+}: TagPickerProps) {
     const [inputTags, setInputTags] = useState<Tag[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
-    const {tags, isLoading} = useTags();
+    const { tags, isLoading } = useTags();
 
-    // sync inputTags with form value
+    // sync inputTags with selected tags
     useEffect(() => {
-        if (tags && value) {
-            const selectedTags = tags.filter((tag) => value.includes(tag.name));
-            setInputTags(selectedTags);
+        if (tags && selectedTags) {
+            const tagObjects = tags.filter((tag) =>
+                selectedTags.includes(tag.name)
+            );
+            setInputTags(tagObjects);
         }
-    }, [tags, value]);
+    }, [tags, selectedTags]);
 
     const handleMouseEnter = () => {
         setTagPickerOpen(true);
@@ -36,21 +55,25 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
     const handleTagRemove = (tagToRemove: Tag) => {
         const newTags = inputTags.filter((t) => t !== tagToRemove);
         setInputTags(newTags);
-        onChange?.(newTags.map((tag) => tag.name));
+        onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
     const handleTagAdd = (tagToAdd: Tag) => {
         const newTags = [...inputTags, tagToAdd];
         setInputTags(newTags);
         setTagPickerOpen(false);
-        onChange?.(newTags.map((tag) => tag.name));
+        onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
-    if (isLoading) return <Spinner/>;
+    if (isLoading) return <Spinner />;
 
     return (
-        <div className={"col-span-12 col-start-auto space-y-0 items-start"}>
-            <p className={"text-sm font-medium"}>Tags</p>
+        <div
+            className={`col-span-12 col-start-auto space-y-0 items-start ${
+                className || ""
+            }`}
+        >
+            {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
             <Popover
                 open={tagPickerOpen}
                 onOpenChange={setTagPickerOpen}
@@ -69,7 +92,7 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                             }
                         >
                             <p>{tag.name}</p>
-                            <X/>
+                            <X />
                         </Badge>
                     ))}
                     <PopoverTrigger asChild>
@@ -84,13 +107,13 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                             }
                         >
                             Add Tag
-                            <PlusIcon/>
+                            <PlusIcon />
                         </Badge>
                     </PopoverTrigger>
                 </div>
                 <PopoverContent className="w-80">
                     <Command>
-                        <CommandInput placeholder="Search tags..."/>
+                        <CommandInput placeholder="Search tags..." />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup heading="UNESCO tags">
@@ -109,7 +132,7 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
                                         </CommandItem>
                                     ))}
                             </CommandGroup>
-                            <CommandSeparator/>
+                            <CommandSeparator />
                             <CommandGroup heading="custom tags">
                                 {tags
                                     .filter(
@@ -132,4 +155,11 @@ export function TagPicker({value = [], onChange}: ControllerRenderProps) {
             </Popover>
         </div>
     );
+}
+
+// Form-bound component
+export function TagPickerField(props: ControllerRenderProps) {
+    const { value = [], onChange } = props;
+
+    return <TagPicker selectedTags={value} onTagsChange={onChange} />;
 }

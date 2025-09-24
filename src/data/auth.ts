@@ -2,7 +2,6 @@ import "server-only";
 
 import { workos } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb/connections";
-import { Experience } from "@/types/api";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { OrganizationMembership, User } from "@workos-inc/node";
@@ -35,10 +34,11 @@ export async function isUserActive(
 }
 
 export async function isUserMember(
-    viewer: User,
+    viewer: User | null,
     experienceSlug: string
 ): Promise<boolean> {
     try {
+        if (!viewer) return false;
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelation(
             viewer,
@@ -54,10 +54,11 @@ export async function isUserMember(
 }
 
 export async function isUserAdmin(
-    viewer: User,
+    viewer: User | null,
     experienceSlug: string
 ): Promise<boolean> {
     try {
+        if (!viewer) return false;
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelation(
             viewer,
@@ -70,12 +71,13 @@ export async function isUserAdmin(
 }
 
 export async function isUserSuperAdmin(
-    viewer: User,
+    user: User | null,
     experienceSlug: string
 ): Promise<boolean> {
     try {
+        if (!user) return false;
         const userRelation = await getUserExperienceRelation(
-            viewer,
+            user,
             experienceSlug
         );
         return userRelation.role.slug === UserRole.SUPERADMIN;
@@ -85,32 +87,38 @@ export async function isUserSuperAdmin(
 }
 
 export async function isUserPartOfOrganization(
-    viewer: User,
+    user: User | null,
     experienceSlug: string
 ) {
-    const isActive = await isUserActive(viewer, experienceSlug);
-    const isMember = await isUserMember(viewer, experienceSlug);
+    if (!user) return false;
+    const isActive = await isUserActive(user, experienceSlug);
+    const isMember = await isUserMember(user, experienceSlug);
     return isActive && isMember;
 }
 
 async function getUserExperienceRelation(
-    viewer: User,
+    user: User | null,
     experienceSlug: string
 ): Promise<OrganizationMembership> {
-    dbConnect();
-    const experience = JSON.parse(
-        await getExperienceDTO(experienceSlug)
-    ) as Experience;
-    const organizationId = experience.organization_id;
-    const membership = await workos.userManagement.listOrganizationMemberships({
-        userId: viewer.id,
-        organizationId: organizationId,
-    });
-    const membershipToReturn = membership.data.pop();
-    if (membershipToReturn === undefined) {
-        throw new Error(
-            `No membership found for user ${viewer.id} in organization ${organizationId}`
-        );
+    try {
+        if (!user) throw new Error("User is not authenticated");
+        dbConnect();
+        const experience = await getExperienceDTO(experienceSlug);
+        const organizationId = experience.organization_id;
+        const membership =
+            await workos.userManagement.listOrganizationMemberships({
+                userId: user.id,
+                organizationId: organizationId,
+            });
+        const membershipToReturn = membership.data.pop();
+        if (membershipToReturn === undefined) {
+            throw new Error(
+                `No membership found for user ${user.id} in organization ${organizationId}`
+            );
+        }
+        return membershipToReturn;
+    } catch (err) {
+        console.error("Error fetching user experience relation:", err);
+        throw err;
     }
-    return membershipToReturn;
 }

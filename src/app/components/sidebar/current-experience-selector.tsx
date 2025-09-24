@@ -17,17 +17,17 @@ import {
 import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
-import React, { use } from "react";
+import React from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
 export function CurrentExperienceSelector({
-    experiencesPromise,
+    experiencesSerialized,
 }: {
-    experiencesPromise: Promise<string>;
+    experiencesSerialized: string;
 }) {
     const [open, setOpen] = React.useState(false);
     const searchParams = useSearchParams();
-    const data = JSON.parse(use(experiencesPromise)) as Experience[];
+    const data = JSON.parse(experiencesSerialized) as Experience[];
     const safeData = data.map((item) => ({
         ...item,
         stories: [...item.stories],

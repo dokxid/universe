@@ -13,12 +13,6 @@ const nextConfig: NextConfig = {
                 destination: "/universe/map",
                 permanent: true,
             },
-            // Wildcard path matching
-            {
-                source: "/:slug",
-                destination: "/:slug/map",
-                permanent: true,
-            },
         ];
     },
 

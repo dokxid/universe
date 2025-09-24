@@ -5,7 +5,7 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { setFlyPosition, setZoomLevel } from "@/lib/features/map/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Experience, Story } from "@/types/api";
+import { Experience, StoryDTO } from "@/types/api";
 import { type Map, MapLayerMouseEvent } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
@@ -23,7 +23,7 @@ export default function MyMap({
     experiences,
     experienceSlug,
 }: {
-    stories: Story[];
+    stories: StoryDTO[];
     experiences: Experience[];
     experienceSlug: string;
 }) {
@@ -43,6 +43,13 @@ export default function MyMap({
     const mapState = useAppSelector((state) => state.map);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
+
+    const storiesFiltered = useMemo(() => {
+        if (mapState.tags.length === 0) return stories;
+        return stories.filter((story) =>
+            story.tags.some((tag) => mapState.tags.includes(tag))
+        );
+    }, [mapState.tags, stories]);
 
     function ChildComponent() {
         // This component is inside RMap.
@@ -111,10 +118,10 @@ export default function MyMap({
                                 </div>
                             }
                         >
-                            {stories.map((story, index) => (
+                            {storiesFiltered.map((story, index) => (
                                 <RMarker
-                                    longitude={story.longitude}
-                                    latitude={story.latitude}
+                                    longitude={story.location.coordinates[0]}
+                                    latitude={story.location.coordinates[1]}
                                     key={index}
                                 >
                                     <CustomMarker story={story} />

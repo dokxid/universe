@@ -1,15 +1,24 @@
 "use client";
 
+import { TagPicker } from "@/app/components/form/tag-picker";
 import { ExperienceDescriptor } from "@/app/components/map/experience-descriptor";
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { decrementZoomLevel } from "@/lib/features/map/mapSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { decrementZoomLevel, setTags } from "@/lib/features/map/mapSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 const Geocoder = dynamic(
     () =>
@@ -23,11 +32,40 @@ const geocoderTheme = {
     variables: {},
 };
 
+function FilterStoriesDialog() {
+    const [open] = React.useState(false);
+    const tagState = useAppSelector((state) => state.map.tags);
+    const dispatch = useAppDispatch();
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant={"secondary"} className="size-10 hover:ring-2">
+                    <Funnel />
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Filter stories</DialogTitle>
+                    <DialogDescription>
+                        Use the form below to filter stories by tags.
+                    </DialogDescription>
+                </DialogHeader>
+                <TagPicker
+                    selectedTags={tagState}
+                    onTagsChange={(newTags) => dispatch(setTags(newTags))}
+                    showLabel={open}
+                />
+            </DialogContent>
+        </Dialog>
+    );
+}
+
 export function VerticalWidgetHolder({
-    experience,
+    experiences,
     slug,
 }: {
-    experience: string;
+    experiences: string;
     slug: string;
 }) {
     const searchParams = useSearchParams();
@@ -36,7 +74,13 @@ export function VerticalWidgetHolder({
         (slug === "universe" && !expParam) || expParam === "universe";
     const router = useRouter();
     const pathname = usePathname();
-    const experienceParsed: Experience = JSON.parse(experience);
+    const experiencesParsed: Experience[] = JSON.parse(experiences);
+
+    const experienceParsed = useMemo(() => {
+        if (!expParam)
+            return experiencesParsed.find((exp) => exp.slug === slug);
+        return experiencesParsed.find((exp) => exp.slug === expParam);
+    }, [experiencesParsed, expParam, slug]);
 
     // hooks
     const dispatch = useAppDispatch();
@@ -59,9 +103,7 @@ export function VerticalWidgetHolder({
                     variant={"secondary"}
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
-                <Button variant={"secondary"} className="size-10 hover:ring-2">
-                    <Funnel />
-                </Button>
+                <FilterStoriesDialog></FilterStoriesDialog>
                 {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
