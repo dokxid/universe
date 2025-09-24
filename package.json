@@ -103,6 +103,7 @@
     "zod": "^4.1.8"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.27.1",
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.5.3",
     "@semantic-release/commit-analyzer": "^13.0.1",

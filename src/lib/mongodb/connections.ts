@@ -1,3 +1,4 @@
+import { buildConnectionString } from "@/lib/utils/buildConnectionString";
 import { attachDatabasePool } from "@vercel/functions";
 import mongoose from "mongoose";
 
@@ -17,14 +18,20 @@ if (!global.mongoose) {
     global.mongoose = cached;
 }
 
+function handleError(err: Error) {
+    console.error("MongoDB connection error:", err);
+}
+
 async function dbConnect(): Promise<typeof mongoose> {
-    if (!process.env.MONGODB_URI) {
+    if (!process.env.MONGODB_URI || !process.env.MONGODB_DBNAME) {
         throw new Error(
-            "please define the MONGODB_URI environment variable inside .env"
+            "Please define the MONGODB_URI and MONGODB_DBNAME environment variable inside .env"
         );
     }
-
-    const uri = process.env.MONGODB_URI;
+    const uri = buildConnectionString(
+        process.env.MONGODB_URI,
+        process.env.MONGODB_DBNAME
+    );
 
     if (cached.conn) {
         return cached.conn;
@@ -37,7 +44,13 @@ async function dbConnect(): Promise<typeof mongoose> {
 
         if (process.env.NODE_ENV === "development") {
             // In development mode, use the existing cached connection
-            cached.promise = mongoose.connect(uri, options);
+            console.log(
+                "development NODE_ENV detected, using cached connection"
+            );
+            cached.promise = mongoose.connect(uri, options).catch((err) => {
+                handleError(err);
+                return Promise.reject(err);
+            });
         } else {
             // In production mode, connect and attach to Vercel's database pool
             cached.promise = mongoose
