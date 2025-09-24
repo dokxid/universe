@@ -2,7 +2,7 @@ import { CurrentExperienceSelector } from "@/app/components/sidebar/current-expe
 import { AboutItemGroup } from "@/app/components/sidebar/sidebar-content/about-item-group";
 import { AdminItemGroup } from "@/app/components/sidebar/sidebar-content/admin-item-group";
 import { EditorItemGroup } from "@/app/components/sidebar/sidebar-content/editor-item-group";
-import { FeatureItemGroup } from "@/app/components/sidebar/sidebar-content/feature-item-group";
+import { UserItemGroup } from "@/app/components/sidebar/sidebar-content/user-item-group";
 import { LinksItemGroup } from "@/app/components/sidebar/sidebar-content/links-item-group";
 import { UserWidget } from "@/app/components/sidebar/user-widget";
 import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
@@ -65,7 +65,7 @@ export async function AppSidebar({ slug }: { slug: string }) {
             )}
 
             <SidebarContent>
-                <FeatureItemGroup />
+                <UserItemGroup />
                 {isEditor && <EditorItemGroup />}
                 {isAdmin && <AdminItemGroup />}
                 <AboutItemGroup />

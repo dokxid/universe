@@ -53,6 +53,11 @@ const experienceSchema = new Schema({
     featured_image_url: { type: String, required: true },
     stories: { type: [storySchema], required: true },
     organization_id: { type: String, required: true },
+    visibility: {
+        type: String,
+        enum: ["public", "unlisted", "private"],
+        required: true,
+    },
 });
 
 export default mongoose.models.ExperienceModel ||

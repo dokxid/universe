@@ -5,7 +5,7 @@ import { BookOpenText, Building2, List, Map, SettingsIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
-export function FeatureItemGroup() {
+export function UserItemGroup() {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const featureItems: SidebarItemGroup = [
@@ -25,7 +25,7 @@ export function FeatureItemGroup() {
             icon: BookOpenText,
         },
         {
-            title: "Settings",
+            title: "Map Preferences",
             href: `/${slug}/settings`,
             icon: SettingsIcon,
         },

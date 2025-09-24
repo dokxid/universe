@@ -11,12 +11,12 @@ export function AdminItemGroup() {
     const adminItems: SidebarItemGroup = [
         {
             title: "Manage Members",
-            href: `/${slug}/members/manage`,
+            href: `/${slug}/team/manage`,
             icon: Users,
         },
         {
-            title: "Experience Settings",
-            href: `/${slug}/experience/manage`,
+            title: "Team Settings",
+            href: `/${slug}/team/settings`,
             icon: Settings,
         },
     ];

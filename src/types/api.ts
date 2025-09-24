@@ -10,6 +10,7 @@ export type Experience = {
     stories: Story[];
     organization_id?: string;
     connection_id?: string;
+    visibility: "public" | "unlisted" | "private";
 };
 
 export type Tag = {

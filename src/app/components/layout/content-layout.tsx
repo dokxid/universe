@@ -50,7 +50,7 @@ export default function ContentLayout({
                 </header>
                 <div
                     className={cn(
-                        "flex flex-1 flex-col gap-4 p-4 items-start overflow-y-auto",
+                        "flex flex-1 flex-col gap-4 p-4 overflow-y-auto items-center",
                         className
                     )}
                 >
