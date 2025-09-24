@@ -3,6 +3,15 @@ import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const CSP_ENABLED = false;
 const SLUG_PATH_PREFIX = "/:slug";
+const CALLBACK_REDIRECT_PATHNAME = "/callback";
+const REDIRECT_ORIGIN =
+    process.env.VERCEL_ENV === "production"
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.VERCEL_ENV === "preview"
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000";
+
+const REDIRECT_URI = new URL(CALLBACK_REDIRECT_PATHNAME, REDIRECT_ORIGIN);
 
 const unauthenticatedPaths = [
     "",
@@ -15,26 +24,8 @@ const unauthenticatedPaths = [
     "/api/test",
 ];
 
-export default async function middleware(
-    req: NextRequest,
-    event: NextFetchEvent
-) {
+function addCSPHeaders(response: Response): Response {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
-    let response = await authkitMiddleware({
-        middlewareAuth: {
-            enabled: true,
-            unauthenticatedPaths: unauthenticatedPaths.map(
-                (path) => SLUG_PATH_PREFIX + path
-            ),
-        },
-    })(req, event);
-
-    // Ensure response is not null or undefined
-    if (!response) {
-        response = NextResponse.next(); // Fallback to a default response
-    }
-
     const cspHeader = `
     default-src 'self';
     script-src 'self' https://auth.workos.com 'nonce-${nonce}' 'strict-dynamic';
@@ -51,20 +42,46 @@ export default async function middleware(
     upgrade-insecure-requests;
     `;
 
-    // Replace newline characters and spaces
+    // replace newline characters and spaces
     const contentSecurityPolicyHeaderValue = cspHeader
         .replace(/\s{2,}/g, " ")
         .trim();
 
-    if (!CSP_ENABLED) {
-        return response;
-    }
-
+    // set CSP headers and x-nonce header
     response.headers.set("x-nonce", nonce);
     response.headers.set(
         "Content-Security-Policy",
         contentSecurityPolicyHeaderValue
     );
+    return response;
+}
+
+export default async function middleware(
+    req: NextRequest,
+    event: NextFetchEvent
+) {
+    // apply authkit middleware
+    let response = await authkitMiddleware({
+        redirectUri: REDIRECT_URI.href,
+        middlewareAuth: {
+            enabled: true,
+            unauthenticatedPaths: unauthenticatedPaths.map(
+                (path) => SLUG_PATH_PREFIX + path
+            ),
+        },
+        debug: process.env.NODE_ENV !== "production",
+    })(req, event);
+
+    // ensure response is not null or undefined
+    if (!response) {
+        response = NextResponse.next(); // Fallback to a default response
+    }
+
+    // add CSP if needed
+    if (CSP_ENABLED) {
+        return addCSPHeaders(response);
+    }
+
     return response;
 }
 
