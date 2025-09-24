@@ -1,5 +1,5 @@
 import { getExperienceSignInDTO } from "@/data/dto/experience-dto";
-import { workos } from "@/lib/auth";
+import { getRedirectUri, workos } from "@/lib/auth";
 import { ExperienceSignInDTO } from "@/types/api";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -8,6 +8,7 @@ import { NextRequest } from "next/server";
 export const GET = async (request: NextRequest) => {
     const headersList = await headers();
     const refererHeader = headersList.get("referer");
+    const redirectUri = getRedirectUri();
 
     let originatingUrl = "/";
 
@@ -48,7 +49,7 @@ export const GET = async (request: NextRequest) => {
     const authorizationUrl = workos.userManagement.getAuthorizationUrl({
         provider: "authkit",
         screenHint: "sign-in",
-        redirectUri: "http://localhost:3000/callback",
+        redirectUri: redirectUri,
         organizationId: experienceSignIn.organization_id,
         clientId: process.env.WORKOS_CLIENT_ID!,
         state: encodedState,

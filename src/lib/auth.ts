@@ -3,3 +3,10 @@ import "server-only";
 import { WorkOS } from "@workos-inc/node";
 
 export const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
+
+export function getRedirectUri() {
+    if (process.env.NODE_ENV === "development") {
+        return "http://localhost:3000/callback";
+    }
+    return `https://${process.env.VERCEL_URL}/callback`;
+}
