@@ -1,6 +1,6 @@
-import { getPublicStoriesDTO } from "@/data/dto/story-dto";
+import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
 
 export async function GET() {
-    const stories = JSON.parse(await getPublicStoriesDTO());
+    const stories = await getAllPublicStoriesDTO();
     return Response.json(stories);
 }

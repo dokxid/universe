@@ -19,8 +19,6 @@ import {
 } from "react-map-gl/maplibre";
 
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-const AIR_PORTS =
-    "https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson";
 
 type DataType = {
     from: [longitude: number, latitude: number];
@@ -70,11 +68,9 @@ export function DeckGLMap({
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
-    const [connections, setConnections] = useState<TaggedConnectionDTO[]>([]);
+    const [connections, setConnections] = useState<DataType[]>([]);
 
     // too many react hooks
-    const { mainMap: map } = useMap();
-
     const experience = useMemo(() => {
         if (searchParams.size === 0) {
             return experiences.find(
@@ -108,8 +104,17 @@ export function DeckGLMap({
             storiesToUse,
             mapState.tags
         );
-        setConnections(newConnections); // This will trigger a re-render
-        console.log("Updated connections:", newConnections);
+        const connectionsSanitized: DataType[] = newConnections.flatMap(
+            (conn) =>
+                conn.lineStrings.map((lineString) => {
+                    const coords = lineString.coordinates;
+                    return {
+                        from: coords[0] as [number, number],
+                        to: coords[coords.length - 1] as [number, number],
+                    };
+                })
+        );
+        setConnections(connectionsSanitized); // This will trigger a re-render
     }, [activeStory, mapState.tags, storiesFiltered]);
 
     const INITIAL_VIEW_STATE: MapViewState = {
@@ -127,12 +132,6 @@ export function DeckGLMap({
 
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        console.log("Selected story:", story);
-        for (const tag of connections) {
-            for (const line of tag.lineStrings) {
-                console.log("LineString for tag", tag.tag, line);
-            }
-        }
     };
 
     function getTaggedConnections(
@@ -182,24 +181,9 @@ export function DeckGLMap({
             // }),
             new ArcLayer({
                 id: "arcs",
-                data: connections.flatMap((conn) =>
-                    conn.lineStrings.map((lineString) => {
-                        const coords = lineString.coordinates;
-                        return {
-                            from: {
-                                coordinates: coords[0] as [number, number],
-                            },
-                            to: {
-                                coordinates: coords[coords.length - 1] as [
-                                    number,
-                                    number
-                                ],
-                            },
-                        };
-                    })
-                ),
-                getSourcePosition: (d: any) => d.from.coordinates,
-                getTargetPosition: (d: any) => d.to.coordinates,
+                data: connections,
+                getSourcePosition: (d: DataType) => d.from,
+                getTargetPosition: (d: DataType) => d.to,
                 getSourceColor: [0, 128, 200],
                 getTargetColor: [200, 0, 80],
                 getWidth: 3,
@@ -207,19 +191,6 @@ export function DeckGLMap({
         ],
         [connections] // Re-create layers when connections change
     );
-
-    const a = connections.flatMap((conn) =>
-        conn.lineStrings.map((lineString) => {
-            const coords = lineString.coordinates;
-            return {
-                from: { coordinates: coords[0] as [number, number] },
-                to: {
-                    coordinates: coords[coords.length - 1] as [number, number],
-                },
-            };
-        })
-    );
-    console.log("Arc data:", a);
 
     return (
         <div className={"w-full h-full"}>
@@ -248,7 +219,7 @@ export function DeckGLMap({
                                 longitude={story.location.coordinates[0]}
                                 latitude={story.location.coordinates[1]}
                                 key={index}
-                                onClick={(e) => {
+                                onClick={() => {
                                     handleStorySelection(story);
                                 }}
                             >

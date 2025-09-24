@@ -185,7 +185,10 @@ export function MLRCMap({
                                         handleStorySelection(story);
                                     }}
                                 >
-                                    <CustomMarker story={story} />
+                                    <CustomMarker
+                                        story={story}
+                                        isActive={activeStory === story}
+                                    />
                                 </RMarker>
                             ))}
                         </Suspense>

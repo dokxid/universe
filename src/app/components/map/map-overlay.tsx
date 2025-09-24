@@ -1,5 +1,5 @@
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
 
 export async function MapOverlay({
     slug,
@@ -21,6 +21,7 @@ export async function MapOverlay({
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
                     <VerticalWidgetHolder
+                        selectedExperience={selectedExperience}
                         experiences={experiences}
                         slug={experienceSlug}
                     />

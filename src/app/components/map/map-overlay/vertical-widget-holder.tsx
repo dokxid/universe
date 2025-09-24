@@ -67,14 +67,16 @@ function FilterStoriesDialog() {
 }
 
 export function VerticalWidgetHolder({
+    selectedExperience,
     experiences,
     slug,
 }: {
+    selectedExperience: string | null;
     experiences: string;
     slug: string;
 }) {
     const searchParams = useSearchParams();
-    const expParam = searchParams.get("exp");
+    const expParam = selectedExperience;
     const isUniverseView =
         (slug === "universe" && !expParam) || expParam === "universe";
     const router = useRouter();
@@ -169,7 +171,7 @@ export function VerticalWidgetHolder({
                     </Button>
                 )}
             </div>
-            {!isUniverseView && openDescriptor && (
+            {!isUniverseView && openDescriptor && experienceParsed && (
                 <ExperienceDescriptor
                     setOpenAction={setOpenDescriptor}
                     experience={experienceParsed}

@@ -40,13 +40,9 @@ export function SettingsDialog() {
                         className="w-[200px] justify-between"
                     >
                         {settingsState.mapTiles
-                            ? Object.entries(MAP_TILES).find(
-                                  ([label, tileValue]) => {
-                                      return (
-                                          tileValue === settingsState.mapTiles
-                                      );
-                                  }
-                              )?.[0]
+                            ? Object.entries(MAP_TILES).find(([tileValue]) => {
+                                  return tileValue === settingsState.mapTiles;
+                              })?.[0]
                             : "Select map tiles..."}
                         <ChevronsUpDown className="opacity-50" />
                     </Button>

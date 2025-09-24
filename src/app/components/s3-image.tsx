@@ -23,8 +23,11 @@ export default function S3Image({
     else return <p>No image available</p>;
 
     return (
-        <div className={"relative w-full h-full"}>
-            <Link href={`/${experience}/images/${fileName}`}>
+        <div className={"relative w-full aspect-video"}>
+            <Link
+                href={`/${experience}/images/${fileName}`}
+                className={"relative block w-full h-full"}
+            >
                 <Image
                     src={src}
                     alt="s3url"
