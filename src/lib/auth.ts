@@ -5,6 +5,9 @@ import { WorkOS } from "@workos-inc/node";
 export const workos = new WorkOS(process.env.WORKOS_API_KEY || "");
 
 export function getRedirectUri() {
+    if (process.env.WORKOS_REDIRECT_URI) {
+        return process.env.WORKOS_REDIRECT_URI;
+    }
     if (process.env.NODE_ENV === "development") {
         return "http://localhost:3000/callback";
     }
