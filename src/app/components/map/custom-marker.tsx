@@ -4,21 +4,31 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/api";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";
 
-function CustomMarker({ story }: { story: StoryDTO }) {
+function CustomMarker({
+    story,
+    isActive,
+}: {
+    story: StoryDTO;
+    isActive: boolean;
+}) {
     return (
         <HoverCard openDelay={10}>
             <HoverCardTrigger>
                 <MapPin
                     size={30}
                     fill={"#D7263D"}
-                    className={
-                        "cursor-pointer transition-all size-8 hover:size-10 hover:fill-blue-400"
-                    }
+                    className={cn(
+                        "cursor-pointer transition-all size-8 hover:size-10 hover:fill-blue-400",
+                        {
+                            "fill-blue-400": isActive,
+                        }
+                    )}
                     strokeWidth={0}
                     stroke={"#FFFFFF"}
                 />

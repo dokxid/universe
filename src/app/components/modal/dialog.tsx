@@ -47,7 +47,7 @@ export function Dialog({
                         <DialogTitle>{title}</DialogTitle>
                         <DialogDescription>{description}</DialogDescription>
                         <Separator />
-                        <ScrollArea className="**:focus-visible:!ring-transparent **:focus-visible:shadow-none **:focus-within:shadow-none focus-within:!ring-transparent **:focus-within:ring-0">
+                        <ScrollArea className="overflow-y-auto **:focus-visible:!ring-transparent **:focus-visible:shadow-none **:focus-within:shadow-none focus-within:!ring-transparent **:focus-within:ring-0">
                             {children}
                         </ScrollArea>
                     </div>

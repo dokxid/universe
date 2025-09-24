@@ -4,12 +4,14 @@ export interface MapState {
     flyPosition: [number, number];
     zoomLevel: number;
     tags: string[];
+    showConnections: boolean;
 }
 
 const initialState: MapState = {
     flyPosition: [24.750592, 59.44435],
     zoomLevel: 5,
     tags: [],
+    showConnections: false,
 };
 
 export const mapSlice = createSlice({
@@ -28,9 +30,17 @@ export const mapSlice = createSlice({
         setTags: (state, action: { payload: string[] }) => {
             state.tags = action.payload;
         },
+        setShowConnections: (state, action: { payload: boolean }) => {
+            state.showConnections = action.payload;
+        },
     },
 });
 
-export const { setFlyPosition, setZoomLevel, decrementZoomLevel, setTags } =
-    mapSlice.actions;
+export const {
+    setFlyPosition,
+    setZoomLevel,
+    decrementZoomLevel,
+    setTags,
+    setShowConnections,
+} = mapSlice.actions;
 export default mapSlice.reducer;

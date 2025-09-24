@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 
 // make dynamic loading
-const MyMap = dynamic(() => import("@/app/components/map/map"), {
+const MapProvider = dynamic(() => import("@/app/components/map/map"), {
     ssr: false,
 });
 
@@ -21,7 +21,6 @@ export function MapPanel({
     experienceSlug: string;
 }) {
     const stories = JSON.parse(storiesSerialized) as StoryDTO[];
-    console.log("Parsed stories:", stories);
     const experiences = JSON.parse(experiencesSerialized) as Experience[];
     const dispatch = useAppDispatch();
 
@@ -33,11 +32,11 @@ export function MapPanel({
     return (
         <>
             <Suspense fallback={<div>loading stories...</div>}>
-                <MyMap
+                <MapProvider
                     stories={stories}
                     experiences={experiences}
                     experienceSlug={experienceSlug}
-                ></MyMap>
+                ></MapProvider>
             </Suspense>
         </>
     );

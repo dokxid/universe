@@ -16,7 +16,7 @@ import {
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
-// import { setLngLat } from "@/lib/features/dialogue/addStoryDialogSlice";
+import { setLngLat } from "@/lib/features/dialogue/addStoryDialogSlice";
 import { setFlyPosition } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { ClipboardCopy, FilePlus2, Plane } from "lucide-react";

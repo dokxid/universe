@@ -12,10 +12,15 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { decrementZoomLevel, setTags } from "@/lib/features/map/mapSlice";
+import { Toggle } from "@/components/ui/toggle";
+import {
+    decrementZoomLevel,
+    setShowConnections,
+    setTags,
+} from "@/lib/features/map/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
-import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
+import { ArrowLeftToLine, Cable, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
@@ -83,6 +88,7 @@ export function VerticalWidgetHolder({
     }, [experiencesParsed, expParam, slug]);
 
     // hooks
+    const mapState = useAppSelector((state) => state.map);
     const dispatch = useAppDispatch();
     const [openDescriptor, setOpenDescriptor] = React.useState(true);
 
@@ -104,6 +110,16 @@ export function VerticalWidgetHolder({
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
                 <FilterStoriesDialog></FilterStoriesDialog>
+                <Toggle
+                    pressed={mapState.showConnections}
+                    onPressedChange={(pressed) =>
+                        dispatch(setShowConnections(pressed))
+                    }
+                    variant={"outline"}
+                    className="pointer-events-auto size-10 hover:ring-2 bg-primary text-primary-foreground data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground"
+                >
+                    <Cable />
+                </Toggle>
                 {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}

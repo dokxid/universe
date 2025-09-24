@@ -14,7 +14,7 @@ const storySchema = new Schema(
         draft: { type: Boolean, required: true },
         published: { type: Boolean, required: true },
         title: { type: String, required: true },
-        center: {
+        location: {
             type: {
                 type: String,
                 enum: ["Point"],

@@ -1,7 +1,7 @@
 "use client";
 
 import { submitStory } from "@/actions/submitStory";
-import { TagPicker } from "@/app/components/form/tag-picker";
+import { TagPickerField } from "@/app/components/form/tag-picker";
 import { TiptapEditor } from "@/app/components/form/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -198,7 +198,7 @@ export default function AddStoryForm() {
                         render={({ field }) => (
                             <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormControl>
-                                    <TagPicker {...field}></TagPicker>
+                                    <TagPickerField {...field}></TagPickerField>
                                 </FormControl>
                             </FormItem>
                         )}
