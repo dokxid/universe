@@ -1,6 +1,7 @@
+import ContentLayout from "@/app/components/layout/content-layout";
 import { ListExperiencesDialog } from "@/app/components/modal/list-experiences-dialog";
-import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { SidebarInset } from "@/components/ui/sidebar";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { Suspense } from "react";
 
 export default async function ExperiencesPage({
     params,
@@ -8,14 +9,12 @@ export default async function ExperiencesPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
+
     return (
-        <div className="w-full h-full flex">
-            <AppSidebar slug={slug} />
-            <SidebarInset>
-                <div className="flex-1 p-4">
-                    <ListExperiencesDialog />
-                </div>
-            </SidebarInset>
-        </div>
+        <ContentLayout slug={slug} feature={"Experiences"}>
+            <Suspense fallback={<div>Loading...</div>}>
+                <ListExperiencesDialog />
+            </Suspense>
+        </ContentLayout>
     );
 }

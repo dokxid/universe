@@ -6,8 +6,10 @@ import { cache } from "react";
 export async function getExperiences(): Promise<Experience[]> {
     try {
         await dbConnect();
-        const experiences = await ExperienceModel.find({}).exec();
-        return experiences.map((exp) => exp.toJSON());
+        const experiences = await ExperienceModel.find({})
+            .lean<Experience[]>()
+            .exec();
+        return experiences;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
@@ -22,7 +24,7 @@ export async function getExperience(
             slug: experienceSlug,
         }).exec();
         if (!experience) throw new Error("experience not found");
-        return experience.toJSON();
+        return experience;
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
@@ -31,23 +33,28 @@ export async function getExperience(
     }
 }
 
-export const getExperiencesDTO = cache(async (): Promise<string> => {
+export const getExperiencesDTO = cache(async (): Promise<Experience[]> => {
     try {
-        return JSON.stringify(await getExperiences());
+        return await getExperiences();
     } catch (err) {
-        console.error("Error fetching experiences:", err);
-        return "<error>";
+        throw new Error(
+            "Error fetching experiences: " +
+                (err instanceof Error ? err.message : "Unknown error")
+        );
     }
 });
 
 export async function getExperienceDTO(
     experienceSlug: string
-): Promise<string> {
+): Promise<Experience> {
     try {
-        return JSON.stringify(await getExperience(experienceSlug));
+        return await getExperience(experienceSlug);
     } catch (err) {
-        console.error(`Error fetching experience ${experienceSlug}:`, err);
-        return "<error>";
+        throw new Error(
+            `Error fetching experience ${experienceSlug}: ${
+                err instanceof Error ? err.message : "Unknown error"
+            }`
+        );
     }
 }
 
@@ -59,7 +66,10 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
             connection_id: experience.connection_id,
         };
     } catch (err) {
-        console.error(`Error fetching experience ${experienceSlug}:`, err);
-        return null;
+        throw new Error(
+            `Error fetching experience ${experienceSlug}: ${
+                err instanceof Error ? err.message : "Unknown error"
+            }`
+        );
     }
 }

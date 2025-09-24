@@ -1,3 +1,5 @@
+"use client";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,11 +12,11 @@ import {
     SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar";
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-
 export function ItemGroup({
     children,
     items,
@@ -24,6 +26,7 @@ export function ItemGroup({
     items: SidebarItemGroup;
     groupLabel: string;
 }) {
+    const { setOpenMobile } = useSidebar();
     return (
         <SidebarGroup>
             <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
@@ -36,7 +39,9 @@ export function ItemGroup({
                     <SidebarMenuButton asChild>
                         <Link
                             href={item.href}
-                            className="flex items-center w-full"
+                            className={"flex items-center w-full"}
+                            aria-label={item.title}
+                            onClick={() => setOpenMobile(false)}
                         >
                             <item.icon />
                             <span>{item.title}</span>
@@ -49,10 +54,15 @@ export function ItemGroup({
                                     <MoreHorizontal />
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent side="right" align="start">
+                            <DropdownMenuContent
+                                side="right"
+                                align="start"
+                                aria-label={"Dropdown area for " + item.title}
+                            >
                                 {item.dropdownItems.map((dropdownItem) => (
                                     <DropdownMenuItem
                                         key={dropdownItem.title}
+                                        aria-label={dropdownItem.title}
                                         asChild
                                     >
                                         <a href={dropdownItem.href}>

@@ -6,7 +6,7 @@ import { StoryDTO } from "@/types/api";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = await params;
-    const data: StoryDTO[] = JSON.parse(await getLabPrivateStoriesDTO(slug));
+    const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
     return (
         <ContentLayout slug={slug} feature={"Manage Stories"}>

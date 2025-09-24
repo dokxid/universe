@@ -2,12 +2,12 @@
 
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Experience, Story } from "@/types/api";
+import { Experience, StoryDTO } from "@/types/api";
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 
 // make dynamic loading
-const MyMap = dynamic(() => import("@/app/components/map/map"), {
+const MapProvider = dynamic(() => import("@/app/components/map/map"), {
     ssr: false,
 });
 
@@ -20,22 +20,23 @@ export function MapPanel({
     experiencesSerialized: string;
     experienceSlug: string;
 }) {
-    const stories = JSON.parse(storiesSerialized) as Story[];
+    const stories = JSON.parse(storiesSerialized) as StoryDTO[];
     const experiences = JSON.parse(experiencesSerialized) as Experience[];
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setCurrentExperience(experienceSlug));
+        console.log("Set current experience to", experienceSlug);
     }, [dispatch, experienceSlug]);
 
     return (
         <>
             <Suspense fallback={<div>loading stories...</div>}>
-                <MyMap
+                <MapProvider
                     stories={stories}
                     experiences={experiences}
                     experienceSlug={experienceSlug}
-                ></MyMap>
+                ></MapProvider>
             </Suspense>
         </>
     );

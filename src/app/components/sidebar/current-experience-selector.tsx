@@ -17,17 +17,17 @@ import {
 import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
-import React, { use } from "react";
+import React from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
 export function CurrentExperienceSelector({
-    experiencesPromise,
+    experiencesSerialized,
 }: {
-    experiencesPromise: Promise<string>;
+    experiencesSerialized: string;
 }) {
     const [open, setOpen] = React.useState(false);
     const searchParams = useSearchParams();
-    const data = JSON.parse(use(experiencesPromise)) as Experience[];
+    const data = JSON.parse(experiencesSerialized) as Experience[];
     const safeData = data.map((item) => ({
         ...item,
         stories: [...item.stories],
@@ -46,6 +46,7 @@ export function CurrentExperienceSelector({
                     role={"combobox"}
                     aria-expanded={open}
                     className={"w-full justify-between min-h-20 max-h20"}
+                    aria-label={"Experience Selector"}
                 >
                     <CurrentExperienceDescriptor experience={experience} />
                     <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

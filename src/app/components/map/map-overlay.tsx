@@ -1,5 +1,5 @@
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperienceDTO } from "@/data/dto/experience-dto";
+import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
 
 export async function MapOverlay({
     slug,
@@ -13,23 +13,44 @@ export async function MapOverlay({
         experienceSearchParam && !Array.isArray(experienceSearchParam)
             ? experienceSearchParam
             : slug;
-    const experience = await getExperienceDTO(selectedExperience);
+    const experiences = JSON.stringify(await getExperiencesDTO());
 
     return (
         <div className={"relative w-full h-full p-4"}>
             <div className="relative w-full h-full">
+                {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
                     <VerticalWidgetHolder
-                        experience={experience}
+                        experiences={experiences}
                         slug={experienceSlug}
                     />
                 </div>
+
+                {/* top right */}
                 <div
                     className={
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
                     {/* <StoryDetails /> */}
+                </div>
+
+                {/* bottom right */}
+                <div
+                    className={"absolute bottom-0 right-0 flex flex-col gap-3"}
+                >
+                    <div
+                        className={
+                            "flex flex-col gap-3 pointer-events-auto w-10"
+                        }
+                    >
+                        {/* <Button
+                            variant={"secondary_custom"}
+                            className={"size-10"}
+                        >
+                            <Plus size={10} />
+                        </Button> */}
+                    </div>
                 </div>
             </div>
         </div>

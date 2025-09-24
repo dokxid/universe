@@ -20,6 +20,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children, modal }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
+            <head>
+                <link rel="icon" href="/img/favicon.ico" sizes="any" />
+            </head>
             <body className={"antialiased"}>
                 <AuthKitProvider>
                     <StoreProvider>

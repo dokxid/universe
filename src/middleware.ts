@@ -5,10 +5,14 @@ const CSP_ENABLED = false;
 const SLUG_PATH_PREFIX = "/:slug";
 
 const unauthenticatedPaths = [
+    "",
     "/map",
     "/stories",
     "/stories/:id",
     "/experiences",
+    "/settings",
+    "/images/:filename",
+    "/api/test",
 ];
 
 export default async function middleware(
@@ -67,7 +71,12 @@ export default async function middleware(
 // Match against pages that require authentication
 export const config = {
     matcher: [
+        "/:slug",
+        "/:slug/images/:filename",
         "/:slug/map",
+        "/:slug/map/:page*",
+        "/:slug/experiences",
+        "/:slug/settings",
         "/:slug/account/:page*",
         "/:slug/lab/:page*",
         "/:slug/stories/create",

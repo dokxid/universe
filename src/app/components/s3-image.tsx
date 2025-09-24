@@ -1,30 +1,39 @@
-'use client'
-import Image from 'next/image'
-import {useImageURL} from "@/lib/data_hooks/imageHook";
-import {Spinner} from "@/components/ui/shadcn-io/spinner";
+"use client";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useImageURL } from "@/lib/data_hooks/imageHook";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
-
-export default function S3Image({experience, fileName}: { experience: string, fileName: string }) {
-
-    const {imageUrl, isError, isLoading} = useImageURL(experience, fileName)
-    if (isLoading) return <Spinner/>;
+export default function S3Image({
+    experience,
+    fileName,
+    className,
+}: {
+    experience: string;
+    fileName: string;
+    className?: string;
+}) {
+    const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
+    if (isLoading) return <Spinner />;
     if (isError) return <p>Error loading image</p>;
-    let src
+    let src;
 
-    if (imageUrl != null) src = imageUrl.url; else return <p>No image available</p>;
+    if (imageUrl != null) src = imageUrl.url;
+    else return <p>No image available</p>;
 
     return (
         <div className={"relative w-full h-full"}>
-            <Image
-                src={src}
-                alt="s3url"
-                priority={true}
-                fill
-                sizes="(min-width: 808px) 50vw, 100vw"
-                style={{
-                    objectFit: 'cover', // cover, contain, none
-                }}
-            />
+            <Link href={`/${experience}/images/${fileName}`}>
+                <Image
+                    src={src}
+                    alt="s3url"
+                    priority={true}
+                    fill
+                    sizes="(min-width: 808px) 50vw, 100vw"
+                    className={cn("object-cover", className)}
+                />
+            </Link>
         </div>
     );
 }
