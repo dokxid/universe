@@ -1,3 +1,4 @@
+import { attachDatabasePool } from "@vercel/functions";
 import mongoose from "mongoose";
 
 interface MongooseCache {
@@ -17,27 +18,40 @@ if (!global.mongoose) {
 }
 
 async function dbConnect(): Promise<typeof mongoose> {
-    if (!process.env.MONGODB_URL) {
+    if (!process.env.MONGODB_URI) {
         throw new Error(
-            "please make sure to setup the .env like explained in the README.md"
+            "please define the MONGODB_URI environment variable inside .env"
         );
     }
 
-    // compose uri
-    const uri =
-        "mongodb://" +
-        process.env.MONGODB_USERNAME +
-        ":" +
-        process.env.MONGODB_PWD +
-        "@" +
-        process.env.MONGODB_URL;
+    const uri = process.env.MONGODB_URI;
 
     if (cached.conn) {
         return cached.conn;
     }
 
     if (!cached.promise) {
-        cached.promise = mongoose.connect(uri);
+        const options = {
+            appName: "devrel.vercel.integration",
+        };
+
+        if (process.env.NODE_ENV === "development") {
+            // In development mode, use the existing cached connection
+            cached.promise = mongoose.connect(uri, options);
+        } else {
+            // In production mode, connect and attach to Vercel's database pool
+            cached.promise = mongoose
+                .connect(uri, options)
+                .then((mongooseInstance) => {
+                    // Attach the underlying MongoDB client to Vercel's database pool
+                    if (mongooseInstance.connection?.getClient) {
+                        attachDatabasePool(
+                            mongooseInstance.connection.getClient()
+                        );
+                    }
+                    return mongooseInstance;
+                });
+        }
     }
 
     try {
