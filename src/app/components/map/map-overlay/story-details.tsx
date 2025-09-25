@@ -24,9 +24,11 @@ export function StoryDetails({ stories }: { stories: string }) {
             (s: StoryDTO) => s._id === mapState.selectedStoryId
         );
     }, [mapState.selectedStoryId, parsedStories]);
-    if (!story) return <div>Story not found</div>;
+    if (!story) return null;
     return (
-        <Card className={"max-h-[50svh] w-80 pointer-events-auto"}>
+        <Card
+            className={"max-h-[50svh] w-80 pointer-events-auto overflow-y-auto"}
+        >
             <CardHeader>
                 <Link href={"/" + story.experience + "/stories/" + story._id}>
                     <div className={"flex flex-row items-center gap-2 mb-2"}>

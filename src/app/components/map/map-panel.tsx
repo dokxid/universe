@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 
 // make dynamic loading
-const MapProvider = dynamic(() => import("@/app/components/map/map"), {
+const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
     ssr: false,
 });
 
@@ -32,11 +32,11 @@ export function MapPanel({
     return (
         <>
             <Suspense fallback={<div>loading stories...</div>}>
-                <MapProvider
+                <MapWrapper
                     stories={stories}
                     experiences={experiences}
                     experienceSlug={experienceSlug}
-                ></MapProvider>
+                />
             </Suspense>
         </>
     );

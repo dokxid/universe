@@ -2,9 +2,10 @@
 
 import { DeckGLMap } from "@/app/components/map/deck-gl-map";
 import { Experience, StoryDTO } from "@/types/api";
+import { MapProvider } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-export default function MapProvider({
+export default function MapWrapper({
     stories,
     experiences,
     experienceSlug,
@@ -14,10 +15,12 @@ export default function MapProvider({
     experienceSlug: string;
 }) {
     return (
-        <DeckGLMap
-            stories={stories}
-            experiences={experiences}
-            experienceSlug={experienceSlug}
-        ></DeckGLMap>
+        <MapProvider>
+            <DeckGLMap
+                stories={stories}
+                experiences={experiences}
+                experienceSlug={experienceSlug}
+            ></DeckGLMap>
+        </MapProvider>
     );
 }

@@ -11,10 +11,12 @@ export const MAP_TILES = {
 
 export interface SettingsState {
     mapTiles: string;
+    descriptorOpen: boolean;
 }
 
 const initialState: SettingsState = {
     mapTiles: MAP_TILES["Alidade Smooth"],
+    descriptorOpen: true,
 };
 
 export const settingsSlice = createSlice({
@@ -24,8 +26,11 @@ export const settingsSlice = createSlice({
         setMapTiles: (state, action) => {
             state.mapTiles = action.payload;
         },
+        setDescriptorOpen: (state, action) => {
+            state.descriptorOpen = action.payload;
+        },
     },
 });
 
-export const { setMapTiles } = settingsSlice.actions;
+export const { setMapTiles, setDescriptorOpen } = settingsSlice.actions;
 export default settingsSlice.reducer;

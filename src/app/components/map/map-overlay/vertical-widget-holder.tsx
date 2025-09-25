@@ -18,6 +18,7 @@ import {
     setShowConnections,
     setTags,
 } from "@/lib/features/map/mapSlice";
+import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ArrowLeftToLine, Cable, ChevronsDownUp, Funnel } from "lucide-react";
@@ -91,8 +92,8 @@ export function VerticalWidgetHolder({
 
     // hooks
     const mapState = useAppSelector((state) => state.map);
+    const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
-    const [openDescriptor, setOpenDescriptor] = React.useState(true);
 
     const createQueryString = useCallback(
         (name: string, value: string) => {
@@ -155,28 +156,36 @@ export function VerticalWidgetHolder({
                 )}
                 {!isUniverseView && (
                     <Button
-                        onClick={() => setOpenDescriptor(!openDescriptor)}
+                        onClick={() =>
+                            dispatch(
+                                setDescriptorOpen(!settingsState.descriptorOpen)
+                            )
+                        }
                         className={`h-10 flex flex-row gap-2 items-center hover:ring-2 ${
-                            openDescriptor
+                            settingsState.descriptorOpen
                                 ? "bg-primary text-primary-foreground hover:bg-primary hover:ring-secondary"
                                 : "bg-secondary text-secondary-foreground hover:bg-secondary hover:ring-primary"
                         }`}
                     >
                         <ChevronsDownUp className={"size-4"} />
                         <p className={"text-xs hidden lg:inline-block"}>
-                            {openDescriptor
+                            {settingsState.descriptorOpen
                                 ? "Hide Descriptor"
                                 : "Show Descriptor"}
                         </p>
                     </Button>
                 )}
             </div>
-            {!isUniverseView && openDescriptor && experienceParsed && (
-                <ExperienceDescriptor
-                    setOpenAction={setOpenDescriptor}
-                    experience={experienceParsed}
-                />
-            )}
+            {!isUniverseView &&
+                settingsState.descriptorOpen &&
+                experienceParsed && (
+                    <ExperienceDescriptor
+                        setOpenAction={(open) =>
+                            dispatch(setDescriptorOpen(open))
+                        }
+                        experience={experienceParsed}
+                    />
+                )}
         </>
     );
 }

@@ -1,7 +1,9 @@
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
+import { Button } from "@/components/ui/button";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
+import { ChevronDown } from "lucide-react";
 
 export async function MapOverlay({
     slug,
@@ -36,6 +38,9 @@ export async function MapOverlay({
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
+                    <Button disabled={true} variant={"secondary_custom"}>
+                        <ChevronDown />
+                    </Button>
                     <StoryDetails stories={stories} />
                 </div>
 
