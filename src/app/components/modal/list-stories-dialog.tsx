@@ -1,35 +1,44 @@
+import S3Image from "@/app/components/s3-image";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Experience } from "@/types/api";
+import {
+    getAllPublicStoriesDTO,
+    getLabPublicStoriesDTO,
+} from "@/data/dto/story-dto";
+import { StoryDTO } from "@/types/api";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export async function ListExperiencesDialog() {
-    const experiences = await getExperiencesDTO();
-    if (!experiences) return <div>No experiences found.</div>;
+export async function ListStoriesDialog({ slug }: { slug: string }) {
+    let stories: StoryDTO[] = [];
+    if (slug === "universe") {
+        stories = await getAllPublicStoriesDTO();
+    } else {
+        stories = await getLabPublicStoriesDTO(slug);
+    }
+    if (!stories) return <div>No stories found.</div>;
 
     return (
         <div className="grid grid-flow-row-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-            {experiences.map((experience: Experience) => (
+            {stories.map((story) => (
                 <Link
-                    key={experience.slug}
-                    href={`/${experience.slug}/map`}
+                    key={story._id}
+                    href={`/${story.experience}/stories/${story._id}`}
                     className="flex flex-row justify-between items-center w-full gap-2 group"
                 >
                     <Card className="w-full mx-auto pt-0 flex-col hover:bg-accent">
                         <CardHeader className="overflow-hidden p-0">
                             <AspectRatio ratio={16 / 9}>
-                                {experience.featured_image ? (
+                                {story.featured_image_url ? (
                                     <Suspense
                                         fallback={<ListExperiencesSkeleton />}
                                     >
-                                        <Image
-                                            src={experience.featured_image}
-                                            alt={experience.title}
+                                        <S3Image
+                                            link={false}
+                                            experience={story.experience}
+                                            fileName={story.featured_image_url}
                                             fill={true}
                                             sizes="(min-width: 768px) 50vw, 100vw"
                                             className="rounded-t-md object-cover"
@@ -48,10 +57,10 @@ export async function ListExperiencesDialog() {
                             <div className="flex flex-row items-center w-full gap-2 justify-between">
                                 <div className="flex-1 min-w-0">
                                     <h2 className="text-lg font-semibold group-hover:underline truncate">
-                                        {experience.title}
+                                        {story.title}
                                     </h2>
                                     <p className="text-sm text-muted-foreground group-hover:underline truncate">
-                                        {experience.subtitle}
+                                        by {story.author_name}
                                     </p>
                                 </div>
                                 <div className="shrink-0 ml-2">

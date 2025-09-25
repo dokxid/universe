@@ -9,10 +9,12 @@ export default function S3Image({
     experience,
     fileName,
     className,
+    link = true,
 }: {
     experience: string;
     fileName: string;
     className?: string;
+    link: boolean;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
     if (isLoading) return <Spinner />;
@@ -21,6 +23,20 @@ export default function S3Image({
 
     if (imageUrl != null) src = imageUrl.url;
     else return <p>No image available</p>;
+
+    if (!link)
+        return (
+            <div className={"relative w-full h-full aspect-video"}>
+                <Image
+                    src={src}
+                    alt="s3url"
+                    priority={true}
+                    fill
+                    sizes="(min-width: 808px) 50vw, 100vw"
+                    className={cn("object-cover", className)}
+                />
+            </div>
+        );
 
     return (
         <div className={"relative w-full h-full aspect-video"}>

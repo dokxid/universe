@@ -102,5 +102,6 @@ export const config = {
         "/:slug/stories/edit/:id",
         "/:slug/stories/:id",
         "/:slug/team/:page*",
+        "/:slug/stories",
     ],
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { BookOpenText, Building2, List, Map, SettingsIcon } from "lucide-react";
+import { BookOpenText, List, Map, SettingsIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
@@ -13,11 +13,6 @@ export function UserItemGroup() {
             title: "Map View",
             href: `/${slug}/map`,
             icon: Map,
-        },
-        {
-            title: "Co-Labs",
-            href: `/${slug}/labs`,
-            icon: Building2,
         },
         {
             title: "Story Experiences",
