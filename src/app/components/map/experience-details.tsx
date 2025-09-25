@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";

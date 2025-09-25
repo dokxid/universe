@@ -4,11 +4,15 @@ import { ExperienceDetails } from "@/app/components/map/experience-details";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Toggle } from "@/components/ui/toggle";
 import { decrementZoomLevel } from "@/lib/features/map/mapSlice";
-import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
+import {
+    setDescriptorOpen,
+    setGlobeView,
+} from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
-import { ArrowLeftToLine, ChevronsDownUp } from "lucide-react";
+import { ArrowLeftToLine, ChevronsDownUp, Globe } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
@@ -50,6 +54,7 @@ export function VerticalWidgetHolder({
 
     // hooks
     const settingsState = useAppSelector((state) => state.settings);
+    const mapState = useAppSelector((state) => state.map);
     const dispatch = useAppDispatch();
 
     const createQueryString = useCallback(
@@ -70,6 +75,15 @@ export function VerticalWidgetHolder({
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
                 <FilterStoriesDialog />
+                <Toggle
+                    pressed={settingsState.globeView}
+                    onPressedChange={(pressed) =>
+                        dispatch(setGlobeView(pressed))
+                    }
+                    className="pointer-events-auto size-10 bg-secondary text-secondary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:ring-2"
+                >
+                    <Globe />
+                </Toggle>
                 {/* <Toggle
                     pressed={mapState.showConnections}
                     onPressedChange={(pressed) =>
@@ -111,7 +125,7 @@ export function VerticalWidgetHolder({
                         </p>
                     </Button>
                 )}
-                {!isUniverseView && (
+                {!isUniverseView && mapState.selectedStoryId === "" && (
                     <Button
                         onClick={() =>
                             dispatch(
@@ -134,7 +148,11 @@ export function VerticalWidgetHolder({
                 )}
             </div>
             <ExperienceDetails
-                visible={settingsState.descriptorOpen && !isUniverseView}
+                visible={
+                    settingsState.descriptorOpen &&
+                    !isUniverseView &&
+                    mapState.selectedStoryId === ""
+                }
                 setOpenAction={(open) => dispatch(setDescriptorOpen(open))}
                 experience={experienceParsed}
             />

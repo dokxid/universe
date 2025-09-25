@@ -35,7 +35,11 @@ function StoryDetailsHeader({
                 </Avatar>
                 <article className={"flex flex-col text-left"}>
                     <p className={"font-semibold"}>{story.title}</p>
-                    <p className={"text-sm text-muted-foreground"}>
+                    <p
+                        className={
+                            "text-sm text-muted-foreground hover:underline cursor-pointer"
+                        }
+                    >
                         by {story.author_name}
                     </p>
                 </article>
@@ -79,7 +83,7 @@ export function StoryDetails({
                             story={story}
                             className={"bg-background"}
                         />
-                        <div className="prose dark:prose-invert px-4">
+                        <div className="prose dark:prose-invert px-0">
                             {parse(story.content)}
                         </div>
                     </div>
@@ -89,10 +93,11 @@ export function StoryDetails({
     }
 
     // desktop view
+    if (!open) return null;
     return (
         <Card
             className={
-                "gap-3 max-h-[50svh] lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0"
+                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0"
             }
         >
             <div className={"w-full"}>

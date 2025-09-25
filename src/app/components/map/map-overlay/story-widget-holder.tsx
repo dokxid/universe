@@ -17,12 +17,8 @@ export function StoryWidgetHolder({
     const mapState = useAppSelector((state) => state.map);
     const [showDetails, setShowDetails] = useState(true);
     return (
-        <>
-            <div
-                className={
-                    "flex flex-row gap-3 justify-end pointer-events-auto max-w-[30svh]"
-                }
-            >
+        <div className={"flex flex-col gap-3 items-end h-full"}>
+            <div className={"flex flex-row gap-3 pointer-events-auto w-fit"}>
                 {mapState.selectedStoryId !== "" && (
                     <Button
                         variant={"secondary_custom"}
@@ -43,6 +39,6 @@ export function StoryWidgetHolder({
                 open={showDetails}
                 setOpenAction={setShowDetails}
             />
-        </>
+        </div>
     );
 }

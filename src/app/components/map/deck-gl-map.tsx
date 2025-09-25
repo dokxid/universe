@@ -12,6 +12,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
+    AttributionControl,
     Map,
     MapLayerMouseEvent,
     Marker,
@@ -234,13 +235,19 @@ export function DeckGLMap({
                     initialViewState={INITIAL_VIEW_STATE}
                     onRender={() => {}}
                     mapStyle={settingsState.mapTiles}
+                    attributionControl={false}
                     onContextMenu={(e) => {
                         handleContextMenu(e);
                     }}
                     onDblClick={(e) => {
                         handleContextMenu(e);
                     }}
+                    projection={settingsState.globeView ? "globe" : "mercator"}
                 >
+                    <AttributionControl
+                        compact={true}
+                        position={"bottom-left"}
+                    />
                     <MapController currentExperience={experience} />
                     {storiesFiltered.map((story, index) => (
                         <Marker
