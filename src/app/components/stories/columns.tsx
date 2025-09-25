@@ -2,6 +2,7 @@
 
 import { submitElevationRequest } from "@/actions/submitElevationRequest";
 import { DataTableColumnHeader } from "@/app/components/stories/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -218,35 +219,39 @@ export const elevationRequestColumns: ColumnDef<StoryDTO>[] = [
     },
     {
         id: "status",
-        accessorFn: (row) =>
-            row.elevation_requests?.[row.elevation_requests.length - 1]
-                .status ?? "Unknown",
+        accessorFn: (row) => row.elevation_requests?.[0].status ?? "Unknown",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Status" />
         ),
         cell: ({ row }) => {
             const story = row.original;
-            const status =
-                story.elevation_requests?.[story.elevation_requests.length - 1]
-                    .status;
+            const status = story.elevation_requests?.[0].status;
             return (
-                <span suppressHydrationWarning>{status ? status : "N/A"}</span>
+                <span suppressHydrationWarning>
+                    <Badge
+                        className={
+                            status === "approved"
+                                ? "bg-green-400"
+                                : status === "rejected"
+                                ? "bg-red-400"
+                                : "bg-accent text-accent-foreground"
+                        }
+                    >
+                        {status}
+                    </Badge>
+                </span>
             );
         },
     },
     {
         id: "updated_at",
-        accessorFn: (row) =>
-            row.elevation_requests?.[row.elevation_requests.length - 1]
-                .updated_at ?? "",
+        accessorFn: (row) => row.elevation_requests?.[0].updated_at ?? "",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Updated At" />
         ),
         cell: ({ row }) => {
             const story = row.original;
-            const updatedAt =
-                story.elevation_requests?.[story.elevation_requests.length - 1]
-                    .updated_at;
+            const updatedAt = story.elevation_requests?.[0].updated_at;
             return (
                 <span suppressHydrationWarning>
                     {updatedAt
