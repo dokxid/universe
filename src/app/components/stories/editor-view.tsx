@@ -10,7 +10,7 @@ export default function EditorView({
     storySerialized: string;
 }) {
     const story = JSON.parse(storySerialized) as StoryDTO;
-    const [content, setContent] = useState(story.content);
+    const [content] = useState(story.content);
     return (
         <div className="h-[75svh]">
             <MinimalTiptapEditor

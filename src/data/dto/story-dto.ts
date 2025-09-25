@@ -13,8 +13,8 @@ import { workos } from "@/lib/auth";
 import { uploadFile } from "@/lib/aws/s3";
 import dbConnect from "@/lib/mongodb/connections";
 import {
-    ElevationRequestData,
     Experience,
+    NewElevationRequestData,
     NewStoryData,
     Story,
     StoryDTO,
@@ -149,7 +149,7 @@ async function insertStory(
 }
 
 async function insertElevationRequest(
-    requestToInsert: ElevationRequestData,
+    requestToInsert: NewElevationRequestData,
     storyId: mongoose.Types.ObjectId
 ) {
     try {
@@ -298,7 +298,13 @@ export async function submitStoryDTO(formData: FormData, user: User | null) {
         draft: data.draft,
 
         // hardcoded stuff
-        elevation_requests: [],
+        elevation_requests: [
+            {
+                requested_at: new Date(),
+                updated_at: new Date(),
+                status: "created",
+            },
+        ],
         visible_universe: true,
         published: true,
     };
@@ -321,7 +327,7 @@ export async function submitElevationRequestDTO(
         if (!isUserAdmin(user, slug)) {
             throw new Error("You must be an admin to request elevation.");
         }
-        const requestToInsert: ElevationRequestData = {
+        const requestToInsert: NewElevationRequestData = {
             status: "pending",
         };
         // validate id before creating ObjectId

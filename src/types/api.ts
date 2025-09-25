@@ -41,10 +41,9 @@ export type NewElevationRequestData = {
 };
 
 export type ElevationRequest = {
-    length: number;
     requested_at: Date;
     updated_at: Date;
-    status: "pending" | "approved" | "rejected";
+    status: "pending" | "approved" | "rejected" | "created";
 };
 
 export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;
