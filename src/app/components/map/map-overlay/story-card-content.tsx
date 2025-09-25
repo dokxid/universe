@@ -1,6 +1,7 @@
 import S3Image from "@/app/components/s3-image";
 import { StoryDTO } from "@/types/api";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 export function StoryCardContent({ story }: { story: StoryDTO }) {
     return (
@@ -34,12 +35,12 @@ export function StoryCardContent({ story }: { story: StoryDTO }) {
                 <div className="prose-content max-h-10 overflow-hidden">
                     {parse(story.content)}
                 </div>
-                <a
+                <Link
                     href={"/" + story.experience + "/stories/" + story._id}
                     className={"text-sm underline"}
                 >
                     Read more
-                </a>
+                </Link>
             </article>
         </div>
     );

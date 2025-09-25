@@ -4,6 +4,7 @@ import S3Image from "@/app/components/s3-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -54,6 +55,14 @@ export function StoryDetails({ stories }: { stories: string }) {
             </CardHeader>
             <CardContent>
                 <div className="prose-content">{parse(story.content)}</div>
+                <CardAction>
+                    <Link
+                        href={"/" + story.experience + "/stories/" + story._id}
+                        className={"text-sm underline"}
+                    >
+                        Read more
+                    </Link>
+                </CardAction>
             </CardContent>
         </Card>
     );
