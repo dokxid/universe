@@ -14,7 +14,7 @@ export default function S3Image({
     experience: string;
     fileName: string;
     className?: string;
-    link: boolean;
+    link?: boolean;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
     if (isLoading) return <Spinner />;

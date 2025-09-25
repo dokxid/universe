@@ -39,8 +39,6 @@ export async function ListStoriesDialog({ slug }: { slug: string }) {
                                             link={false}
                                             experience={story.experience}
                                             fileName={story.featured_image_url}
-                                            fill={true}
-                                            sizes="(min-width: 768px) 50vw, 100vw"
                                             className="rounded-t-md object-cover"
                                         />
                                     </Suspense>
