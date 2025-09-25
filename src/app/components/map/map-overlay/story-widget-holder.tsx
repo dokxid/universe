@@ -20,13 +20,13 @@ export function StoryWidgetHolder({
         <>
             <div
                 className={
-                    "flex flex-row gap-3 justify-end pointer-events-auto w-80"
+                    "flex flex-row gap-3 justify-end pointer-events-auto max-w-[30svh]"
                 }
             >
                 {mapState.selectedStoryId !== "" && (
                     <Button
                         variant={"secondary_custom"}
-                        className={"size-10 grow"}
+                        className={"size-10"}
                         onClick={() => setShowDetails(!showDetails)}
                     >
                         {showDetails ? <ChevronDown /> : <ChevronUp />}
@@ -38,7 +38,11 @@ export function StoryWidgetHolder({
                     </Button>
                 </Link>
             </div>
-            {showDetails && <StoryDetails stories={stories} />}
+            <StoryDetails
+                stories={stories}
+                open={showDetails}
+                setOpenAction={setShowDetails}
+            />
         </>
     );
 }

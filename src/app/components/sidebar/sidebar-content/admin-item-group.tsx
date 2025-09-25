@@ -5,7 +5,7 @@ import { Settings, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
-export function AdminItemGroup() {
+export function AdminItemGroup({ visible }: { visible: boolean }) {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const adminItems: SidebarItemGroup = [
@@ -20,6 +20,9 @@ export function AdminItemGroup() {
             icon: Settings,
         },
     ];
+    if (!visible) {
+        return null;
+    }
     return (
         <ItemGroup items={adminItems} groupLabel="Admin Features"></ItemGroup>
     );

@@ -1,5 +1,5 @@
 "use client";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useImageURL } from "@/lib/data_hooks/imageHook";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -17,7 +17,7 @@ export default function S3Image({
     link?: boolean;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
-    if (isLoading) return <Spinner />;
+    if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
     if (isError) return <p>Error loading image</p>;
     let src;
 

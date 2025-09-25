@@ -32,6 +32,16 @@ export async function AppSidebar({ slug }: { slug: string }) {
     const isEditor = await isUserMember(user, slug);
     const isAdmin = await isUserAdmin(user, slug);
 
+    if (!experience) {
+        return <div>Loading...</div>;
+    }
+    if (!user) {
+        return <div>Loading...</div>;
+    }
+    if (!slug) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Sidebar variant={"inset"} className={"p-0"}>
             {/* sidebar header */}
@@ -54,13 +64,7 @@ export async function AppSidebar({ slug }: { slug: string }) {
             )}
 
             {slug !== "universe" && (
-                <SidebarHeader className="flex flex-col items-start border-b px-0 py-0">
-                    {/* <Link href="/universe/map">
-                        <p className="text-xs text-muted-foreground flex flex-row items-center">
-                            <ChevronLeft className="inline mr-2" size={10} />
-                            Back to universe view
-                        </p>
-                    </Link> */}
+                <SidebarHeader className="flex flex-col items-start px-0 py-0">
                     <AspectRatio ratio={16 / 9} className="relative w-full">
                         <Suspense
                             fallback={
@@ -83,9 +87,11 @@ export async function AppSidebar({ slug }: { slug: string }) {
                             />
                         </Suspense>
                     </AspectRatio>
-                    <div className={"px-4 pt-2 pb-4"}>
-                        <h1 className="font-semibold">{experience.title}</h1>
-                        <p className="text-xs text-muted-foreground">
+                    <div className={"px-5 pt-2 pb-4 flex flex-col gap-1"}>
+                        <h3 className="prose-h3 font-semibold">
+                            {experience.title}
+                        </h3>
+                        <p className="prose-muted text-muted-foreground">
                             {experience.subtitle}
                         </p>
                     </div>
@@ -94,14 +100,13 @@ export async function AppSidebar({ slug }: { slug: string }) {
 
             <SidebarContent className={"px-1"}>
                 <UserItemGroup />
-                {isEditor && <EditorItemGroup />}
-                {isAdmin && <AdminItemGroup />}
+                <EditorItemGroup visible={isEditor} />
+                <AdminItemGroup visible={isAdmin} />
                 <UniverseItemGroup />
                 <LinksItemGroup />
                 <AboutItemGroup />
-                {/* <div className="flex grow"></div> */}
             </SidebarContent>
-            <SidebarFooter className={"px-4 py-3 border-t"}>
+            <SidebarFooter className={"px-4 py-3"}>
                 <Suspense fallback={<div>Loading user...</div>}>
                     <UserWidget slug={slug} />
                 </Suspense>
