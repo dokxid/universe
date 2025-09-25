@@ -19,7 +19,7 @@ export const TiptapEditor = ({ value, onChange }: ControllerRenderProps) => {
         <MinimalTiptapEditor
             value={textInput}
             onChange={handleEditorChange}
-            className="w-full h-full prose prose-sm dark:prose-invert"
+            className="w-full"
             editorContentClassName="p-5"
             output="html"
             placeholder="Enter your description..."

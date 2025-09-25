@@ -133,9 +133,8 @@ export default function AddStoryForm() {
                                 <FormLabel className="flex shrink-0">
                                     Description
                                 </FormLabel>
-
                                 <FormControl>
-                                    <div className={"w-full h-100"}>
+                                    <div className={"w-full"}>
                                         <TiptapEditor
                                             {...field}
                                             onChange={field.onChange}
