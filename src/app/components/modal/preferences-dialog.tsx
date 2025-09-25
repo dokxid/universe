@@ -21,7 +21,7 @@ import { MAP_TILES, setMapTiles } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
-export function SettingsDialog() {
+export function PreferencesDialog() {
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
     const [open, setOpen] = React.useState(false);

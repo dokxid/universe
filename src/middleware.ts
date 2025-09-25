@@ -103,5 +103,6 @@ export const config = {
         "/:slug/stories/:id",
         "/:slug/team/:page*",
         "/:slug/stories",
+        "/:slug/user-preferences",
     ],
 };

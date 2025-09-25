@@ -18,6 +18,7 @@ import { mapSlice } from "./features/map/mapSlice";
 const persistConfig = {
     key: "settings",
     storage,
+    blacklist: ["descriptorOpen"], // don't persist descriptorOpen as it is a UI state
 };
 
 const persistedSettingsReducer = persistReducer(
