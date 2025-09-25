@@ -1,13 +1,13 @@
 import { Dialog } from "@/app/components/modal/dialog";
-import { PreferencesDialog } from "@/app/components/modal/preferences-dialog";
+import { UserPreferencesDialog } from "@/app/components/modal/user-preferences-dialog";
 
 export default function Page() {
     return (
         <Dialog
-            title="Settings"
+            title="User Preferences"
             description="Configure your preferences below:"
         >
-            <PreferencesDialog />
+            <UserPreferencesDialog />
         </Dialog>
     );
 }

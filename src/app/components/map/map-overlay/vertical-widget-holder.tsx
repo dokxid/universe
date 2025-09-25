@@ -12,16 +12,11 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Toggle } from "@/components/ui/toggle";
-import {
-    decrementZoomLevel,
-    setShowConnections,
-    setTags,
-} from "@/lib/features/map/mapSlice";
+import { decrementZoomLevel, setTags } from "@/lib/features/map/mapSlice";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
-import { ArrowLeftToLine, Cable, ChevronsDownUp, Funnel } from "lucide-react";
+import { ArrowLeftToLine, ChevronsDownUp, Funnel } from "lucide-react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
@@ -91,7 +86,6 @@ export function VerticalWidgetHolder({
     }, [experiencesParsed, expParam, slug]);
 
     // hooks
-    const mapState = useAppSelector((state) => state.map);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
@@ -113,7 +107,7 @@ export function VerticalWidgetHolder({
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
                 <FilterStoriesDialog></FilterStoriesDialog>
-                <Toggle
+                {/* <Toggle
                     pressed={mapState.showConnections}
                     onPressedChange={(pressed) =>
                         dispatch(setShowConnections(pressed))
@@ -122,7 +116,7 @@ export function VerticalWidgetHolder({
                     className="pointer-events-auto size-10 hover:ring-2 bg-primary text-primary-foreground data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground"
                 >
                     <Cable />
-                </Toggle>
+                </Toggle> */}
                 {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
@@ -170,8 +164,8 @@ export function VerticalWidgetHolder({
                         <ChevronsDownUp className={"size-4"} />
                         <p className={"text-xs hidden lg:inline-block"}>
                             {settingsState.descriptorOpen
-                                ? "Hide Descriptor"
-                                : "Show Descriptor"}
+                                ? "Hide details"
+                                : "About the Co-Lab"}
                         </p>
                     </Button>
                 )}

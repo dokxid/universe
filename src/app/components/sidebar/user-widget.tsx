@@ -25,7 +25,7 @@ export async function UserWidget({ slug }: { slug: string }) {
                 </Link>
                 <div className={"flex flex-row items-center gap-2 flex-none"}>
                     <ThemeSwitchButton />
-                    <Link href={`/${slug}/settings`}>
+                    <Link href={`/${slug}/user-preferences`}>
                         <Settings strokeWidth={2} className={"size-5"} />
                     </Link>
                 </div>
@@ -46,7 +46,7 @@ export async function UserWidget({ slug }: { slug: string }) {
                 <SignOutButton slug={slug} />
                 <div className={"flex flex-row items-center gap-2 flex-none"}>
                     <ThemeSwitchButton />
-                    <Link href={`/${slug}/settings`}>
+                    <Link href={`/${slug}/user-preferences`}>
                         <Settings strokeWidth={2} className={"size-5"} />
                     </Link>
                 </div>
@@ -76,7 +76,7 @@ export async function UserWidget({ slug }: { slug: string }) {
             </div>
             <div className={"flex flex-row items-center gap-2 flex-none"}>
                 <ThemeSwitchButton />
-                <Link href={`/${slug}/settings`}>
+                <Link href={`/${slug}/user-preferences`}>
                     <Settings strokeWidth={2} className={"size-5"} />
                 </Link>
             </div>

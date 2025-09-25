@@ -10,7 +10,7 @@ export default async function ExperiencesPage({
     const { slug } = await params;
 
     return (
-        <ContentLayout slug={slug} feature={"Experiences"}>
+        <ContentLayout slug={slug} feature={"Co-Labs"}>
             <Suspense fallback={<div>Loading...</div>}>
                 <ListExperiencesDialog />
             </Suspense>

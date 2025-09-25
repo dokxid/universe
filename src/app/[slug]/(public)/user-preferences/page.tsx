@@ -1,5 +1,5 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { PreferencesDialog } from "@/app/components/modal/preferences-dialog";
+import { UserPreferencesDialog } from "@/app/components/modal/user-preferences-dialog";
 
 export default async function Page({
     params,
@@ -10,7 +10,7 @@ export default async function Page({
 
     return (
         <ContentLayout slug={slug} feature={"Settings"}>
-            <PreferencesDialog />
+            <UserPreferencesDialog />
         </ContentLayout>
     );
 }

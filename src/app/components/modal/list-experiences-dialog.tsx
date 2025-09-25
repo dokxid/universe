@@ -16,9 +16,10 @@ export async function ListExperiencesDialog() {
     return (
         <div className={"flex flex-col w-full items-start"}>
             <article className="prose dark:prose-invert p-2 md:p-5">
-                <h1>Experiences</h1>
+                <h1>Our Co-Lab Communities</h1>
                 <p className="text-muted-foreground">
-                    Explore the diverse experiences created by our community.
+                    Explore the diverse experiences created by our other
+                    community Co-Labs.
                 </p>
             </article>
             <Separator className={"my-4"}></Separator>
