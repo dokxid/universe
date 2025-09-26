@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default async function ImagesPage({
     params,
 }: {
@@ -25,6 +27,6 @@ export default async function ImagesPage({
         console.error("Failed to fetch image data:", error);
         return <div>Image not found</div>;
     } finally {
-        // return redirect(url);
+        return redirect(url);
     }
 }

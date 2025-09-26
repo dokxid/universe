@@ -3,13 +3,30 @@ import { Experience } from "@/types/api";
 import ExperienceModel from "@/types/models/experiences";
 import { cache } from "react";
 
+function sanitizeExperience(experienceToSanitize: Experience) {
+    return {
+        ...experienceToSanitize,
+        _id: experienceToSanitize._id.toString(),
+        stories:
+            experienceToSanitize.stories?.map((story) => ({
+                ...story,
+                _id: story._id?.toString(),
+            })) || [],
+    };
+}
+
 export async function getExperiences(): Promise<Experience[]> {
     try {
         await dbConnect();
         const experiences = await ExperienceModel.find({})
             .lean<Experience[]>()
             .exec();
-        return experiences;
+
+        const sanitizedExperiences = experiences.map((experience) =>
+            sanitizeExperience(experience)
+        );
+
+        return sanitizedExperiences;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
@@ -22,9 +39,12 @@ export async function getExperience(
         await dbConnect();
         const experience = await ExperienceModel.findOne({
             slug: experienceSlug,
-        }).exec();
+        })
+            .lean<Experience>()
+            .exec();
         if (!experience) throw new Error("experience not found");
-        return experience;
+        const sanitizedExperience = sanitizeExperience(experience);
+        return sanitizedExperience;
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +

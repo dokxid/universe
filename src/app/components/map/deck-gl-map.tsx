@@ -1,7 +1,9 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
-import { useAppSelector } from "@/lib/hooks";
+import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
+import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience, StoryDTO } from "@/types/api";
 import { DeckProps, LayersList, MapViewState } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -10,21 +12,20 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
+    AttributionControl,
     Map,
     MapLayerMouseEvent,
-    MapProvider,
     Marker,
     useControl,
     useMap,
 } from "react-map-gl/maplibre";
 
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-const AIR_PORTS =
-    "https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson";
 
 type DataType = {
     from: [longitude: number, latitude: number];
     to: [longitude: number, latitude: number];
+    tag: string;
 };
 
 function DeckGLOverlay(props: DeckProps) {
@@ -45,9 +46,32 @@ function MapController({
             center: currentExperience.center.coordinates,
             zoom: currentExperience.initial_zoom,
         });
-    }, [map, currentExperience]);
+        // lint check skip bc it breaks if i resolve this
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentExperience]);
     return null;
 }
+
+// color mapping for tags
+// const getTagColor = (tag: string): [number, number, number] => {
+//     const colorMap: { [key: string]: [number, number, number] } = {
+//         "Agriculture/Farms": [34, 139, 34], // Forest Green
+//         "Boats/Ships": [0, 100, 200], // Blue
+//         Clothing: [220, 20, 60], // Crimson
+//         Education: [138, 43, 226], // Blue Violet
+//         Family: [255, 140, 0], // Dark Orange
+//         Fishing: [50, 205, 50], // Lime Green
+//         Food: [255, 20, 147], // Deep Pink
+//         Hospitals: [255, 0, 0], // Red
+//         Housing: [255, 165, 0], // Orange
+//         Language: [75, 0, 130], // Indigo
+//         Marriage: [255, 105, 180], // Hot Pink
+//         // Add more tag colors as needed
+//         default: [128, 128, 128], // Gray for unknown tags
+//     };
+
+//     return colorMap[tag] || colorMap.default;
+// };
 
 export function DeckGLMap({
     stories,
@@ -59,6 +83,7 @@ export function DeckGLMap({
     experienceSlug: string;
 }) {
     // next js router stuff
+    const { mainMap: map } = useMap();
     const searchParams = useSearchParams();
 
     // redux stuff
@@ -70,13 +95,16 @@ export function DeckGLMap({
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
-    const [connections, setConnections] = useState<TaggedConnectionDTO[]>([]);
+    const [connections, setConnections] = useState<DataType[]>([]);
+    const dispatch = useAppDispatch();
 
     // too many react hooks
-    const { mainMap: map } = useMap();
-
     const experience = useMemo(() => {
         if (searchParams.size === 0) {
+            console.log(
+                "No search params, using experienceSlug: ",
+                experienceSlug
+            );
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
             ) as Experience;
@@ -106,10 +134,20 @@ export function DeckGLMap({
         const storiesToUse = [activeStory, ...storiesExceptActive];
         const newConnections = getTaggedConnections(
             storiesToUse,
-            mapState.tags
+            activeStory.tags
         );
-        setConnections(newConnections); // This will trigger a re-render
-        console.log("Updated connections:", newConnections);
+        const connectionsSanitized: DataType[] = newConnections.flatMap(
+            (conn) =>
+                conn.lineStrings.map((lineString) => {
+                    const coords = lineString.coordinates;
+                    return {
+                        from: coords[0] as [number, number],
+                        to: coords[coords.length - 1] as [number, number],
+                        tag: conn.tag, // Include the tag
+                    };
+                })
+        );
+        setConnections(connectionsSanitized);
     }, [activeStory, mapState.tags, storiesFiltered]);
 
     const INITIAL_VIEW_STATE: MapViewState = {
@@ -127,12 +165,7 @@ export function DeckGLMap({
 
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        console.log("Selected story:", story);
-        for (const tag of connections) {
-            for (const line of tag.lineStrings) {
-                console.log("LineString for tag", tag.tag, line);
-            }
-        }
+        dispatch(setSelectedStoryId(story._id));
     };
 
     function getTaggedConnections(
@@ -155,51 +188,23 @@ export function DeckGLMap({
 
     const layers: LayersList = useMemo(
         () => [
-            // new GeoJsonLayer({
-            //     id: "tag_connections",
-            //     data: {
-            //         type: "FeatureCollection",
-            //         features: connections.flatMap((conn) =>
-            //             conn.lineStrings.map((lineString, index) => ({
-            //                 type: "Feature",
-            //                 geometry: lineString,
-            //                 properties: {
-            //                     tag: conn.tag,
-            //                     index: index,
-            //                 },
-            //             }))
-            //         ),
-            //     },
-            //     pickable: false,
-            //     stroked: true,
-            //     filled: false,
-            //     lineWidthMinPixels: 2,
-            //     getLineColor: [0, 128, 200],
-            //     getLineWidth: 2,
-            //     updateTriggers: {
-            //         data: connections, // Force update when connections change
-            //     },
+            // colored arcs (different tags different colors, looks bad tho)
+            // new ArcLayer({
+            //     id: "arcs",
+            //     data: connections,
+            //     getSourcePosition: (d: DataType) => d.from,
+            //     getTargetPosition: (d: DataType) => d.to,
+            //     getSourceColor: (d: DataType) => getTagColor(d.tag), // Dynamic source color
+            //     getTargetColor: (d: DataType) => getTagColor(d.tag), // Dynamic target color
+            //     getWidth: 3,
             // }),
+
+            // monocolor arcs (different tags same color)
             new ArcLayer({
                 id: "arcs",
-                data: connections.flatMap((conn) =>
-                    conn.lineStrings.map((lineString) => {
-                        const coords = lineString.coordinates;
-                        return {
-                            from: {
-                                coordinates: coords[0] as [number, number],
-                            },
-                            to: {
-                                coordinates: coords[coords.length - 1] as [
-                                    number,
-                                    number
-                                ],
-                            },
-                        };
-                    })
-                ),
-                getSourcePosition: (d: any) => d.from.coordinates,
-                getTargetPosition: (d: any) => d.to.coordinates,
+                data: connections,
+                getSourcePosition: (d: DataType) => d.from,
+                getTargetPosition: (d: DataType) => d.to,
                 getSourceColor: [0, 128, 200],
                 getTargetColor: [200, 0, 80],
                 getWidth: 3,
@@ -207,19 +212,6 @@ export function DeckGLMap({
         ],
         [connections] // Re-create layers when connections change
     );
-
-    const a = connections.flatMap((conn) =>
-        conn.lineStrings.map((lineString) => {
-            const coords = lineString.coordinates;
-            return {
-                from: { coordinates: coords[0] as [number, number] },
-                to: {
-                    coordinates: coords[coords.length - 1] as [number, number],
-                },
-            };
-        })
-    );
-    console.log("Arc data:", a);
 
     return (
         <div className={"w-full h-full"}>
@@ -232,35 +224,50 @@ export function DeckGLMap({
                 />
             </div>
             <div className={"h-full w-full"}>
-                <MapProvider>
-                    <Map
-                        id="mainMap"
-                        initialViewState={INITIAL_VIEW_STATE}
-                        onRender={() => {}}
-                        mapStyle={settingsState.mapTiles}
-                        onContextMenu={(e) => {
-                            handleContextMenu(e);
-                        }}
-                    >
-                        <MapController currentExperience={experience} />
-                        {storiesFiltered.map((story, index) => (
-                            <Marker
-                                longitude={story.location.coordinates[0]}
-                                latitude={story.location.coordinates[1]}
-                                key={index}
-                                onClick={(e) => {
-                                    handleStorySelection(story);
-                                }}
-                            >
-                                <CustomMarker
-                                    story={story}
-                                    isActive={activeStory?._id === story._id}
-                                />
-                            </Marker>
-                        ))}
-                        <DeckGLOverlay layers={layers} />
-                    </Map>
-                </MapProvider>
+                <Map
+                    onClick={() => {
+                        setActiveStory(null);
+                        dispatch(setSelectedStoryId(""));
+                        dispatch(setDescriptorOpen(false));
+                    }}
+                    id="mainMap"
+                    initialViewState={INITIAL_VIEW_STATE}
+                    onRender={() => {}}
+                    mapStyle={settingsState.mapTiles}
+                    attributionControl={false}
+                    onContextMenu={(e) => {
+                        handleContextMenu(e);
+                    }}
+                    onDblClick={(e) => {
+                        handleContextMenu(e);
+                    }}
+                    projection={settingsState.globeView ? "globe" : "mercator"}
+                >
+                    <AttributionControl
+                        compact={true}
+                        position={"bottom-left"}
+                    />
+                    <MapController currentExperience={experience} />
+                    {storiesFiltered.map((story, index) => (
+                        <Marker
+                            longitude={story.location.coordinates[0]}
+                            latitude={story.location.coordinates[1]}
+                            key={index}
+                            onClick={(e) => {
+                                e.originalEvent.stopPropagation();
+                                handleStorySelection(story);
+                                if (!map) return;
+                                map.panTo(story.location.coordinates);
+                            }}
+                        >
+                            <CustomMarker
+                                story={story}
+                                isActive={activeStory?._id === story._id}
+                            />
+                        </Marker>
+                    ))}
+                    <DeckGLOverlay layers={layers} />
+                </Map>
             </div>
         </div>
     );

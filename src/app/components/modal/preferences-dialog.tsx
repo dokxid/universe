@@ -21,7 +21,7 @@ import { MAP_TILES, setMapTiles } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
-export function SettingsDialog() {
+export function PreferencesDialog() {
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
     const [open, setOpen] = React.useState(false);
@@ -40,13 +40,9 @@ export function SettingsDialog() {
                         className="w-[200px] justify-between"
                     >
                         {settingsState.mapTiles
-                            ? Object.entries(MAP_TILES).find(
-                                  ([label, tileValue]) => {
-                                      return (
-                                          tileValue === settingsState.mapTiles
-                                      );
-                                  }
-                              )?.[0]
+                            ? Object.entries(MAP_TILES).find(([tileValue]) => {
+                                  return tileValue === settingsState.mapTiles;
+                              })?.[0]
                             : "Select map tiles..."}
                         <ChevronsUpDown className="opacity-50" />
                     </Button>

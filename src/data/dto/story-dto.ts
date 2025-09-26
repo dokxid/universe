@@ -3,6 +3,7 @@ import "server-only";
 import {
     getCurrentUser,
     getCurrentUserOptional,
+    isUserAdmin,
     isUserMember,
     isUserPartOfOrganization,
     isUserSuperAdmin,
@@ -11,7 +12,13 @@ import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
 import { uploadFile } from "@/lib/aws/s3";
 import dbConnect from "@/lib/mongodb/connections";
-import { Experience, NewStoryData, Story, StoryDTO } from "@/types/api";
+import {
+    Experience,
+    NewElevationRequestData,
+    NewStoryData,
+    Story,
+    StoryDTO,
+} from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import ExperienceModel from "@/types/models/experiences";
 import { User } from "@workos-inc/node";
@@ -42,11 +49,13 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     return false;
 }
 
-function canUserCreateStory(user: User | null, experienceSlug: string) {
+export function canUserCreateStory(user: User | null, experienceSlug: string) {
+    if (!user) return false;
+    if (experienceSlug === "universe") return false;
     return isUserPartOfOrganization(user, experienceSlug);
 }
 
-async function canUserEditStory(user: User | null, story: StoryDTO) {
+export async function canUserEditStory(user: User | null, story: StoryDTO) {
     if (await isUserSuperAdmin(user, story.experience)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
@@ -141,6 +150,22 @@ async function insertStory(
     }
 }
 
+async function insertElevationRequest(
+    requestToInsert: NewElevationRequestData,
+    storyId: mongoose.Types.ObjectId
+) {
+    try {
+        dbConnect();
+        await ExperienceModel.findOneAndUpdate(
+            { "stories._id": storyId },
+            { $push: { "stories.$.elevation_requests": requestToInsert } }
+        ).exec();
+    } catch (err) {
+        console.error("Error inserting elevation request:", err);
+        throw err; // Re-throw to propagate the error
+    }
+}
+
 export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
     try {
         const stories = await getAllStories();
@@ -222,9 +247,10 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
     return queryResult;
 }
 
-export async function submitStoryDTO(formData: FormData, user: User | null) {
+export async function submitStoryDTO(formData: FormData) {
     // check if the user has permission to create a story for the given experience
     const experienceSlug = formData.get("experience") as string;
+    const user = await getCurrentUser();
     if (!user) {
         throw new Error("User must be logged in to submit a story.");
     }
@@ -275,6 +301,13 @@ export async function submitStoryDTO(formData: FormData, user: User | null) {
         draft: data.draft,
 
         // hardcoded stuff
+        elevation_requests: [
+            {
+                requested_at: new Date(),
+                updated_at: new Date(),
+                status: "created",
+            },
+        ],
         visible_universe: true,
         published: true,
     };
@@ -285,5 +318,30 @@ export async function submitStoryDTO(formData: FormData, user: User | null) {
         await insertStory(storyToInsert, data.experience);
     } catch (e) {
         console.error("Error submitting story:", e);
+    }
+}
+
+export async function submitElevationRequestDTO(
+    storyID: string,
+    user: User | null,
+    slug: string
+) {
+    try {
+        if (!isUserAdmin(user, slug)) {
+            throw new Error("You must be an admin to request elevation.");
+        }
+        const requestToInsert: NewElevationRequestData = {
+            status: "pending",
+        };
+        // validate id before creating ObjectId
+        if (!mongoose.Types.ObjectId.isValid(storyID)) {
+            throw new Error("Invalid story id format.");
+        }
+
+        // parse serializable id to mongoose.Types.ObjectId
+        const objectId = new mongoose.Types.ObjectId(storyID);
+        await insertElevationRequest(requestToInsert, objectId);
+    } catch (err) {
+        console.error("Error submitting elevation request:", err);
     }
 }

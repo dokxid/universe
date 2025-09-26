@@ -5,6 +5,7 @@ export interface MapState {
     zoomLevel: number;
     tags: string[];
     showConnections: boolean;
+    selectedStoryId: string;
 }
 
 const initialState: MapState = {
@@ -12,6 +13,7 @@ const initialState: MapState = {
     zoomLevel: 5,
     tags: [],
     showConnections: false,
+    selectedStoryId: "",
 };
 
 export const mapSlice = createSlice({
@@ -33,6 +35,10 @@ export const mapSlice = createSlice({
         setShowConnections: (state, action: { payload: boolean }) => {
             state.showConnections = action.payload;
         },
+        setSelectedStoryId: (state, action: { payload: string }) => {
+            console.log("Setting selected story ID to", action.payload);
+            state.selectedStoryId = action.payload;
+        },
     },
 });
 
@@ -42,5 +48,6 @@ export const {
     decrementZoomLevel,
     setTags,
     setShowConnections,
+    setSelectedStoryId,
 } = mapSlice.actions;
 export default mapSlice.reducer;

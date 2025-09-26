@@ -1,5 +1,7 @@
+import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
 import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
 
 export async function MapOverlay({
     slug,
@@ -14,6 +16,7 @@ export async function MapOverlay({
             ? experienceSearchParam
             : slug;
     const experiences = JSON.stringify(await getExperiencesDTO());
+    const stories = JSON.stringify(await getAllPublicStoriesDTO());
 
     return (
         <div className={"relative w-full h-full p-4"}>
@@ -21,6 +24,7 @@ export async function MapOverlay({
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
                     <VerticalWidgetHolder
+                        selectedExperience={selectedExperience}
                         experiences={experiences}
                         slug={experienceSlug}
                     />
@@ -32,7 +36,7 @@ export async function MapOverlay({
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
-                    {/* <StoryDetails /> */}
+                    <StoryWidgetHolder stories={stories} slug={slug} />
                 </div>
 
                 {/* bottom right */}

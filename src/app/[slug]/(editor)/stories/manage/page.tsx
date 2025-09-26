@@ -1,8 +1,7 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { columns } from "@/app/components/stories/columns";
-import { DataTable } from "@/app/components/stories/manage-story-table";
+import { manageStoryColumns } from "@/app/components/stories/columns";
+import { StoryDataTable } from "@/app/components/stories/story-data-table";
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
-import { StoryDTO } from "@/types/api";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = await params;
@@ -11,7 +10,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     return (
         <ContentLayout slug={slug} feature={"Manage Stories"}>
             <div className="w-full @container mx-auto">
-                <DataTable columns={columns} data={data} />
+                <StoryDataTable columns={manageStoryColumns} data={data} />
             </div>
         </ContentLayout>
     );

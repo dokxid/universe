@@ -10,6 +10,7 @@ export type Experience = {
     stories: Story[];
     organization_id?: string;
     connection_id?: string;
+    visibility: "public" | "unlisted" | "private";
 };
 
 export type Tag = {
@@ -30,8 +31,19 @@ export type Story = {
     year: number;
     featured_image_url: string;
     visible_universe: boolean;
+    elevation_requests: [ElevationRequest];
     createdAt: Date;
     updatedAt: Date;
+};
+
+export type NewElevationRequestData = {
+    status: "pending" | "approved" | "rejected";
+};
+
+export type ElevationRequest = {
+    requested_at: Date;
+    updated_at: Date;
+    status: "pending" | "approved" | "rejected" | "created";
 };
 
 export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;

@@ -7,6 +7,17 @@ export interface ExperienceModelData
     extends Omit<Experience, "_id">,
         mongoose.Document {}
 
+const elevationRequestSchema = new Schema(
+    {
+        status: {
+            type: String,
+            enum: ["pending", "approved", "rejected"],
+            required: true,
+        },
+    },
+    { timestamps: true }
+);
+
 const storySchema = new Schema(
     {
         author: { type: String, required: true },
@@ -29,6 +40,7 @@ const storySchema = new Schema(
         year: { type: Number, required: true },
         visible_universe: { type: Boolean, required: true },
         featured_image_url: { type: String, required: true },
+        elevation_requests: { type: [elevationRequestSchema], required: true },
     },
     { timestamps: true }
 );
@@ -53,6 +65,11 @@ const experienceSchema = new Schema({
     featured_image_url: { type: String, required: true },
     stories: { type: [storySchema], required: true },
     organization_id: { type: String, required: true },
+    visibility: {
+        type: String,
+        enum: ["public", "unlisted", "private"],
+        required: true,
+    },
 });
 
 export default mongoose.models.ExperienceModel ||

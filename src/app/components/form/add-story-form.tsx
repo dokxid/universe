@@ -19,15 +19,16 @@ import { useAppSelector } from "@/lib/hooks";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function AddStoryForm() {
-    const { user } = useAuth();
+export default function AddStoryForm({ slug }: { slug: string }) {
+    useAuth({ ensureSignedIn: true });
+    const router = useRouter();
     const addStoryDialogue = useAppSelector((state) => state.addStoryDialog);
-
     const [featuredImage, setFeaturedImage] = React.useState<File | null>(null);
 
     const form = useForm<z.infer<typeof submitStoryFormSchema>>({
@@ -39,10 +40,7 @@ export default function AddStoryForm() {
             longitude: addStoryDialogue.longitude,
             latitude: addStoryDialogue.latitude,
             tags: [],
-            author: user?.id || "unknown",
             draft: true,
-            // experience: experiencesState.currentExperience,
-            experience: "test",
         },
     });
 
@@ -59,14 +57,14 @@ export default function AddStoryForm() {
             formData.append("longitude", values.longitude.toFixed(4));
             formData.append("latitude", values.latitude.toFixed(4));
             formData.append("tags", JSON.stringify(values.tags));
-            formData.append("author", values.author);
-            formData.append("experience", values.experience);
+            formData.append("experience", slug);
             formData.append("draft", values.draft.toString());
             formData.append("file", featuredImage as File);
 
-            submitStory(formData, user).then(
+            submitStory(formData).then(
                 () => {
                     toast.success("Story added successfully!");
+                    router.back();
                 },
                 () =>
                     toast.error("Failed to add story. Please try again later.")
@@ -133,9 +131,8 @@ export default function AddStoryForm() {
                                 <FormLabel className="flex shrink-0">
                                     Description
                                 </FormLabel>
-
                                 <FormControl>
-                                    <div className={"w-full h-100"}>
+                                    <div className={"w-full"}>
                                         <TiptapEditor
                                             {...field}
                                             onChange={field.onChange}
@@ -264,32 +261,6 @@ export default function AddStoryForm() {
                                                     Is this a draft?
                                                 </Label>
                                             </div>
-                                        </div>
-                                    </FormControl>
-
-                                    <FormMessage />
-                                </div>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="experience"
-                        render={({ field }) => (
-                            <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
-                                <FormLabel className="flex shrink-0">
-                                    in experience:
-                                </FormLabel>
-
-                                <div className="w-full">
-                                    <FormControl>
-                                        <div className="relative w-full">
-                                            <Input
-                                                placeholder=""
-                                                type="text"
-                                                disabled={true}
-                                                {...field}
-                                            />
                                         </div>
                                     </FormControl>
 

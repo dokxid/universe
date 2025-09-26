@@ -17,6 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { StoryDTO } from "@/types/api";
 import React from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -24,12 +25,12 @@ interface DataTableProps<TData, TValue> {
     data: string; // JSON stringified array of TData
 }
 
-export function DataTable<TData, TValue>({
+export function StoryDataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const dataFetched = JSON.parse(data) as TData[];
+    const dataFetched = JSON.parse(data) as StoryDTO[] as TData[];
     const table = useReactTable({
         data: dataFetched,
         columns,

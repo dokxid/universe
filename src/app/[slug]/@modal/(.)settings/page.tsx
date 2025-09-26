@@ -1,5 +1,5 @@
 import { Dialog } from "@/app/components/modal/dialog";
-import { SettingsDialog } from "@/app/components/modal/settings-dialog";
+import { PreferencesDialog } from "@/app/components/modal/preferences-dialog";
 
 export default function Page() {
     return (
@@ -7,7 +7,7 @@ export default function Page() {
             title="Settings"
             description="Configure your preferences below:"
         >
-            <SettingsDialog />
+            <PreferencesDialog />
         </Dialog>
     );
 }

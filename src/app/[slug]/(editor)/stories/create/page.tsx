@@ -10,7 +10,7 @@ export default async function Page({
 
     return (
         <ContentLayout slug={slug} feature={"Create story"}>
-            <AddStoryForm />
+            <AddStoryForm slug={slug} />
         </ContentLayout>
     );
 }

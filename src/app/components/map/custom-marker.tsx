@@ -18,7 +18,7 @@ function CustomMarker({
     isActive: boolean;
 }) {
     return (
-        <HoverCard openDelay={10}>
+        <HoverCard openDelay={30} closeDelay={30}>
             <HoverCardTrigger>
                 <MapPin
                     size={30}
