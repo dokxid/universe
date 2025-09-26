@@ -8,6 +8,7 @@ import Link from "next/link";
 
 export async function UserWidget({ slug }: { slug: string }) {
     const user = await getCurrentUserOptional();
+    const isPartOfOrganization = await isUserPartOfOrganization(user, slug);
 
     if (!user) {
         return (
@@ -33,7 +34,7 @@ export async function UserWidget({ slug }: { slug: string }) {
         );
     }
 
-    if ((await isUserPartOfOrganization(user, slug)) === false) {
+    if (!isPartOfOrganization) {
         return (
             <div
                 className={

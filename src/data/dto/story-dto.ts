@@ -49,7 +49,9 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     return false;
 }
 
-function canUserCreateStory(user: User | null, experienceSlug: string) {
+export function canUserCreateStory(user: User | null, experienceSlug: string) {
+    if (!user) return false;
+    if (experienceSlug === "universe") return false;
     return isUserPartOfOrganization(user, experienceSlug);
 }
 
@@ -245,9 +247,10 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
     return queryResult;
 }
 
-export async function submitStoryDTO(formData: FormData, user: User | null) {
+export async function submitStoryDTO(formData: FormData) {
     // check if the user has permission to create a story for the given experience
     const experienceSlug = formData.get("experience") as string;
+    const user = await getCurrentUser();
     if (!user) {
         throw new Error("User must be logged in to submit a story.");
     }

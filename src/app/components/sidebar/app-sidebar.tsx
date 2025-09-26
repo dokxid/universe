@@ -35,9 +35,6 @@ export async function AppSidebar({ slug }: { slug: string }) {
     if (!experience) {
         return <div>Loading...</div>;
     }
-    if (!user) {
-        return <div>Loading...</div>;
-    }
     if (!slug) {
         return <div>Loading...</div>;
     }

@@ -1,5 +1,3 @@
-"use server";
-
 import { MapOverlay } from "@/app/components/map/map-overlay/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
@@ -9,6 +7,8 @@ import {
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
 import { Suspense } from "react";
+
+export const experimental_ppr = true;
 
 export default async function MapView({
     params,

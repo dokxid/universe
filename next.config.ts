@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     // added because my node activated from ~/ instead of directory root
     outputFileTracingRoot: path.join(__dirname),
 
+    experimental: {
+        ppr: "incremental",
+    },
+
     async redirects() {
         return [
             // Basic redirect

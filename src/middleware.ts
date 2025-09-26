@@ -22,6 +22,7 @@ const unauthenticatedPaths = [
     "/settings",
     "/images/:filename",
     "/api/test",
+    "/stories/manage",
 ];
 
 function addCSPHeaders(response: Response): Response {
