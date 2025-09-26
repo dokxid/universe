@@ -1,48 +1,35 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import S3Image from "@/app/components/s3-image";
-import { getCurrentUserOptional } from "@/data/auth";
-import { canUserEditStory, getStoryDTO } from "@/data/dto/story-dto";
-import parse from "html-react-parser";
-import { PenLine } from "lucide-react";
-import Link from "next/link";
+import StoryView from "@/app/components/stories/story-view";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+
+function StoryViewSkeleton() {
+    return (
+        <>
+            <Skeleton
+                className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}
+            ></Skeleton>
+            <div className={"flex flex-col gap-4 h-full p-4 px-8"}>
+                <Skeleton className="grow-6 p-4 px-8 min-w-xl"></Skeleton>
+                <Skeleton className="grow-4 w-3/4 mb-4"></Skeleton>
+                <Skeleton className="grow-5 w-full mb-2"></Skeleton>
+            </div>
+        </>
+    );
+}
 
 export default async function StoryDetails({
     params,
 }: {
     params: Promise<{ slug: string; id: string }>;
 }) {
-    const user = await getCurrentUserOptional();
     const { slug, id: storyId } = await params;
-    const storySerialized = await getStoryDTO(storyId);
-    const story = await storySerialized;
 
     return (
         <ContentLayout slug={slug} feature={"Experiences"} className={"p-0"}>
-            <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
-                <S3Image
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
-            </div>
-            <div className="flex-1 p-4 px-8 prose dark:prose-invert">
-                <h1>
-                    {story.title}
-                    {(await canUserEditStory(user, story)) && (
-                        <Link href={`/${slug}/stories/edit/${story._id}`}>
-                            <PenLine
-                                className={
-                                    "ml-4 inline stroke-accent hover:stroke-primary transition-all hover:cursor-pointer"
-                                }
-                            />
-                        </Link>
-                    )}
-                </h1>
-                <p className="text-sm text-gray-500 mb-4">
-                    By {story.author_name} | Published on{" "}
-                    {new Date(story.createdAt).toLocaleDateString()}
-                </p>
-                <div className="prose-content">{parse(story.content)}</div>
-            </div>
+            <Suspense fallback={<StoryViewSkeleton />}>
+                <StoryView storyId={storyId} />
+            </Suspense>
         </ContentLayout>
     );
 }
