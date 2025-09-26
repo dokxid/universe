@@ -101,10 +101,6 @@ export function DeckGLMap({
     // too many react hooks
     const experience = useMemo(() => {
         if (searchParams.size === 0) {
-            console.log(
-                "No search params, using experienceSlug: ",
-                experienceSlug
-            );
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
             ) as Experience;
@@ -124,7 +120,6 @@ export function DeckGLMap({
 
     useEffect(() => {
         if (!activeStory) {
-            console.log("No active story, clearing connections");
             setConnections([]);
             return;
         }

@@ -1,9 +1,14 @@
 import type { NextConfig } from "next";
-import path from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const nextConfig: NextConfig = {
     // added because my node activated from ~/ instead of directory root
-    outputFileTracingRoot: path.join(__dirname),
+    outputFileTracingRoot: join(__dirname),
 
     experimental: {
         ppr: "incremental",

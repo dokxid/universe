@@ -1,14 +1,27 @@
+import { colorStringValidator } from "@/lib/utils/color-string-validator";
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
+const TagSchema = new Schema({
+    name: String,
+});
+
 const TagCategorySchema = new Schema({
-    category: String,
-    tags: [String],
+    name: String,
+    tags: [TagSchema],
 });
 
 const ThemeTagSchema = new Schema({
-    theme: String,
-    type: [TagCategorySchema],
+    name: String,
+    color: {
+        type: String,
+        default: "#000000",
+        validate: [
+            colorStringValidator,
+            "Invalid hex color, must be in format #RRGGBB or #RGB",
+        ],
+    },
+    categories: [TagCategorySchema],
 });
 
 export default mongoose.models.UNESCOTagModel ||

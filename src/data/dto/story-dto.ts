@@ -303,8 +303,6 @@ export async function submitStoryDTO(formData: FormData) {
         // hardcoded stuff
         elevation_requests: [
             {
-                requested_at: new Date(),
-                updated_at: new Date(),
                 status: "created",
             },
         ],

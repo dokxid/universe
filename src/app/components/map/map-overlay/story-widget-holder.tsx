@@ -3,18 +3,20 @@
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/lib/hooks";
+import { StoryDTO } from "@/types/api";
 import { ChevronDown, ChevronUp, SettingsIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useState } from "react";
 
 export function StoryWidgetHolder({
-    stories,
+    storiesPromise,
     slug,
 }: {
-    stories: string;
+    storiesPromise: Promise<StoryDTO[]>;
     slug: string;
 }) {
     const mapState = useAppSelector((state) => state.map);
+    const stories = use(storiesPromise);
     const [showDetails, setShowDetails] = useState(true);
     return (
         <div className={"flex flex-col gap-3 items-end h-full"}>

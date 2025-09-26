@@ -17,12 +17,13 @@ export default async function MapView({
     params: Promise<{ slug: string }>;
     searchParams: { [key: string]: string | string[] | undefined };
 }) {
+    const { exp } = await searchParams;
     const { slug } = await params;
-    const experienceSearchParam = (await searchParams).exp;
     let storiesPromise;
     if (slug === "universe") storiesPromise = getAllPublicStoriesDTO();
     else storiesPromise = getLabPublicStoriesDTO(slug);
     const experiencesPromise = getExperiencesDTO();
+    const selectedExperience = exp && !Array.isArray(exp) ? exp : slug;
 
     const [storiesResult, experiencesResult] = await Promise.all([
         storiesPromise,
@@ -53,7 +54,7 @@ export default async function MapView({
                         <Suspense fallback={<div>Loading...</div>}>
                             <MapOverlay
                                 slug={slug}
-                                experienceSearchParam={experienceSearchParam}
+                                selectedExperience={selectedExperience}
                             />
                         </Suspense>
                     </div>

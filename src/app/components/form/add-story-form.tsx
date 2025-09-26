@@ -1,7 +1,7 @@
 "use client";
 
 import { submitStory } from "@/actions/submitStory";
-import { TagPickerField } from "@/app/components/form/tag-picker";
+import { TagPickerField } from "@/app/components/form/tag-picker-field";
 import { TiptapEditor } from "@/app/components/form/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

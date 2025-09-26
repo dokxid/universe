@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Command,
     CommandEmpty,
@@ -5,23 +7,21 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
 } from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import { useTags } from "@/lib/data_hooks/tagsHook";
-import { Tag } from "@/types/api";
+import { groupByKey } from "@/lib/utils/group-by-key";
+import { UnescoTagDTO } from "@/types/api";
 import { PlusIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ControllerRenderProps } from "react-hook-form";
 import { Badge } from "../../../components/ui/badge";
 
 // Base component - no form binding
 interface TagPickerProps {
+    availableTags: UnescoTagDTO[];
     selectedTags?: string[];
     onTagsChange?: (tags: string[]) => void;
     className?: string;
@@ -29,14 +29,15 @@ interface TagPickerProps {
 }
 
 export function TagPicker({
+    availableTags,
     selectedTags = [],
     onTagsChange,
     className,
     showLabel = true,
 }: TagPickerProps) {
-    const [inputTags, setInputTags] = useState<Tag[]>([]);
+    const [inputTags, setInputTags] = useState<UnescoTagDTO[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
-    const { tags, isLoading } = useTags();
+    const tags = availableTags;
 
     // sync inputTags with selected tags
     useEffect(() => {
@@ -52,20 +53,25 @@ export function TagPicker({
         setTagPickerOpen(true);
     };
 
-    const handleTagRemove = (tagToRemove: Tag) => {
+    const handleTagRemove = (tagToRemove: UnescoTagDTO) => {
         const newTags = inputTags.filter((t) => t !== tagToRemove);
         setInputTags(newTags);
         onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
-    const handleTagAdd = (tagToAdd: Tag) => {
+    const handleTagAdd = (tagToAdd: UnescoTagDTO) => {
         const newTags = [...inputTags, tagToAdd];
         setInputTags(newTags);
         setTagPickerOpen(false);
         onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
-    if (isLoading) return <Spinner />;
+    // prepare grouped tags for display
+    const sanitizedTags = availableTags.map((tag) => ({
+        ...tag,
+        category: `${tag.theme} | ${tag.category}`,
+    }));
+    const groupedTags = groupByKey(sanitizedTags, (tag) => tag.category);
 
     return (
         <div
@@ -79,10 +85,10 @@ export function TagPicker({
                 onOpenChange={setTagPickerOpen}
                 modal={true}
             >
-                <div className={"flex flex-wrap gap-1 mt-1"}>
+                <div className={"flex flex-wrap gap-2 mt-1"}>
                     {inputTags.map((tag) => (
                         <Badge
-                            key={tag.name + "_input"}
+                            key={tag._id}
                             variant={"default"}
                             onClick={() => {
                                 handleTagRemove(tag);
@@ -98,11 +104,11 @@ export function TagPicker({
                     <PopoverTrigger asChild>
                         <Badge
                             onClick={handleMouseEnter}
-                            variant={"outline"}
+                            variant={"default"}
                             className={
                                 (tagPickerOpen
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-primary-foreground text-primary") +
+                                    ? "bg-primary-foreground text-primary"
+                                    : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
                                 " h-7 cursor-pointer"
                             }
                         >
@@ -113,53 +119,36 @@ export function TagPicker({
                 </div>
                 <PopoverContent className="w-80">
                     <Command>
-                        <CommandInput placeholder="Search tags..." />
+                        <CommandInput placeholder="Search UNESCO tags..." />
                         <CommandList>
                             <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading="UNESCO tags">
-                                {tags
-                                    .filter(
-                                        (tag) =>
-                                            tag.unesco_tag &&
-                                            !inputTags.includes(tag)
-                                    )
-                                    .map((tag: Tag) => (
-                                        <CommandItem
-                                            key={tag.name + "_unesco_tag"}
-                                            onSelect={() => handleTagAdd(tag)}
-                                        >
-                                            {tag.name}
-                                        </CommandItem>
-                                    ))}
-                            </CommandGroup>
-                            <CommandSeparator />
-                            <CommandGroup heading="custom tags">
-                                {tags
-                                    .filter(
-                                        (tag) =>
-                                            !tag.unesco_tag &&
-                                            !inputTags.includes(tag)
-                                    )
-                                    .map((tag: Tag) => (
-                                        <CommandItem
-                                            key={tag.name + "_custom_tag"}
-                                            onSelect={() => handleTagAdd(tag)}
-                                        >
-                                            {tag.name}
-                                        </CommandItem>
-                                    ))}
-                            </CommandGroup>
+                            {Object.entries(groupedTags).map(
+                                ([category, tagsInCategory]) => (
+                                    <CommandGroup
+                                        key={category}
+                                        heading={category}
+                                    >
+                                        {tagsInCategory.map((tag) => (
+                                            <CommandItem
+                                                key={
+                                                    tag.theme +
+                                                    tag.category +
+                                                    tag._id
+                                                }
+                                                onSelect={() => {
+                                                    handleTagAdd(tag);
+                                                }}
+                                            >
+                                                {tag.name}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                )
+                            )}
                         </CommandList>
                     </Command>
                 </PopoverContent>
             </Popover>
         </div>
     );
-}
-
-// Form-bound component
-export function TagPickerField(props: ControllerRenderProps) {
-    const { value = [], onChange } = props;
-
-    return <TagPicker selectedTags={value} onTagsChange={onChange} />;
 }

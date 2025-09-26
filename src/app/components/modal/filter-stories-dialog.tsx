@@ -1,3 +1,5 @@
+"use client";
+
 import { TagPicker } from "@/app/components/form/tag-picker";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,10 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import { setTags } from "@/lib/features/map/mapSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { UnescoTagDTO } from "@/types/api";
 import { Funnel } from "lucide-react";
 import React from "react";
 
-export function FilterStoriesDialog() {
+export function FilterStoriesDialog({
+    tagsPromise,
+}: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
+}) {
+    const tags = React.use(tagsPromise);
     const [open] = React.useState(false);
     const tagState = useAppSelector((state) => state.map.tags);
     const dispatch = useAppDispatch();
@@ -33,6 +41,7 @@ export function FilterStoriesDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <TagPicker
+                    availableTags={tags}
                     selectedTags={tagState}
                     onTagsChange={(newTags) => dispatch(setTags(newTags))}
                     showLabel={open}

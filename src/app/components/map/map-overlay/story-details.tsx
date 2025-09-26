@@ -58,14 +58,14 @@ export function StoryDetails({
     open,
     setOpenAction,
 }: {
-    stories: string;
+    stories: StoryDTO[];
     open: boolean;
     setOpenAction: (open: boolean) => void;
 }) {
     const isMobile = useIsMobile();
     const mapState = useAppSelector((state) => state.map);
-    const parsedStories = JSON.parse(stories);
-    const story: StoryDTO = useMemo(() => {
+    const parsedStories = stories;
+    const story: StoryDTO | undefined = useMemo(() => {
         if (mapState.selectedStoryId === "") return undefined;
         return parsedStories.find(
             (s: StoryDTO) => s._id === mapState.selectedStoryId

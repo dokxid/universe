@@ -1,24 +1,29 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";
 
 type ExperienceDescriptorProps = {
     visible: boolean;
-    setOpenAction: (open: boolean) => void;
-    experience: Experience | undefined;
+    experience: Experience;
 };
 
 export function ExperienceDetails({
     visible,
-    setOpenAction,
     experience,
 }: ExperienceDescriptorProps) {
-    const currentExperience = experience;
+    const mapState = useAppSelector((state) => state.map);
+    const settingsState = useAppSelector((state) => state.settings);
+    const dispatch = useAppDispatch();
 
-    if (!currentExperience) {
+    if (mapState.selectedStoryId === "") {
+        return null;
+    }
+    if (!settingsState.descriptorOpen) {
         return null;
     }
     if (!visible) {
@@ -33,8 +38,8 @@ export function ExperienceDetails({
         >
             <div className={"flex flex-row justify-between"}>
                 <h1 className={"prose-h1 mb-2"}>
-                    <Link href={`/${currentExperience.slug}/map`}>
-                        {currentExperience.title}
+                    <Link href={`/${experience.slug}/map`}>
+                        {experience.title}
                         <ChevronRight
                             className="inline ml-2"
                             size={20}
@@ -42,15 +47,16 @@ export function ExperienceDetails({
                         />
                     </Link>
                 </h1>
-                <Button variant={"ghost"} onClick={() => setOpenAction(false)}>
+                <Button
+                    variant={"ghost"}
+                    onClick={() => dispatch(setDescriptorOpen(false))}
+                >
                     <X></X>
                 </Button>
             </div>
             <div className={"overflow-y-auto h-fit"}>
-                <p className={"prose-h3 lead mt-2"}>
-                    {currentExperience.subtitle}
-                </p>
-                <p className={"prose-p"}>{currentExperience.description}</p>
+                <p className={"prose-h3 lead mt-2"}>{experience.subtitle}</p>
+                <p className={"prose-p"}>{experience.description}</p>
             </div>
         </article>
     );

@@ -1,4 +1,4 @@
-import { getTagsDTO } from "@/data/dto/tag-dto";
+import { getTagsDTO } from "@/data/dto/getTagsDTO";
 
 export async function GET() {
     const tags = await getTagsDTO();

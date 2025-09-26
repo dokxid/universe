@@ -31,22 +31,28 @@ export type Story = {
     year: number;
     featured_image_url: string;
     visible_universe: boolean;
-    elevation_requests: [ElevationRequest];
+    elevation_requests: ElevationRequest[];
     createdAt: Date;
     updatedAt: Date;
 };
 
 export type NewElevationRequestData = {
-    status: "pending" | "approved" | "rejected";
+    status: "pending" | "approved" | "rejected" | "created";
 };
 
 export type ElevationRequest = {
+    _id: string;
     requested_at: Date;
     updated_at: Date;
     status: "pending" | "approved" | "rejected" | "created";
 };
 
-export type NewStoryData = Omit<Story, "createdAt" | "updatedAt" | "_id">;
+export type NewStoryData = Omit<
+    Story,
+    "createdAt" | "updatedAt" | "_id" | "elevation_requests"
+> & {
+    elevation_requests: NewElevationRequestData[];
+};
 
 export interface StoryDTO extends Story {
     author_name: string;
@@ -60,4 +66,34 @@ export type ImageURL = {
 export type ExperienceSignInDTO = {
     organization_id?: string;
     connection_id?: string;
+};
+
+export type UnescoTagTheme = {
+    _id: string;
+    name: string;
+    color: string;
+    categories: {
+        _id: string;
+        name: string;
+        tags: { _id: string; name: string }[];
+    }[];
+};
+
+export type UnescoTagThemeDTO = {
+    _id: string;
+    name: string;
+    color: string;
+    categories: {
+        _id: string;
+        name: string;
+        tags: { _id: string; name: string }[];
+    }[];
+};
+
+export type UnescoTagDTO = {
+    theme: string;
+    category: string;
+    name: string;
+    _id: string;
+    color: string;
 };
