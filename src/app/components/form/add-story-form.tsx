@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppSelector } from "@/lib/hooks";
+import { UnescoTagDTO } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
@@ -25,7 +26,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export default function AddStoryForm({ slug }: { slug: string }) {
+export default function AddStoryForm({
+    slug,
+    tagsPromise,
+}: {
+    slug: string;
+    tagsPromise: Promise<UnescoTagDTO[]>;
+}) {
     useAuth({ ensureSignedIn: true });
     const router = useRouter();
     const addStoryDialogue = useAppSelector((state) => state.addStoryDialog);
@@ -195,7 +202,10 @@ export default function AddStoryForm({ slug }: { slug: string }) {
                         render={({ field }) => (
                             <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormControl>
-                                    <TagPickerField {...field}></TagPickerField>
+                                    <TagPickerField
+                                        {...field}
+                                        availableTagsPromise={tagsPromise}
+                                    />
                                 </FormControl>
                             </FormItem>
                         )}
