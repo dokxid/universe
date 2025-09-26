@@ -24,6 +24,7 @@ certificates
 # misc
 .DS_Store
 *.pem
+/.swc
 
 # jetbrains
 /.idea
