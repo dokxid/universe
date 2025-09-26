@@ -109,7 +109,6 @@ export function DeckGLMap({
                 (exp) => exp.slug === experienceSlug
             ) as Experience;
         } else {
-            console.log("Search params found: ", Array.from(searchParams));
             return experiences.find(
                 (exp) => exp.slug === searchParams.get("exp")
             ) as Experience;

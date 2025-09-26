@@ -139,7 +139,7 @@ export function VerticalWidgetHolder({
                         }`}
                     >
                         <ChevronsDownUp className={"size-4"} />
-                        <p className={"hidden lg:inline-block"}>
+                        <p className={"text-xs hidden lg:inline-block"}>
                             {settingsState.descriptorOpen
                                 ? "Hide details"
                                 : "About the Co-Lab"}

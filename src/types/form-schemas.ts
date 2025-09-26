@@ -10,4 +10,5 @@ export const submitStoryFormSchema = z.object({
     latitude: z.number().refine((value) => value >= -90 && value <= 90, {}),
     tags: z.array(z.string()),
     draft: z.boolean(),
+    experience: z.string(),
 });
