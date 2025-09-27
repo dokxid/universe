@@ -1,4 +1,4 @@
-import { colorStringValidator } from "@/lib/utils/color-string-validator";
+import { colorStringValidator } from "@/lib/utils/color-string";
 
 describe("colorStringValidator", () => {
     describe("valid hex colors", () => {

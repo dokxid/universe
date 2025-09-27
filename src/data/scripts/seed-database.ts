@@ -22,7 +22,7 @@ async function seedDatabase() {
     try {
         await seedUnescoTags();
         await seedExperiences(city_centers["oslo"]);
-        await seedStories("test", city_centers["oslo"], 20);
+        await seedStories("test", city_centers["oslo"], 40);
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);

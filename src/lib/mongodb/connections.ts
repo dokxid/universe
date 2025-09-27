@@ -7,15 +7,18 @@ interface MongooseCache {
     promise: Promise<typeof mongoose> | null;
 }
 
-// Extend global to include mongoose cache
+// Extend globalThis to include mongoose cache
 declare global {
     var mongoose: MongooseCache | undefined;
 }
 
-const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = globalThis.mongoose || {
+    conn: null,
+    promise: null,
+};
 
-if (!global.mongoose) {
-    global.mongoose = cached;
+if (!globalThis.mongoose) {
+    globalThis.mongoose = cached;
 }
 
 function handleError(err: Error) {

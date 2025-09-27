@@ -2,7 +2,7 @@
 
 import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Experience, StoryDTO } from "@/types/api";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 
@@ -12,10 +12,12 @@ const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
 });
 
 export function MapPanel({
+    tagsPromise,
     storiesSerialized,
     experiencesSerialized,
     experienceSlug,
 }: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
     storiesSerialized: string;
     experiencesSerialized: string;
     experienceSlug: string;
@@ -32,6 +34,7 @@ export function MapPanel({
         <>
             <Suspense fallback={<div>loading stories...</div>}>
                 <MapWrapper
+                    tagsPromise={tagsPromise}
                     stories={stories}
                     experiences={experiences}
                     experienceSlug={experienceSlug}

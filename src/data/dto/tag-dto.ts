@@ -52,3 +52,12 @@ export const getTagsDTO = cache(async (): Promise<UnescoTagDTO[]> => {
     }
     return tags;
 });
+
+export async function getTagByName(tagName: string): Promise<UnescoTagDTO> {
+    const tags = await getTagsDTO();
+    const tag = tags.find((t) => t.name === tagName);
+    if (!tag) {
+        throw new Error("Tag not found: " + tagName);
+    }
+    return tag;
+}

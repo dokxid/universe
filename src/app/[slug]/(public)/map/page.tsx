@@ -6,6 +6,7 @@ import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
+import { getTagsDTO } from "@/data/dto/tag-dto";
 import { Suspense } from "react";
 
 export const experimental_ppr = true;
@@ -32,6 +33,7 @@ export default async function MapView({
 
     const storiesSerialized = JSON.stringify(storiesResult);
     const experiencesSerialized = JSON.stringify(experiencesResult);
+    const tagsPromise = getTagsDTO();
 
     return (
         <div className="w-screen h-screen flex">
@@ -42,6 +44,7 @@ export default async function MapView({
                     <div className="absolute z-20 w-full h-full">
                         <Suspense fallback={<div>Loading...</div>}>
                             <MapPanel
+                                tagsPromise={tagsPromise}
                                 experienceSlug={slug}
                                 experiencesSerialized={experiencesSerialized}
                                 storiesSerialized={storiesSerialized}

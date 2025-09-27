@@ -4,7 +4,8 @@ import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Experience, StoryDTO } from "@/types/api";
+import { stringToArrayColor } from "@/lib/utils/color-string";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import {
     DeckProps,
     LayersList,
@@ -87,10 +88,12 @@ function MapController({
 // };
 
 export function DeckGLMap({
+    tags,
     stories,
     experiences,
     experienceSlug,
 }: {
+    tags: UnescoTagDTO[];
     stories: StoryDTO[];
     experiences: Experience[];
     experienceSlug: string;
@@ -132,6 +135,10 @@ export function DeckGLMap({
         );
     }, [mapState.tags, stories]);
 
+    const getTagColor = (tag: string): [number, number, number] => {
+        const foundTag = tags.find((t) => t.name === tag);
+        return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
+    };
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
@@ -156,6 +163,7 @@ export function DeckGLMap({
                     };
                 })
         );
+        setConnections([]);
         setConnections(connectionsSanitized);
     }, [activeStory, mapState.tags, storiesFiltered]);
 
@@ -198,28 +206,30 @@ export function DeckGLMap({
     const layers: LayersList = useMemo(
         () => [
             // colored arcs (different tags different colors, looks bad tho)
-            // new ArcLayer({
-            //     id: "arcs",
-            //     data: connections,
-            //     getSourcePosition: (d: DataType) => d.from,
-            //     getTargetPosition: (d: DataType) => d.to,
-            //     getSourceColor: (d: DataType) => getTagColor(d.tag), // Dynamic source color
-            //     getTargetColor: (d: DataType) => getTagColor(d.tag), // Dynamic target color
-            //     getWidth: 3,
-            // }),
-
-            // monocolor arcs (different tags same color)
-            new ArcLayer<TagConnection>({
+            new ArcLayer({
                 id: "arcs",
                 data: connections,
                 getSourcePosition: (d: TagConnection) => d.from,
                 getTargetPosition: (d: TagConnection) => d.to,
-                getSourceColor: [0, 128, 200],
-                getTargetColor: [200, 0, 80],
+                getSourceColor: (d: TagConnection) => getTagColor(d.tag),
+                getTargetColor: (d: TagConnection) => getTagColor(d.tag),
                 getWidth: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
             }),
+
+            //     // monocolor arcs (different tags same color)
+            //     new ArcLayer<TagConnection>({
+            //         id: "arcs",
+            //         data: connections,
+            //         getSourcePosition: (d: TagConnection) => d.from,
+            //         getTargetPosition: (d: TagConnection) => d.to,
+            //         getSourceColor: [0, 128, 200],
+            //         getTargetColor: [200, 0, 80],
+            //         getWidth: 3,
+            //         pickable: true,
+            //         onHover: (info) => setHoverInfo(info),
+            //     }),
         ],
         [connections] // Re-create layers when connections change
     );

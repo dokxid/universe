@@ -1,4 +1,4 @@
-import { colorStringValidator } from "@/lib/utils/color-string-validator";
+import { colorStringValidator } from "@/lib/utils/color-string";
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
