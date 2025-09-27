@@ -1,5 +1,5 @@
 import { ExperienceDetails } from "@/app/components/map/experience-details";
-import { BackToUniverseButton } from "@/app/components/map/map-overlay/back-to-universe-button";
+import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import ToggleDescriptorButton from "@/app/components/map/map-overlay/toggle-descriptor-button";
 import ToggleGlobeButton from "@/app/components/map/map-overlay/toggle-globe-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
@@ -51,7 +51,10 @@ export async function NavigationWidgetHolder({
                         theme={geocoderTheme}
                     />
                 )} */}
-                <BackToUniverseButton visible={!isUniverseView} />
+                <FlyBackButton
+                    isUniverseView={slug === "universe"}
+                    isVisible={expParam !== "universe"}
+                />
                 <ToggleDescriptorButton visible={!isUniverseView} />
             </div>
             <Suspense>

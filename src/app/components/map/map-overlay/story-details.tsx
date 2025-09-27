@@ -5,11 +5,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/api";
 import parse from "html-react-parser";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -33,8 +35,23 @@ function StoryDetailsHeader({
                         {story.author_name.charAt(0)}
                     </AvatarFallback>
                 </Avatar>
-                <article className={"flex flex-col text-left"}>
-                    <p className={"font-semibold"}>{story.title}</p>
+                <article className={"flex flex-col text-left gap-1"}>
+                    <Link
+                        href={
+                            "/" +
+                            story.experience +
+                            "/stories/view/" +
+                            story._id
+                        }
+                    >
+                        <p
+                            className={
+                                "font-semibold line-clamp-2 leading-none overflow-visible hover:underline"
+                            }
+                        >
+                            {story.title}
+                        </p>
+                    </Link>
                     <p
                         className={
                             "text-sm text-muted-foreground hover:underline cursor-pointer"
@@ -44,9 +61,12 @@ function StoryDetailsHeader({
                     </p>
                 </article>
             </div>
-            <Link href={"/" + story.experience + "/stories/" + story._id}>
-                <Button variant={"link"} className={"p-0"}>
-                    Read more
+            <Link href={"/" + story.experience + "/stories/view/" + story._id}>
+                <Button
+                    variant={"ghost"}
+                    className={"p-0 text-xs text-muted-foreground"}
+                >
+                    <ExternalLink className={"size-4"} />
                 </Button>
             </Link>
         </div>
@@ -97,17 +117,24 @@ export function StoryDetails({
     return (
         <Card
             className={
-                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0"
+                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none"
             }
         >
-            <div className={"w-full"}>
+            <Link
+                href={"/" + story.experience + "/stories/view/" + story._id}
+                className={
+                    "w-full hover:brightness-75 transition-all duration-200 hover:cursor-pointer"
+                }
+            >
                 <S3Image
+                    link={false}
                     experience={story.experience}
                     fileName={story.featured_image_url}
                 />
-            </div>
+            </Link>
             <div className={"px-6 pb-6 flex flex-col"}>
                 <StoryDetailsHeader story={story} className={"bg-card"} />
+                <Separator className={"mb-6"} />
                 <div className="prose dark:prose-invert prose-headings:mb-2">
                     {parse(story.content)}
                 </div>

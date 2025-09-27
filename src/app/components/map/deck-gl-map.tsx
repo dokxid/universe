@@ -45,15 +45,23 @@ function MapController({
     currentExperience: Experience;
 }) {
     const { mainMap: map } = useMap();
+    const flyBackState = useAppSelector((state) => state.map.flyBack);
     useEffect(() => {
         if (!map || !currentExperience) return;
         map.flyTo({
             center: currentExperience.center.coordinates,
             zoom: currentExperience.initial_zoom,
         });
-        // lint check skip bc it breaks if i resolve this
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentExperience]);
+    useEffect(() => {
+        if (!map) return;
+        map.flyTo({
+            center: currentExperience.center.coordinates,
+            zoom: currentExperience.initial_zoom,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [flyBackState]);
     return null;
 }
 

@@ -20,7 +20,7 @@ export function ExperienceDetails({
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
-    if (mapState.selectedStoryId === "") {
+    if (mapState.selectedStoryId !== "") {
         return null;
     }
     if (!settingsState.descriptorOpen) {

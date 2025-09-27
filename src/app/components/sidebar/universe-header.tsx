@@ -11,7 +11,7 @@ import { Suspense } from "react";
 export async function UniverseHeader() {
     const experiencesSerialized = JSON.stringify(await getExperiencesDTO());
     return (
-        <SidebarHeader className="">
+        <SidebarHeader className="px-4 py-4">
             <SidebarMenu>
                 <SidebarMenuItem>
                     <Suspense fallback={<CurrentExperienceSelectorSkeleton />}>

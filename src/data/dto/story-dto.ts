@@ -10,7 +10,7 @@ import {
 } from "@/data/auth";
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
-import { uploadFile } from "@/lib/aws/s3";
+import { uploadFile } from "@/lib/files/s3";
 import dbConnect from "@/lib/mongodb/connections";
 import {
     Experience,

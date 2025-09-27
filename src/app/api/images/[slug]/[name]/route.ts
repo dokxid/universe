@@ -1,4 +1,4 @@
-import { getSignedS3URL } from "@/lib/aws/s3";
+import { getSignedS3URL } from "@/lib/files/s3";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -9,7 +9,7 @@ export async function GET(
     let url: string;
 
     try {
-        if (process.env.LOCAL_IMAGES === "true") {
+        if (process.env.LOCAL_UPLOADER === "true") {
             url = new URL(`/uploads/${slug}/${name}`, request.url).toString();
             return NextResponse.json({ url });
         } else {

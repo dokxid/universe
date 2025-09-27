@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { Globe } from "lucide-react";
+import { Link } from "lucide-react";
 import { ItemGroup } from "./item-group";
 
 export function LinksItemGroup() {
@@ -9,12 +9,12 @@ export function LinksItemGroup() {
         {
             title: "Heritage Lab Website",
             href: "https://heritagelab.center/",
-            icon: Globe,
+            icon: Link,
         },
         {
             title: "CIE Website",
             href: "https://heritage-activities.org/",
-            icon: Globe,
+            icon: Link,
         },
     ];
     return <ItemGroup items={linksItems} groupLabel="Links"></ItemGroup>;

@@ -139,7 +139,7 @@ export const test_experiences_doc = (center: number[]) => ({
         "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
     organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
     stories: [],
-    description: faker.lorem.sentence({ min: 20, max: 30 }),
+    description: faker.lorem.sentence({ min: 40, max: 60 }),
     subtitle: faker.lorem.words({ min: 5, max: 10 }).replace(".", ""),
     visibility: "public",
 });

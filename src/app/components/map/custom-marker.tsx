@@ -1,4 +1,4 @@
-import { StoryCardContent } from "@/app/components/map/map-overlay/story-card-content";
+import { StoryHoverCardContent } from "@/app/components/map/map-overlay/story-hover-card-content";
 import {
     HoverCard,
     HoverCardContent,
@@ -34,7 +34,7 @@ function CustomMarker({
                 />
             </HoverCardTrigger>
             <HoverCardContent>
-                <StoryCardContent story={story} />
+                <StoryHoverCardContent story={story} />
                 <HoverCardArrow />
             </HoverCardContent>
         </HoverCard>

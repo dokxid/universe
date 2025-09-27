@@ -76,7 +76,7 @@ export async function uploadFile(
     }
 }
 
-export async function uploadPublicFile(file: File): Promise<string> {
+export async function uploadFileToPublicS3(file: File): Promise<string> {
     const key = nanoid() + "-" + file.name;
     try {
         const { region, bucket } = getS3Config();

@@ -3,10 +3,11 @@
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import {
     BookOpenText,
+    BookText,
     CircleQuestionMark,
-    Globe,
     List,
     Map,
+    Orbit,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
@@ -19,6 +20,11 @@ export function UserItemGroup() {
             title: "Map View",
             href: `/${slug}/map`,
             icon: Map,
+        },
+        {
+            title: "About the Lab",
+            href: `/${slug}/about`,
+            icon: BookText,
         },
         {
             title: "Story List",
@@ -47,7 +53,7 @@ export function UniverseItemGroup() {
         {
             title: "Universe View",
             href: "/universe/map",
-            icon: Globe,
+            icon: Orbit,
         },
     ];
 

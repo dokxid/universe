@@ -6,6 +6,7 @@ export interface MapState {
     tags: string[];
     showConnections: boolean;
     selectedStoryId: string;
+    flyBack: boolean;
 }
 
 const initialState: MapState = {
@@ -14,6 +15,7 @@ const initialState: MapState = {
     tags: [],
     showConnections: false,
     selectedStoryId: "",
+    flyBack: false,
 };
 
 export const mapSlice = createSlice({
@@ -39,6 +41,9 @@ export const mapSlice = createSlice({
             console.log("Setting selected story ID to", action.payload);
             state.selectedStoryId = action.payload;
         },
+        setFlyBack: (state) => {
+            state.flyBack = !state.flyBack;
+        },
     },
 });
 
@@ -49,5 +54,6 @@ export const {
     setTags,
     setShowConnections,
     setSelectedStoryId,
+    setFlyBack,
 } = mapSlice.actions;
 export default mapSlice.reducer;
