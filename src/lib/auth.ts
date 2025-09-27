@@ -9,7 +9,7 @@ export function getRedirectUri() {
         return process.env.WORKOS_REDIRECT_URI;
     }
     if (process.env.NODE_ENV === "development") {
-        return "http://localhost:3000/callback";
+        return "http://localhost:3000/auth/callback";
     }
-    return `https://${process.env.VERCEL_URL}/callback`;
+    return `https://${process.env.VERCEL_URL}/auth/callback`;
 }

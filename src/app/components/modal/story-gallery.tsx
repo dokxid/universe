@@ -12,7 +12,7 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export async function ListStoriesDialog({ slug }: { slug: string }) {
+export async function StoryGallery({ slug }: { slug: string }) {
     let stories: StoryDTO[] = [];
     if (slug === "universe") {
         stories = await getAllPublicStoriesDTO();
@@ -34,7 +34,7 @@ export async function ListStoriesDialog({ slug }: { slug: string }) {
                 {stories.map((story) => (
                     <Link
                         key={story._id}
-                        href={`/${story.experience}/stories/${story._id}`}
+                        href={`/${story.experience}/stories/view/${story._id}`}
                         className="flex flex-row justify-between items-center w-full gap-2 group"
                     >
                         <Card className="w-full mx-auto pt-0 flex-col hover:bg-accent">

@@ -1,9 +1,31 @@
+import { seedExperiences } from "@/data/scripts/seed-experiences";
+import { seedStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 
-seedUnescoTags()
-    .then(() => console.log("Database seeding completed"))
-    .catch((error) => {
+// in lat, lon
+const city_centers: { [key: string]: number[] } = {
+    tallinn: [24.7505, 59.4443],
+    oslo: [10.7522, 59.9139],
+};
+
+async function seedDatabase() {
+    // ensure we are running on a test database
+    if (process.env.MONGODB_DBNAME !== "test") {
+        throw new Error(
+            "Seeding can only be run on a test database. Current DB: " +
+                process.env.MONGODB_DBNAME
+        );
+    }
+    try {
+        await seedUnescoTags();
+        await seedExperiences(city_centers["oslo"]);
+        await seedStories("test", city_centers["oslo"], 20);
+        console.log("Database seeding completed");
+    } catch (error) {
         console.error("Error during database seeding:", error);
-        process.exit(1);
-    })
-    .finally(() => process.exit());
+    } finally {
+        process.exit();
+    }
+}
+
+seedDatabase();

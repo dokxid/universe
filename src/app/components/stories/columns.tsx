@@ -36,7 +36,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href={`/${slug}/stories/${story._id}`}>
+                    <Link href={`/${slug}/stories/view/${story._id}`}>
                         View story
                     </Link>
                 </DropdownMenuItem>

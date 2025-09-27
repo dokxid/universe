@@ -19,10 +19,10 @@ export default function S3Image({
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
     if (isError) return <p>Error loading image</p>;
-    let src;
+    if (!imageUrl) return <p>No image available</p>;
 
-    if (imageUrl != null) src = imageUrl.url;
-    else return <p>No image available</p>;
+    const src = imageUrl.url;
+    console.log("Image URL:", src);
 
     if (!link)
         return (

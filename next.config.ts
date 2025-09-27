@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
                 destination: "/universe/map",
                 permanent: true,
             },
+            {
+                source: "/:lab_slug",
+                destination: "/:lab_slug/map",
+                permanent: true,
+            },
         ];
     },
 
@@ -36,6 +41,12 @@ const nextConfig: NextConfig = {
             {
                 protocol: "https",
                 hostname: "hl-universe-staging.s3.eu-central-1.amazonaws.com",
+            },
+            {
+                protocol: "http",
+                hostname: "localhost",
+                port: "3000",
+                pathname: "/uploads/**",
             },
         ],
     },

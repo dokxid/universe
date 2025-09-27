@@ -17,11 +17,7 @@ export async function UserWidget({ slug }: { slug: string }) {
                     "flex flex-row items-center justify-between gap-2 bg-primary-foreground text-primary rounded-md"
                 }
             >
-                <Link
-                    href={`/login?lab=${slug}`}
-                    prefetch={false}
-                    className={"grow"}
-                >
+                <Link href={`/auth/login`} prefetch={false} className={"grow"}>
                     <Button className={"grow w-full"}>Sign in</Button>
                 </Link>
                 <div className={"flex flex-row items-center gap-2 flex-none"}>

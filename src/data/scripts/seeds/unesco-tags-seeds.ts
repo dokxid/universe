@@ -498,7 +498,7 @@ const tradition_doc = {
 };
 
 const science_and_technology_doc = {
-    theme: "Science and Technology",
+    name: "Science and Technology",
     // catpuccin mocha - teal
     color: "#94e2d5",
     categories: [
@@ -529,7 +529,7 @@ const science_and_technology_doc = {
 };
 
 const shared_and_contested_heritage_doc = {
-    theme: "Shared and Contested Heritage",
+    name: "Shared and Contested Heritage",
     // catpuccin mocha - pink
     color: "#f5c2e7",
     categories: [
@@ -572,3 +572,7 @@ export const UNESCO_TAGS_SEEDS = [
     science_and_technology_doc,
     shared_and_contested_heritage_doc,
 ];
+
+export const ALL_UNESCO_TAGS = UNESCO_TAGS_SEEDS.flatMap((theme) =>
+    theme.categories.flatMap((category) => category.tags.map((tag) => tag.name))
+);

@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export async function ListExperiencesDialog() {
+export async function ExperiencesGallery() {
     const experiences = await getExperiencesDTO();
     if (!experiences) return <div>No experiences found.</div>;
 

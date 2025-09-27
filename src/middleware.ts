@@ -2,8 +2,8 @@ import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
 const CSP_ENABLED = false;
-const SLUG_PATH_PREFIX = "/:slug";
-const CALLBACK_REDIRECT_PATHNAME = "/callback";
+
+// determine origin based on environment
 const REDIRECT_ORIGIN =
     process.env.VERCEL_ENV === "production"
         ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
@@ -11,19 +11,26 @@ const REDIRECT_ORIGIN =
         ? `https://${process.env.VERCEL_URL}`
         : "http://localhost:3000";
 
-const REDIRECT_URI = new URL(CALLBACK_REDIRECT_PATHNAME, REDIRECT_ORIGIN);
+// build redirect URI if no environment variable is set
+const CALLBACK_REDIRECT_PATHNAME = "/auth/callback";
+const REDIRECT_URI = process.env.WORKOS_REDIRECT_URL
+    ? new URL(process.env.WORKOS_REDIRECT_URL)
+    : new URL(CALLBACK_REDIRECT_PATHNAME, REDIRECT_ORIGIN);
 
-const unauthenticatedPaths = [
+// prefix for labs (to avoid subdomain routing complexity)
+const SLUG_PATH_PREFIX = "/:slug";
+const UNAUTHENTICATED_PATHS = [
     "",
     "/map",
     "/stories",
-    "/stories/:id",
+    "/stories/view/:id",
     "/experiences",
     "/settings",
     "/images/:filename",
-    "/api/test",
-    "/stories/manage",
 ];
+const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
+    (path) => SLUG_PATH_PREFIX + path
+);
 
 function addCSPHeaders(response: Response): Response {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -66,9 +73,7 @@ export default async function middleware(
         redirectUri: REDIRECT_URI.href,
         middlewareAuth: {
             enabled: true,
-            unauthenticatedPaths: unauthenticatedPaths.map(
-                (path) => SLUG_PATH_PREFIX + path
-            ),
+            unauthenticatedPaths: SANITIZED_UNAUTHENTICATED_PATHS,
         },
         debug: process.env.NODE_ENV !== "production",
     })(req, event);
@@ -89,7 +94,7 @@ export default async function middleware(
 // Match against pages that require authentication
 export const config = {
     matcher: [
-        "/:slug",
+        "/:slug/",
         "/:slug/images/:filename",
         "/:slug/map",
         "/:slug/map/:page*",
@@ -97,11 +102,12 @@ export const config = {
         "/:slug/settings",
         "/:slug/account/:page*",
         "/:slug/lab/:page*",
+        "/:slug/stories",
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
-        "/:slug/stories/:id",
+        "/:slug/stories/view/:id",
         "/:slug/team/:page*",
         "/:slug/stories",
         "/:slug/user-preferences",

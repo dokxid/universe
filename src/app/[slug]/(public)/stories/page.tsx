@@ -1,5 +1,5 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { ListStoriesDialog } from "@/app/components/modal/list-stories-dialog";
+import { StoryGallery } from "@/app/components/modal/story-gallery";
 import { Suspense } from "react";
 
 export default async function StoriesPage({
@@ -12,7 +12,7 @@ export default async function StoriesPage({
     return (
         <ContentLayout slug={slug} feature={"Explore stories"}>
             <Suspense fallback={<div>Loading...</div>}>
-                <ListStoriesDialog slug={slug} />
+                <StoryGallery slug={slug} />
             </Suspense>
         </ContentLayout>
     );
