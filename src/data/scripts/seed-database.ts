@@ -10,7 +10,10 @@ const city_centers: { [key: string]: number[] } = {
 
 async function seedDatabase() {
     // ensure we are running on a test database
-    if (process.env.MONGODB_DBNAME !== "test") {
+    if (
+        process.env.MONGODB_DBNAME !== "test" &&
+        process.env.MONGODB_DBNAME !== "hl-universe-staging"
+    ) {
         throw new Error(
             "Seeding can only be run on a test database. Current DB: " +
                 process.env.MONGODB_DBNAME

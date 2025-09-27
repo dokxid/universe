@@ -37,7 +37,7 @@ export function ExperienceDetails({
             }
         >
             <div className={"flex flex-row justify-between"}>
-                <h1 className={"prose-h1 mb-2"}>
+                <h1 className={"prose-h1 mb-2 text-left"}>
                     <Link href={`/${experience.slug}/map`}>
                         {experience.title}
                         <ChevronRight
