@@ -107,6 +107,7 @@ export function DeckGLMap({
     const mapState = useAppSelector((state) => state.map);
 
     // react state stuff
+    const [arcHeight, setArcHeight] = useState(0);
     const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
@@ -142,8 +143,10 @@ export function DeckGLMap({
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
+            setArcHeight(0.6);
             return;
         }
+        setArcHeight(0.6);
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );
@@ -163,7 +166,9 @@ export function DeckGLMap({
                     };
                 })
         );
-        setConnections([]);
+        setTimeout(() => {
+            setArcHeight(connectionsSanitized.length > 0 ? 1 : 0.6);
+        }, 100);
         setConnections(connectionsSanitized);
     }, [activeStory, mapState.tags, storiesFiltered]);
 
@@ -209,6 +214,7 @@ export function DeckGLMap({
             new ArcLayer({
                 id: "arcs",
                 data: connections,
+                greatCircle: true,
                 getSourcePosition: (d: TagConnection) => d.from,
                 getTargetPosition: (d: TagConnection) => d.to,
                 getSourceColor: (d: TagConnection) => getTagColor(d.tag),
@@ -216,6 +222,13 @@ export function DeckGLMap({
                 getWidth: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
+                getHeight: arcHeight,
+                transitions: {
+                    getHeight: {
+                        duration: 1000,
+                        easing: (t: number) => 1 - Math.pow(1 - t, 3), // Ease-out cubic
+                    },
+                },
             }),
 
             //     // monocolor arcs (different tags same color)
@@ -231,7 +244,8 @@ export function DeckGLMap({
             //         onHover: (info) => setHoverInfo(info),
             //     }),
         ],
-        [connections] // Re-create layers when connections change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [connections, arcHeight] // Re-create layers when connections change
     );
 
     return (
