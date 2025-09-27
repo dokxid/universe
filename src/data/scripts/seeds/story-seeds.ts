@@ -54,7 +54,7 @@ export const test_story_doc = (experience_center: number[]) => ({
     location: {
         type: "Point",
         coordinates: [
-            experience_center[0] + faker.number.float({ min: -0.3, max: 0.3 }),
+            experience_center[0] + faker.number.float({ min: -0.8, max: 0.8 }),
             experience_center[1] + faker.number.float({ min: -0.3, max: 0.3 }),
         ],
     },

@@ -5,7 +5,12 @@ import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience, StoryDTO } from "@/types/api";
-import { DeckProps, LayersList, MapViewState } from "@deck.gl/core";
+import {
+    DeckProps,
+    LayersList,
+    MapViewState,
+    PickingInfo,
+} from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -22,7 +27,7 @@ import {
 
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 
-type DataType = {
+type TagConnection = {
     from: [longitude: number, latitude: number];
     to: [longitude: number, latitude: number];
     tag: string;
@@ -91,11 +96,12 @@ export function DeckGLMap({
     const mapState = useAppSelector((state) => state.map);
 
     // react state stuff
+    const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
-    const [connections, setConnections] = useState<DataType[]>([]);
+    const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
 
     // too many react hooks
@@ -131,7 +137,7 @@ export function DeckGLMap({
             storiesToUse,
             activeStory.tags
         );
-        const connectionsSanitized: DataType[] = newConnections.flatMap(
+        const connectionsSanitized: TagConnection[] = newConnections.flatMap(
             (conn) =>
                 conn.lineStrings.map((lineString) => {
                     const coords = lineString.coordinates;
@@ -195,14 +201,16 @@ export function DeckGLMap({
             // }),
 
             // monocolor arcs (different tags same color)
-            new ArcLayer({
+            new ArcLayer<TagConnection>({
                 id: "arcs",
                 data: connections,
-                getSourcePosition: (d: DataType) => d.from,
-                getTargetPosition: (d: DataType) => d.to,
+                getSourcePosition: (d: TagConnection) => d.from,
+                getTargetPosition: (d: TagConnection) => d.to,
                 getSourceColor: [0, 128, 200],
                 getTargetColor: [200, 0, 80],
                 getWidth: 3,
+                pickable: true,
+                onHover: (info) => setHoverInfo(info),
             }),
         ],
         [connections] // Re-create layers when connections change
@@ -261,7 +269,20 @@ export function DeckGLMap({
                             />
                         </Marker>
                     ))}
-                    <DeckGLOverlay layers={layers} />
+                    <DeckGLOverlay pickingRadius={15} layers={layers} />
+                    {hoverInfo?.object && (
+                        <div
+                            className={
+                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-base"
+                            }
+                            style={{
+                                left: hoverInfo.x,
+                                top: hoverInfo.y,
+                            }}
+                        >
+                            {`matching tags: ${hoverInfo.object.tag}`}
+                        </div>
+                    )}
                 </Map>
             </div>
         </div>

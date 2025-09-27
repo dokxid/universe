@@ -133,13 +133,13 @@ export const test_experiences_doc = (center: number[]) => ({
         coordinates: center,
     },
     initial_zoom: "9",
-    title: faker.lorem.words({ min: 2, max: 3 }) + " Lab",
+    title: faker.lorem.sentence({ min: 2, max: 3 }).replace(".", "") + " Lab",
     slug: "test",
     featured_image:
         "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
     organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
     stories: [],
-    description: faker.lorem.words({ min: 20, max: 30 }),
-    subtitle: faker.lorem.words({ min: 5, max: 10 }),
+    description: faker.lorem.sentence({ min: 20, max: 30 }),
+    subtitle: faker.lorem.words({ min: 5, max: 10 }).replace(".", ""),
     visibility: "public",
 });
