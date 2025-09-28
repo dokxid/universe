@@ -133,12 +133,16 @@ export function StoryDetails({
                             />
                         </Link>
                         <Separator className={"mb-6"} />
-                        <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
+                        <div
+                            className={
+                                "flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"
+                            }
+                        >
                             {story.tags.map((tag) => (
                                 <Badge key={tag}>{tag}</Badge>
                             ))}
                         </div>
-                        <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 px-0">
+                        <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0">
                             {parse(story.content)}
                         </div>
                     </div>
