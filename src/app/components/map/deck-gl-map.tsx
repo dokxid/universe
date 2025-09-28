@@ -1,6 +1,7 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -14,6 +15,7 @@ import {
 } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
+import { EdgeInsets } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -107,6 +109,7 @@ export function DeckGLMap({
     const mapState = useAppSelector((state) => state.map);
 
     // react state stuff
+    const isMobile = useIsMobile();
     const [arcHeight, setArcHeight] = useState(0);
     const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
@@ -140,6 +143,7 @@ export function DeckGLMap({
         const foundTag = tags.find((t) => t.name === tag);
         return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
     };
+
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
@@ -248,6 +252,8 @@ export function DeckGLMap({
         [connections, arcHeight] // Re-create layers when connections change
     );
 
+    const edgeInsets = new EdgeInsets(0, 400, 0, 0); 
+
     return (
         <div className={"w-full h-full"}>
             <div className={"absolute z-50"}>
@@ -291,8 +297,16 @@ export function DeckGLMap({
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();
                                 handleStorySelection(story);
-                                if (!map) return;
-                                map.panTo(story.location.coordinates);
+                                if (isMobile) {
+                                    map!.easeTo({
+                                        center: story.location.coordinates,
+                                    });
+                                } else {
+                                    map!.easeTo({
+                                        center: story.location.coordinates,
+                                        padding: edgeInsets,
+                                    });
+                                }
                             }}
                         >
                             <CustomMarker

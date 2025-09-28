@@ -2,18 +2,20 @@
 
 import S3Image from "@/app/components/s3-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/api";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function StoryDetailsHeader({
     story,
@@ -25,7 +27,7 @@ function StoryDetailsHeader({
     return (
         <div
             className={cn(
-                "flex flex-row items-center mb-2 justify-between sticky py-3 top-0",
+                "flex flex-row items-center mb-1 justify-between sticky py-4 top-0",
                 className
             )}
         >
@@ -52,12 +54,14 @@ function StoryDetailsHeader({
                             {story.title}
                         </p>
                     </Link>
-                    <p
-                        className={
-                            "text-sm text-muted-foreground hover:underline cursor-pointer"
-                        }
-                    >
-                        by {story.author_name}
+                    <p className={"text-sm text-muted-foreground"}>
+                        {"by "}
+                        <Link
+                            className={"hover:underline cursor-pointer"}
+                            href={`/${story.experience}/user/${story.author}`}
+                        >
+                            {story.author_name}
+                        </Link>
                     </p>
                 </article>
             </div>
@@ -76,13 +80,12 @@ function StoryDetailsHeader({
 export function StoryDetails({
     stories,
     open,
-    setOpenAction,
 }: {
     stories: StoryDTO[];
     open: boolean;
-    setOpenAction: (open: boolean) => void;
 }) {
     const isMobile = useIsMobile();
+    const [drawerOpen, setDrawerOpen] = useState(open);
     const mapState = useAppSelector((state) => state.map);
     const parsedStories = stories;
     const story: StoryDTO | undefined = useMemo(() => {
@@ -91,19 +94,51 @@ export function StoryDetails({
             (s: StoryDTO) => s._id === mapState.selectedStoryId
         );
     }, [mapState.selectedStoryId, parsedStories]);
+    useEffect(() => {
+        if (story) setDrawerOpen(open);
+    }, [open, story]);
     if (!story) return null;
 
     // mobile view
     if (isMobile) {
         return (
-            <Drawer open={open} onOpenChange={setOpenAction}>
+            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
                 <DrawerContent>
+                    <VisuallyHidden>
+                        <DrawerTitle>{story.title}</DrawerTitle>
+                    </VisuallyHidden>
                     <div className={"px-6 pb-6 overflow-y-auto flex-1"}>
                         <StoryDetailsHeader
                             story={story}
-                            className={"bg-background"}
+                            className={"bg-background z-1"}
                         />
-                        <div className="prose dark:prose-invert px-0">
+                        <Link
+                            href={
+                                "/" +
+                                story.experience +
+                                "/stories/view/" +
+                                story._id
+                            }
+                            className={
+                                "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
+                            }
+                        >
+                            <S3Image
+                                className={
+                                    "hover:scale-105 transition-all duration-200"
+                                }
+                                link={false}
+                                experience={story.experience}
+                                fileName={story.featured_image_url}
+                            />
+                        </Link>
+                        <Separator className={"mb-6"} />
+                        <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
+                            {story.tags.map((tag) => (
+                                <Badge key={tag}>{tag}</Badge>
+                            ))}
+                        </div>
+                        <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 px-0">
                             {parse(story.content)}
                         </div>
                     </div>
@@ -123,10 +158,11 @@ export function StoryDetails({
             <Link
                 href={"/" + story.experience + "/stories/view/" + story._id}
                 className={
-                    "w-full hover:brightness-75 transition-all duration-200 hover:cursor-pointer"
+                    "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
                 }
             >
                 <S3Image
+                    className={"hover:scale-105 transition-all duration-200"}
                     link={false}
                     experience={story.experience}
                     fileName={story.featured_image_url}
@@ -135,7 +171,12 @@ export function StoryDetails({
             <div className={"px-6 pb-6 flex flex-col"}>
                 <StoryDetailsHeader story={story} className={"bg-card"} />
                 <Separator className={"mb-6"} />
-                <div className="prose dark:prose-invert prose-headings:mb-2">
+                <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
+                    {story.tags.map((tag) => (
+                        <Badge key={tag}>{tag}</Badge>
+                    ))}
+                </div>
+                <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 ">
                     {parse(story.content)}
                 </div>
             </div>

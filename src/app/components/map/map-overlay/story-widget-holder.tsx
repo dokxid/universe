@@ -2,6 +2,7 @@
 
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { StoryDTO } from "@/types/api";
 import { ChevronDown, ChevronUp, SettingsIcon } from "lucide-react";
@@ -16,12 +17,13 @@ export function StoryWidgetHolder({
     slug: string;
 }) {
     const mapState = useAppSelector((state) => state.map);
+    const isMobile = useIsMobile();
     const stories = use(storiesPromise);
     const [showDetails, setShowDetails] = useState(true);
     return (
         <div className={"flex flex-col gap-3 items-end h-full"}>
             <div className={"flex flex-row gap-3 pointer-events-auto w-fit"}>
-                {mapState.selectedStoryId !== "" && (
+                {mapState.selectedStoryId !== "" && !isMobile && (
                     <Button
                         variant={"secondary_custom"}
                         className={"size-10"}
@@ -36,11 +38,7 @@ export function StoryWidgetHolder({
                     </Button>
                 </Link>
             </div>
-            <StoryDetails
-                stories={stories}
-                open={showDetails}
-                setOpenAction={setShowDetails}
-            />
+            <StoryDetails stories={stories} open={showDetails} />
         </div>
     );
 }
