@@ -142,7 +142,7 @@ export function StoryDetails({
                                 <Badge key={tag}>{tag}</Badge>
                             ))}
                         </div>
-                        <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0">
+                        <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0 mb-10">
                             {parse(story.content)}
                         </div>
                     </div>

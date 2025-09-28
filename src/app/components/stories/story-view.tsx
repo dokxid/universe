@@ -17,7 +17,7 @@ export default async function StoryView({ storyId }: { storyId: string }) {
                     fileName={story.featured_image_url}
                 />
             </div>
-            <div className="flex-1 p-4 px-8 prose dark:prose-invert">
+            <div className="flex-1 p-4 px-8 prose dark:prose-invert mb-15">
                 <h1 className="flex flex-row items-center">
                     {story.title}
                     {(await canUserEditStory(user, story)) && (
