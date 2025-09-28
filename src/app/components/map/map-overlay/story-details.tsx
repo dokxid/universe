@@ -8,14 +8,14 @@ import { Card } from "@/components/ui/card";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/api";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 function StoryDetailsHeader({
     story,
@@ -48,7 +48,7 @@ function StoryDetailsHeader({
                     >
                         <p
                             className={
-                                "font-semibold line-clamp-2 leading-none overflow-visible hover:underline"
+                                "font-semibold line-clamp-2 leading-none overflow-hidden hover:underline"
                             }
                         >
                             {story.title}
@@ -84,25 +84,38 @@ export function StoryDetails({
     stories: StoryDTO[];
     open: boolean;
 }) {
+    const router = useRouter();
+    const pathname = usePathname();
     const isMobile = useIsMobile();
+    const searchParams = useSearchParams();
+    const selectedStoryId = searchParams.get("story") || "";
     const [drawerOpen, setDrawerOpen] = useState(open);
-    const mapState = useAppSelector((state) => state.map);
     const parsedStories = stories;
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    // scroll to top when story changes
     const story: StoryDTO | undefined = useMemo(() => {
-        if (mapState.selectedStoryId === "") return undefined;
-        return parsedStories.find(
-            (s: StoryDTO) => s._id === mapState.selectedStoryId
-        );
-    }, [mapState.selectedStoryId, parsedStories]);
+        cardRef.current?.scrollTo(0, 0);
+        if (selectedStoryId === "") return undefined;
+        return parsedStories.find((s: StoryDTO) => s._id === selectedStoryId);
+    }, [selectedStoryId, parsedStories]);
+
     useEffect(() => {
         if (story) setDrawerOpen(open);
     }, [open, story]);
     if (!story) return null;
 
+    const handleMobileDrawerChange = (drawerOpenState: boolean) => {
+        const search = new URLSearchParams(searchParams);
+        search.delete("story");
+        router.push(pathname + search);
+        setDrawerOpen(drawerOpenState);
+    };
+
     // mobile view
     if (isMobile) {
         return (
-            <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <Drawer open={drawerOpen} onOpenChange={handleMobileDrawerChange}>
                 <DrawerContent>
                     <VisuallyHidden>
                         <DrawerTitle>{story.title}</DrawerTitle>
@@ -155,8 +168,9 @@ export function StoryDetails({
     if (!open) return null;
     return (
         <Card
+            ref={cardRef}
             className={
-                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none"
+                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll"
             }
         >
             <Link

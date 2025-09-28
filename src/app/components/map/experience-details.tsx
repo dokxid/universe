@@ -6,6 +6,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+
+const EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT = "l";
 
 type ExperienceDescriptorProps = {
     visible: boolean;
@@ -19,6 +22,21 @@ export function ExperienceDetails({
     const mapState = useAppSelector((state) => state.map);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (
+                event.key === EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT &&
+                (event.metaKey || event.ctrlKey)
+            ) {
+                event.preventDefault();
+                dispatch(setDescriptorOpen(!settingsState.descriptorOpen));
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [dispatch, settingsState.descriptorOpen]);
 
     if (mapState.selectedStoryId !== "") {
         return null;

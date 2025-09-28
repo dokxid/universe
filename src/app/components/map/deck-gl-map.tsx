@@ -2,7 +2,6 @@ import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { stringToArrayColor } from "@/lib/utils/color-string";
@@ -17,7 +16,7 @@ import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
 import { EdgeInsets } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
     AttributionControl,
@@ -44,22 +43,37 @@ function DeckGLOverlay(props: DeckProps) {
 
 function MapController({
     currentExperience,
+    selectedStory,
 }: {
     currentExperience: Experience;
+    selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
     const flyBackState = useAppSelector((state) => state.map.flyBack);
+    const isMobile = useIsMobile();
+
     useEffect(() => {
-        if (!map || !currentExperience) return;
-        map.flyTo({
-            center: currentExperience.center.coordinates,
-            zoom: currentExperience.initial_zoom,
+        let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
+        if (selectedStory) {
+            center = selectedStory.location.coordinates;
+            zoom = currentExperience.initial_zoom + 0.2;
+            edgeInsets = isMobile
+                ? new EdgeInsets(0, 0, 0, 0)
+                : new EdgeInsets(0, 0, 0, 450);
+        } else {
+            center = currentExperience.center.coordinates;
+            zoom = currentExperience.initial_zoom;
+            edgeInsets = new EdgeInsets(0, 0, 0, 0);
+        }
+        map?.flyTo({
+            center,
+            zoom,
+            padding: edgeInsets,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentExperience]);
+    }, [currentExperience, selectedStory]);
     useEffect(() => {
-        if (!map) return;
-        map.flyTo({
+        map?.flyTo({
             center: currentExperience.center.coordinates,
             zoom: currentExperience.initial_zoom,
         });
@@ -67,27 +81,6 @@ function MapController({
     }, [flyBackState]);
     return null;
 }
-
-// color mapping for tags
-// const getTagColor = (tag: string): [number, number, number] => {
-//     const colorMap: { [key: string]: [number, number, number] } = {
-//         "Agriculture/Farms": [34, 139, 34], // Forest Green
-//         "Boats/Ships": [0, 100, 200], // Blue
-//         Clothing: [220, 20, 60], // Crimson
-//         Education: [138, 43, 226], // Blue Violet
-//         Family: [255, 140, 0], // Dark Orange
-//         Fishing: [50, 205, 50], // Lime Green
-//         Food: [255, 20, 147], // Deep Pink
-//         Hospitals: [255, 0, 0], // Red
-//         Housing: [255, 165, 0], // Orange
-//         Language: [75, 0, 130], // Indigo
-//         Marriage: [255, 105, 180], // Hot Pink
-//         // Add more tag colors as needed
-//         default: [128, 128, 128], // Gray for unknown tags
-//     };
-
-//     return colorMap[tag] || colorMap.default;
-// };
 
 export function DeckGLMap({
     tags,
@@ -100,49 +93,64 @@ export function DeckGLMap({
     experiences: Experience[];
     experienceSlug: string;
 }) {
-    // next js router stuff
-    const { mainMap: map } = useMap();
-    const searchParams = useSearchParams();
-
-    // redux stuff
+    // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
     const mapState = useAppSelector((state) => state.map);
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const selectedFilterTags = searchParams.get("tags");
 
     // react state stuff
-    const isMobile = useIsMobile();
     const [arcHeight, setArcHeight] = useState(0);
     const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
-    const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
+    const [activeStory, setActiveStory] = useState<StoryDTO | null>(
+        stories.find((story) => story._id === searchParams.get("story")) || null
+    );
     const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
 
-    // too many react hooks
+    // set correct experience
     const experience = useMemo(() => {
-        if (searchParams.size === 0) {
+        if (experienceSlug !== "universe") {
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
             ) as Experience;
-        } else {
-            return experiences.find(
-                (exp) => exp.slug === searchParams.get("exp")
-            ) as Experience;
         }
+        const experienceToShow = searchParams.get("exp")
+            ? searchParams.get("exp")
+            : "universe";
+        return experiences.find(
+            (exp) => exp.slug === experienceToShow
+        ) as Experience;
     }, [experienceSlug, experiences, searchParams]);
 
     const storiesFiltered = useMemo(() => {
-        if (mapState.tags.length === 0) return stories;
+        if (selectedFilterTags === null) return stories;
         return stories.filter((story) =>
-            story.tags.some((tag) => mapState.tags.includes(tag))
+            story.tags.some((tag) => selectedFilterTags.includes(tag))
         );
-    }, [mapState.tags, stories]);
+    }, [selectedFilterTags, stories]);
 
     const getTagColor = (tag: string): [number, number, number] => {
         const foundTag = tags.find((t) => t.name === tag);
         return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
     };
+
+    useEffect(() => {
+        if (searchParams.get("story") === "") {
+            setActiveStory(null);
+        } else {
+            setActiveStory(
+                stories.find(
+                    (story) => story._id === searchParams.get("story")
+                ) || null
+            );
+        }
+    }, [searchParams, stories]);
 
     useEffect(() => {
         if (!activeStory) {
@@ -174,7 +182,7 @@ export function DeckGLMap({
             setArcHeight(connectionsSanitized.length > 0 ? 1 : 0.6);
         }, 100);
         setConnections(connectionsSanitized);
-    }, [activeStory, mapState.tags, storiesFiltered]);
+    }, [activeStory, selectedFilterTags, storiesFiltered]);
 
     const INITIAL_VIEW_STATE: MapViewState = {
         longitude: mapState.flyPosition[0],
@@ -189,9 +197,19 @@ export function DeckGLMap({
         setCtxMenuOpen(true);
     };
 
+    const setSelectedStoryIdParams = (newSelectedStoryId: string) => {
+        const search = new URLSearchParams(searchParams);
+        if (newSelectedStoryId !== "") {
+            search.set("story", newSelectedStoryId);
+        } else {
+            search.delete("story");
+        }
+        router.push(pathname + "?" + search.toString());
+    };
+
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        dispatch(setSelectedStoryId(story._id));
+        setSelectedStoryIdParams(story._id);
     };
 
     function getTaggedConnections(
@@ -234,25 +252,10 @@ export function DeckGLMap({
                     },
                 },
             }),
-
-            //     // monocolor arcs (different tags same color)
-            //     new ArcLayer<TagConnection>({
-            //         id: "arcs",
-            //         data: connections,
-            //         getSourcePosition: (d: TagConnection) => d.from,
-            //         getTargetPosition: (d: TagConnection) => d.to,
-            //         getSourceColor: [0, 128, 200],
-            //         getTargetColor: [200, 0, 80],
-            //         getWidth: 3,
-            //         pickable: true,
-            //         onHover: (info) => setHoverInfo(info),
-            //     }),
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [connections, arcHeight] // Re-create layers when connections change
     );
-
-    const edgeInsets = new EdgeInsets(0, 400, 0, 0); 
 
     return (
         <div className={"w-full h-full"}>
@@ -266,9 +269,10 @@ export function DeckGLMap({
             </div>
             <div className={"h-full w-full"}>
                 <Map
+                    reuseMaps={true}
                     onClick={() => {
                         setActiveStory(null);
-                        dispatch(setSelectedStoryId(""));
+                        setSelectedStoryIdParams("");
                         dispatch(setDescriptorOpen(false));
                     }}
                     id="mainMap"
@@ -288,7 +292,10 @@ export function DeckGLMap({
                         compact={true}
                         position={"bottom-left"}
                     />
-                    <MapController currentExperience={experience} />
+                    <MapController
+                        currentExperience={experience}
+                        selectedStory={activeStory}
+                    />
                     {storiesFiltered.map((story, index) => (
                         <Marker
                             longitude={story.location.coordinates[0]}
@@ -297,16 +304,6 @@ export function DeckGLMap({
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();
                                 handleStorySelection(story);
-                                if (isMobile) {
-                                    map!.easeTo({
-                                        center: story.location.coordinates,
-                                    });
-                                } else {
-                                    map!.easeTo({
-                                        center: story.location.coordinates,
-                                        padding: edgeInsets,
-                                    });
-                                }
                             }}
                         >
                             <CustomMarker

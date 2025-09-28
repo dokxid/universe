@@ -10,10 +10,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { setTags } from "@/lib/features/map/mapSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks";
 import { UnescoTagDTO } from "@/types/api";
 import { Funnel } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 export function FilterStoriesDialog({
@@ -24,7 +24,19 @@ export function FilterStoriesDialog({
     const tags = React.use(tagsPromise);
     const [open] = React.useState(false);
     const tagState = useAppSelector((state) => state.map.tags);
-    const dispatch = useAppDispatch();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const router = useRouter();
+
+    const setSelectedTagsParams = (newTags: string[]) => {
+        const search = new URLSearchParams(searchParams);
+        if (newTags.length > 0) {
+            search.set("tags", newTags.join(","));
+        } else {
+            search.delete("tags");
+        }
+        router.push(pathname + "?" + search.toString());
+    };
 
     return (
         <Dialog>
@@ -43,7 +55,7 @@ export function FilterStoriesDialog({
                 <TagPicker
                     availableTags={tags}
                     selectedTags={tagState}
-                    onTagsChange={(newTags) => dispatch(setTags(newTags))}
+                    onTagsChange={setSelectedTagsParams}
                     showLabel={open}
                 />
             </DialogContent>

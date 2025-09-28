@@ -1,4 +1,5 @@
 import { ExperienceDetails } from "@/app/components/map/experience-details";
+import { ClearFilterButton } from "@/app/components/map/map-overlay/clear-filter-button";
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import ToggleDescriptorButton from "@/app/components/map/map-overlay/toggle-descriptor-button";
 import ToggleGlobeButton from "@/app/components/map/map-overlay/toggle-globe-button";
@@ -56,6 +57,7 @@ export async function NavigationWidgetHolder({
                     isVisible={expParam !== "universe"}
                 />
                 <ToggleDescriptorButton visible={!isUniverseView} />
+                <ClearFilterButton visible={!isUniverseView} />
             </div>
             <Suspense>
                 <ExperienceDetails

@@ -8,6 +8,7 @@ import {
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getExperienceDTO } from "@/data/dto/experience-dto";
+import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import { Experience } from "@/types/api";
 import { EllipsisVertical } from "lucide-react";
 import Image from "next/image";
@@ -29,8 +30,9 @@ export default async function LabHeader({ slug }: { slug: string }) {
                         src={experience.featured_image}
                         alt={experience.title}
                         width={400}
-                        height={400}
+                        height={225}
                         className="object-cover w-full h-full rounded-none"
+                        placeholder={shimmerDataUrl(400, 225)}
                     />
                 </Suspense>
             </AspectRatio>

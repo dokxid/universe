@@ -2,8 +2,29 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useImageURL } from "@/lib/data_hooks/imageHook";
 import { cn } from "@/lib/utils";
+import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
 import Link from "next/link";
+
+export function ImageElement({
+    className,
+    src,
+}: {
+    className?: string;
+    src: string;
+}) {
+    return (
+        <Image
+            src={src}
+            alt="s3url"
+            priority={true}
+            fill
+            sizes="(min-width: 808px) 50vw, 100vw"
+            className={cn("object-cover", className)}
+            placeholder={shimmerDataUrl(400, 225)}
+        />
+    );
+}
 
 export default function S3Image({
     experience,
@@ -27,14 +48,7 @@ export default function S3Image({
     if (!link)
         return (
             <div className={"relative w-full h-full aspect-video"}>
-                <Image
-                    src={src}
-                    alt="s3url"
-                    priority={true}
-                    fill
-                    sizes="(min-width: 808px) 50vw, 100vw"
-                    className={cn("object-cover", className)}
-                />
+                <ImageElement className={className} src={src} />
             </div>
         );
 
@@ -44,14 +58,7 @@ export default function S3Image({
                 href={`/${experience}/images/${fileName}`}
                 className={"relative block w-full h-full"}
             >
-                <Image
-                    src={src}
-                    alt="s3url"
-                    priority={true}
-                    fill
-                    sizes="(min-width: 808px) 50vw, 100vw"
-                    className={cn("object-cover", className)}
-                />
+                <ImageElement className={className} src={src} />
             </Link>
         </div>
     );
