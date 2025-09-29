@@ -14,6 +14,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import { addStoryDialogSlice } from "./features/dialogue/addStoryDialogSlice";
 import { mapSlice } from "./features/map/mapSlice";
+import { navigationSlice } from "@/lib/features/navigation/navigationSlice";
 
 const persistConfig = {
     key: "settings",
@@ -32,6 +33,7 @@ export const store = configureStore({
         addStoryDialog: addStoryDialogSlice.reducer,
         map: mapSlice.reducer,
         experiences: experiencesSlice.reducer,
+        navigation: navigationSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

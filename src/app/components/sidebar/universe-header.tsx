@@ -1,26 +1,49 @@
-import { CurrentExperienceSelector } from "@/app/components/sidebar/current-experience-selector";
-import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
-import {
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Suspense } from "react";
+"use client";
 
-export async function UniverseHeader() {
-    const experiencesSerialized = JSON.stringify(await getExperiencesDTO());
+import { SidebarHeader } from "@/components/ui/sidebar";
+import Image, { ImageProps } from "next/image";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+
+type Props = Omit<ImageProps, "src" | "priority" | "loading" | "alt"> & {
+    srcLight: string;
+    srcDark: string;
+};
+const ThemeImage = (props: Props) => {
+    const { srcLight, srcDark, ...rest } = props;
+    const { theme, systemTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null; // Prevent hydration mismatch
+    }
+
+    const currentTheme = theme === "system" ? systemTheme : theme;
+    const src = currentTheme === "dark" ? srcDark : srcLight;
+    const alt =
+        currentTheme === "dark" ? "Dark Theme Logo" : "Light Theme Logo";
+
+    return <Image {...rest} src={src} alt={alt} />;
+};
+
+export function UniverseHeader() {
     return (
         <SidebarHeader className="px-4 py-4">
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <Suspense fallback={<CurrentExperienceSelectorSkeleton />}>
-                        <CurrentExperienceSelector
-                            experiencesSerialized={experiencesSerialized}
-                        />
-                    </Suspense>
-                </SidebarMenuItem>
-            </SidebarMenu>
+            <Button className={"w-full relative h-[80px]"} variant={"ghost"}>
+                <ThemeImage
+                    srcLight="/img/logotype_normal.svg"
+                    srcDark="/img/logotype_white.svg"
+                    width={160}
+                    height={40}
+                    className="object-contain"
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                />
+            </Button>
         </SidebarHeader>
     );
 }

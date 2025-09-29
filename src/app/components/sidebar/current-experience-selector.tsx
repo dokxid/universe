@@ -14,6 +14,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { Experience } from "@/types/api";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
@@ -21,14 +22,15 @@ import React from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
 export function CurrentExperienceSelector({
-    experiencesSerialized,
+    experiences,
+    className,
 }: {
-    experiencesSerialized: string;
+    experiences: Experience[];
+    className?: string;
 }) {
     const [open, setOpen] = React.useState(false);
     const searchParams = useSearchParams();
-    const data = JSON.parse(experiencesSerialized) as Experience[];
-    const safeData = data.map((item) => ({
+    const safeData = experiences.map((item) => ({
         ...item,
         stories: [...item.stories],
     }));
@@ -41,16 +43,18 @@ export function CurrentExperienceSelector({
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button
-                    variant={"default"}
-                    role={"combobox"}
-                    aria-expanded={open}
-                    className={"w-full justify-between min-h-20 max-h20"}
-                    aria-label={"Experience Selector"}
-                >
-                    <CurrentExperienceDescriptor experience={experience} />
-                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
+                <div className={cn("w-full", className)}>
+                    <Button
+                        variant={"default"}
+                        role={"combobox"}
+                        aria-expanded={open}
+                        className={"justify-between min-h-20 w-full"}
+                        aria-label={"Experience Selector"}
+                    >
+                        <CurrentExperienceDescriptor experience={experience} />
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                </div>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
                 <Command>

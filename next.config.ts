@@ -7,6 +7,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const nextConfig: NextConfig = {
+    turbopack: {
+        resolveAlias: {
+            // fixes issues with maplibre-gl in turbopack
+            "maplibre-gl-css": "maplibre-gl/dist/maplibre-gl.css",
+        },
+    },
+
     // added because my node activated from ~/ instead of directory root
     outputFileTracingRoot: join(__dirname),
 

@@ -111,5 +111,6 @@ export const config = {
         "/:slug/team/:page*",
         "/:slug/stories",
         "/:slug/user-preferences",
+        "/:slug/stories/elevation-requests",
     ],
 };

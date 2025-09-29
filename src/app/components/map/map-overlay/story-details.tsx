@@ -15,7 +15,7 @@ import parse from "html-react-parser";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function StoryDetailsHeader({
     story,
@@ -78,31 +78,27 @@ function StoryDetailsHeader({
 }
 
 export function StoryDetails({
-    stories,
+    story,
     open,
 }: {
-    stories: StoryDTO[];
+    story: StoryDTO | null;
     open: boolean;
 }) {
     const router = useRouter();
     const pathname = usePathname();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
-    const selectedStoryId = searchParams.get("story") || "";
     const [drawerOpen, setDrawerOpen] = useState(open);
-    const parsedStories = stories;
     const cardRef = useRef<HTMLDivElement>(null);
 
-    // scroll to top when story changes
-    const story: StoryDTO | undefined = useMemo(() => {
+    useEffect(() => {
         cardRef.current?.scrollTo(0, 0);
-        if (selectedStoryId === "") return undefined;
-        return parsedStories.find((s: StoryDTO) => s._id === selectedStoryId);
-    }, [selectedStoryId, parsedStories]);
+    }, [story]);
 
     useEffect(() => {
         if (story) setDrawerOpen(open);
     }, [open, story]);
+
     if (!story) return null;
 
     const handleMobileDrawerChange = (drawerOpenState: boolean) => {

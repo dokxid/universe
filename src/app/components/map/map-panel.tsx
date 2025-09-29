@@ -4,7 +4,7 @@ import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlic
 import { useAppDispatch } from "@/lib/hooks";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import dynamic from "next/dynamic";
-import { Suspense, useEffect } from "react";
+import { Suspense, use, useEffect } from "react";
 
 // make dynamic loading
 const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
@@ -13,17 +13,17 @@ const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
 
 export function MapPanel({
     tagsPromise,
-    storiesSerialized,
-    experiencesSerialized,
+    storiesPromise,
+    experiencesPromise,
     experienceSlug,
 }: {
     tagsPromise: Promise<UnescoTagDTO[]>;
-    storiesSerialized: string;
-    experiencesSerialized: string;
+    storiesPromise: Promise<StoryDTO[]>;
+    experiencesPromise: Promise<Experience[]>;
     experienceSlug: string;
 }) {
-    const stories = JSON.parse(storiesSerialized) as StoryDTO[];
-    const experiences = JSON.parse(experiencesSerialized) as Experience[];
+    const experiences = use(experiencesPromise);
+    const stories = use(storiesPromise);
     const dispatch = useAppDispatch();
 
     useEffect(() => {

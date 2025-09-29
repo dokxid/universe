@@ -1,4 +1,5 @@
 import { seedExperiences } from "@/data/scripts/seed-experiences";
+import { seedImages } from "@/data/scripts/seed-images";
 import { seedStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 
@@ -21,6 +22,7 @@ async function seedDatabase() {
     }
     try {
         await seedUnescoTags();
+        await seedImages();
         await seedExperiences(city_centers["oslo"]);
         await seedStories("test", city_centers["oslo"], 40);
         console.log("Database seeding completed");

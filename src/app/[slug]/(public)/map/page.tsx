@@ -1,6 +1,7 @@
 import { MapOverlay } from "@/app/components/map/map-overlay/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
+import { ExperiencesGallerySidebar } from "@/app/components/sidebar/experiences-gallery-sidebar";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import {
     getAllPublicStoriesDTO,
@@ -25,20 +26,12 @@ export default async function MapView({
     else storiesPromise = getLabPublicStoriesDTO(slug);
     const experiencesPromise = getExperiencesDTO();
     const selectedExperience = exp && !Array.isArray(exp) ? exp : slug;
-
-    const [storiesResult, experiencesResult] = await Promise.all([
-        storiesPromise,
-        experiencesPromise,
-    ]);
-
-    const storiesSerialized = JSON.stringify(storiesResult);
-    const experiencesSerialized = JSON.stringify(experiencesResult);
     const tagsPromise = getTagsDTO();
 
     return (
-        <div className="w-screen h-screen flex">
+        <div className="w-screen max-h-screen h-screen flex">
             <AppSidebar slug={slug} />
-            <div className="flex grow">
+            <div className="flex grow flex-row">
                 <div className="grow relative">
                     {/* map */}
                     <div className="absolute z-20 w-full h-full">
@@ -46,8 +39,8 @@ export default async function MapView({
                             <MapPanel
                                 tagsPromise={tagsPromise}
                                 experienceSlug={slug}
-                                experiencesSerialized={experiencesSerialized}
-                                storiesSerialized={storiesSerialized}
+                                experiencesPromise={experiencesPromise}
+                                storiesPromise={storiesPromise}
                             />
                         </Suspense>
                     </div>
@@ -63,6 +56,9 @@ export default async function MapView({
                     </div>
                 </div>
             </div>
+            <ExperiencesGallerySidebar
+                experiencesPromise={experiencesPromise}
+            ></ExperiencesGallerySidebar>
         </div>
     );
 }

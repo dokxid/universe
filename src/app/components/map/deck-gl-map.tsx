@@ -15,7 +15,6 @@ import {
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
 import { EdgeInsets } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -232,6 +231,43 @@ export function DeckGLMap({
 
     const layers: LayersList = useMemo(
         () => [
+            // new GeoJsonLayer({
+            //     id: "tag_connections",
+            //     data: {
+            //         type: "FeatureCollection",
+            //         features: connections.map((conn, index) => ({
+            //             type: "Feature",
+            //             geometry: {
+            //                 type: "LineString",
+            //                 coordinates: [conn.from, conn.to],
+            //             },
+            //             properties: {
+            //                 tag: conn.tag,
+            //                 index: index,
+            //             },
+            //         })),
+            //     },
+            //     pickable: true,
+            //     stroked: true,
+            //     filled: false,
+            //     lineWidthMinPixels: 3,
+            //     getLineColor: [0, 128, 200],
+            //     getLineWidth: 3,
+            //     // onHover: (info) => {
+            //     //     const infoSanitized: PickingInfo<TagConnection> = {
+            //     //         ...info,
+            //     //         object: {
+            //     //             from: info.object.features.geometry.coordinates[0],
+            //     //             to: info.object.features.geometry.coordinates[1],
+            //     //             tag: info.object.features.properties.tag,
+            //     //         },
+            //     //     };
+            //     //     setHoverInfo(infoSanitized);
+            //     // },
+            //     updateTriggers: {
+            //         data: connections, // Force update when connections change
+            //     },
+            // }),
             // colored arcs (different tags different colors, looks bad tho)
             new ArcLayer({
                 id: "arcs",
@@ -290,7 +326,7 @@ export function DeckGLMap({
                 >
                     <AttributionControl
                         compact={true}
-                        position={"bottom-left"}
+                        position={"bottom-right"}
                     />
                     <MapController
                         currentExperience={experience}

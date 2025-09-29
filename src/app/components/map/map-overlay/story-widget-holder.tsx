@@ -2,28 +2,44 @@
 
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAppSelector } from "@/lib/hooks";
+import { setRightSideBarOpen } from "@/lib/features/navigation/navigationSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { StoryDTO } from "@/types/api";
-import { ChevronDown, ChevronUp, SettingsIcon } from "lucide-react";
-import Link from "next/link";
-import { use, useState } from "react";
+import { ChevronDown, ChevronUp, PanelRightOpen } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { use, useEffect, useState } from "react";
 
 export function StoryWidgetHolder({
     storiesPromise,
-    slug,
 }: {
     storiesPromise: Promise<StoryDTO[]>;
-    slug: string;
 }) {
-    const mapState = useAppSelector((state) => state.map);
     const isMobile = useIsMobile();
     const stories = use(storiesPromise);
+    const searchParams = useSearchParams();
+    const navigationState = useAppSelector((state) => state.navigation);
+    const dispatch = useAppDispatch();
     const [showDetails, setShowDetails] = useState(true);
+    const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
+
+    useEffect(() => {
+        if (searchParams.get("story") === "") {
+            setActiveStory(null);
+        } else {
+            setActiveStory(
+                stories.find(
+                    (story) => story._id === searchParams.get("story")
+                ) || null
+            );
+        }
+    }, [searchParams, stories]);
+
     return (
         <div className={"flex flex-col gap-3 items-end h-full"}>
             <div className={"flex flex-row gap-3 pointer-events-auto w-fit"}>
-                {mapState.selectedStoryId !== "" && !isMobile && (
+                {searchParams.get("story") !== "" && !isMobile && (
                     <Button
                         variant={"secondary_custom"}
                         className={"size-10"}
@@ -32,13 +48,18 @@ export function StoryWidgetHolder({
                         {showDetails ? <ChevronDown /> : <ChevronUp />}
                     </Button>
                 )}
-                <Link href={`/${slug}/settings`}>
-                    <Button variant={"secondary_custom"} className={"size-10"}>
-                        <SettingsIcon />
-                    </Button>
-                </Link>
+                <Toggle
+                    onPressedChange={(pressed) =>
+                        dispatch(setRightSideBarOpen(pressed))
+                    }
+                    pressed={navigationState.rightSideBarOpen}
+                    variant={"secondary_custom"}
+                >
+                    Explore Heritage Labs
+                    <PanelRightOpen />
+                </Toggle>
             </div>
-            <StoryDetails stories={stories} open={showDetails} />
+            <StoryDetails story={activeStory} open={showDetails} />
         </div>
     );
 }

@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT = "l";
@@ -19,9 +20,9 @@ export function ExperienceDetails({
     visible,
     experience,
 }: ExperienceDescriptorProps) {
-    const mapState = useAppSelector((state) => state.map);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -38,7 +39,7 @@ export function ExperienceDetails({
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [dispatch, settingsState.descriptorOpen]);
 
-    if (mapState.selectedStoryId !== "") {
+    if (searchParams.get("story") !== "") {
         return null;
     }
     if (!settingsState.descriptorOpen) {

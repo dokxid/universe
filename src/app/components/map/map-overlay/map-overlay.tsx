@@ -1,3 +1,4 @@
+import { MapWidgetHolder } from "@/app/components/map/map-overlay/map-widget-holder";
 import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigation-widget-holder";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
@@ -29,12 +30,13 @@ export async function MapOverlay({
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
-                    <StoryWidgetHolder
-                        storiesPromise={storiesPromise}
-                        slug={slug}
-                    />
+                    <StoryWidgetHolder storiesPromise={storiesPromise} />
                 </div>
 
+                {/* bottom left */}
+                <div className={"absolute bottom-0 left-0 flex flex-col gap-3"}>
+                    <MapWidgetHolder slug={slug} />
+                </div>
                 {/* bottom right */}
                 <div
                     className={"absolute bottom-0 right-0 flex flex-col gap-3"}
