@@ -7,7 +7,7 @@ export interface NavigationState {
 
 const initialState: NavigationState = {
     rightSideBarOpen: false,
-    storyDetailsOpen: false,
+    storyDetailsOpen: true,
 };
 
 export const navigationSlice = createSlice({
