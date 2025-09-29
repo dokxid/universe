@@ -26,6 +26,7 @@ import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 
 function isPublicStory(story: Story) {
     return !story.draft && story.published;
@@ -314,6 +315,7 @@ export async function submitStoryDTO(formData: FormData) {
         // Upload the file and insert the story
         await uploadFile(file, uploadedFileName, data.experience);
         await insertStory(storyToInsert, data.experience);
+        revalidateTag(`stories`);
     } catch (e) {
         console.error("Error submitting story:", e);
     }

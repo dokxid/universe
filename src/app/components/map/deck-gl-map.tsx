@@ -15,7 +15,7 @@ import {
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
 import { EdgeInsets } from "maplibre-gl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
     AttributionControl,
@@ -95,7 +95,6 @@ export function DeckGLMap({
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
     const mapState = useAppSelector((state) => state.map);
-    const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
@@ -184,8 +183,8 @@ export function DeckGLMap({
     }, [activeStory, selectedFilterTags, storiesFiltered]);
 
     const INITIAL_VIEW_STATE: MapViewState = {
-        longitude: mapState.flyPosition[0],
-        latitude: mapState.flyPosition[1],
+        longitude: experience.center.coordinates[0],
+        latitude: experience.center.coordinates[1],
         zoom: mapState.zoomLevel,
     };
 
@@ -203,7 +202,7 @@ export function DeckGLMap({
         } else {
             search.delete("story");
         }
-        router.push(pathname + "?" + search.toString());
+        history.pushState(null, "", pathname + "?" + search.toString());
     };
 
     const handleStorySelection = (story: StoryDTO) => {

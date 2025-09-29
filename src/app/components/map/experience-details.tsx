@@ -12,12 +12,12 @@ import { useEffect } from "react";
 const EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT = "l";
 
 type ExperienceDescriptorProps = {
-    visible: boolean;
+    visible?: boolean;
     experience: Experience;
 };
 
 export function ExperienceDetails({
-    visible,
+    visible = true,
     experience,
 }: ExperienceDescriptorProps) {
     const settingsState = useAppSelector((state) => state.settings);
@@ -39,10 +39,13 @@ export function ExperienceDetails({
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [dispatch, settingsState.descriptorOpen]);
 
-    if (searchParams.get("story") !== "") {
+    if (searchParams.get("story") !== null) {
         return null;
     }
     if (!settingsState.descriptorOpen) {
+        return null;
+    }
+    if (searchParams.get("exp") === "") {
         return null;
     }
     if (!visible) {
@@ -52,7 +55,7 @@ export function ExperienceDetails({
     return (
         <article
             className={
-                "max-h-[40svh] max-w-xl bg-primary-foreground text-primary p-5 text-wrap pointer-events-auto flex flex-col rounded-md"
+                "w-full max-h-[40svh] max-w-xl bg-primary-foreground text-primary p-5 text-wrap pointer-events-auto flex flex-col rounded-md"
             }
         >
             <div className={"flex flex-row justify-between"}>

@@ -4,7 +4,7 @@ import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlic
 import { useAppDispatch } from "@/lib/hooks";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import dynamic from "next/dynamic";
-import { Suspense, use, useEffect } from "react";
+import { use, useEffect } from "react";
 
 // make dynamic loading
 const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
@@ -31,15 +31,11 @@ export function MapPanel({
     }, [dispatch, experienceSlug]);
 
     return (
-        <>
-            <Suspense fallback={<div>loading stories...</div>}>
-                <MapWrapper
-                    tagsPromise={tagsPromise}
-                    stories={stories}
-                    experiences={experiences}
-                    experienceSlug={experienceSlug}
-                />
-            </Suspense>
-        </>
+        <MapWrapper
+            tagsPromise={tagsPromise}
+            stories={stories}
+            experiences={experiences}
+            experienceSlug={experienceSlug}
+        />
     );
 }

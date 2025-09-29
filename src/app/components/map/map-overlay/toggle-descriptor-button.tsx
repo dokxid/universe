@@ -6,9 +6,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { ChevronsDownUp } from "lucide-react";
 
 export default function ToggleDescriptorButton({
-    visible,
+    visible = true,
 }: {
-    visible: boolean;
+    visible?: boolean;
 }) {
     const dispatch = useAppDispatch();
     const settingsState = useAppSelector((state) => state.settings);

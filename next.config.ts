@@ -8,6 +8,12 @@ const __dirname = dirname(__filename);
 
 const nextConfig: NextConfig = {
     turbopack: {
+        rules: {
+            "*.svg": {
+                loaders: ["@svgr/webpack"],
+                as: "*.ts",
+            },
+        },
         resolveAlias: {
             // fixes issues with maplibre-gl in turbopack
             "maplibre-gl-css": "maplibre-gl/dist/maplibre-gl.css",

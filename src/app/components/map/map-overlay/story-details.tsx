@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/api";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -15,7 +16,7 @@ import parse from "html-react-parser";
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 function StoryDetailsHeader({
     story,
@@ -78,28 +79,43 @@ function StoryDetailsHeader({
 }
 
 export function StoryDetails({
-    story,
-    open,
+    storiesPromise,
 }: {
-    story: StoryDTO | null;
-    open: boolean;
+    storiesPromise: Promise<StoryDTO[]>;
 }) {
     const router = useRouter();
     const pathname = usePathname();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
-    const [drawerOpen, setDrawerOpen] = useState(open);
+    const navigationState = useAppSelector((state) => state.navigation);
+    const [drawerOpen, setDrawerOpen] = useState(
+        navigationState.storyDetailsOpen
+    );
     const cardRef = useRef<HTMLDivElement>(null);
+    const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
+    const stories = use(storiesPromise);
+
+    useEffect(() => {
+        if (searchParams.get("story") === "") {
+            setActiveStory(null);
+        } else {
+            setActiveStory(
+                stories.find(
+                    (story) => story._id === searchParams.get("story")
+                ) || null
+            );
+        }
+    }, [searchParams, stories]);
 
     useEffect(() => {
         cardRef.current?.scrollTo(0, 0);
-    }, [story]);
+    }, [activeStory]);
 
     useEffect(() => {
-        if (story) setDrawerOpen(open);
-    }, [open, story]);
+        if (activeStory) setDrawerOpen(true);
+    }, [activeStory]);
 
-    if (!story) return null;
+    if (!activeStory) return null;
 
     const handleMobileDrawerChange = (drawerOpenState: boolean) => {
         const search = new URLSearchParams(searchParams);
@@ -114,19 +130,19 @@ export function StoryDetails({
             <Drawer open={drawerOpen} onOpenChange={handleMobileDrawerChange}>
                 <DrawerContent>
                     <VisuallyHidden>
-                        <DrawerTitle>{story.title}</DrawerTitle>
+                        <DrawerTitle>{activeStory.title}</DrawerTitle>
                     </VisuallyHidden>
                     <div className={"px-6 pb-6 overflow-y-auto flex-1"}>
                         <StoryDetailsHeader
-                            story={story}
+                            story={activeStory}
                             className={"bg-background z-1"}
                         />
                         <Link
                             href={
                                 "/" +
-                                story.experience +
+                                activeStory.experience +
                                 "/stories/view/" +
-                                story._id
+                                activeStory._id
                             }
                             className={
                                 "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
@@ -137,8 +153,8 @@ export function StoryDetails({
                                     "hover:scale-105 transition-all duration-200"
                                 }
                                 link={false}
-                                experience={story.experience}
-                                fileName={story.featured_image_url}
+                                experience={activeStory.experience}
+                                fileName={activeStory.featured_image_url}
                             />
                         </Link>
                         <Separator className={"mb-6"} />
@@ -147,12 +163,12 @@ export function StoryDetails({
                                 "flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"
                             }
                         >
-                            {story.tags.map((tag) => (
+                            {activeStory.tags.map((tag) => (
                                 <Badge key={tag}>{tag}</Badge>
                             ))}
                         </div>
                         <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0 mb-10">
-                            {parse(story.content)}
+                            {parse(activeStory.content)}
                         </div>
                     </div>
                 </DrawerContent>
@@ -161,16 +177,20 @@ export function StoryDetails({
     }
 
     // desktop view
-    if (!open) return null;
     return (
         <Card
             ref={cardRef}
-            className={
-                "gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll"
-            }
+            className={`gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
+                navigationState.storyDetailsOpen ? "" : "hidden"
+            }`}
         >
             <Link
-                href={"/" + story.experience + "/stories/view/" + story._id}
+                href={
+                    "/" +
+                    activeStory.experience +
+                    "/stories/view/" +
+                    activeStory._id
+                }
                 className={
                     "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
                 }
@@ -178,20 +198,20 @@ export function StoryDetails({
                 <S3Image
                     className={"hover:scale-105 transition-all duration-200"}
                     link={false}
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
+                    experience={activeStory.experience}
+                    fileName={activeStory.featured_image_url}
                 />
             </Link>
             <div className={"px-6 pb-6 flex flex-col"}>
-                <StoryDetailsHeader story={story} className={"bg-card"} />
+                <StoryDetailsHeader story={activeStory} className={"bg-card"} />
                 <Separator className={"mb-6"} />
                 <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
-                    {story.tags.map((tag) => (
+                    {activeStory.tags.map((tag) => (
                         <Badge key={tag}>{tag}</Badge>
                     ))}
                 </div>
                 <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 ">
-                    {parse(story.content)}
+                    {parse(activeStory.content)}
                 </div>
             </div>
         </Card>

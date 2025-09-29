@@ -1,6 +1,7 @@
 "use server";
 
 import { signOut } from "@workos-inc/authkit-nextjs";
+import { revalidateTag } from "next/cache";
 
 async function signOutAction(slug?: string) {
     let returnTo = "/";
@@ -14,6 +15,7 @@ async function signOutAction(slug?: string) {
             );
             return signOut({ returnTo: "http://localhost:3000/" });
         }
+        revalidateTag("user");
         return signOut({ returnTo });
     } catch (error) {
         console.error("Failed to sign out:", error);

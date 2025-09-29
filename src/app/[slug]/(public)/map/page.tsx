@@ -1,7 +1,9 @@
+import { unstable_cache } from "next/cache";
 import { MapOverlay } from "@/app/components/map/map-overlay/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { ExperiencesGallerySidebar } from "@/app/components/sidebar/experiences-gallery-sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import {
     getAllPublicStoriesDTO,
@@ -12,6 +14,39 @@ import { Suspense } from "react";
 
 export const experimental_ppr = true;
 
+// Create cached versions of your data fetching functions
+const getCachedExperiences = unstable_cache(
+    async () => getExperiencesDTO(),
+    ["experiences"],
+    {
+        revalidate: 3600, // Cache for 1 hour
+        tags: ["experiences"],
+    }
+);
+
+const getCachedTags = unstable_cache(async () => getTagsDTO(), ["tags"], {
+    revalidate: 3600, // Cache for 1 hour
+    tags: ["tags"],
+});
+
+const getCachedPublicStories = unstable_cache(
+    async () => getAllPublicStoriesDTO(),
+    ["public-stories"],
+    {
+        revalidate: 1800, // Cache for 30 minutes
+        tags: ["stories", "public-stories"],
+    }
+);
+
+const getCachedLabStories = unstable_cache(
+    async (slug: string) => getLabPublicStoriesDTO(slug),
+    ["lab-stories"],
+    {
+        revalidate: 1800, // Cache for 30 minutes
+        tags: ["stories", "lab-stories"],
+    }
+);
+
 export default async function MapView({
     params,
     searchParams,
@@ -21,21 +56,29 @@ export default async function MapView({
 }) {
     const { exp } = await searchParams;
     const { slug } = await params;
+
+    // Use cached functions
     let storiesPromise;
-    if (slug === "universe") storiesPromise = getAllPublicStoriesDTO();
-    else storiesPromise = getLabPublicStoriesDTO(slug);
-    const experiencesPromise = getExperiencesDTO();
+    if (slug === "universe") {
+        storiesPromise = getCachedPublicStories();
+    } else {
+        storiesPromise = getCachedLabStories(slug);
+    }
+
+    const experiencesPromise = getCachedExperiences();
     const selectedExperience = exp && !Array.isArray(exp) ? exp : slug;
-    const tagsPromise = getTagsDTO();
+    const tagsPromise = getCachedTags();
 
     return (
-        <div className="w-screen max-h-screen h-screen flex">
+        <div className="relative w-screen h-screen flex">
             <AppSidebar slug={slug} />
             <div className="flex grow flex-row">
                 <div className="grow relative">
                     {/* map */}
                     <div className="absolute z-20 w-full h-full">
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense
+                            fallback={<Skeleton className="w-full h-full" />}
+                        >
                             <MapPanel
                                 tagsPromise={tagsPromise}
                                 experienceSlug={slug}
@@ -47,7 +90,9 @@ export default async function MapView({
 
                     {/* overlay */}
                     <div className="absolute z-30 w-full h-full pointer-events-none">
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense
+                            fallback={<Skeleton className="w-full h-full" />}
+                        >
                             <MapOverlay
                                 slug={slug}
                                 selectedExperience={selectedExperience}
@@ -56,9 +101,11 @@ export default async function MapView({
                     </div>
                 </div>
             </div>
-            <ExperiencesGallerySidebar
-                experiencesPromise={experiencesPromise}
-            ></ExperiencesGallerySidebar>
+            <Suspense fallback={null}>
+                <ExperiencesGallerySidebar
+                    experiencesPromise={experiencesPromise}
+                />
+            </Suspense>
         </div>
     );
 }

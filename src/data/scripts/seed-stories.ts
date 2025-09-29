@@ -1,5 +1,6 @@
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
 import ExperienceModel from "@/types/models/experiences";
+import { revalidateTag } from "next/cache";
 export async function seedStories(
     experienceSlug: string,
     center: number[],
@@ -13,6 +14,7 @@ export async function seedStories(
                 { safe: true, upsert: false }
             ).exec();
         }
+        revalidateTag(`stories`);
     } catch (err) {
         console.error("Error inserting story:", err);
     }

@@ -26,19 +26,24 @@ export async function NavigationWidgetHolder({
     const experiences = await getExperiencesDTO();
     const tagsPromise = getTagsDTO();
     const expParam = selectedExperience;
-    const isUniverseView = slug === "universe" && !expParam;
     const experience = experiences.find(
         (exp) => exp.slug === selectedExperience
     );
 
     return (
         <>
-            <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
+            <div
+                className={
+                    "flex flex-row gap-3 pointer-events-auto h-10 shadow-2xl"
+                }
+            >
                 <SidebarTrigger
                     variant={"secondary"}
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
-                <FilterStoriesDialog tagsPromise={tagsPromise} />
+                <Suspense fallback={<div>loading tags...</div>}>
+                    <FilterStoriesDialog tagsPromise={tagsPromise} />
+                </Suspense>
                 {/* {isUniverseView && (
                     <Geocoder
                         accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
@@ -53,13 +58,10 @@ export async function NavigationWidgetHolder({
                     isUniverseView={slug === "universe"}
                     isVisible={expParam !== "universe"}
                 />
-                <ToggleDescriptorButton visible={!isUniverseView} />
+                <ToggleDescriptorButton />
             </div>
-            <Suspense>
-                <ExperienceDetails
-                    visible={!isUniverseView}
-                    experience={experience as Experience}
-                />
+            <Suspense fallback={<div>loading experience...</div>}>
+                <ExperienceDetails experience={experience as Experience} />
             </Suspense>
         </>
     );

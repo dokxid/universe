@@ -1,49 +1,18 @@
 "use client";
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import {
-    BookOpenText,
-    BookText,
-    CircleQuestionMark,
-    List,
-    Map,
-    Orbit,
-} from "lucide-react";
+import { BookOpenText, BookText, List, Map, Orbit } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
-export function UserItemGroup() {
+export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const featureItems: SidebarItemGroup = [
+    const featureItemsIfUniverseView: SidebarItemGroup = [
         {
-            title: "Map View",
-            href: `/${slug}/map`,
-            icon: Map,
-        },
-        {
-            title: "About the Lab",
-            href: `/${slug}/about`,
-            icon: BookText,
-        },
-        {
-            title: "Story List",
-            href: `/${slug}/stories`,
-            icon: List,
-        },
-    ];
-
-    return <ItemGroup items={featureItems} groupLabel="Co-Lab" />;
-}
-
-export function UniverseItemGroup() {
-    const pathname = usePathname();
-    const slug = pathname.split("/")[1];
-    const featureItems: SidebarItemGroup = [
-        {
-            title: "About Universe",
-            href: "/about#about-universe",
-            icon: CircleQuestionMark,
+            title: "Universe View",
+            href: `/universe/map`,
+            icon: Orbit,
         },
         {
             title: "Co-Lab Commununities",
@@ -51,11 +20,37 @@ export function UniverseItemGroup() {
             icon: BookOpenText,
         },
         {
-            title: "Universe View",
-            href: "/universe/map",
-            icon: Orbit,
+            title: "Story List",
+            href: `/${slug}/stories`,
+            icon: List,
+        },
+    ];
+    const featureItemsIfLabView: SidebarItemGroup = [
+        {
+            title: "Map View",
+            href: `/${slug}/map`,
+            icon: Map,
+        },
+        {
+            title: "Story List",
+            href: `/${slug}/stories`,
+            icon: List,
+        },
+        {
+            title: "About the Heritage Lab",
+            href: `/${slug}/about`,
+            icon: BookText,
         },
     ];
 
-    return <ItemGroup items={featureItems} groupLabel="Universe" />;
+    return (
+        <ItemGroup
+            items={
+                isUniverseView
+                    ? featureItemsIfUniverseView
+                    : featureItemsIfLabView
+            }
+            groupLabel={isUniverseView ? "Universe" : "Heritage Lab"}
+        />
+    );
 }

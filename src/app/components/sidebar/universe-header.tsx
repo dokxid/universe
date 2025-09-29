@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarHeader } from "@/components/ui/sidebar";
-import Image, { ImageProps } from "next/image";
+import { ImageProps } from "next/image";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,8 @@ const ThemeImage = (props: Props) => {
     const alt =
         currentTheme === "dark" ? "Dark Theme Logo" : "Light Theme Logo";
 
-    return <Image {...rest} src={src} alt={alt} />;
+    // eslint-disable-next-line @next/next/no-img-element -- bc this is an svg we use <img>
+    return <img {...rest} src={src} alt={alt} />;
 };
 
 export function UniverseHeader() {
@@ -41,7 +42,6 @@ export function UniverseHeader() {
                     width={160}
                     height={40}
                     className="object-contain"
-                    sizes="(min-width: 768px) 50vw, 100vw"
                 />
             </Button>
         </SidebarHeader>

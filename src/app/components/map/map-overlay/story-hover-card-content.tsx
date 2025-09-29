@@ -21,7 +21,10 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                     fileName={story.featured_image_url}
                 />
             </div>
-            <Link href={"/" + story.experience + "/stories/" + story._id}>
+            <Link
+                href={"/" + story.experience + "/stories/" + story._id}
+                prefetch={false}
+            >
                 <h1 className={"text-lg font-bold hover:underline"}>
                     {story.title}
                 </h1>

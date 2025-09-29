@@ -12,7 +12,7 @@ export default function ToggleGlobeButton() {
         <Toggle
             pressed={settingsState.globeView}
             onPressedChange={(pressed) => dispatch(setGlobeView(pressed))}
-            className="pointer-events-auto size-10 bg-secondary text-secondary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:ring-2"
+            variant={"secondary_custom"}
         >
             <Globe />
         </Toggle>

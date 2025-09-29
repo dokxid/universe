@@ -38,6 +38,7 @@ export function ItemGroup({
                 >
                     <SidebarMenuButton asChild>
                         <Link
+                            prefetch={false}
                             href={item.href}
                             className={"flex items-center w-full"}
                             aria-label={item.title}
