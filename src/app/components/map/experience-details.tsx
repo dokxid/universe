@@ -7,22 +7,32 @@ import { Experience } from "@/types/api";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 
 const EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT = "l";
 
 type ExperienceDescriptorProps = {
+    slug: string;
     visible?: boolean;
-    experience: Experience;
+    experiencesPromise: Promise<Experience[]>;
 };
 
 export function ExperienceDetails({
+    slug,
     visible = true,
-    experience,
+    experiencesPromise,
 }: ExperienceDescriptorProps) {
+    const experiences = use(experiencesPromise);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
     const searchParams = useSearchParams();
+    const experience = searchParams.get("exp")
+        ? (experiences.find(
+              (exp) => exp.slug === searchParams.get("exp")
+          ) as Experience)
+        : (experiences.find(
+              (exp) => exp.slug === slug || exp._id
+          ) as Experience);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -45,7 +55,7 @@ export function ExperienceDetails({
     if (!settingsState.descriptorOpen) {
         return null;
     }
-    if (searchParams.get("exp") === "") {
+    if (slug === "universe" && searchParams.get("exp") === null) {
         return null;
     }
     if (!visible) {

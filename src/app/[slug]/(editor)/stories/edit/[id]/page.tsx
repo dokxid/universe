@@ -1,5 +1,5 @@
+import S3Image from "@/app/components/embeds/s3-image";
 import ContentLayout from "@/app/components/layout/content-layout";
-import S3Image from "@/app/components/s3-image";
 import EditorView from "@/app/components/stories/editor-view";
 import { getStoryDTO } from "@/data/dto/story-dto";
 import { PenLine } from "lucide-react";

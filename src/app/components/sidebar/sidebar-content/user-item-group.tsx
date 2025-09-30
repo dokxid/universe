@@ -10,36 +10,51 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
     const slug = pathname.split("/")[1];
     const featureItemsIfUniverseView: SidebarItemGroup = [
         {
-            title: "Universe View",
+            title: "Heritage Universe",
             href: `/universe/map`,
             icon: Orbit,
         },
         {
-            title: "Co-Lab Commununities",
+            title: "Heritage Labs",
             href: `/${slug}/experiences`,
             icon: BookOpenText,
         },
         {
-            title: "Story List",
+            title: "Featured Stories",
             href: `/${slug}/stories`,
             icon: List,
+        },
+        {
+            title: "Contact",
+            href: `/universe/map`,
+            icon: Orbit,
         },
     ];
     const featureItemsIfLabView: SidebarItemGroup = [
         {
-            title: "Map View",
-            href: `/${slug}/map`,
-            icon: Map,
+            title: "About the Heritage Lab",
+            href: `/${slug}/about`,
+            icon: BookText,
         },
         {
-            title: "Story List",
+            title: "Lab Members",
             href: `/${slug}/stories`,
             icon: List,
         },
         {
-            title: "About the Heritage Lab",
-            href: `/${slug}/about`,
-            icon: BookText,
+            title: "Story Collection",
+            href: `/${slug}/stories`,
+            icon: List,
+        },
+        {
+            title: "Interactive Map",
+            href: `/${slug}/map`,
+            icon: Map,
+        },
+        {
+            title: "Contact",
+            href: `/${slug}/contact`,
+            icon: List,
         },
     ];
 
@@ -50,7 +65,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
                     ? featureItemsIfUniverseView
                     : featureItemsIfLabView
             }
-            groupLabel={isUniverseView ? "Universe" : "Heritage Lab"}
+            groupLabel={isUniverseView ? "Explore Universe" : "Explore"}
         />
     );
 }

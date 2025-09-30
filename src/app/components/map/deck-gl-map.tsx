@@ -4,7 +4,7 @@ import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { stringToArrayColor } from "@/lib/utils/color-string";
+import { getTagColor } from "@/lib/utils/color-string";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import {
     DeckProps,
@@ -132,11 +132,6 @@ export function DeckGLMap({
             story.tags.some((tag) => selectedFilterTags.includes(tag))
         );
     }, [selectedFilterTags, stories]);
-
-    const getTagColor = (tag: string): [number, number, number] => {
-        const foundTag = tags.find((t) => t.name === tag);
-        return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
-    };
 
     useEffect(() => {
         if (searchParams.get("story") === "") {
@@ -274,8 +269,8 @@ export function DeckGLMap({
                 greatCircle: true,
                 getSourcePosition: (d: TagConnection) => d.from,
                 getTargetPosition: (d: TagConnection) => d.to,
-                getSourceColor: (d: TagConnection) => getTagColor(d.tag),
-                getTargetColor: (d: TagConnection) => getTagColor(d.tag),
+                getSourceColor: (d: TagConnection) => getTagColor(tags, d.tag),
+                getTargetColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getWidth: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
@@ -342,6 +337,7 @@ export function DeckGLMap({
                             }}
                         >
                             <CustomMarker
+                                tags={tags}
                                 story={story}
                                 isActive={activeStory?._id === story._id}
                             />

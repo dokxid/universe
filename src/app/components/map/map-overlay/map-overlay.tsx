@@ -4,12 +4,15 @@ import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
 import { StoryWidgetHolderSkeleton } from "@/components/skeletons/story-widget-holder-skeleton";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
+import { UnescoTagDTO } from "@/types/api";
 import { Suspense } from "react";
 
 export async function MapOverlay({
+    tagsPromise,
     slug,
     selectedExperience,
 }: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
     slug: string;
     selectedExperience: string;
 }) {
@@ -38,7 +41,10 @@ export async function MapOverlay({
                             <StoryWidgetHolder />
                         </Suspense>
                         <Suspense fallback={<StoryWidgetHolderSkeleton />}>
-                            <StoryDetails storiesPromise={storiesPromise} />
+                            <StoryDetails
+                                tagsPromise={tagsPromise}
+                                storiesPromise={storiesPromise}
+                            />
                         </Suspense>
                     </div>
                 </div>

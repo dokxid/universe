@@ -56,6 +56,9 @@ export default async function LabHeader({ slug }: { slug: string }) {
                         <p className="prose-muted text-muted-foreground">
                             {experience.subtitle}
                         </p>
+                        <p className="prose-muted my-1 text-xs text-muted-foreground line-clamp-5">
+                            {experience.description}
+                        </p>
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align={"start"} side={"right"}>

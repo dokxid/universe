@@ -2,7 +2,6 @@
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { Link, Orbit } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
 export function LinksItemGroup({
@@ -10,9 +9,6 @@ export function LinksItemGroup({
 }: {
     isUniverseView?: boolean;
 }) {
-    const pathname = usePathname();
-    const slug = pathname.split("/")[1];
-
     const linksItemsIfUniverse: SidebarItemGroup = [
         {
             title: "Heritage Lab Website",
@@ -27,25 +23,25 @@ export function LinksItemGroup({
     ];
     const linksItemsIfLab: SidebarItemGroup = [
         {
+            title: "CIE Website",
+            href: "https://heritage-activities.org/",
+            icon: Link,
+        },
+        {
             title: "Universe View",
             href: `/universe/map`,
             icon: Orbit,
         },
         {
-            title: "Heritage Lab Universe",
-            href: "https://universe.heritagelab.center/",
-            icon: Link,
-        },
-        {
-            title: "CIE Website",
-            href: "https://heritage-activities.org/",
+            title: "Heritage Lab Website",
+            href: "https://heritagelab.center/",
             icon: Link,
         },
     ];
     return (
         <ItemGroup
             items={isUniverseView ? linksItemsIfUniverse : linksItemsIfLab}
-            groupLabel="Links"
+            groupLabel="More"
         ></ItemGroup>
     );
 }

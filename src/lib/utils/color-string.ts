@@ -1,3 +1,5 @@
+import { UnescoTagDTO } from "@/types/api";
+
 export function colorStringValidator(color: string): boolean {
     const hexColorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
     return hexColorRegex.test(color);
@@ -21,3 +23,20 @@ export function stringToArrayColor(str: string): [number, number, number] {
     }
     return [r, g, b];
 }
+
+export const getTagColor = (
+    allTags: UnescoTagDTO[],
+    tag: string
+): [number, number, number] => {
+    const foundTag = allTags.find((t) => t.name === tag);
+    return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
+};
+
+export const getTagColorHex = (
+    allTags: UnescoTagDTO[],
+    tag: string
+): string => {
+    const foundTag = allTags.find((t) => t.name === tag);
+    console.log("Found tag color:", foundTag?.color);
+    return foundTag ? foundTag.color : "#808080"; // Default to gray if not found
+};

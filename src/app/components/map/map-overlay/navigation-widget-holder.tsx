@@ -5,7 +5,6 @@ import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialo
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
-import { Experience } from "@/types/api";
 import { Suspense } from "react";
 
 // const Geocoder = dynamic(
@@ -23,12 +22,9 @@ export async function NavigationWidgetHolder({
     selectedExperience: string | null;
     slug: string;
 }) {
-    const experiences = await getExperiencesDTO();
+    const experiencesPromise = getExperiencesDTO();
     const tagsPromise = getTagsDTO();
     const expParam = selectedExperience;
-    const experience = experiences.find(
-        (exp) => exp.slug === selectedExperience
-    );
 
     return (
         <>
@@ -61,7 +57,10 @@ export async function NavigationWidgetHolder({
                 <ToggleDescriptorButton />
             </div>
             <Suspense fallback={<div>loading experience...</div>}>
-                <ExperienceDetails experience={experience as Experience} />
+                <ExperienceDetails
+                    experiencesPromise={experiencesPromise}
+                    slug={slug}
+                />
             </Suspense>
         </>
     );

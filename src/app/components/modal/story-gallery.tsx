@@ -1,4 +1,4 @@
-import S3Image from "@/app/components/s3-image";
+import S3Image from "@/app/components/embeds/s3-image";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";

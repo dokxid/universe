@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { MapOverlay } from "@/app/components/map/map-overlay/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
@@ -10,6 +9,7 @@ import {
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
+import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 export const experimental_ppr = true;
@@ -94,6 +94,7 @@ export default async function MapView({
                             fallback={<Skeleton className="w-full h-full" />}
                         >
                             <MapOverlay
+                                tagsPromise={tagsPromise}
                                 slug={slug}
                                 selectedExperience={selectedExperience}
                             />
@@ -104,6 +105,7 @@ export default async function MapView({
             <Suspense fallback={null}>
                 <ExperiencesGallerySidebar
                     experiencesPromise={experiencesPromise}
+                    slug={slug}
                 />
             </Suspense>
         </div>

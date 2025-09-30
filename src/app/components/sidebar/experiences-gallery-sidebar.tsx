@@ -1,24 +1,23 @@
 "use client";
 
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { setRightSideBarOpen } from "@/lib/features/navigation/navigationSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { Experience } from "@/types/api";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { ChevronRight } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, use, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setRightSideBarOpen } from "@/lib/features/navigation/navigationSlice";
-import { DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 function ExperienceGallerySidebarContent({
     experiences,
@@ -71,25 +70,16 @@ function ExperienceGallerySidebarContent({
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
                 {filteredExperiences.map((experience: Experience) => (
-                    <Link
+                    <Card
                         key={experience.slug}
-                        href={`/universe/map${createExperienceParam(
-                            experience.slug
-                        )}`}
-                        prefetch={false}
-                        className="flex flex-row justify-between items-center w-full gap-2 group"
+                        className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group ${
+                            experience.slug === selectedExperience
+                                ? "bg-secondary text-secondary-foreground"
+                                : ""
+                        }`}
                     >
-                        <Card
-                            className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 ${
-                                experience.slug === selectedExperience
-                                    ? "bg-accent text-accent-foreground"
-                                    : ""
-                            }`}
-                        >
-                            <AspectRatio
-                                ratio={30 / 9}
-                                className="overflow-hidden rounded-t-md"
-                            >
+                        <div className="overflow-hidden rounded-t-md group-hover:hidden shrink">
+                            <AspectRatio ratio={16 / 9}>
                                 {experience.featured_image ? (
                                     <Suspense
                                         fallback={<ListExperiencesSkeleton />}
@@ -110,23 +100,39 @@ function ExperienceGallerySidebarContent({
                                     </div>
                                 )}
                             </AspectRatio>
-                            <CardContent className="p-4 group flex flex-row items-center">
-                                <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
-                                    <div className="flex-1 min-w-0">
-                                        <h2 className="text-md font-semibold group-hover:underline truncate">
+                        </div>
+                        <div className="p-4 group flex flex-row items-center grow h-fit max-h-60 overflow-y-hidden">
+                            <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
+                                <Link
+                                    key={experience.slug}
+                                    href={`/universe/map${createExperienceParam(
+                                        experience.slug
+                                    )}`}
+                                    prefetch={false}
+                                    className="flex flex-row items-center w-full gap-2"
+                                >
+                                    <div className="flex-1 min-w-0 flex flex-col gap-0">
+                                        <h2 className="text-base font-semibold truncate group-hover:after:content-['_↗'] group-hover:underline">
                                             {experience.title}
                                         </h2>
-                                        <p className="text-sm text-muted-foreground group-hover:underline truncate">
+                                        <h3 className="text-sm text-muted-foreground line-clamp-1 group-hover:line-clamp-2">
                                             {experience.subtitle}
+                                        </h3>
+                                        <p
+                                            className={
+                                                "text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4"
+                                            }
+                                        >
+                                            {experience.description}
                                         </p>
                                     </div>
-                                    <div className="shrink-0 ml-2">
+                                </Link>
+                                {/* <div className="shrink-0 ml-2">
                                         <ChevronRight className="size-4" />
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </Link>
+                                    </div> */}
+                            </div>
+                        </div>
+                    </Card>
                 ))}
             </div>
         </div>
@@ -134,8 +140,10 @@ function ExperienceGallerySidebarContent({
 }
 
 export function ExperiencesGallerySidebar({
+    slug,
     experiencesPromise,
 }: {
+    slug: string;
     experiencesPromise: Promise<Experience[]>;
 }) {
     const isMobile = useIsMobile();
@@ -143,6 +151,7 @@ export function ExperiencesGallerySidebar({
     const navigationState = useAppSelector((state) => state.navigation);
     const dispatch = useDispatch();
 
+    if (slug !== "universe") return null;
     if (!experiences) return <div>No experiences found.</div>;
     if (!navigationState.rightSideBarOpen) return null;
     if (isMobile) {

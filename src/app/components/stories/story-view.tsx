@@ -1,4 +1,4 @@
-import S3Image from "@/app/components/s3-image";
+import S3Image from "@/app/components/embeds/s3-image";
 import { getCurrentUserOptional } from "@/data/auth";
 import { canUserEditStory, getStoryDTO } from "@/data/dto/story-dto";
 import parse from "html-react-parser";

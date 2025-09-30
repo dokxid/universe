@@ -1,6 +1,6 @@
 "use client";
 
-import S3Image from "@/app/components/s3-image";
+import S3Image from "@/app/components/embeds/s3-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
-import { StoryDTO } from "@/types/api";
+import { getTagColorHex } from "@/lib/utils/color-string";
+import { StoryDTO, UnescoTagDTO } from "@/types/api";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { ExternalLink } from "lucide-react";
@@ -18,12 +19,14 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useRef, useState } from "react";
 
-function StoryDetailsHeader({
+export function StoryDetailsHeader({
     story,
     className,
+    profilePictureVisible = true,
 }: {
     story: StoryDTO;
     className?: string;
+    profilePictureVisible?: boolean;
 }) {
     return (
         <div
@@ -33,11 +36,13 @@ function StoryDetailsHeader({
             )}
         >
             <div className={"flex flex-row items-center gap-3"}>
-                <Avatar>
-                    <AvatarFallback>
-                        {story.author_name.charAt(0)}
-                    </AvatarFallback>
-                </Avatar>
+                {profilePictureVisible && (
+                    <Avatar>
+                        <AvatarFallback>
+                            {story.author_name.charAt(0)}
+                        </AvatarFallback>
+                    </Avatar>
+                )}
                 <article className={"flex flex-col text-left gap-1"}>
                     <Link
                         href={
@@ -79,10 +84,13 @@ function StoryDetailsHeader({
 }
 
 export function StoryDetails({
+    tagsPromise,
     storiesPromise,
 }: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
     storiesPromise: Promise<StoryDTO[]>;
 }) {
+    const tags = use(tagsPromise);
     const router = useRouter();
     const pathname = usePathname();
     const isMobile = useIsMobile();
@@ -132,7 +140,11 @@ export function StoryDetails({
                     <VisuallyHidden>
                         <DrawerTitle>{activeStory.title}</DrawerTitle>
                     </VisuallyHidden>
-                    <div className={"px-6 pb-6 overflow-y-auto flex-1"}>
+                    <div
+                        className={
+                            "px-6 pb-6 overflow-y-auto flex-1 flex flex-col gap-2"
+                        }
+                    >
                         <StoryDetailsHeader
                             story={activeStory}
                             className={"bg-background z-1"}
@@ -157,14 +169,25 @@ export function StoryDetails({
                                 fileName={activeStory.featured_image_url}
                             />
                         </Link>
-                        <Separator className={"mb-6"} />
+                        <Separator className={"my-4"} />
                         <div
                             className={
                                 "flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"
                             }
                         >
                             {activeStory.tags.map((tag) => (
-                                <Badge key={tag}>{tag}</Badge>
+                                <Badge
+                                    style={{
+                                        backgroundColor: getTagColorHex(
+                                            tags,
+                                            tag
+                                        ),
+                                    }}
+                                    variant={"tag"}
+                                    key={tag}
+                                >
+                                    <Link href={`/tags/${tag}`}>{tag}</Link>
+                                </Badge>
                             ))}
                         </div>
                         <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0 mb-10">
@@ -207,7 +230,15 @@ export function StoryDetails({
                 <Separator className={"mb-6"} />
                 <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
                     {activeStory.tags.map((tag) => (
-                        <Badge key={tag}>{tag}</Badge>
+                        <Badge
+                            style={{
+                                backgroundColor: getTagColorHex(tags, tag),
+                            }}
+                            variant={"tag"}
+                            key={tag}
+                        >
+                            <Link href={`/tags/${tag}`}>{tag}</Link>
+                        </Badge>
                     ))}
                 </div>
                 <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 ">
