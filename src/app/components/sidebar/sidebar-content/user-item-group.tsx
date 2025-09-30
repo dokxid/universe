@@ -1,7 +1,15 @@
 "use client";
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { BookOpenText, BookText, List, Map, Orbit } from "lucide-react";
+import {
+    BookText,
+    Contact,
+    Earth,
+    LibraryBig,
+    Map,
+    Orbit,
+    Users,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup } from "./item-group";
 
@@ -17,17 +25,17 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Heritage Labs",
             href: `/${slug}/experiences`,
-            icon: BookOpenText,
+            icon: Earth,
         },
         {
             title: "Featured Stories",
             href: `/${slug}/stories`,
-            icon: List,
+            icon: LibraryBig,
         },
         {
             title: "Contact",
             href: `/universe/map`,
-            icon: Orbit,
+            icon: Contact,
         },
     ];
     const featureItemsIfLabView: SidebarItemGroup = [
@@ -39,12 +47,12 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Lab Members",
             href: `/${slug}/stories`,
-            icon: List,
+            icon: Users,
         },
         {
             title: "Story Collection",
             href: `/${slug}/stories`,
-            icon: List,
+            icon: LibraryBig,
         },
         {
             title: "Interactive Map",
@@ -54,7 +62,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Contact",
             href: `/${slug}/contact`,
-            icon: List,
+            icon: Contact,
         },
     ];
 

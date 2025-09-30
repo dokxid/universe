@@ -38,7 +38,7 @@ export async function MapOverlay({
                 >
                     <div className={"flex flex-col gap-3 items-end h-full"}>
                         <Suspense fallback={<div>loading stories...</div>}>
-                            <StoryWidgetHolder />
+                            <StoryWidgetHolder slug={slug} />
                         </Suspense>
                         <Suspense fallback={<StoryWidgetHolderSkeleton />}>
                             <StoryDetails

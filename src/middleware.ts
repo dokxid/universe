@@ -27,6 +27,7 @@ const UNAUTHENTICATED_PATHS = [
     "/experiences",
     "/settings",
     "/images/:filename",
+    "/about",
 ];
 const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path
@@ -112,5 +113,6 @@ export const config = {
         "/:slug/stories",
         "/:slug/user-preferences",
         "/:slug/stories/elevation-requests",
+        "/:slug/about",
     ],
 };

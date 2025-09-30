@@ -13,10 +13,8 @@ export function UniverseHeader() {
                     className="object-contain"
                 />
             </Button> */}
-            <h1 className={"text-5xl text-[44px] font-black"}>
-                Heritage Universe
-            </h1>
-            <p className={"mt-2 text-xs"}>
+            <h1 className={"text-[44px]/[1] font-black"}>Heritage Universe</h1>
+            <p className={"mt-2 text-[12px]/[1.5]"}>
                 Heritage is not a hard science that can be completely defined by
                 a singular authorized interpretation around a practice or
                 object. It exists within and among communities, shaped by

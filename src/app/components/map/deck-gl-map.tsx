@@ -5,6 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getTagColor } from "@/lib/utils/color-string";
+import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
 import {
     DeckProps,
@@ -98,6 +99,7 @@ export function DeckGLMap({
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
+    const isMobile = useIsMobile();
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);
@@ -190,19 +192,9 @@ export function DeckGLMap({
         setCtxMenuOpen(true);
     };
 
-    const setSelectedStoryIdParams = (newSelectedStoryId: string) => {
-        const search = new URLSearchParams(searchParams);
-        if (newSelectedStoryId !== "") {
-            search.set("story", newSelectedStoryId);
-        } else {
-            search.delete("story");
-        }
-        history.pushState(null, "", pathname + "?" + search.toString());
-    };
-
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        setSelectedStoryIdParams(story._id);
+        setSelectedStoryIdParams(pathname, searchParams, story._id);
     };
 
     function getTaggedConnections(
@@ -302,7 +294,7 @@ export function DeckGLMap({
                     reuseMaps={true}
                     onClick={() => {
                         setActiveStory(null);
-                        setSelectedStoryIdParams("");
+                        setSelectedStoryIdParams(pathname, searchParams, "");
                         dispatch(setDescriptorOpen(false));
                     }}
                     id="mainMap"
@@ -344,7 +336,7 @@ export function DeckGLMap({
                         </Marker>
                     ))}
                     <DeckGLOverlay pickingRadius={15} layers={layers} />
-                    {hoverInfo?.object && (
+                    {hoverInfo?.object && !isMobile && (
                         <div
                             className={
                                 "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-base"

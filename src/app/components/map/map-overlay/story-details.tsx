@@ -11,10 +11,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { getTagColorHex } from "@/lib/utils/color-string";
+import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { StoryDTO, UnescoTagDTO } from "@/types/api";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
-import { ExternalLink } from "lucide-react";
+import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useRef, useState } from "react";
@@ -71,14 +72,6 @@ export function StoryDetailsHeader({
                     </p>
                 </article>
             </div>
-            <Link href={"/" + story.experience + "/stories/view/" + story._id}>
-                <Button
-                    variant={"ghost"}
-                    className={"p-0 text-xs text-muted-foreground"}
-                >
-                    <ExternalLink className={"size-4"} />
-                </Button>
-            </Link>
         </div>
     );
 }
@@ -126,9 +119,6 @@ export function StoryDetails({
     if (!activeStory) return null;
 
     const handleMobileDrawerChange = (drawerOpenState: boolean) => {
-        const search = new URLSearchParams(searchParams);
-        search.delete("story");
-        router.push(pathname + search);
         setDrawerOpen(drawerOpenState);
     };
 
@@ -136,7 +126,7 @@ export function StoryDetails({
     if (isMobile) {
         return (
             <Drawer open={drawerOpen} onOpenChange={handleMobileDrawerChange}>
-                <DrawerContent>
+                <DrawerContent className={"border-t-0"}>
                     <VisuallyHidden>
                         <DrawerTitle>{activeStory.title}</DrawerTitle>
                     </VisuallyHidden>
@@ -203,10 +193,26 @@ export function StoryDetails({
     return (
         <Card
             ref={cardRef}
-            className={`gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
+            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
                 navigationState.storyDetailsOpen ? "" : "hidden"
             }`}
         >
+            <div
+                className={
+                    "fixed top-8 right-8 z-10 *:stroke-background-foreground cursor-pointer"
+                }
+            >
+                <Button
+                    variant={"secondary"}
+                    className={"p-0 size-8 rounded-full"}
+                    onClick={() => {
+                        setSelectedStoryIdParams(pathname, searchParams, "");
+                    }}
+                >
+                    <VisuallyHidden>Close story details</VisuallyHidden>
+                    <X className={"size-4"} />
+                </Button>
+            </div>
             <Link
                 href={
                     "/" +
@@ -215,7 +221,7 @@ export function StoryDetails({
                     activeStory._id
                 }
                 className={
-                    "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
+                    "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden relative"
                 }
             >
                 <S3Image

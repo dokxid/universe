@@ -1,6 +1,4 @@
-import { ExperienceDetails } from "@/app/components/map/experience-details";
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
-import ToggleDescriptorButton from "@/app/components/map/map-overlay/toggle-descriptor-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
@@ -28,11 +26,7 @@ export async function NavigationWidgetHolder({
 
     return (
         <>
-            <div
-                className={
-                    "flex flex-row gap-3 pointer-events-auto h-10 shadow-2xl"
-                }
-            >
+            <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
                 <SidebarTrigger
                     variant={"secondary"}
                     className="pointer-events-auto size-10 hover:ring-2"
@@ -54,14 +48,14 @@ export async function NavigationWidgetHolder({
                     isUniverseView={slug === "universe"}
                     isVisible={expParam !== "universe"}
                 />
-                <ToggleDescriptorButton />
+                {/* <ToggleDescriptorButton /> */}
             </div>
-            <Suspense fallback={<div>loading experience...</div>}>
+            {/* <Suspense fallback={<div>loading experience...</div>}>
                 <ExperienceDetails
                     experiencesPromise={experiencesPromise}
                     slug={slug}
                 />
-            </Suspense>
+            </Suspense> */}
         </>
     );
 }

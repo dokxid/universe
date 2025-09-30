@@ -13,7 +13,7 @@ export async function AppSidebarContent({ slug }: { slug: string }) {
     const isUniverseView = slug === "universe";
 
     return (
-        <SidebarContent className={"px-1 flex flex-col"}>
+        <SidebarContent className={"px-1 flex flex-col gap-1"}>
             <UserItemGroup isUniverseView={isUniverseView} />
             {!isUniverseView && <EditorItemGroup visible={isEditor} />}
             {!isUniverseView && <AdminItemGroup visible={isAdmin} />}

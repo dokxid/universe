@@ -1,7 +1,7 @@
 import { MapOverlay } from "@/app/components/map/map-overlay/map-overlay";
 import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { ExperiencesGallerySidebar } from "@/app/components/sidebar/experiences-gallery-sidebar";
+import { ExploreSidebar } from "@/app/components/sidebar/explore-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import {
@@ -103,7 +103,7 @@ export default async function MapView({
                 </div>
             </div>
             <Suspense fallback={null}>
-                <ExperiencesGallerySidebar
+                <ExploreSidebar
                     experiencesPromise={experiencesPromise}
                     slug={slug}
                 />

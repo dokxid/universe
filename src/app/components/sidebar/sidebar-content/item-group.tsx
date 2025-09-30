@@ -28,7 +28,7 @@ export function ItemGroup({
 }) {
     const { setOpenMobile } = useSidebar();
     return (
-        <SidebarGroup>
+        <SidebarGroup className={"py-2"}>
             <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
             {children}
             {items.map((item) => (
@@ -38,7 +38,6 @@ export function ItemGroup({
                 >
                     <SidebarMenuButton asChild>
                         <Link
-                            prefetch={false}
                             href={item.href}
                             className={"flex items-center w-full"}
                             aria-label={item.title}
@@ -46,6 +45,9 @@ export function ItemGroup({
                         >
                             <item.icon />
                             <span>{item.title}</span>
+                            {/* <ChevronRight
+                                className={"ml-auto stroke-muted-foreground"}
+                            /> */}
                         </Link>
                     </SidebarMenuButton>
                     {item.dropdownItems && (
