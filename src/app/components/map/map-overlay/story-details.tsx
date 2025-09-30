@@ -17,7 +17,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { use, useEffect, useRef, useState } from "react";
 
 export function StoryDetailsHeader({
@@ -84,7 +84,6 @@ export function StoryDetails({
     storiesPromise: Promise<StoryDTO[]>;
 }) {
     const tags = use(tagsPromise);
-    const router = useRouter();
     const pathname = usePathname();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();

@@ -24,9 +24,9 @@ import ExperienceModel from "@/types/models/experiences";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { revalidateTag } from "next/cache";
 
 function isPublicStory(story: Story) {
     return !story.draft && story.published;
@@ -44,7 +44,10 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     if (!user) {
         return false;
     }
-    if (await canUserEditStory(user, story)) {
+    if (isStoryOwner(user, story)) {
+        return true;
+    }
+    if (!story.draft && (await isUserMember(user, story.experience))) {
         return true;
     }
     return false;
@@ -57,7 +60,7 @@ export function canUserCreateStory(user: User | null, experienceSlug: string) {
 }
 
 export async function canUserEditStory(user: User | null, story: StoryDTO) {
-    if (await isUserSuperAdmin(user, story.experience)) return true;
+    if (await isUserSuperAdmin(user)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
 }

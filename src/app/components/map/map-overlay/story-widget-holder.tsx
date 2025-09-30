@@ -1,15 +1,11 @@
 "use client";
 
 import { Toggle } from "@/components/ui/toggle";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { setRightSideBarOpen } from "@/lib/features/navigation/navigationSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { PanelRightOpen } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 export function StoryWidgetHolder({ slug }: { slug: string }) {
-    const isMobile = useIsMobile();
-    const searchParams = useSearchParams();
     const navigationState = useAppSelector((state) => state.navigation);
     const dispatch = useAppDispatch();
 

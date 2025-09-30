@@ -13,9 +13,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { getTagColorHex } from "@/lib/utils/color-string";
 import { groupByKey } from "@/lib/utils/group-by-key";
 import { UnescoTagDTO } from "@/types/api";
-import { PlusIcon, X } from "lucide-react";
+import { PlusIcon, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";
 
@@ -88,28 +89,33 @@ export function TagPicker({
                 <div className={"flex flex-wrap gap-2 mt-1"}>
                     {inputTags.map((tag) => (
                         <Badge
+                            style={{
+                                backgroundColor: getTagColorHex(tags, tag.name),
+                            }}
                             key={tag._id}
-                            variant={"default"}
+                            variant={"tag"}
                             onClick={() => {
                                 handleTagRemove(tag);
                             }}
-                            className={
-                                "cursor-pointer group hover:text-destructive h-7 hover:hover:bg-accent dark:hover:bg-accent/50"
-                            }
+                            className={"group"}
                         >
                             <p>{tag.name}</p>
-                            <X />
+                            <X
+                                className={
+                                    "stroke-3 group-hover:text-destructive"
+                                }
+                            />
                         </Badge>
                     ))}
                     <PopoverTrigger asChild>
                         <Badge
                             onClick={handleMouseEnter}
-                            variant={"default"}
+                            variant={"tag"}
                             className={
                                 (tagPickerOpen
                                     ? "bg-primary-foreground text-primary"
                                     : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
-                                " h-7 cursor-pointer"
+                                " h-7 cursor-pointer transition-all duration-300"
                             }
                         >
                             Add Tag
@@ -117,7 +123,7 @@ export function TagPicker({
                         </Badge>
                     </PopoverTrigger>
                 </div>
-                <PopoverContent className="w-80">
+                <PopoverContent className="p-2">
                     <Command>
                         <CommandInput placeholder="Search UNESCO tags..." />
                         <CommandList>
@@ -139,6 +145,15 @@ export function TagPicker({
                                                     handleTagAdd(tag);
                                                 }}
                                             >
+                                                <Tag
+                                                    className={"stroke-primary"}
+                                                    style={{
+                                                        fill: getTagColorHex(
+                                                            tags,
+                                                            tag.name
+                                                        ),
+                                                    }}
+                                                ></Tag>
                                                 {tag.name}
                                             </CommandItem>
                                         ))}

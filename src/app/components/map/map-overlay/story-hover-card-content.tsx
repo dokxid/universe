@@ -30,16 +30,11 @@ export function StoryHoverCardContent({
                     fileName={story.featured_image_url}
                 />
             </div>
-            <Link
-                href={"/" + story.experience + "/stories/" + story._id}
-                prefetch={false}
-            >
-                <StoryDetailsHeader
-                    story={story}
-                    className={"bg-card"}
-                    profilePictureVisible={false}
-                />
-            </Link>
+            <StoryDetailsHeader
+                story={story}
+                className={"bg-card"}
+                profilePictureVisible={false}
+            />
             {story.tags && story.tags.length > 0 && (
                 <div className={"flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"}>
                     {story.tags.map((tag) => (

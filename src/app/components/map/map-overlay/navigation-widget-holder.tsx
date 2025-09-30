@@ -1,7 +1,6 @@
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
 import { Suspense } from "react";
 
@@ -20,7 +19,6 @@ export async function NavigationWidgetHolder({
     selectedExperience: string | null;
     slug: string;
 }) {
-    const experiencesPromise = getExperiencesDTO();
     const tagsPromise = getTagsDTO();
     const expParam = selectedExperience;
 
@@ -28,7 +26,7 @@ export async function NavigationWidgetHolder({
         <>
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
                 <SidebarTrigger
-                    variant={"secondary"}
+                    variant={"secondary_custom"}
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
                 <Suspense fallback={<div>loading tags...</div>}>

@@ -1,6 +1,6 @@
 import { AppSidebarHeader } from "@/app/components/sidebar/app-sidebar-header";
 import { AppSidebarContent } from "@/app/components/sidebar/sidebar-content/app-sidebar-content";
-import { UserWidget } from "@/app/components/sidebar/user-widget";
+import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
@@ -16,7 +16,7 @@ export async function AppSidebar({ slug }: { slug: string }) {
             </Suspense>
             <SidebarFooter className={"px-4 py-3"}>
                 <Suspense fallback={<Skeleton className="w-full"></Skeleton>}>
-                    <UserWidget slug={slug} />
+                    <UserWidgetHolder slug={slug} />
                 </Suspense>
             </SidebarFooter>
         </Sidebar>

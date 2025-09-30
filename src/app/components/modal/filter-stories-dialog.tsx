@@ -35,7 +35,10 @@ export function FilterStoriesDialog({
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant={"secondary"} className="size-10 hover:ring-2">
+                <Button
+                    variant={"secondary_custom"}
+                    className="size-10 hover:ring-2"
+                >
                     <Funnel />
                 </Button>
             </DialogTrigger>
