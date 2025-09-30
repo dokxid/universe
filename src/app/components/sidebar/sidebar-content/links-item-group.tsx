@@ -2,8 +2,8 @@
 
 import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { Link, Orbit } from "lucide-react";
-import { ItemGroup } from "./item-group";
 import { usePathname } from "next/navigation";
+import { ItemGroup } from "./item-group";
 
 export function LinksItemGroup({
     isUniverseView,
@@ -28,7 +28,7 @@ export function LinksItemGroup({
     const linksItemsIfLab: SidebarItemGroup = [
         {
             title: "Universe View",
-            href: `/${slug}/map`,
+            href: `/universe/map`,
             icon: Orbit,
         },
         {
