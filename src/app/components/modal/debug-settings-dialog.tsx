@@ -2,6 +2,7 @@
 
 import { triggerRevalidateTag } from "@/actions/cache";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function DebugSettingsDialog() {
     return (
@@ -12,9 +13,16 @@ export function DebugSettingsDialog() {
         >
             <Button
                 onClick={() => {
-                    triggerRevalidateTag("experiences");
-                    triggerRevalidateTag("stories");
-                    triggerRevalidateTag("tags");
+                    try {
+                        triggerRevalidateTag("experiences");
+                        triggerRevalidateTag("stories");
+                        triggerRevalidateTag("tags");
+                        triggerRevalidateTag("users");
+                        toast.success("Cache revalidation successful");
+                    } catch (error) {
+                        toast.error("Cache revalidation failed");
+                        console.error(error);
+                    }
                 }}
             >
                 Revalidate Cache

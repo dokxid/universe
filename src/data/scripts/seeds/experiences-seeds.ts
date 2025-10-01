@@ -108,24 +108,25 @@ export const stock_experiences_doc = [
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
     },
-    {
-        center: {
-            type: "Point",
-            coordinates: [0, 0],
-        },
-        initial_zoom: "2",
-        title: "Universe Map",
-        subtitle: "Explore our curated stories",
-        slug: "universe",
-        featured_image:
-            "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
-        organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
-        stories: [],
-        description: "Universe Map",
-        connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
-        visibility: "public",
-    },
 ];
+
+export const universe_experience_doc = () => ({
+    center: {
+        type: "Point",
+        coordinates: [0, 0],
+    },
+    initial_zoom: "2",
+    title: "Universe Map",
+    subtitle: "Explore our curated stories",
+    slug: "universe",
+    featured_image:
+        "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
+    organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
+    stories: [],
+    description: "Universe Map",
+    connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
+    visibility: "public",
+});
 
 export const test_experiences_doc = (center: number[]) => ({
     center: {
