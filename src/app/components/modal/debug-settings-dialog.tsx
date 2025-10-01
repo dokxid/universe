@@ -238,7 +238,7 @@ export function DebugSettingsDialog() {
                                 onClick={() => {
                                     try {
                                         seedOneExperienceAction(
-                                            [latitude, longitude],
+                                            [longitude, latitude],
                                             title,
                                             slug,
                                             description,
