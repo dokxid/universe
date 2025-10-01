@@ -56,7 +56,7 @@ function MapController({
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
         if (selectedStory) {
             center = selectedStory.location.coordinates;
-            zoom = currentExperience.initial_zoom + 0.2;
+            zoom = 12;
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);

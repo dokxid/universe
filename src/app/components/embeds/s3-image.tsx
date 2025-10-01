@@ -45,7 +45,6 @@ export default function S3Image({
     if (!imageUrl) return <p>No image available</p>;
 
     const src = imageUrl.url;
-    console.log("Image URL:", src);
 
     if (!link) return <ImageElement className={className} src={src} />;
 

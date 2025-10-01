@@ -49,8 +49,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
         React.useState<VisibilityState>({
             title: true,
             author_name: false,
-            draft: false,
-            published: true,
+            draft: true,
             visible_universe: true,
             latest_elevation_request: true,
             createdAt: true,

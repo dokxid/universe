@@ -25,6 +25,7 @@ export function StoryDetailsHeader({
     className,
     profilePictureVisible = true,
 }: {
+    slug?: string;
     story: StoryDTO;
     className?: string;
     profilePictureVisible?: boolean;
@@ -77,9 +78,11 @@ export function StoryDetailsHeader({
 }
 
 export function StoryDetails({
+    slug,
     tagsPromise,
     storiesPromise,
 }: {
+    slug: string;
     tagsPromise: Promise<UnescoTagDTO[]>;
     storiesPromise: Promise<StoryDTO[]>;
 }) {
@@ -135,6 +138,7 @@ export function StoryDetails({
                         }
                     >
                         <StoryDetailsHeader
+                            slug={slug}
                             story={activeStory}
                             className={"bg-background z-1"}
                         />
@@ -197,9 +201,12 @@ export function StoryDetails({
             }`}
         >
             <div
-                className={
-                    "fixed top-8 right-8 z-10 *:stroke-background-foreground cursor-pointer"
-                }
+                className={cn(
+                    "z-10 *:stroke-background-foreground cursor-pointer",
+                    slug === "universe"
+                        ? "absolute top-4 right-4"
+                        : "fixed top-8 right-8"
+                )}
             >
                 <Button
                     variant={"secondary"}

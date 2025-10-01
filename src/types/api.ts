@@ -24,7 +24,6 @@ export type Story = {
     author: string;
     content: string;
     draft: boolean;
-    published: boolean;
     title: string;
     location: { type: string; coordinates: [number, number] };
     tags: string[];
@@ -38,6 +37,8 @@ export type Story = {
 
 export type NewElevationRequestData = {
     status: "pending" | "approved" | "rejected" | "created";
+    requested_at: Date;
+    resolved_at?: Date;
 };
 
 export type ElevationRequest = {

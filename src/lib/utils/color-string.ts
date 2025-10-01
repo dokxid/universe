@@ -37,6 +37,5 @@ export const getTagColorHex = (
     tag: string
 ): string => {
     const foundTag = allTags.find((t) => t.name === tag);
-    console.log("Found tag color:", foundTag?.color);
     return foundTag ? foundTag.color : "#808080"; // Default to gray if not found
 };

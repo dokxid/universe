@@ -1,3 +1,5 @@
+"use server";
+
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
 import ExperienceModel from "@/types/models/experiences";
 export async function seedStories(
@@ -7,9 +9,10 @@ export async function seedStories(
 ) {
     try {
         for (let i = 0; i < amount; i++) {
+            const doc = await test_story_doc(center);
             await ExperienceModel.findOneAndUpdate(
                 { slug: experienceSlug },
-                { $push: { stories: test_story_doc(center) } },
+                { $push: { stories: doc } },
                 { safe: true, upsert: false }
             ).exec();
         }

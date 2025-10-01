@@ -125,7 +125,7 @@
 }
 
 @utility prose-h1 {
-    @apply scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance;
+    @apply scroll-m-20 text-left text-4xl font-extrabold tracking-tight text-balance mb-4;
 }
 
 @utility prose-h2 {

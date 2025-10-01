@@ -45,7 +45,7 @@ function getContent() {
     return getRandomH1();
 }
 
-export const test_story_doc = (experience_center: number[]) => ({
+export const test_story_doc = async (experience_center: number[]) => ({
     author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
     content: getContent(),
     draft: faker.datatype.boolean(0.2),
@@ -64,6 +64,6 @@ export const test_story_doc = (experience_center: number[]) => ({
     ),
     year: faker.number.int({ min: 1800, max: 2024 }),
     visible_universe: faker.datatype.boolean(),
-    featured_image_url: faker.helpers.arrayElement(getImagesInFolder()),
+    featured_image_url: faker.helpers.arrayElement(await getImagesInFolder()),
     elevation_requests: [],
 });

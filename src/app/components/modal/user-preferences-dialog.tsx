@@ -54,7 +54,7 @@ export function UserPreferencesDialog({ user }: { user: User }) {
     return (
         <div
             className={
-                "flex flex-col gap-4 items-center container max-w-2xl mx-auto my-4 *:w-full"
+                "flex flex-col gap-4 items-start container max-w-2xl my-4 *:w-full"
             }
         >
             {/* change experience descriptors */}

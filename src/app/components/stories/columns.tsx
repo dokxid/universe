@@ -36,23 +36,43 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>Please log in to request elevation.</div>;
 
-    // const handleElevationRequest = async (e: React.MouseEvent) => {
-    //     e.preventDefault();
-    //     e.stopPropagation();
+    const handleRejectedElevationRequest = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-    //     console.log("Starting elevation request...");
+        console.log("Starting elevation request...");
 
-    //     try {
-    //         const result = await submitElevationRequest(
-    //             story.experience,
-    //             user,
-    //             story._id
-    //         );
-    //         console.log("Elevation request completed:", result);
-    //     } catch (error) {
-    //         console.error("Error submitting elevation request:", error);
-    //     }
-    // };
+        try {
+            await submitElevationRequest(
+                story._id,
+                user,
+                story.experience,
+                "rejected"
+            );
+            toast.success("Elevation request set to: rejected");
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    const handleApprovedElevationRequest = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log("Starting elevation request...");
+
+        try {
+            await submitElevationRequest(
+                story._id,
+                user,
+                story.experience,
+                "approved"
+            );
+            toast.success("Elevation request set to: approved");
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
 
     return (
         <DropdownMenu>
@@ -82,12 +102,24 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Button variant={"ghost"} className="w-full justify-start">
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={handleApprovedElevationRequest}
+                        tabIndex={-1}
+                        type="button"
+                    >
                         Approve elevation
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Button variant={"ghost"} className="w-full justify-start">
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={handleRejectedElevationRequest}
+                        tabIndex={-1}
+                        type="button"
+                    >
                         Reject elevation
                     </Button>
                 </DropdownMenuItem>
@@ -103,7 +135,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>Please log in to request elevation.</div>;
 
-    const handleElevationRequest = async (e: React.MouseEvent) => {
+    const handlePendingElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -111,13 +143,14 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             const result = await submitElevationRequest(
-                story.experience,
+                story._id,
                 user,
-                story._id
+                story.experience,
+                "pending"
             );
-            console.log("Elevation request completed:", result);
+            toast.success("Elevation request completed: " + result);
         } catch (error) {
-            console.error("Error submitting elevation request:", error);
+            toast.error("Error submitting elevation request: " + error);
         }
     };
 
@@ -182,7 +215,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={handleElevationRequest}
+                        onClick={handlePendingElevationRequest}
                         tabIndex={-1}
                         type="button"
                     >
@@ -237,23 +270,11 @@ export const manageStoryColumns = [
             <DataTableColumnHeader column={column} title="Draft" />
         ),
         cell: (info) => (
-            <Badge className={info.getValue() ? "bg-green-500" : "bg-red-500"}>
-                <span className={"font-semibold"}>
-                    {info.getValue() ? "Yes" : "No"}
-                </span>
-            </Badge>
-        ),
-    }),
-    columnHelper.accessor("published", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Visibility" />
-        ),
-        cell: (info) => (
             <Badge
                 className={
                     info.getValue()
-                        ? "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
+                        ? "bg-secondary text-secondary-foreground"
+                        : "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
                 }
             >
                 <span
@@ -262,14 +283,14 @@ export const manageStoryColumns = [
                     }
                 >
                     {info.getValue() ? (
+                        <PencilLine size={16} className={"inline-block mr-1"} />
+                    ) : (
                         <MapPinCheckInside
                             size={16}
                             className={"inline-block mr-1"}
                         />
-                    ) : (
-                        <PencilLine size={16} className={"inline-block mr-1"} />
                     )}
-                    {info.getValue() ? "public" : "draft"}
+                    {info.getValue() ? "draft" : "public"}
                 </span>
             </Badge>
         ),
@@ -425,23 +446,11 @@ export const elevationRequestsColumns = [
             <DataTableColumnHeader column={column} title="Draft" />
         ),
         cell: (info) => (
-            <Badge className={info.getValue() ? "bg-green-500" : "bg-red-500"}>
-                <span className={"font-semibold"}>
-                    {info.getValue() ? "Yes" : "No"}
-                </span>
-            </Badge>
-        ),
-    }),
-    columnHelper.accessor("published", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Visibility" />
-        ),
-        cell: (info) => (
             <Badge
                 className={
                     info.getValue()
-                        ? "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
+                        ? "bg-secondary text-secondary-foreground"
+                        : "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
                 }
             >
                 <span
@@ -450,14 +459,14 @@ export const elevationRequestsColumns = [
                     }
                 >
                     {info.getValue() ? (
+                        <PencilLine size={16} className={"inline-block mr-1"} />
+                    ) : (
                         <MapPinCheckInside
                             size={16}
                             className={"inline-block mr-1"}
                         />
-                    ) : (
-                        <PencilLine size={16} className={"inline-block mr-1"} />
                     )}
-                    {info.getValue() ? "map" : "draft"}
+                    {info.getValue() ? "draft" : "public"}
                 </span>
             </Badge>
         ),

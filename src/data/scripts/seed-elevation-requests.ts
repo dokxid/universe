@@ -1,6 +1,8 @@
+"use server";
+
 import { generateElevationRequests } from "@/data/scripts/seeds/elevation-requests-seeds";
 import ExperienceModel from "@/types/models/experiences";
-export async function seedElevationRequests() {
+export async function seedAllElevationRequests() {
     try {
         const experiences = await ExperienceModel.find({}).exec();
         for (const experience of experiences) {
@@ -17,6 +19,28 @@ export async function seedElevationRequests() {
                     { safe: true, upsert: false }
                 ).exec();
             }
+        }
+        console.log("Elevation requests seeding completed");
+    } catch (err) {
+        console.error("Error inserting story:", err);
+    }
+}
+
+export async function seedElevationRequests(slug: string) {
+    try {
+        const experience = await ExperienceModel.findOne({ slug }).exec();
+        const stories = experience.stories || [];
+        for (let i = 0; i < stories.length; i++) {
+            await ExperienceModel.findOneAndUpdate(
+                { _id: experience._id, "stories._id": stories[i]._id },
+                {
+                    $push: {
+                        "stories.$.elevation_requests":
+                            generateElevationRequests(),
+                    },
+                },
+                { safe: true, upsert: false }
+            ).exec();
         }
         console.log("Elevation requests seeding completed");
     } catch (err) {

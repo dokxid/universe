@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
 export interface NavigationState {
     rightSideBarOpen?: boolean;
     storyDetailsOpen?: boolean;
 }
 
 const initialState: NavigationState = {
-    rightSideBarOpen: false,
+    rightSideBarOpen: isMobile ? false : true,
     storyDetailsOpen: true,
 };
 

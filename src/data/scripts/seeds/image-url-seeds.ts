@@ -1,5 +1,7 @@
+"use server";
+
 import fs from "fs";
 
-export function getImagesInFolder() {
-    return fs.readdirSync("src/data/scripts/seeds/images");
+export async function getImagesInFolder() {
+    return fs.promises.readdir("src/data/scripts/seeds/images");
 }

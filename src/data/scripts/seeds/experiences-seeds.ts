@@ -115,7 +115,7 @@ export const universe_experience_doc = () => ({
         type: "Point",
         coordinates: [0, 0],
     },
-    initial_zoom: "2",
+    initial_zoom: "1",
     title: "Universe Map",
     subtitle: "Explore our curated stories",
     slug: "universe",

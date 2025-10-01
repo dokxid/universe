@@ -8,7 +8,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = await params;
     const user = await getCurrentUser();
     const tagsPromise = getTagsDTO();
-    console.log(user);
     if (canUserCreateStory(user, "test") === false) {
         return <div>You do not have permission to create a story.</div>;
     }

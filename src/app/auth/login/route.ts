@@ -6,7 +6,6 @@ export const GET = async () => {
     const headersList = await headers();
     const refererHeader = headersList.get("referer");
     const redirectUri = getRedirectUri();
-    console.log("Redirect URI:", redirectUri);
 
     let originatingUrl = "/";
 

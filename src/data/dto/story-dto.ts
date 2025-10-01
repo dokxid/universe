@@ -11,6 +11,7 @@ import {
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth";
 import { uploadFile } from "@/lib/files/s3";
+import { uploadFileToLabFolder } from "@/lib/files/server-store";
 import dbConnect from "@/lib/mongodb/connections";
 import {
     Experience,
@@ -24,11 +25,11 @@ import ExperienceModel from "@/types/models/experiences";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 function isPublicStory(story: Story) {
-    return !story.draft && story.published;
+    return !story.draft;
 }
 
 function isStoryOwner(viewer: User | null, story: StoryDTO) {
@@ -154,14 +155,20 @@ async function insertStory(
 }
 
 async function insertElevationRequest(
+    slug: string,
     requestToInsert: NewElevationRequestData,
     storyId: mongoose.Types.ObjectId
 ) {
     try {
         dbConnect();
         await ExperienceModel.findOneAndUpdate(
-            { "stories._id": storyId },
-            { $push: { "stories.$.elevation_requests": requestToInsert } }
+            { slug: slug, "stories._id": storyId },
+            {
+                $push: {
+                    "stories.$.elevation_requests": requestToInsert,
+                },
+            },
+            { safe: true, upsert: false }
         ).exec();
     } catch (err) {
         console.error("Error inserting elevation request:", err);
@@ -264,72 +271,81 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
 }
 
 export async function submitStoryDTO(formData: FormData) {
-    // check if the user has permission to create a story for the given experience
-    const experienceSlug = formData.get("experience") as string;
-    const user = await getCurrentUser();
-    if (!user) {
-        throw new Error("User must be logged in to submit a story.");
-    }
-    if (!(await canUserCreateStory(user, experienceSlug))) {
-        throw new Error(
-            "You do not have permission to create a story for this experience."
-        );
-    }
-
-    // Preprocess the FormData into the correct types
-    const rawData = Object.fromEntries(formData);
-    const processedData = {
-        title: rawData.title as string,
-        content: rawData.content as string,
-        year: parseInt(rawData.year as string, 10),
-        longitude: parseFloat(rawData.longitude as string),
-        latitude: parseFloat(rawData.latitude as string),
-        tags: JSON.parse(rawData.tags as string),
-        author: rawData.author as string,
-        experience: rawData.experience as string,
-        draft: rawData.draft === "true",
-    };
-    const file = formData.get("file") as File;
-    if (!file) {
-        throw new Error("File is required and must be a valid file.");
-    }
-
-    // Validate the processed data
-    const validationResult = submitStoryFormSchema.safeParse(processedData);
-    if (!validationResult.success) {
-        throw new Error(z.prettifyError(validationResult.error));
-    }
-
-    // prepare the data for insertion
-    const data = validationResult.data;
-    const uploadedFileName = `${data.experience}_${nanoid()}_${file.name}`;
-    const storyToInsert: NewStoryData = {
-        author: user.id,
-        content: data.content,
-        title: data.title,
-        location: {
-            type: "Point",
-            coordinates: [data.longitude, data.latitude],
-        },
-        tags: data.tags,
-        year: data.year,
-        featured_image_url: uploadedFileName,
-        draft: data.draft,
-
-        // hardcoded stuff
-        elevation_requests: [
-            {
-                status: "created",
-            },
-        ],
-        visible_universe: true,
-        published: true,
-    };
-
     try {
+        // check if the user has permission to create a story for the given experience
+        const experienceSlug = formData.get("slug") as string;
+        const user = await getCurrentUser();
+        if (!user) {
+            throw new Error("User must be logged in to submit a story.");
+        }
+        if (!(await canUserCreateStory(user, experienceSlug))) {
+            throw new Error(
+                "You do not have permission to create a story for this experience."
+            );
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        console.log("Raw form data:", rawData);
+        const processedData = {
+            title: rawData.title as string,
+            content: rawData.content as string,
+            year: parseInt(rawData.year as string, 10),
+            longitude: parseFloat(rawData.longitude as string),
+            latitude: parseFloat(rawData.latitude as string),
+            tags: JSON.parse(rawData.tags as string),
+            author: rawData.author as string,
+            slug: rawData.slug as string,
+            universe: rawData.universe === "true",
+            draft: rawData.draft === "true",
+        };
+        const file = formData.get("file") as File;
+        if (!file) {
+            throw new Error("File is required and must be a valid file.");
+        }
+
+        // Validate the processed data
+        const validationResult = submitStoryFormSchema.safeParse(processedData);
+        if (!validationResult.success) {
+            throw new Error(z.prettifyError(validationResult.error));
+        }
+
+        // prepare the data for insertion
+        const data = validationResult.data;
+        const uploadedFileName = `${data.slug}_${nanoid()}_${file.name}`;
+        const sanitizedFileName = uploadedFileName.replace(
+            /[^a-zA-Z0-9.\-_]/g,
+            ""
+        );
+        const storyToInsert: NewStoryData = {
+            author: user.id,
+            content: data.content,
+            title: data.title,
+            location: {
+                type: "Point",
+                coordinates: [data.longitude, data.latitude],
+            },
+            tags: data.tags,
+            year: data.year,
+            featured_image_url: sanitizedFileName,
+            draft: data.draft,
+            visible_universe: data.universe,
+            elevation_requests: [
+                {
+                    status: "created",
+                    requested_at: new Date(),
+                    resolved_at: new Date(),
+                },
+            ],
+        };
+
         // Upload the file and insert the story
-        await uploadFile(file, uploadedFileName, data.experience);
-        await insertStory(storyToInsert, data.experience);
+        if (process.env.LOCAL_UPLOADER === "true") {
+            uploadFileToLabFolder(file, sanitizedFileName, data.slug);
+        } else {
+            await uploadFile(file, sanitizedFileName, data.slug);
+        }
+        await insertStory(storyToInsert, data.slug);
         revalidateTag(`stories`);
     } catch (e) {
         console.error("Error submitting story:", e);
@@ -339,23 +355,31 @@ export async function submitStoryDTO(formData: FormData) {
 export async function submitElevationRequestDTO(
     storyID: string,
     user: User | null,
-    slug: string
+    slug: string,
+    status: "created" | "approved" | "rejected" | "pending"
 ) {
     try {
         if (!isUserAdmin(user, slug)) {
             throw new Error("You must be an admin to request elevation.");
         }
         const requestToInsert: NewElevationRequestData = {
-            status: "pending",
+            status: status,
+            requested_at: new Date(),
+            resolved_at: new Date(),
         };
+        await dbConnect();
+
         // validate id before creating ObjectId
+        console.log("Submitting elevation request for story id:", storyID);
         if (!mongoose.Types.ObjectId.isValid(storyID)) {
             throw new Error("Invalid story id format.");
         }
 
         // parse serializable id to mongoose.Types.ObjectId
         const objectId = new mongoose.Types.ObjectId(storyID);
-        await insertElevationRequest(requestToInsert, objectId);
+        await insertElevationRequest(slug, requestToInsert, objectId);
+        revalidatePath(`/universe/elevation_requests`);
+        revalidatePath(`/${slug}/stories/manage`);
     } catch (err) {
         console.error("Error submitting elevation request:", err);
     }

@@ -41,6 +41,7 @@ export async function MapOverlay({
                         </Suspense>
                         <Suspense>
                             <StoryDetails
+                                slug={slug}
                                 tagsPromise={tagsPromise}
                                 storiesPromise={storiesPromise}
                             />

@@ -1,3 +1,5 @@
+"use server";
+
 import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
 import dbConnect from "@/lib/mongodb/connections";
 import UnescoTagsModel from "@/types/models/unesco-tags";

@@ -47,7 +47,9 @@ export default function AddStoryForm({
             longitude: addStoryDialogue.longitude,
             latitude: addStoryDialogue.latitude,
             tags: [],
+            universe: false,
             draft: true,
+            slug: slug,
         },
     });
 
@@ -64,8 +66,9 @@ export default function AddStoryForm({
             formData.append("longitude", values.longitude.toFixed(4));
             formData.append("latitude", values.latitude.toFixed(4));
             formData.append("tags", JSON.stringify(values.tags));
-            formData.append("experience", slug);
+            formData.append("slug", slug);
             formData.append("draft", values.draft.toString());
+            formData.append("universe", values.universe.toString());
             formData.append("file", featuredImage as File);
 
             submitStory(formData).then(
@@ -254,6 +257,31 @@ export default function AddStoryForm({
                     />
                     <FormField
                         control={form.control}
+                        name="slug"
+                        render={({ field }) => (
+                            <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                                <FormLabel className="flex shrink-0">
+                                    Heritage Lab Slug
+                                </FormLabel>
+
+                                <div className="w-full">
+                                    <FormControl>
+                                        <div className="relative w-full">
+                                            <Input
+                                                type="text"
+                                                disabled={true}
+                                                {...field}
+                                            />
+                                        </div>
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
                         name="draft"
                         render={({ field }) => (
                             <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
@@ -269,6 +297,34 @@ export default function AddStoryForm({
                                                 />
                                                 <Label htmlFor="terms">
                                                     Is this a draft?
+                                                </Label>
+                                            </div>
+                                        </div>
+                                    </FormControl>
+
+                                    <FormMessage />
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="universe"
+                        render={({ field }) => (
+                            <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
+                                <div className="w-full">
+                                    <FormControl>
+                                        <div className="relative w-full">
+                                            <div className="flex items-center gap-3">
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={
+                                                        field.onChange
+                                                    }
+                                                />
+                                                <Label htmlFor="terms">
+                                                    Immediately request
+                                                    elevation for /universe
                                                 </Label>
                                             </div>
                                         </div>

@@ -1,3 +1,8 @@
+"use server";
+
+import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
+import { seedLabImages } from "@/data/scripts/seed-images";
+import { seedStories } from "@/data/scripts/seed-stories";
 import {
     stock_experiences_doc,
     test_experiences_doc,
@@ -35,4 +40,46 @@ export async function seedExperiences(center: number[]) {
     );
 
     console.log("Experiences seeded successfully");
+}
+
+export async function seedOneExperience(
+    center: number[],
+    title: string,
+    slug: string,
+    description: string,
+    subtitle: string,
+    initialZoom: number,
+    organizationId: string,
+    experienceStories: number
+) {
+    try {
+        // const user = await getCurrentUser();
+        // if ((await isUserSuperAdmin(user)) === false) {
+        //     throw new Error("Only super admins can seed the database");
+        // }
+        const testExperience = test_experiences_doc(center);
+        const generatedExperience = {
+            ...testExperience,
+            title: title,
+            slug: slug,
+            description: description,
+            subtitle: subtitle,
+            initial_zoom: initialZoom,
+            organizationId: organizationId,
+        };
+        await dbConnect();
+        const result = await ExperienceModel.insertOne(generatedExperience);
+        console.log(`Inserted experience with id ${result.insertedId}`);
+        await seedStories(slug, center, experienceStories);
+        console.log("Stories seeding completed");
+        await seedElevationRequests(slug);
+        console.log("Elevation requests seeding completed");
+        await seedLabImages(slug);
+        console.log("Lab images seeding completed");
+        console.log("Single experience seeding completed");
+        return result.insertedId;
+    } catch (error) {
+        console.error("Error inserting experience:", error);
+        throw error;
+    }
 }
