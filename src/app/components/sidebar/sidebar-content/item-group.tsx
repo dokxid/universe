@@ -43,7 +43,7 @@ export function ItemGroup({
                             aria-label={item.title}
                             onClick={() => setOpenMobile(false)}
                         >
-                            <item.icon />
+                            <item.icon className={"stroke-muted-foreground"} />
                             <span>{item.title}</span>
                             {/* <ChevronRight
                                 className={"ml-auto stroke-muted-foreground"}
