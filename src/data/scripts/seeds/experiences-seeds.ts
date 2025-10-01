@@ -111,9 +111,9 @@ export const stock_experiences_doc = [
     {
         center: {
             type: "Point",
-            coordinates: [24.7505, 59.4443],
+            coordinates: [0, 0],
         },
-        initial_zoom: "7",
+        initial_zoom: "2",
         title: "Universe Map",
         subtitle: "Explore our curated stories",
         slug: "universe",

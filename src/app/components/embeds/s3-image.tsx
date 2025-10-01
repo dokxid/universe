@@ -14,15 +14,17 @@ export function ImageElement({
     src: string;
 }) {
     return (
-        <Image
-            src={src}
-            alt="s3url"
-            priority={true}
-            fill
-            sizes="(min-width: 808px) 50vw, 100vw"
-            className={cn("object-cover", className)}
-            placeholder={shimmerDataUrl(400, 225)}
-        />
+        <div className={"relative w-full h-full aspect-video"}>
+            <Image
+                src={src}
+                alt="s3url"
+                priority={true}
+                fill
+                sizes="(min-width: 808px) 50vw, 100vw"
+                className={cn("object-cover", className)}
+                placeholder={shimmerDataUrl(400, 225)}
+            />
+        </div>
     );
 }
 
@@ -45,21 +47,14 @@ export default function S3Image({
     const src = imageUrl.url;
     console.log("Image URL:", src);
 
-    if (!link)
-        return (
-            <div className={"relative w-full h-full aspect-video"}>
-                <ImageElement className={className} src={src} />
-            </div>
-        );
+    if (!link) return <ImageElement className={className} src={src} />;
 
     return (
-        <div className={"relative w-full h-full aspect-video"}>
-            <Link
-                href={`/${experience}/images/${fileName}`}
-                className={"relative block w-full h-full"}
-            >
-                <ImageElement className={className} src={src} />
-            </Link>
-        </div>
+        <Link
+            href={`/${experience}/images/${fileName}`}
+            className={"relative block w-full h-full"}
+        >
+            <ImageElement className={className} src={src} />
+        </Link>
     );
 }

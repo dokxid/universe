@@ -1,5 +1,6 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { ExperiencesGallery } from "@/app/components/modal/experiences-gallery";
+import ExperienceView from "@/app/components/views/experience-view";
+import { getExperienceDTO } from "@/data/dto/experience-dto";
 import { Suspense } from "react";
 
 export default async function ExperiencesPage({
@@ -8,11 +9,15 @@ export default async function ExperiencesPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
+    const experiencePromise = getExperienceDTO(slug);
+    if (!experiencePromise) {
+        return <div>Experience not found</div>;
+    }
 
     return (
         <ContentLayout slug={slug} feature={"Co-Labs"}>
             <Suspense fallback={<div>Loading...</div>}>
-                <ExperiencesGallery />
+                <ExperienceView experiencePromise={experiencePromise} />
             </Suspense>
         </ContentLayout>
     );

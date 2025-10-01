@@ -1,3 +1,4 @@
+import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
 import { seedExperiences } from "@/data/scripts/seed-experiences";
 import { seedImages } from "@/data/scripts/seed-images";
 import { seedStories } from "@/data/scripts/seed-stories";
@@ -25,6 +26,7 @@ async function seedDatabase() {
         await seedImages();
         await seedExperiences(city_centers["oslo"]);
         await seedStories("test", city_centers["oslo"], 40);
+        await seedElevationRequests();
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);

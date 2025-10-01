@@ -1,6 +1,7 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { UserPreferencesDialog } from "@/app/components/modal/user-preferences-dialog";
-import { getCurrentUser } from "@/data/auth";
+import { DebugSettingsDialog } from "@/app/components/modal/debug-settings-dialog";
+import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
+import { redirect } from "next/navigation";
 
 export default async function Page({
     params,
@@ -9,10 +10,15 @@ export default async function Page({
 }) {
     const { slug } = await params;
     const user = await getCurrentUser();
+    const isSuperAdmin = await isUserSuperAdmin(user);
+
+    if (!isSuperAdmin) {
+        redirect(`/`);
+    }
 
     return (
         <ContentLayout slug={slug} feature={"Settings"}>
-            <UserPreferencesDialog user={user} />
+            <DebugSettingsDialog />
         </ContentLayout>
     );
 }

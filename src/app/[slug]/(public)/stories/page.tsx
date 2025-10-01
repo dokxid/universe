@@ -2,6 +2,8 @@ import ContentLayout from "@/app/components/layout/content-layout";
 import { StoryGallery } from "@/app/components/modal/story-gallery";
 import { Suspense } from "react";
 
+export const experimental_ppr = true;
+
 export default async function StoriesPage({
     params,
 }: {

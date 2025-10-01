@@ -88,7 +88,6 @@ export async function isUserSuperAdmin(user: User | null): Promise<boolean> {
                 organizationId: organizationId,
             });
         const membershipToReturn = membership.data.pop();
-        console.log(membershipToReturn);
         if (membershipToReturn === undefined) {
             return false;
         }

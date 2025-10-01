@@ -7,16 +7,15 @@ export interface ExperienceModelData
     extends Omit<Experience, "_id">,
         mongoose.Document {}
 
-const elevationRequestSchema = new Schema(
-    {
-        status: {
-            type: String,
-            enum: ["pending", "approved", "rejected"],
-            required: true,
-        },
+const elevationRequestSchema = new Schema({
+    status: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        required: true,
     },
-    { timestamps: true }
-);
+    requested_at: { type: Date, required: true },
+    resolved_at: { type: Date },
+});
 
 const storySchema = new Schema(
     {

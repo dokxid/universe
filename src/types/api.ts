@@ -43,7 +43,7 @@ export type NewElevationRequestData = {
 export type ElevationRequest = {
     _id: string;
     requested_at: Date;
-    updated_at: Date;
+    resolved_at?: Date;
     status: "pending" | "approved" | "rejected" | "created";
 };
 

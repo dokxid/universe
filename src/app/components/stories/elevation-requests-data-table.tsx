@@ -39,7 +39,7 @@ interface DataTableProps<TData, TValue> {
     data: string; // JSON stringified array of TData
 }
 
-export function StoryDataTable<TData extends StoryDTO, TValue>({
+export function ElevationRequestsTable<TData extends StoryDTO, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
@@ -50,14 +50,17 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
             title: true,
             author_name: false,
             draft: false,
-            published: true,
-            visible_universe: true,
+            published: false,
+            visible_universe: false,
             latest_elevation_request: true,
-            createdAt: true,
+            requested_at: true,
+            createdAt: false,
             updatedAt: false,
         });
     const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
+        React.useState<ColumnFiltersState>([
+            { id: "latest_elevation_request", value: "pending" },
+        ]);
     const dataFetched = React.useMemo(
         () => JSON.parse(data) as StoryDTO[] as TData[],
         [data]
@@ -81,6 +84,12 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
         },
         onSortingChange: setSorting,
     });
+
+    console.log(
+        dataFetched[0]?.elevation_requests[
+            dataFetched[0]?.elevation_requests.length - 1
+        ]?.requested_at
+    );
 
     return (
         <div>
@@ -120,13 +129,13 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                             const selectedIds =
                                                 Object.keys(rowSelection);
                                             toast.success(
-                                                `Elevation for ${selectedIds.length} stories have been requested`
+                                                `Updating Status for ${selectedIds.length} stories to: Approved.`
                                             );
                                         }}
                                         tabIndex={-1}
                                         type="button"
                                     >
-                                        Request elevation
+                                        Elevate
                                     </Button>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
@@ -137,30 +146,13 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                             const selectedIds =
                                                 Object.keys(rowSelection);
                                             toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Draft.`
+                                                `Updating Status for ${selectedIds.length} stories to: Rejected.`
                                             );
                                         }}
                                         tabIndex={-1}
                                         type="button"
                                     >
-                                        Set visibility to Draft
-                                    </Button>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full justify-start"
-                                        onClick={() => {
-                                            const selectedIds =
-                                                Object.keys(rowSelection);
-                                            toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Map.`
-                                            );
-                                        }}
-                                        tabIndex={-1}
-                                        type="button"
-                                    >
-                                        Set visibility to Map
+                                        Reject
                                     </Button>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

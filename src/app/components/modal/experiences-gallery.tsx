@@ -16,10 +16,10 @@ export async function ExperiencesGallery() {
     return (
         <div className={"flex flex-col w-full items-start"}>
             <article className="prose dark:prose-invert p-2 md:p-5">
-                <h1>Our Co-Lab Communities</h1>
+                <h1>Our Heritage Labs</h1>
                 <p className="text-muted-foreground">
                     Explore the diverse experiences created by our other
-                    community Co-Labs.
+                    community Heritage Labs.
                 </p>
             </article>
             <Separator className={"my-4"}></Separator>

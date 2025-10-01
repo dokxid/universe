@@ -4,7 +4,6 @@ import {
 } from "@/data/scripts/seeds/experiences-seeds";
 import dbConnect from "@/lib/mongodb/connections";
 import ExperienceModel from "@/types/models/experiences";
-import { revalidateTag } from "next/cache";
 
 export async function seedExperiences(center: number[]) {
     await dbConnect();
@@ -21,5 +20,4 @@ export async function seedExperiences(center: number[]) {
         `Inserted test experience with id ${result_test_experience.insertedId}`
     );
     console.log("Experiences seeded successfully");
-    revalidateTag("experiences");
 }

@@ -25,7 +25,6 @@ import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 import { revalidateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 function isPublicStory(story: Story) {
@@ -220,35 +219,48 @@ export async function getLabPublicStoriesDTO(
 export async function getLabPrivateStoriesDTO(
     experienceSlug: string
 ): Promise<StoryDTO[]> {
-    const user = await getCurrentUser();
-    if (!(await isUserMember(user, experienceSlug))) {
-        redirect("/login?returnTo=/" + experienceSlug + "/stories/dashboard");
+    try {
+        const user = await getCurrentUser();
+        if (await isUserSuperAdmin(user)) {
+            const stories = await getAllStories();
+            return stories.filter(
+                async (story) => await canUserViewStory(user, story)
+            );
+        } else if (await isUserMember(user, experienceSlug)) {
+            const stories = await getAllStories();
+            return stories.filter(
+                async (story) => await canUserViewStory(user, story)
+            );
+        } else {
+            throw new Error("Unauthorized");
+        }
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
-    const stories = await getAllStories();
-    const filteredStories = stories.filter(
-        async (story) => await canUserViewStory(user, story)
-    );
-    return filteredStories;
 }
 
 export async function getStoryDTO(id: string): Promise<StoryDTO> {
-    const user = await getCurrentUserOptional();
+    try {
+        const user = await getCurrentUserOptional();
 
-    console.log("Fetching story with id:", id);
-    // validate id before creating ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        throw new Error("Invalid story id format.");
+        console.log("Fetching story with id:", id);
+        // validate id before creating ObjectId
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw new Error("Invalid story id format.");
+        }
+
+        // parse serializable id to mongoose.Types.ObjectId
+        const objectId = new mongoose.Types.ObjectId(id);
+        const queryResult = await queryStory(objectId);
+
+        if (!canUserViewStory(user, queryResult)) {
+            throw new Error("You do not have permission to view this story.");
+        }
+
+        return queryResult;
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
-
-    // parse serializable id to mongoose.Types.ObjectId
-    const objectId = new mongoose.Types.ObjectId(id);
-    const queryResult = await queryStory(objectId);
-
-    if (!canUserViewStory(user, queryResult)) {
-        redirect("/login?returnTo=/stories/" + id);
-    }
-
-    return queryResult;
 }
 
 export async function submitStoryDTO(formData: FormData) {

@@ -1,5 +1,5 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import StoryView from "@/app/components/stories/story-view";
+import StoryView from "@/app/components/views/story-view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 

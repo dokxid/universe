@@ -114,5 +114,7 @@ export const config = {
         "/:slug/user-preferences",
         "/:slug/stories/elevation-requests",
         "/:slug/about",
+        "/:slug/debug-settings",
+        "/universe/elevation-requests",
     ],
 };

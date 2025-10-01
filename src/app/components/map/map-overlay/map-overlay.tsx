@@ -2,7 +2,6 @@ import { MapWidgetHolder } from "@/app/components/map/map-overlay/map-widget-hol
 import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigation-widget-holder";
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
-import { StoryWidgetHolderSkeleton } from "@/components/skeletons/story-widget-holder-skeleton";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
 import { UnescoTagDTO } from "@/types/api";
 import { Suspense } from "react";
@@ -40,7 +39,7 @@ export async function MapOverlay({
                         <Suspense fallback={<div>loading stories...</div>}>
                             <StoryWidgetHolder slug={slug} />
                         </Suspense>
-                        <Suspense fallback={<StoryWidgetHolderSkeleton />}>
+                        <Suspense>
                             <StoryDetails
                                 tagsPromise={tagsPromise}
                                 storiesPromise={storiesPromise}
