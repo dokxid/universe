@@ -1,6 +1,6 @@
 import { CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";

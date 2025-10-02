@@ -6,7 +6,7 @@ import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO } from "@/types/dtos";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";

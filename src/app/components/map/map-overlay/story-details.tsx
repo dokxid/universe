@@ -12,7 +12,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { getTagColorHex } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
-import { StoryDTO, UnescoTagDTO } from "@/types/api";
+import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { X } from "lucide-react";

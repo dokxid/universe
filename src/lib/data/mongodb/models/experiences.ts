@@ -1,4 +1,4 @@
-import { Experience, Story } from "@/types/api";
+import { Experience, Story } from "@/types/dtos";
 import mongoose, { Schema } from "mongoose";
 
 export interface StoryData extends Omit<Story, "_id">, mongoose.Document {}

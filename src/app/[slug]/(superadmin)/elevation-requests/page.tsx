@@ -2,7 +2,7 @@ import ContentLayout from "@/app/components/layout/content-layout";
 import { elevationRequestsColumns } from "@/app/components/stories/columns";
 import { ElevationRequestsTable } from "@/app/components/stories/elevation-requests-data-table";
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";
 
 export default async function Page({ params }: { params: { slug: string } }) {

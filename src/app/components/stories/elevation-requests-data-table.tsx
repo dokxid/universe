@@ -29,7 +29,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO } from "@/types/dtos";
 import { ChevronDown, Columns3 } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";

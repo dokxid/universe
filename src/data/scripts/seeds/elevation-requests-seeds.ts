@@ -1,4 +1,4 @@
-import { ElevationRequest } from "@/types/api";
+import { ElevationRequest } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
 export function generateElevationRequests(): ElevationRequest[] {

@@ -20,7 +20,7 @@ import {
     NewStoryData,
     Story,
     StoryDTO,
-} from "@/types/api";
+} from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";

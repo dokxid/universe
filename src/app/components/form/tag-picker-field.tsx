@@ -1,5 +1,5 @@
 import { TagPicker } from "@/app/components/form/tag-picker";
-import { UnescoTagDTO } from "@/types/api";
+import { UnescoTagDTO } from "@/types/dtos";
 import { use } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 

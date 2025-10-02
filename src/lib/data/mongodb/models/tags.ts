@@ -1,4 +1,4 @@
-import { Tag } from "@/types/api";
+import { Tag } from "@/types/dtos";
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { ChevronRight, X } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

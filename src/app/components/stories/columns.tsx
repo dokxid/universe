@@ -13,7 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO } from "@/types/dtos";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import {

@@ -2,7 +2,7 @@ import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";

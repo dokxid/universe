@@ -15,7 +15,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
 import React from "react";

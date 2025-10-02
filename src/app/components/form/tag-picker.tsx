@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { getTagColorHex } from "@/lib/utils/color-string";
 import { groupByKey } from "@/lib/utils/group-by-key";
-import { UnescoTagDTO } from "@/types/api";
+import { UnescoTagDTO } from "@/types/dtos";
 import { PlusIcon, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";

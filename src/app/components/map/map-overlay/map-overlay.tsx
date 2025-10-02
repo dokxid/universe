@@ -3,7 +3,7 @@ import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigat
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
-import { UnescoTagDTO } from "@/types/api";
+import { UnescoTagDTO } from "@/types/dtos";
 import { Suspense } from "react";
 
 export async function MapOverlay({

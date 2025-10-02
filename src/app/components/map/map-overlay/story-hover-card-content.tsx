@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAppDispatch } from "@/lib/hooks";
 import { setSelectedStoryId } from "@/lib/redux/map/mapSlice";
 import { getTagColorHex } from "@/lib/utils/color-string";
-import { StoryDTO, UnescoTagDTO } from "@/types/api";
+import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import Link from "next/link";
 
 export function StoryHoverCardContent({

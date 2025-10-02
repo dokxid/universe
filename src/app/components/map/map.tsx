@@ -1,7 +1,7 @@
 "use client";
 
 import { DeckGLMap } from "@/app/components/map/deck-gl-map";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { use } from "react";
 import { MapProvider } from "react-map-gl/maplibre";

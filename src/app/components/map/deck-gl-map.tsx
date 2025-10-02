@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,

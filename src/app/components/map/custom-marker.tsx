@@ -5,7 +5,7 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
-import { StoryDTO, UnescoTagDTO } from "@/types/api";
+import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";

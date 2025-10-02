@@ -1,7 +1,7 @@
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

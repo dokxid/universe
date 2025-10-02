@@ -1,7 +1,7 @@
 "use client";
 
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO } from "@/types/dtos";
 import { useState } from "react";
 
 export default function EditorView({

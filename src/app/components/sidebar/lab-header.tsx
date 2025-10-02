@@ -4,7 +4,7 @@ import { SidebarHeader } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getExperienceDTO } from "@/data/dto/experience-dto";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

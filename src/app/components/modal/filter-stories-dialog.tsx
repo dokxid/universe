@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
 import { setSelectedTagsParams } from "@/lib/utils/param-setter";
-import { UnescoTagDTO } from "@/types/api";
+import { UnescoTagDTO } from "@/types/dtos";
 import { Funnel } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";

@@ -1,4 +1,4 @@
-import { UnescoTagDTO } from "@/types/api";
+import { UnescoTagDTO } from "@/types/dtos";
 
 export function colorStringValidator(color: string): boolean {
     const hexColorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;

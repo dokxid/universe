@@ -2,7 +2,7 @@
 
 import { useAppDispatch } from "@/lib/hooks";
 import { setCurrentExperience } from "@/lib/redux/experiences/experiencesSlice";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
 

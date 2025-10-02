@@ -1,5 +1,5 @@
 import { ImageElement } from "@/app/components/embeds/s3-image";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 
 export default async function ExperienceView({
     experiencePromise,

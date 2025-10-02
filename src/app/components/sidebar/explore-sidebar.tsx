@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { setRightSideBarOpen } from "@/lib/redux/navigation/navigationSlice";
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";
 import { useDispatch } from "react-redux";
