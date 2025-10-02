@@ -9,11 +9,9 @@ import { Suspense } from "react";
 export async function MapOverlay({
     tagsPromise,
     slug,
-    selectedExperience,
 }: {
     tagsPromise: Promise<UnescoTagDTO[]>;
     slug: string;
-    selectedExperience: string;
 }) {
     const experienceSlug = slug;
     const storiesPromise = getAllPublicStoriesDTO();
@@ -23,10 +21,7 @@ export async function MapOverlay({
             <div className="relative w-full h-full">
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
-                    <NavigationWidgetHolder
-                        selectedExperience={selectedExperience}
-                        slug={experienceSlug}
-                    />
+                    <NavigationWidgetHolder slug={experienceSlug} />
                 </div>
 
                 {/* top right */}

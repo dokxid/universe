@@ -4,17 +4,14 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/lib/hooks";
 import { decrementZoomLevel, setFlyBack } from "@/lib/redux/map/mapSlice";
 import { Navigation2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export function FlyBackButton({
-    isUniverseView,
-    isVisible,
-}: {
-    isUniverseView: boolean;
-    isVisible: boolean;
-}) {
+export function FlyBackButton({ isUniverseView }: { isUniverseView: boolean }) {
+    const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
     const router = useRouter();
+
+    const isVisible = searchParams.get("exp") !== "universe";
 
     return !isVisible ? null : (
         <Button

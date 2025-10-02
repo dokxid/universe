@@ -1,6 +1,7 @@
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getTagsDTO } from "@/data/dto/tag-dto";
 import { Suspense } from "react";
 
@@ -12,15 +13,8 @@ import { Suspense } from "react";
 //     { ssr: false }
 // );
 
-export async function NavigationWidgetHolder({
-    selectedExperience,
-    slug,
-}: {
-    selectedExperience: string | null;
-    slug: string;
-}) {
+export async function NavigationWidgetHolder({ slug }: { slug: string }) {
     const tagsPromise = getTagsDTO();
-    const expParam = selectedExperience;
 
     return (
         <>
@@ -42,18 +36,11 @@ export async function NavigationWidgetHolder({
                         theme={geocoderTheme}
                     />
                 )} */}
-                <FlyBackButton
-                    isUniverseView={slug === "universe"}
-                    isVisible={expParam !== "universe"}
-                />
+                <Suspense fallback={<Skeleton className="w-10 h-10" />}>
+                    <FlyBackButton isUniverseView={slug === "universe"} />
+                </Suspense>
                 {/* <ToggleDescriptorButton /> */}
             </div>
-            {/* <Suspense fallback={<div>loading experience...</div>}>
-                <ExperienceDetails
-                    experiencesPromise={experiencesPromise}
-                    slug={slug}
-                />
-            </Suspense> */}
         </>
     );
 }

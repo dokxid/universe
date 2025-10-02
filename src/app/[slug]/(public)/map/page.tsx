@@ -49,12 +49,9 @@ const getCachedLabStories = unstable_cache(
 
 export default async function MapView({
     params,
-    searchParams,
 }: {
     params: Promise<{ slug: string }>;
-    searchParams: { [key: string]: string | string[] | undefined };
 }) {
-    const { exp } = await searchParams;
     const { slug } = await params;
 
     // Use cached functions
@@ -66,7 +63,6 @@ export default async function MapView({
     }
 
     const experiencesPromise = getCachedExperiences();
-    const selectedExperience = exp && !Array.isArray(exp) ? exp : slug;
     const tagsPromise = getCachedTags();
 
     return (
@@ -93,11 +89,7 @@ export default async function MapView({
                         <Suspense
                             fallback={<Skeleton className="w-full h-full" />}
                         >
-                            <MapOverlay
-                                tagsPromise={tagsPromise}
-                                slug={slug}
-                                selectedExperience={selectedExperience}
-                            />
+                            <MapOverlay tagsPromise={tagsPromise} slug={slug} />
                         </Suspense>
                     </div>
                 </div>

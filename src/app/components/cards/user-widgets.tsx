@@ -6,7 +6,7 @@ import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
-export async function UserWidgetNoAuth() {
+export function UserWidgetNoAuth() {
     return (
         <div
             className={
@@ -25,7 +25,7 @@ export async function UserWidgetNoAuth() {
     );
 }
 
-export async function UserWidgetNotAuthorized({ slug }: { slug: string }) {
+export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
     return (
         <div
             className={
@@ -51,7 +51,7 @@ export async function UserWidgetNotAuthorized({ slug }: { slug: string }) {
     );
 }
 
-export async function UserWidgetAuthorized({
+export function UserWidgetAuthorized({
     user,
     slug,
     role,

@@ -77,11 +77,12 @@ export async function isUserAdmin(
 
 export async function isUserSuperAdmin(user: User | null): Promise<boolean> {
     try {
-        if (!process.env.WORKOS_SUPER_ADMIN_ORG_ID) {
+        if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
             throw new Error("WORKOS_SUPER_ADMIN_ORG_ID is not set");
         }
         if (!user) return false;
-        const organizationId = process.env.WORKOS_SUPER_ADMIN_ORG_ID;
+        const organizationId =
+            process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID;
         const membership =
             await workos.userManagement.listOrganizationMemberships({
                 userId: user.id,
