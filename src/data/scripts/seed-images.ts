@@ -1,6 +1,6 @@
 "use server";
 
-import dbConnect from "@/lib/mongodb/connections";
+import dbConnect from "@/lib/data/mongodb/connections";
 import experiences from "@/types/models/experiences";
 import fs from "fs";
 

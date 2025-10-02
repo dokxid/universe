@@ -9,10 +9,10 @@ import {
     isUserSuperAdmin,
 } from "@/data/auth";
 import { getExperiences } from "@/data/dto/experience-dto";
-import { workos } from "@/lib/auth";
-import { uploadFile } from "@/lib/files/s3";
-import { uploadFileToLabFolder } from "@/lib/files/server-store";
-import dbConnect from "@/lib/mongodb/connections";
+import { workos } from "@/lib/auth/workos/callback";
+import dbConnect from "@/lib/data/mongodb/connections";
+import { uploadFile } from "@/lib/data/uploader/s3";
+import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
 import {
     Experience,
     NewElevationRequestData,

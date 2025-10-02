@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { decrementZoomLevel, setFlyBack } from "@/lib/features/map/mapSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { decrementZoomLevel, setFlyBack } from "@/lib/redux/map/mapSlice";
 import { Navigation2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 

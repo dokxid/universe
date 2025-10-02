@@ -1,4 +1,4 @@
-import { getRedirectUri, workos } from "@/lib/auth";
+import { getRedirectUri, workos } from "@/lib/auth/workos/callback";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 

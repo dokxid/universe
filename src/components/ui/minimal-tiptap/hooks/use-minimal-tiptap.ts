@@ -1,5 +1,5 @@
-import { uploadFileToPublicS3 } from "@/lib/files/s3";
-import { uploadFileToPublicFolder } from "@/lib/files/server-store";
+import { uploadFileToPublicS3 } from "@/lib/data/uploader/s3";
+import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { cn } from "@/lib/utils";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Typography } from "@tiptap/extension-typography";

@@ -8,7 +8,7 @@ import {
     test_experiences_doc,
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
-import dbConnect from "@/lib/mongodb/connections";
+import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/types/models/experiences";
 
 export async function seedExperiences(center: number[]) {
