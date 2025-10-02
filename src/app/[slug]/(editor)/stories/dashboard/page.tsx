@@ -7,7 +7,7 @@ export default async function EditorDashboardPage({
 }) {
     const { slug } = await params;
     return (
-        <ContentLayout slug={slug} feature={"Team settings"}>
+        <ContentLayout slug={slug}>
             <div
                 className={
                     "flex flex-col items-center justify-center w-lg mx-auto h-full"

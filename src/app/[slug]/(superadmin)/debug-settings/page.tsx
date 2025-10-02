@@ -17,7 +17,7 @@ export default async function Page({
     }
 
     return (
-        <ContentLayout slug={slug} feature={"Debug Settings"}>
+        <ContentLayout slug={slug}>
             <DebugSettingsDialog />
         </ContentLayout>
     );

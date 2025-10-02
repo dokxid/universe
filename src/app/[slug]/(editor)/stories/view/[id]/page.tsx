@@ -26,7 +26,7 @@ export default async function StoryDetails({
     const { slug, id: storyId } = await params;
 
     return (
-        <ContentLayout slug={slug} feature={"Experiences"} className={"p-0"}>
+        <ContentLayout slug={slug} className={"p-0"}>
             <Suspense fallback={<StoryViewSkeleton />}>
                 <StoryView storyId={storyId} />
             </Suspense>

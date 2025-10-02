@@ -12,7 +12,7 @@ export default async function Page({
     const { slug } = await params;
     const experience = JSON.stringify(await getExperienceDTO(slug));
     return (
-        <ContentLayout slug={slug} feature={"Team settings"}>
+        <ContentLayout slug={slug}>
             <Suspense fallback={<GenericFormSkeleton />}>
                 <TeamSettingsDialog
                     slug={slug}

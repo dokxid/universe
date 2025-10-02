@@ -5,10 +5,7 @@ describe("Map Features", () => {
     });
     it("experience selector can change search params", () => {
         cy.visit("/universe/map");
-        cy.get("[aria-label='Experience Selector']").click();
-        cy.get("[data-value='test']")
-            .click()
-            .url()
-            .should("include", "?exp=test");
+        cy.get('[href="/universe/map?exp=istanbul"] > .bg-card > .overflow-hidden > [data-radix-aspect-ratio-wrapper=""] > div > .group-hover\:opacity-75').click();
+        cy.url().should("include", "?exp=istanbul");
     });
 });

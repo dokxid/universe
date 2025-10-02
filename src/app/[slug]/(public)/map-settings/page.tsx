@@ -9,7 +9,7 @@ export default async function Page({
     const { slug } = await params;
 
     return (
-        <ContentLayout slug={slug} feature={"Settings"}>
+        <ContentLayout slug={slug}>
             <PreferencesDialog />
         </ContentLayout>
     );

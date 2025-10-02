@@ -11,7 +11,7 @@ export default async function Page({
     const tagsPromise = getTagsDTO();
 
     return (
-        <ContentLayout slug={slug} feature={"Create story"}>
+        <ContentLayout slug={slug}>
             <div
                 className={
                     "flex flex-col gap-4 items-center container w-full lg:w-2/3 max-w-2xl mx-auto my-4 *:w-full"

@@ -26,7 +26,7 @@ const UNAUTHENTICATED_PATHS = [
     "/stories",
     "/stories/view/:id",
     "/experiences",
-    "/settings",
+    "/map-settings",
     "/images/:filename",
     "/about",
 ];
@@ -114,7 +114,7 @@ export const config = {
         "/:slug/map",
         "/:slug/map/:page*",
         "/:slug/experiences",
-        "/:slug/settings",
+        "/:slug/map-settings",
         "/:slug/account/:page*",
         "/:slug/lab/:page*",
         "/:slug/stories",

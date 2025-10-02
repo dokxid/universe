@@ -1,24 +1,16 @@
+import { NavigationBreadcrumbs } from "@/app/components/layout/navigation-breadcrumbs";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export default function ContentLayout({
     slug,
-    feature,
     children,
     className,
 }: {
     slug: string;
-    feature: string;
     children: React.ReactNode;
     className?: string;
 }) {
@@ -34,17 +26,7 @@ export default function ContentLayout({
                             className="mr-2 h-4"
                         />
                         <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href={`/${slug}`}>
-                                        {slug}
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{feature}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
+                            <NavigationBreadcrumbs />
                         </Breadcrumb>
                     </div>
                 </header>
