@@ -1,3 +1,5 @@
+"use client";
+
 import { AboutItemGroup } from "@/app/components/sidebar/sidebar-content/about-item-group";
 import { AdminItemGroup } from "@/app/components/sidebar/sidebar-content/admin-item-group";
 import { EditorItemGroup } from "@/app/components/sidebar/sidebar-content/editor-item-group";
@@ -5,52 +7,66 @@ import { LinksItemGroup } from "@/app/components/sidebar/sidebar-content/links-i
 import { SuperAdminItemGroup } from "@/app/components/sidebar/sidebar-content/super-admin-item-group";
 import { UserItemGroup } from "@/app/components/sidebar/sidebar-content/user-item-group";
 import { SidebarContent } from "@/components/ui/sidebar";
-import {
-    getCurrentUserOptional,
-    isUserAdmin,
-    isUserMember,
-    isUserSuperAdmin,
-} from "@/data/auth";
-import { User } from "@workos-inc/node";
-import { unstable_cache } from "next/cache";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Experience } from "@/types/dtos";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useParams } from "next/navigation";
+import { use } from "react";
 
-export async function AppSidebarContent({ slug }: { slug: string }) {
-    const user = await getCurrentUserOptional();
-    const IsSuperAdminCache = unstable_cache(
-        async (user: User | null) => {
-            return await isUserSuperAdmin(user);
-        },
-        ["isUserSuperAdmin", user?.id || "null"],
-        { revalidate: 300 } // Cache for 5 minutes
-    );
-
-    const isMemberCache = unstable_cache(
-        async (user: User | null, slug: string) => {
-            return await isUserMember(user, slug);
-        },
-        ["isUserMember", user?.id || "null", slug],
-        { revalidate: 300 } // Cache for 5 minutes
-    );
-
-    const IsAdminCache = unstable_cache(
-        async (user: User | null, slug: string) => {
-            return await isUserAdmin(user, slug);
-        },
-        ["isUserAdmin", user?.id || "null", slug],
-        { revalidate: 300 } // Cache for 5 minutes
-    );
-
-    const isSuperAdmin = await IsSuperAdminCache(user);
-    const isEditor = await isMemberCache(user, slug);
-    const isAdmin = await IsAdminCache(user, slug);
+export function AppSidebarContent({
+    experiencesPromise,
+}: {
+    experiencesPromise: Promise<Experience[]>;
+}) {
+    const { slug } = useParams<{ slug: string }>();
+    const { roles, loading, organizationId, user } = useAuth();
+    const experiences = use(experiencesPromise);
+    const currentExperienceOrganizationId = experiences.find(
+        (exp) => exp.slug === slug
+    )?.organization_id;
     const isUniverseView = slug === "universe";
 
+    if (loading) return <Skeleton className={"h-10 w-full"} />;
+
+    // case super admin
+    if (organizationId === process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+        return (
+            <SidebarContent className={"px-1 flex flex-col gap-1"}>
+                <UserItemGroup isUniverseView={isUniverseView} />
+                <SuperAdminItemGroup visible={true} />
+                <AdminItemGroup visible={!isUniverseView} />
+                <EditorItemGroup visible={!isUniverseView} />
+                <div className={"flex-grow"}></div>
+                <LinksItemGroup isUniverseView={isUniverseView} />
+                <AboutItemGroup />
+            </SidebarContent>
+        );
+    }
+
+    // case not logged in or not part of current heritage lab org
+    if (
+        !user ||
+        roles === undefined ||
+        currentExperienceOrganizationId !== organizationId
+    ) {
+        return (
+            <SidebarContent className={"px-1 flex flex-col gap-1"}>
+                <UserItemGroup isUniverseView={isUniverseView} />
+                <div className={"flex-grow"}></div>
+                <LinksItemGroup isUniverseView={isUniverseView} />
+                <AboutItemGroup />
+            </SidebarContent>
+        );
+    }
+
+    // case part of current heritage lab org
     return (
         <SidebarContent className={"px-1 flex flex-col gap-1"}>
             <UserItemGroup isUniverseView={isUniverseView} />
-            {!isUniverseView && <EditorItemGroup visible={isEditor} />}
-            {!isUniverseView && <AdminItemGroup visible={isAdmin} />}
-            <SuperAdminItemGroup visible={isSuperAdmin} />
+            <EditorItemGroup
+                visible={roles.includes("editor") || roles.includes("admin")}
+            />
+            <AdminItemGroup visible={roles.includes("admin")} />
             <div className={"flex-grow"}></div>
             <LinksItemGroup isUniverseView={isUniverseView} />
             <AboutItemGroup />

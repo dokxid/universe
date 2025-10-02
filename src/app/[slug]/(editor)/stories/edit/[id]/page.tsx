@@ -7,14 +7,14 @@ import { PenLine } from "lucide-react";
 export default async function StoryDetails({
     params,
 }: {
-    params: Promise<{ slug: string; id: string }>;
+    params: Promise<{ id: string }>;
 }) {
-    const { slug, id: storyId } = await params;
+    const { id: storyId } = await params;
     const story = await getStoryDTO(storyId);
     const storySerialized = JSON.stringify(story);
 
     return (
-        <ContentLayout slug={slug} className={"p-0"}>
+        <ContentLayout className={"p-0"}>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
                 <S3Image
                     experience={story.experience}

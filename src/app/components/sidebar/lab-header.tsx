@@ -2,7 +2,6 @@ import { CopyLinkClipboard } from "@/app/components/embeds/copy-link-clipboard";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getExperienceDTO } from "@/data/dto/experience-dto";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import { Experience } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
@@ -10,8 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default async function LabHeader({ slug }: { slug: string }) {
-    const experience = (await getExperienceDTO(slug)) as Experience;
+export default function LabHeader({ experience }: { experience: Experience }) {
     return (
         <SidebarHeader className="flex flex-col items-start px-0 py-0 gap-0">
             <AspectRatio ratio={16 / 9} className="relative w-full">

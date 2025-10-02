@@ -15,27 +15,46 @@ import { Separator } from "@/components/ui/separator";
 import { userPreferencesFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { User } from "@workos-inc/node";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 
 const formSchema = userPreferencesFormSchema;
 
-export function UserPreferencesDialog({ user }: { user: User }) {
+export function UserPreferencesDialog() {
+    const { user, loading } = useAuth();
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            firstName: user.firstName || "",
-            lastName: user.lastName || "",
-            email: user.email || "",
-            profilePictureUrl: user.profilePictureUrl || null,
+            firstName: "",
+            lastName: "",
+            email: "",
+            profilePictureUrl: "",
         },
     });
+
+    useEffect(() => {
+        form.reset({
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            email: user?.email || "",
+            profilePictureUrl: user?.profilePictureUrl || null,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     const onSubmit = (data: FieldValues) => {
         console.log(data);
     };
 
-    console.log(user.profilePictureUrl === null);
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!user) {
+        return <div>User not found</div>;
+    }
 
     return (
         <div

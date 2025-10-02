@@ -14,6 +14,13 @@ import { Suspense } from "react";
 
 export const experimental_ppr = true;
 
+export async function generateStaticParams() {
+    const experiences = await getExperiencesDTO();
+    return experiences.map((experience) => ({
+        slug: experience.slug,
+    }));
+}
+
 // Create cached versions of your data fetching functions
 const getCachedExperiences = unstable_cache(
     async () => getExperiencesDTO(),
@@ -67,7 +74,7 @@ export default async function MapView({
 
     return (
         <div className="relative w-screen h-screen flex">
-            <AppSidebar slug={slug} />
+            <AppSidebar />
             <div className="flex grow flex-row">
                 <div className="grow relative">
                     {/* map */}
