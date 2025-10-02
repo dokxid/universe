@@ -13,5 +13,10 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+import { setupCommands } from '@mapgrab/cypress';
+
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
+
+// Call the setupCommands function to register the custom commands
+setupCommands();

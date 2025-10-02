@@ -121,6 +121,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@eslint/eslintrc": "^3",
     "@jest/globals": "^30.2.0",
+    "@mapgrab/cypress": "^0.0.2",
     "@next/bundle-analyzer": "^15.5.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^11.0.6",
