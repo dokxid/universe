@@ -26,7 +26,7 @@ export async function StoryGallery({ slug }: { slug: string }) {
                     </p>
                 </article>
                 <Separator className={"my-8"}></Separator>
-                <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+                <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
                     {stories.map((story) => (
                         <StoryCard key={story._id} story={story} />
                     ))}

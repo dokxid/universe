@@ -1,6 +1,5 @@
 import S3Image from "@/app/components/embeds/s3-image";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getTagsDTO } from "@/data/dto/tag-dto";
@@ -24,10 +23,9 @@ export async function StoryCard({ story }: { story: StoryDTO }) {
                 className={`w-full mx-auto py-0 flex-col shadow-none rounded-md overflow-hidden gap-0 group`}
             >
                 <div className="overflow-hidden relative">
-                    <AspectRatio
-                        ratio={10 / 9}
+                    <div
                         className={
-                            "mb-16 origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out"
+                            "mb-16 origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-40 md:h-60"
                         }
                     >
                         {story.featured_image_url ? (
@@ -46,7 +44,7 @@ export async function StoryCard({ story }: { story: StoryDTO }) {
                                 </span>
                             </div>
                         )}
-                    </AspectRatio>
+                    </div>
                     <div className="absolute bottom-0 left-0 right-0 bg-card group-hover:bg-selected group-hover:text-selected-foreground p-4 group flex flex-row items-center grow h-fit overflow-y-hidden py-4">
                         <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
                             <div className="flex-1 min-w-0 flex flex-col gap-1">
