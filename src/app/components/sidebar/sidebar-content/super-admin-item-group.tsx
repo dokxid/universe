@@ -1,9 +1,8 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { Earth, Grid2X2Check, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ItemGroup } from "./item-group";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
     const pathname = usePathname();

@@ -1,9 +1,8 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Link, Orbit } from "lucide-react";
-import { ItemGroup } from "./item-group";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function LinksItemGroup({
     isUniverseView,

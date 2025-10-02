@@ -1,6 +1,5 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import {
     BookText,
     Contact,
@@ -11,7 +10,7 @@ import {
     Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ItemGroup } from "./item-group";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
     const pathname = usePathname();

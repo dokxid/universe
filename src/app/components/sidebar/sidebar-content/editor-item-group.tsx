@@ -1,9 +1,8 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { LayoutDashboard, List } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ItemGroup } from "./item-group";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function EditorItemGroup({ visible }: { visible: boolean }) {
     const pathname = usePathname();

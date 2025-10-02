@@ -14,9 +14,16 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+
+export type SidebarItemGroup = {
+    title: string;
+    href: string;
+    icon: React.ElementType;
+    dropdownItems?: { title: string; href: string }[];
+}[];
+
 export function ItemGroup({
     children,
     items,
