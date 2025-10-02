@@ -112,6 +112,7 @@ export function DeckGLMap({
     );
     const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
+    const map = useMap();
 
     // set correct experience
     const experience = useMemo(() => {
