@@ -1,7 +1,7 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {DialogState} from "@/types/dialog";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface AddStoryDialogState extends DialogState {
+interface AddStoryDialogState {
+    open: boolean,
     longitude: number,
     latitude: number,
 }
