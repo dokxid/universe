@@ -17,7 +17,7 @@ export async function StoryGallery({ slug }: { slug: string }) {
     if (!stories) return <div>No stories found.</div>;
 
     return (
-        <div className="flex items-center w-full max-w-6xl my-10 mx-4 lg:mx-auto">
+        <div className="flex items-center w-full max-w-6xl my-10 px-4 md:px-6">
             <div className={"flex flex-col w-full items-center"}>
                 <article className="self-start">
                     <h1 className={"prose-h1"}>Stories</h1>

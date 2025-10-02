@@ -4,10 +4,29 @@ import { Card } from "@/components/ui/card";
 import { Experience } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
-export function ExperienceCard({ experience }: { experience: Experience }) {
-    const url = `/${experience.slug}/map`;
+export function ExploreExperienceCard({
+    experience,
+    queryStringURL = false,
+}: {
+    experience: Experience;
+    queryStringURL?: boolean;
+}) {
+    const searchParams = useSearchParams();
+    const selectedExperience = searchParams.get("exp");
+    function createExperienceParam(slug: string) {
+        const search = new URLSearchParams(searchParams.toString());
+        search.set("exp", slug);
+        return "?" + search.toString();
+    }
+    let url;
+    if (queryStringURL) {
+        url = `/universe/map${createExperienceParam(experience.slug)}`;
+    } else {
+        url = `/${experience.slug}/map`;
+    }
 
     return (
         <Link
@@ -18,7 +37,11 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
         >
             <Card
                 key={experience.slug}
-                className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group`}
+                className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group ${
+                    experience.slug === selectedExperience
+                        ? "bg-secondary text-secondary-foreground"
+                        : ""
+                }`}
             >
                 <div className="overflow-hidden rounded-t-md group-hover:h-6 shrink">
                     <AspectRatio ratio={16 / 9}>

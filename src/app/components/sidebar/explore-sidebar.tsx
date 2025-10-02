@@ -1,6 +1,6 @@
 "use client";
 
-import { ExperienceCard } from "@/app/components/cards/experience-card";
+import { ExploreExperienceCard } from "@/app/components/cards/explore-experience-card";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -56,9 +56,10 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
                 {filteredExperiences.map((experience: Experience) => (
-                    <ExperienceCard
+                    <ExploreExperienceCard
                         key={experience.slug}
                         experience={experience}
+                        queryStringURL={true}
                     />
                 ))}
             </div>
