@@ -25,10 +25,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <link rel="icon" href="/img/favicon.ico" sizes="any" />
             </head>
             <body className={"antialiased"}>
-                <AuthKitProvider>
-                    <StoreProvider>
-                        <TooltipProvider>
-                            <main>
+                <main>
+                    <AuthKitProvider>
+                        <StoreProvider>
+                            <TooltipProvider>
                                 <ThemeProvider
                                     attribute="class"
                                     defaultTheme="system"
@@ -43,10 +43,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                         <SpeedInsights />
                                     </SidebarLayout>
                                 </ThemeProvider>
-                            </main>
-                        </TooltipProvider>
-                    </StoreProvider>
-                </AuthKitProvider>
+                            </TooltipProvider>
+                        </StoreProvider>
+                    </AuthKitProvider>
+                </main>
             </body>
         </html>
     );

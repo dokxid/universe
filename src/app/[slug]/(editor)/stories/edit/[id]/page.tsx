@@ -14,7 +14,7 @@ export default async function StoryDetails({
     const storySerialized = JSON.stringify(story);
 
     return (
-        <ContentLayout slug={slug} feature={"Experiences"} className={"p-0"}>
+        <ContentLayout slug={slug} className={"p-0"}>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
                 <S3Image
                     experience={story.experience}

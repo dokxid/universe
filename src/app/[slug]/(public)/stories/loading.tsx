@@ -19,7 +19,7 @@ export default function Loading() {
 
             <SidebarInset>
                 {/* Header skeleton */}
-                <header className="flex h-16 shrink-0 gap-2 border-b">
+                <header className="flex h-16 shrink-0 gap-2 border-b my-4">
                     <div className="flex items-center gap-2 px-3">
                         <Skeleton className="h-4 w-4" />
                         <Separator
@@ -35,11 +35,11 @@ export default function Loading() {
                 </header>
 
                 {/* Content skeleton */}
-                <div className="flex flex-1 flex-col gap-4 p-4 overflow-y-auto items-center">
+                <div className="flex flex-col gap-4 overflow-y-auto items-center max-w-6xl mx-auto w-full my-10">
                     {/* Page title skeleton */}
-                    <div className="w-full max-w-4xl space-y-4">
-                        <Skeleton className="h-8 w-64 mx-auto" />
-                        <Skeleton className="h-4 w-96 mx-auto" />
+                    <div className="w-full max-w-4xl space-y-4 self-start">
+                        <Skeleton className="h-10 w-64" />
+                        <Skeleton className="h-6 w-96" />
                     </div>
 
                     {/* Gallery grid skeleton */}
@@ -47,7 +47,7 @@ export default function Loading() {
                         {Array.from({ length: 6 }).map((_, i) => (
                             <div key={i} className="space-y-4">
                                 <Skeleton className="h-48 w-full rounded-lg" />
-                                <div className="space-y-2">
+                                <div className="space-y-6">
                                     <Skeleton className="h-6 w-3/4" />
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-2/3" />

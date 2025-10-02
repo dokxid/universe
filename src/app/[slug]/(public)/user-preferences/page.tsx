@@ -11,7 +11,7 @@ export default async function Page({
     const user = await getCurrentUser();
 
     return (
-        <ContentLayout slug={slug} feature={"Settings"}>
+        <ContentLayout slug={slug}>
             <UserPreferencesDialog user={user} />
         </ContentLayout>
     );

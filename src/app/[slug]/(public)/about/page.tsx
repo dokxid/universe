@@ -15,7 +15,7 @@ export default async function ExperiencesPage({
     }
 
     return (
-        <ContentLayout slug={slug} feature={"Co-Labs"}>
+        <ContentLayout slug={slug}>
             <Suspense fallback={<div>Loading...</div>}>
                 <ExperienceView experiencePromise={experiencePromise} />
             </Suspense>

@@ -4,7 +4,7 @@ import { PreferencesDialog } from "@/app/components/modal/preferences-dialog";
 export default function Page() {
     return (
         <Dialog
-            title="Settings"
+            title="Map Settings"
             description="Configure your preferences below:"
         >
             <PreferencesDialog />

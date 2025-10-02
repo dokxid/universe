@@ -1,6 +1,5 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 import { StoryGallery } from "@/app/components/modal/story-gallery";
-import { Suspense } from "react";
 
 export const experimental_ppr = true;
 
@@ -12,10 +11,8 @@ export default async function StoriesPage({
     const { slug } = await params;
 
     return (
-        <ContentLayout slug={slug} feature={"Explore stories"}>
-            <Suspense fallback={<div>Loading...</div>}>
-                <StoryGallery slug={slug} />
-            </Suspense>
+        <ContentLayout slug={slug}>
+            <StoryGallery slug={slug} />
         </ContentLayout>
     );
 }
