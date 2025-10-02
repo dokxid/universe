@@ -17,35 +17,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Experience } from "@/types/dtos";
+import { teamSettingsFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
 
-const formSchema = z.object({
-    title: z.string().min(2, "Title must be at least 2 characters."),
-    subtitle: z.string().min(2, "Subtitle must be at least 2 characters."),
-    description: z
-        .string()
-        .min(10, "Description must be at least 10 characters."),
-    subdomain: z
-        .string()
-        .min(3, "Subdomain must be at least 3 characters.")
-        .regex(
-            /^[a-zA-Z0-9-]+$/,
-            "Subdomain can only contain letters, numbers, and hyphens."
-        ),
-    "featured-picture": z
-        .any()
-        .refine((files) => files?.length === 1, "Please upload a file.")
-        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
-        .refine(
-            (files) =>
-                files.type === "image/jpeg" || files.type === "image/png",
-            "Only .jpg, .png, and .webp files are accepted."
-        ),
-});
-
+const formSchema = teamSettingsFormSchema;
 export function TeamSettingsDialog({
     slug,
     experienceSerialized,

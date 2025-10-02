@@ -12,27 +12,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { userPreferencesFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { User } from "@workos-inc/node";
 import { FieldValues, useForm } from "react-hook-form";
-import { z } from "zod";
 
-const formSchema = z.object({
-    firstName: z.string().min(2, "First name must be at least 2 characters."),
-    lastName: z.string().min(2, "Last name must be at least 2 characters."),
-    email: z.email(),
-    profilePictureUrl: z.url().optional().nullable(),
-    profilePicture: z
-        .any()
-        .refine((files) => files?.length === 1, "Please upload a file.")
-        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
-        .refine(
-            (files) =>
-                files.type === "image/jpeg" || files.type === "image/png",
-            "Only .jpg, .png, and .webp files are accepted."
-        ),
-});
+const formSchema = userPreferencesFormSchema;
 
 export function UserPreferencesDialog({ user }: { user: User }) {
     const form = useForm({
