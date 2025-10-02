@@ -2,15 +2,19 @@ import S3Image from "@/app/components/embeds/s3-image";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { getTagsDTO } from "@/data/dto/tag-dto";
 import { buildStoryLink } from "@/lib/path";
 import { getTagColorHex } from "@/lib/utils/color-string";
-import { StoryDTO } from "@/types/dtos";
+import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export async function StoryCard({ story }: { story: StoryDTO }) {
-    const tags = await getTagsDTO();
+export function StoryCard({
+    story,
+    tags,
+}: {
+    story: StoryDTO;
+    tags: UnescoTagDTO[];
+}) {
     return (
         <Link
             key={story._id}

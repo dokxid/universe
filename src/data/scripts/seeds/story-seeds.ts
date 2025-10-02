@@ -45,25 +45,35 @@ function getContent() {
     return getRandomH1();
 }
 
-export const test_story_doc = async (experience_center: number[]) => ({
-    author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
-    content: getContent(),
-    draft: faker.datatype.boolean(0.2),
-    published: faker.datatype.boolean(0.8),
-    title: faker.lorem.sentence({ min: 3, max: 5 }),
-    location: {
-        type: "Point",
-        coordinates: [
-            experience_center[0] + faker.number.float({ min: -0.8, max: 0.8 }),
-            experience_center[1] + faker.number.float({ min: -0.3, max: 0.3 }),
-        ],
-    },
-    tags: faker.helpers.arrayElements(
-        ALL_UNESCO_TAGS,
-        faker.number.int({ min: 3, max: 8 })
-    ),
-    year: faker.number.int({ min: 1800, max: 2024 }),
-    visible_universe: faker.datatype.boolean(),
-    featured_image_url: faker.helpers.arrayElement(await getImagesInFolder()),
-    elevation_requests: [],
-});
+export const test_story_doc = async (experience_center: number[]) => {
+    const date = faker.date.past({ years: 3 });
+    const doc = {
+        author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
+        content: getContent(),
+        draft: faker.datatype.boolean(0.2),
+        published: faker.datatype.boolean(0.8),
+        title: faker.lorem.sentence({ min: 3, max: 5 }),
+        location: {
+            type: "Point",
+            coordinates: [
+                experience_center[0] +
+                    faker.number.float({ min: -0.8, max: 0.8 }),
+                experience_center[1] +
+                    faker.number.float({ min: -0.3, max: 0.3 }),
+            ],
+        },
+        tags: faker.helpers.uniqueArray(
+            ALL_UNESCO_TAGS,
+            faker.number.int({ min: 3, max: 8 })
+        ),
+        year: faker.number.int({ min: 1800, max: 2024 }),
+        visible_universe: faker.datatype.boolean(),
+        featured_image_url: faker.helpers.arrayElement(
+            await getImagesInFolder()
+        ),
+        elevation_requests: [],
+        createdAt: date,
+        updatedAt: faker.date.between({ from: date, to: new Date() }),
+    };
+    return doc;
+};

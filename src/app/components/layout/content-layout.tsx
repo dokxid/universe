@@ -1,7 +1,6 @@
 import { NavigationBreadcrumbs } from "@/app/components/layout/navigation-breadcrumbs";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -16,13 +15,9 @@ export default function ContentLayout({
         <div className="w-full h-full flex">
             <AppSidebar />
             <SidebarInset>
-                <header className="flex h-16 shrink-0 gap-2 border-b">
-                    <div className="flex items-center gap-2 px-3">
+                <header className="flex h-16 shrink-0 gap-2">
+                    <div className="flex items-center gap-5 px-3">
                         <SidebarTrigger />
-                        <Separator
-                            orientation="vertical"
-                            className="mr-2 h-4"
-                        />
                         <Breadcrumb>
                             <NavigationBreadcrumbs />
                         </Breadcrumb>

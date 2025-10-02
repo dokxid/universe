@@ -17,32 +17,31 @@ const elevationRequestSchema = new Schema({
     resolved_at: { type: Date },
 });
 
-const storySchema = new Schema(
-    {
-        author: { type: String, required: true },
-        content: { type: String, required: true },
-        draft: { type: Boolean, required: true },
-        published: { type: Boolean, required: true },
-        title: { type: String, required: true },
-        location: {
-            type: {
-                type: String,
-                enum: ["Point"],
-                required: true,
-            },
-            coordinates: {
-                type: [Number],
-                required: true,
-            },
+const storySchema = new Schema({
+    author: { type: String, required: true },
+    content: { type: String, required: true },
+    draft: { type: Boolean, required: true },
+    published: { type: Boolean, required: true },
+    title: { type: String, required: true },
+    location: {
+        type: {
+            type: String,
+            enum: ["Point"],
+            required: true,
         },
-        tags: { type: [String], required: true },
-        year: { type: Number, required: true },
-        visible_universe: { type: Boolean, required: true },
-        featured_image_url: { type: String, required: true },
-        elevation_requests: { type: [elevationRequestSchema], required: true },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
     },
-    { timestamps: true }
-);
+    tags: { type: [String], required: true },
+    year: { type: Number, required: true },
+    visible_universe: { type: Boolean, required: true },
+    featured_image_url: { type: String, required: true },
+    elevation_requests: { type: [elevationRequestSchema], required: true },
+    createdAt: { type: Date, required: true },
+    updatedAt: { type: Date, required: true },
+});
 
 const experienceSchema = new Schema({
     slug: { type: String, required: true },

@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
 import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ const toggleVariants = cva(
                     "pointer-events-auto hover:cursor-pointer shadow-xs bg-secondary text-secondary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:ring-2 hover:text-secondary-foreground",
             },
             size: {
-                default: "h-10 min-w-9 text-xs px-4 py-2 has-[>svg]:px-3",
+                default: "h-9 min-w-9 text-xs px-4 py-2 has-[>svg]:px-3",
                 sm: "h-8 px-1.5 min-w-8",
                 lg: "h-10 px-2.5 min-w-10",
             },

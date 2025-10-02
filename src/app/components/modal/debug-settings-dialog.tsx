@@ -1,6 +1,6 @@
 "use client";
 
-import { triggerRevalidateTag } from "@/actions/cache";
+import { triggerRevalidatePath, triggerRevalidateTag } from "@/actions/cache";
 import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,9 @@ export function DebugSettingsDialog() {
                             triggerRevalidateTag("stories");
                             triggerRevalidateTag("tags");
                             triggerRevalidateTag("users");
+                            triggerRevalidatePath("/[slug]/map");
+                            triggerRevalidatePath("/[slug]/stories");
+                            triggerRevalidatePath("/[slug]/experiences");
                             toast.success("Cache revalidation successful");
                         } catch (error) {
                             toast.error("Cache revalidation failed");

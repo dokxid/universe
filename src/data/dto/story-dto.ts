@@ -330,7 +330,7 @@ export async function submitStoryDTO(formData: FormData) {
             /[^a-zA-Z0-9.\-_]/g,
             ""
         );
-        const storyToInsert: NewStoryData = {
+        const storyToInsert = {
             author: user.id,
             content: data.content,
             title: data.title,
@@ -350,7 +350,9 @@ export async function submitStoryDTO(formData: FormData) {
                     resolved_at: new Date(),
                 },
             ],
-        };
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        } as NewStoryData;
 
         // Upload the file and insert the story
         if (process.env.LOCAL_UPLOADER === "true") {

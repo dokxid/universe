@@ -48,10 +48,7 @@ export type ElevationRequest = {
     status: "pending" | "approved" | "rejected" | "created";
 };
 
-export type NewStoryData = Omit<
-    Story,
-    "createdAt" | "updatedAt" | "_id" | "elevation_requests"
-> & {
+export type NewStoryData = Omit<Story, "_id" | "elevation_requests"> & {
     elevation_requests: NewElevationRequestData[];
 };
 
