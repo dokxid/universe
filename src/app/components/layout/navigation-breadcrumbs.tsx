@@ -20,7 +20,7 @@ export function NavigationBreadcrumbs() {
     }
 
     return (
-        <BreadcrumbList>
+        <BreadcrumbList className={"max-w-full"}>
             <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href={`/${slug}`}>{slug}</BreadcrumbLink>
             </BreadcrumbItem>
