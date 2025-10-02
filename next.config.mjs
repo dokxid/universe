@@ -1,12 +1,12 @@
-import type { NextConfig } from "next";
+// next.config.mjs
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-// Get __dirname equivalent for ES modules
+// Get __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const nextConfig: NextConfig = {
+const config = {
     turbopack: {
         rules: {
             "*.svg": {
@@ -15,12 +15,10 @@ const nextConfig: NextConfig = {
             },
         },
         resolveAlias: {
-            // fixes issues with maplibre-gl in turbopack
             "maplibre-gl-css": "maplibre-gl/dist/maplibre-gl.css",
         },
     },
 
-    // added because my node activated from ~/ instead of directory root
     outputFileTracingRoot: join(__dirname),
 
     experimental: {
@@ -29,7 +27,6 @@ const nextConfig: NextConfig = {
 
     async redirects() {
         return [
-            // Basic redirect
             {
                 source: "/",
                 destination: "/universe/map",
@@ -45,12 +42,10 @@ const nextConfig: NextConfig = {
 
     images: {
         remotePatterns: [
-            // images taken from the heritagelab.center site
             {
                 protocol: "https",
                 hostname: "heritagelab.center",
             },
-            // images from s3 bucket
             {
                 protocol: "https",
                 hostname: "hl-universe-staging.s3.eu-central-1.amazonaws.com",
@@ -65,4 +60,4 @@ const nextConfig: NextConfig = {
     },
 };
 
-export default nextConfig;
+export default config;
