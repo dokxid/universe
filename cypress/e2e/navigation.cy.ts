@@ -1,11 +1,11 @@
 describe("User Navigation", () => {
     it("can visit map page", () => {
         cy.visit("/universe/experiences");
-        cy.get("h1").contains("Our Co-Lab Communities");
+        cy.get("h1").contains("Our Heritage Labs");
     });
     it("can visit experiences page", () => {
         cy.visit("/universe/experiences");
-        cy.get("h1").contains("Our Co-Lab Communities");
+        cy.get("h1").contains("Our Heritage Labs");
     });
     it("can visit public stories page", () => {
         cy.visit("/universe/stories");

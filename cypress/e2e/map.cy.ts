@@ -1,14 +1,16 @@
-describe("Map Features", () => {
-    it("can visit map page", () => {
+describe("Map Overlay Interactions", () => {
+    it("map settings button changes link to settings", () => {
         cy.visit("/universe/map");
-        cy.get("canvas#deckgl-overlay").should("exist");
+        cy.get("a > .inline-flex").click();
+        cy.url().should("include", "/map-settings");
     });
-    it("experience selector can change search params", () => {
+    it("map settings button opens settings modal", () => {
         cy.visit("/universe/map");
-        cy.get("[aria-label='Experience Selector']").click();
-        cy.get("[data-value='test']")
-            .click()
-            .url()
-            .should("include", "?exp=test");
+        cy.get("a > .inline-flex").click();
+        cy.contains("Map Settings").should("exist");
+    });
+    it("map settings standalone page should work", () => {
+        cy.visit("/universe/map-settings");
+        cy.contains("Map Settings").should("exist");
     });
 });
