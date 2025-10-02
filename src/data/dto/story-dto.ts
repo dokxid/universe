@@ -186,6 +186,19 @@ export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
     }
 }
 
+export async function getAllStoriesDTO(): Promise<StoryDTO[]> {
+    try {
+        const user = await getCurrentUser();
+        if (!(await isUserSuperAdmin(user))) {
+            throw new Error("Unauthorized");
+        }
+        const stories = await getAllStories();
+        return stories;
+    } catch (err) {
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
 async function getAllStories(): Promise<StoryDTO[]> {
     try {
         const experiences = await getExperiences();

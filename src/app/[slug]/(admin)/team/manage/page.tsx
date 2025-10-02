@@ -1,13 +1,8 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 
-export default async function ManageTeamPage({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
+export default async function ManageTeamPage() {
     return (
-        <ContentLayout slug={slug}>
+        <ContentLayout>
             <div
                 className={
                     "flex flex-col items-center justify-center w-lg mx-auto h-full"

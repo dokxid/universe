@@ -1,10 +1,10 @@
-import { getLineStringFromLocations, haversineDistance } from "../lib/utils/geo";
+import { getLineStringFromLocations, haversineDistance } from "@/lib/utils/geo";
 
 describe("haversineDistance", () => {
     it("should calculate distance between two points in kilometers", () => {
         // New York to Los Angeles (approximately 3936 km)
-        const nyc: [number, number] = [40.7128, -74.006];
-        const la: [number, number] = [34.0522, -118.2437];
+        const nyc = [40.7128, -74.006];
+        const la = [34.0522, -118.2437];
 
         const distance = haversineDistance(nyc, la);
         expect(distance).toBeCloseTo(3936, 0); // Within 1 km
@@ -12,15 +12,15 @@ describe("haversineDistance", () => {
 
     it("should calculate distance between two points in miles", () => {
         // New York to Los Angeles (approximately 2446 miles)
-        const nyc: [number, number] = [40.7128, -74.006];
-        const la: [number, number] = [34.0522, -118.2437];
+        const nyc = [40.7128, -74.006];
+        const la = [34.0522, -118.2437];
 
         const distance = haversineDistance(nyc, la, true);
         expect(distance).toBeCloseTo(2446, 0); // Within 1 mile
     });
 
     it("should return 0 for identical coordinates", () => {
-        const point: [number, number] = [40.7128, -74.006];
+        const point = [40.7128, -74.006];
 
         const distance = haversineDistance(point, point);
         expect(distance).toBe(0);
@@ -28,8 +28,8 @@ describe("haversineDistance", () => {
 
     it("should handle negative coordinates", () => {
         // Sydney to Buenos Aires
-        const sydney: [number, number] = [-33.8688, 151.2093];
-        const buenosAires: [number, number] = [-34.6118, -58.396];
+        const sydney = [-33.8688, 151.2093];
+        const buenosAires = [-34.6118, -58.396];
 
         const distance = haversineDistance(sydney, buenosAires);
         expect(distance).toBeGreaterThan(0);
@@ -37,8 +37,8 @@ describe("haversineDistance", () => {
     });
 
     it("should default to kilometers when isMiles parameter is not provided", () => {
-        const point1: [number, number] = [0, 0];
-        const point2: [number, number] = [1, 1];
+        const point1 = [0, 0];
+        const point2 = [1, 1];
 
         const distanceDefault = haversineDistance(point1, point2);
         const distanceKm = haversineDistance(point1, point2, false);
@@ -47,8 +47,8 @@ describe("haversineDistance", () => {
     });
 
     it("should handle equator crossing", () => {
-        const northPoint: [number, number] = [10, 0];
-        const southPoint: [number, number] = [-10, 0];
+        const northPoint = [10, 0];
+        const southPoint = [-10, 0];
 
         const distance = haversineDistance(northPoint, southPoint);
         expect(distance).toBeCloseTo(2223.9, 1); // Approximately 2224 km
@@ -90,7 +90,7 @@ describe("getLineStringFromLocations", () => {
     });
 
     it("should return empty array for empty input", () => {
-        const locations: { latitude: number; longitude: number }[] = [];
+        const locations = [];
 
         const lineStrings = getLineStringFromLocations(locations);
         expect(lineStrings).toHaveLength(0);

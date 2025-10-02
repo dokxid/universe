@@ -3,20 +3,24 @@ import { AppSidebarContent } from "@/app/components/sidebar/sidebar-content/app-
 import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Suspense } from "react";
 
-export async function AppSidebar({ slug }: { slug: string }) {
+export async function AppSidebar() {
+    const experiencesPromise = getExperiencesDTO();
     return (
         <Sidebar variant={"inset"} className={"p-0"}>
-            <AppSidebarHeader slug={slug}></AppSidebarHeader>
+            <Suspense fallback={<Skeleton className="w-full h-16"></Skeleton>}>
+                <AppSidebarHeader experiencesPromise={experiencesPromise} />
+            </Suspense>
             <Suspense
                 fallback={<Skeleton className="w-full h-full"></Skeleton>}
             >
-                <AppSidebarContent slug={slug}></AppSidebarContent>
+                <AppSidebarContent experiencesPromise={experiencesPromise} />
             </Suspense>
             <SidebarFooter className={"px-4 py-3"}>
                 <Suspense fallback={<Skeleton className="w-full"></Skeleton>}>
-                    <UserWidgetHolder slug={slug} />
+                    <UserWidgetHolder />
                 </Suspense>
             </SidebarFooter>
         </Sidebar>

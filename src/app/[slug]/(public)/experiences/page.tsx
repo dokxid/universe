@@ -4,15 +4,9 @@ import { Suspense } from "react";
 
 export const experimental_ppr = true;
 
-export default async function ExperiencesPage({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
-
+export default async function ExperiencesPage() {
     return (
-        <ContentLayout slug={slug}>
+        <ContentLayout>
             <Suspense fallback={<div>Loading...</div>}>
                 <ExperiencesGallery />
             </Suspense>

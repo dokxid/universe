@@ -10,7 +10,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
     return (
-        <ContentLayout slug={slug}>
+        <ContentLayout>
             <div className="w-full @container mx-auto">
                 <ElevationRequestsTable
                     columns={

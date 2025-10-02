@@ -1,7 +1,14 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 import ExperienceView from "@/app/components/views/experience-view";
-import { getExperienceDTO } from "@/data/dto/experience-dto";
+import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Suspense } from "react";
+
+export async function generateStaticParams() {
+    const experiences = await getExperiencesDTO();
+    return experiences.map((experience) => ({
+        slug: experience.slug,
+    }));
+}
 
 export default async function ExperiencesPage({
     params,
@@ -15,7 +22,7 @@ export default async function ExperiencesPage({
     }
 
     return (
-        <ContentLayout slug={slug}>
+        <ContentLayout>
             <Suspense fallback={<div>Loading...</div>}>
                 <ExperienceView experiencePromise={experiencePromise} />
             </Suspense>

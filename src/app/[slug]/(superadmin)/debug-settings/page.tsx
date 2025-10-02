@@ -1,24 +1,13 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 import { DebugSettingsDialog } from "@/app/components/modal/debug-settings-dialog";
-import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-export default async function Page({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
-    const user = await getCurrentUser();
-    const isSuperAdmin = await isUserSuperAdmin(user);
-
-    if (!isSuperAdmin) {
-        redirect(`/`);
-    }
-
+export default async function Page() {
     return (
-        <ContentLayout slug={slug}>
-            <DebugSettingsDialog />
+        <ContentLayout>
+            <Suspense fallback={<div>Loading...</div>}>
+                <DebugSettingsDialog />
+            </Suspense>
         </ContentLayout>
     );
 }
