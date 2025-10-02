@@ -1,7 +1,7 @@
 "use server";
 
 import { generateElevationRequests } from "@/data/scripts/seeds/elevation-requests-seeds";
-import ExperienceModel from "@/types/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experiences";
 export async function seedAllElevationRequests() {
     try {
         const experiences = await ExperienceModel.find({}).exec();

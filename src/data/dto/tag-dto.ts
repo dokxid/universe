@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/data/mongodb/connections";
+import unescoTags from "@/lib/data/mongodb/models/unesco-tags";
 import { UnescoTagDTO, UnescoTagTheme } from "@/types/api";
-import unescoTags from "@/types/models/unesco-tags";
 import { cache } from "react";
 
 function sanitizeUNESCOTag(tagToSanitize: UnescoTagTheme): UnescoTagTheme {

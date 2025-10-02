@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/data/mongodb/connections";
+import ExperienceModel from "@/lib/data/mongodb/models/experiences";
 import { Experience } from "@/types/api";
-import ExperienceModel from "@/types/models/experiences";
 import { cache } from "react";
 
 const convertToString = (id: string | Buffer): string => {

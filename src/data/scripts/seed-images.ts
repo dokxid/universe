@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/data/mongodb/connections";
-import experiences from "@/types/models/experiences";
+import experiences from "@/lib/data/mongodb/models/experiences";
 import fs from "fs";
 
 async function seedLabImageFolder(slug: string) {

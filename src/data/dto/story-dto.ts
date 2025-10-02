@@ -11,6 +11,7 @@ import {
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
+import ExperienceModel from "@/lib/data/mongodb/models/experiences";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -21,7 +22,6 @@ import {
     StoryDTO,
 } from "@/types/api";
 import { submitStoryFormSchema } from "@/types/form-schemas";
-import ExperienceModel from "@/types/models/experiences";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";

@@ -1,7 +1,7 @@
 "use server";
 
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
-import ExperienceModel from "@/types/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experiences";
 export async function seedStories(
     experienceSlug: string,
     center: number[],
