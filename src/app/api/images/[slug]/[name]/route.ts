@@ -1,4 +1,4 @@
-import { getSignedS3URL } from "@/lib/files/s3";
+import { getSignedS3URL } from "@/lib/data/uploader/s3";
 import { NextResponse } from "next/server";
 
 export async function GET(

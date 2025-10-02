@@ -18,15 +18,15 @@ function CustomMarker({
     tags: UnescoTagDTO[];
     story: StoryDTO;
     isActive: boolean;
-}) {
+    }) {
     return (
         <HoverCard openDelay={100} closeDelay={20}>
             <HoverCardTrigger>
                 <MapPin
-                    size={30}
+                    size={20}
                     fill={"#D7263D"}
                     className={cn(
-                        "cursor-pointer transition-all size-8 hover:size-10 hover:fill-blue-400",
+                        "cursor-pointer transition-all size-7 hover:size-9 hover:fill-blue-400",
                         {
                             "fill-blue-400": isActive,
                         }

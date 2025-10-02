@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/mongodb/connections";
+import dbConnect from "@/lib/data/mongodb/connections";
 import { Experience } from "@/types/api";
 import ExperienceModel from "@/types/models/experiences";
 import { cache } from "react";

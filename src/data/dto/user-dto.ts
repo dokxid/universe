@@ -1,4 +1,4 @@
-import { workos } from "@/lib/auth";
+import { workos } from "@/lib/auth/workos/callback";
 
 export async function getUserDTO(userId: string) {
     try {

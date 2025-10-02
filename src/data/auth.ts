@@ -1,7 +1,7 @@
 import "server-only";
 
-import { workos } from "@/lib/auth";
-import dbConnect from "@/lib/mongodb/connections";
+import { workos } from "@/lib/auth/workos/callback";
+import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";

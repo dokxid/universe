@@ -1,4 +1,4 @@
-import { getLineStringFromLocations, haversineDistance } from "../lib/geo";
+import { getLineStringFromLocations, haversineDistance } from "../lib/utils/geo";
 
 describe("haversineDistance", () => {
     it("should calculate distance between two points in kilometers", () => {

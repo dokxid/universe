@@ -2,8 +2,8 @@ import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/api";
@@ -112,6 +112,7 @@ export function DeckGLMap({
     );
     const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
+    const map = useMap();
 
     // set correct experience
     const experience = useMemo(() => {

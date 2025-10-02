@@ -1,8 +1,8 @@
 "use client";
 
 import { Toggle } from "@/components/ui/toggle";
-import { setRightSideBarOpen } from "@/lib/features/navigation/navigationSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { setRightSideBarOpen } from "@/lib/redux/navigation/navigationSlice";
 import { PanelRightOpen } from "lucide-react";
 
 export function StoryWidgetHolder({ slug }: { slug: string }) {

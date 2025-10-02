@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/mongodb/connections";
+import dbConnect from "@/lib/data/mongodb/connections";
 import { UnescoTagDTO, UnescoTagTheme } from "@/types/api";
 import unescoTags from "@/types/models/unesco-tags";
 import { cache } from "react";
