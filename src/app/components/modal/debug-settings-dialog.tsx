@@ -44,13 +44,20 @@ export function DebugSettingsDialog() {
             >
                 <TriangleAlert
                     size={72}
-                    className={"mx-0 mb-3 md:mb-0 md:mr-6"}
+                    className={
+                        "mx-0 mb-3 md:mb-0 md:mr-6 hover:rotate-180 transition-transform duration-1000 ease-in-out"
+                    }
                 />
                 <article className="self-start">
                     <h1 className={"prose-h1"}>Debug Settings</h1>
                     <p className="text-muted-foreground prose-lead max-w-lg">
-                        Be careful when using these settings. They are meant for
-                        debugging purposes only and can cause data loss.
+                        <b className={"text-destructive"}>Be careful</b> when
+                        using these settings. They are meant for debugging
+                        purposes only and can cause data loss.
+                    </p>
+                    <p className="text-muted-foreground prose-lead max-w-lg">
+                        These also contain WIP features that are not yet
+                        available in the main application.
                     </p>
                 </article>
             </div>
@@ -58,10 +65,10 @@ export function DebugSettingsDialog() {
             <div className={"form-box"}>
                 <div className={"form-bounding-box"}>
                     <h2 className={"form-box-title"}>Revalidation</h2>
-                    <p className={"prose-small text-muted-foreground mb-4"}>
+                    <p className={"prose-small text-muted-foreground"}>
                         Revalidate paths and tags in the Next.js cache.
                     </p>
-                    <div className="flex flex-col md:flex-row md:flex-wrap gap-2">
+                    <div className="form-button-group">
                         <Button
                             className={"w-full md:w-fit"}
                             onClick={() => {
@@ -121,7 +128,7 @@ export function DebugSettingsDialog() {
                                     experience
                                 </Label>
                                 <Input
-                                    className={"mb-4 max-w-full"}
+                                    className={"max-w-full"}
                                     placeholder="Number of stories"
                                     type="number"
                                     value={numStories}
@@ -133,22 +140,26 @@ export function DebugSettingsDialog() {
                                     }
                                 />
                             </div>
-                            <Button
-                                variant={"destructive"}
-                                onClick={() => {
-                                    try {
-                                        seedDatabaseAction(numStories);
-                                        toast.success(
-                                            "Database seeding successful"
-                                        );
-                                    } catch (error) {
-                                        toast.error("Database seeding failed");
-                                        console.error(error);
-                                    }
-                                }}
-                            >
-                                Reset entire database
-                            </Button>
+                            <div className="form-button-group">
+                                <Button
+                                    variant={"destructive"}
+                                    onClick={() => {
+                                        try {
+                                            seedDatabaseAction(numStories);
+                                            toast.success(
+                                                "Database seeding successful"
+                                            );
+                                        } catch (error) {
+                                            toast.error(
+                                                "Database seeding failed"
+                                            );
+                                            console.error(error);
+                                        }
+                                    }}
+                                >
+                                    Reset entire database
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -162,13 +173,13 @@ export function DebugSettingsDialog() {
                         this form. You can also generate random stories like
                         explained in the seed database setting.
                     </p>
-                    <div className={"flex flex-col gap-8 mb-6"}>
-                        <div className="">
+                    <div className={"flex flex-col"}>
+                        <div className="flex flex-col gap-4">
                             <div className="flex flex-row max-w-full gap-4">
                                 <div className="grid w-full items-center gap-3">
                                     <Label className={""}>Latitude</Label>
                                     <Input
-                                        className={"mb-4"}
+                                        className={""}
                                         placeholder="Latitude"
                                         type="number"
                                         value={latitude}
@@ -183,7 +194,7 @@ export function DebugSettingsDialog() {
                                 <div className="grid w-full items-center gap-3">
                                     <Label className={""}>Longitude</Label>
                                     <Input
-                                        className={"mb-4"}
+                                        className={""}
                                         placeholder="Longitude"
                                         type="number"
                                         value={longitude}
@@ -199,7 +210,7 @@ export function DebugSettingsDialog() {
                             <div className="grid w-full max-w-full items-center gap-3">
                                 <Label className={""}>Title</Label>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Title"
                                     type="text"
                                     value={title}
@@ -212,7 +223,7 @@ export function DebugSettingsDialog() {
                             <div className="grid w-full max-w-full items-center gap-3">
                                 <Label className={""}>Slug</Label>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Slug"
                                     type="text"
                                     value={slug}
@@ -223,7 +234,7 @@ export function DebugSettingsDialog() {
                                 <Label className={""}>Description</Label>
                                 <Textarea
                                     rows={8}
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Description"
                                     value={description}
                                     onChange={(e) =>
@@ -234,7 +245,7 @@ export function DebugSettingsDialog() {
                             <div className="grid w-full max-w-full items-center gap-3">
                                 <Label className={""}>Subtitle</Label>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Subtitle"
                                     type="text"
                                     value={subtitle}
@@ -249,7 +260,7 @@ export function DebugSettingsDialog() {
                                     Generate from WorkOS Dashboard
                                 </p>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Organization ID"
                                     type="text"
                                     value={organizationId}
@@ -261,7 +272,7 @@ export function DebugSettingsDialog() {
                             <div className="grid w-full max-w-full items-center gap-3">
                                 <Label className={""}>Initial Zoom</Label>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Initial Zoom"
                                     type="number"
                                     value={initialZoom}
@@ -278,7 +289,7 @@ export function DebugSettingsDialog() {
                                     Number of generated stories
                                 </Label>
                                 <Input
-                                    className={"mb-4 w-full"}
+                                    className={"w-full"}
                                     placeholder="Number of stories"
                                     type="number"
                                     value={experienceStories}
@@ -292,6 +303,8 @@ export function DebugSettingsDialog() {
                                     }
                                 />
                             </div>
+                        </div>
+                        <div className="form-button-group">
                             <Button
                                 onClick={() => {
                                     try {
