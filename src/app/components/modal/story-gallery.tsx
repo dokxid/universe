@@ -22,7 +22,7 @@ import { use, useMemo, useState } from "react";
 function universeStoryGalleryHeader() {
     return (
         <>
-            <h1 className={"prose-h1"}>Stories</h1>
+            <h1 className={"prose-h1 mb-1"}>Stories</h1>
             <p className="text-muted-foreground prose-lead">
                 Read through the diverse stories created by our community.
             </p>
@@ -33,7 +33,7 @@ function universeStoryGalleryHeader() {
 function labStoryGalleryHeader(slug: string) {
     return (
         <>
-            <h1 className={"prose-h1 mb-2"}>Stories</h1>
+            <h1 className={"prose-h1 mb-1"}>Stories</h1>
             <p className="text-muted-foreground prose-lead">
                 Read through the diverse stories created by our{" "}
                 <Link

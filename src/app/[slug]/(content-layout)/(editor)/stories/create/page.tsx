@@ -1,5 +1,4 @@
 import AddStoryForm from "@/app/components/form/add-story-form";
-import ContentLayout from "@/app/components/layout/content-layout";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
 

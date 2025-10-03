@@ -11,12 +11,12 @@ export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
     const adminItems: SidebarItemGroup = [
         {
             title: "Manage Experiences",
-            href: `/universe/experiences/manage`,
+            href: `/${slug}/experiences/manage`,
             icon: Earth,
         },
         {
             title: "Elevation Requests",
-            href: `/universe/elevation-requests`,
+            href: `/${slug}/elevation-requests`,
             icon: Grid2X2Check,
         },
         {

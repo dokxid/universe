@@ -1,4 +1,3 @@
-import ContentLayout from "@/app/components/layout/content-layout";
 import { manageStoryColumns } from "@/app/components/stories/columns";
 import { StoryDataTable } from "@/app/components/stories/story-data-table";
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";

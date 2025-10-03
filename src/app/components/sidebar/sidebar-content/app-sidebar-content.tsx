@@ -11,16 +11,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Experience } from "@/types/dtos";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useParams } from "next/navigation";
-import { use } from "react";
 
 export function AppSidebarContent({
-    experiencesPromise,
+    experiences,
 }: {
-    experiencesPromise: Promise<Experience[]>;
+    experiences: Experience[];
 }) {
     const { slug } = useParams<{ slug: string }>();
     const { roles, loading, organizationId, user } = useAuth();
-    const experiences = use(experiencesPromise);
     const currentExperienceOrganizationId = experiences.find(
         (exp) => exp.slug === slug
     )?.organization_id;

@@ -1,33 +1,26 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import { Experience } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 
 export default function LabHeader({ experience }: { experience: Experience }) {
     return (
         <SidebarHeader className="flex flex-col items-start px-0 py-0 gap-0">
             <AspectRatio ratio={16 / 9} className="relative w-full">
-                <Suspense
-                    fallback={
-                        <Skeleton
-                            className={"w-full h-full bg-primary rounded-none"}
-                        />
-                    }
-                >
-                    <Image
-                        src={experience.featured_image}
-                        alt={experience.title}
-                        width={400}
-                        height={225}
-                        className="object-cover w-full h-full rounded-none"
-                        placeholder={shimmerDataUrl(400, 225)}
-                    />
-                </Suspense>
+                <Image
+                    key={experience.slug}
+                    src={experience.featured_image}
+                    alt={experience.title}
+                    width={400}
+                    height={225}
+                    className="object-cover w-full h-full rounded-none"
+                    placeholder={shimmerDataUrl(400, 225)}
+                    unoptimized={true}
+                    priority={true}
+                />
             </AspectRatio>
             <div className={"px-5 py-4 flex flex-col gap-1"}>
                 <div
