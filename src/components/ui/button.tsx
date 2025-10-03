@@ -22,7 +22,7 @@ const buttonVariants = cva(
                 secondary_custom:
                     "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 hover:ring-2",
                 primary_custom:
-                    "bg-primary text-primary-foreground shadow-xs hover:bg-primary/80 hover:ring-2",
+                    "bg-primary text-primary-foreground shadow-xs hover:bg-primary/80 ring-slate-400 hover:ring-2",
                 accent_custom:
                     "bg-accent text-accent-foreground shadow-xs hover:bg-accent/80 hover:ring-2",
                 sidebar_trigger_custom:

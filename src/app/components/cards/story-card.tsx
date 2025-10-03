@@ -30,7 +30,7 @@ export function StoryCard({
                 <div className="overflow-hidden relative">
                     <div
                         className={
-                            "mb-16 origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-40 md:h-60"
+                            "origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-60 md:h-90 group-hover:brightness-25"
                         }
                     >
                         {story.featured_image_url ? (
@@ -50,16 +50,16 @@ export function StoryCard({
                             </div>
                         )}
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-card group-hover:bg-selected group-hover:text-selected-foreground p-4 group flex flex-row items-center grow h-fit overflow-y-hidden py-4">
+                    <div className="absolute bottom-0 left-0 right-0 bg-card group-hover:bg-transparent group-hover:text-selected-foreground p-4 group flex flex-row items-center grow h-fit overflow-y-hidden py-4">
                         <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
                             <div className="flex-1 min-w-0 flex flex-col gap-1">
-                                <h1 className="text-base font-semibold truncate group-hover:after:content-['_→']">
+                                <h1 className="text-base font-semibold truncate md:whitespace-normal group-hover:text-xl group-hover:after:content-['_→']">
                                     {story.title}
                                 </h1>
-                                <p className="text-sm text-muted-foreground group-hover:text-selected-foreground truncate">
+                                <p className="text-sm text-muted-foreground group-hover:text-selected-foreground group-hover:font-semibold truncate">
                                     by {story.author_name}
                                 </p>
-                                <p className="text-xs text-muted-foreground truncate">
+                                <p className="text-xs text-muted-foreground group-hover:font-semibold truncate">
                                     published:{" "}
                                     {new Date(
                                         story.createdAt

@@ -51,7 +51,6 @@ export const test_story_doc = async (experience_center: number[]) => {
         author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
-        published: faker.datatype.boolean(0.8),
         title: faker.lorem.sentence({ min: 3, max: 5 }),
         location: {
             type: "Point",
