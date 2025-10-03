@@ -95,7 +95,7 @@ export function ContactSocial({
         <a
             href={href}
             className={cn(
-                "text-sm font-semibold font-stretch-90% hover:text-accent-blue-foreground",
+                "text-xs font-semibold font-stretch-90% hover:text-accent-blue-foreground",
                 className
             )}
             {...props}

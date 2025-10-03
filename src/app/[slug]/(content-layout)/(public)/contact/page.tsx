@@ -11,6 +11,7 @@ import {
     ContactSocialsGroup,
     ContactStoriesLink,
 } from "@/app/components/cards/contact-card";
+import { RowButtonGroup } from "@/app/components/layout/button-group-layout";
 import { ContentLayout } from "@/app/components/layout/content-layout";
 import {
     Header,
@@ -19,9 +20,10 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
+import { Button } from "@/components/ui/button";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { faker } from "@faker-js/faker";
-import { Contact, Inbox, Link, Phone } from "lucide-react";
+import { Contact, Globe, Inbox, Link, Mail, Phone } from "lucide-react";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();
@@ -29,6 +31,17 @@ export async function generateStaticParams() {
         slug: experience.slug,
     }));
 }
+
+type ContactUser = {
+    titles: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    email: string;
+    phone: string;
+    website: string;
+    description: string;
+};
 
 export default async function AboutPage() {
     return (
@@ -78,11 +91,7 @@ export default async function AboutPage() {
                                                 style: "international",
                                             })}
                                         </ContactSocial>
-                                        <ContactSocial
-                                            className={
-                                                "text-sm font-semibold font-stretch-90%"
-                                            }
-                                        >
+                                        <ContactSocial>
                                             <ContactSocialIcon asChild>
                                                 <Link />
                                             </ContactSocialIcon>
@@ -92,13 +101,27 @@ export default async function AboutPage() {
                                     <ContactDescription>
                                         {faker.lorem.paragraphs(2)}
                                     </ContactDescription>
-                                    <ContactStoriesLink
-                                        href={"#"}
-                                        numStories={faker.number.int({
-                                            min: 1,
-                                            max: 100,
-                                        })}
-                                    />
+                                    <RowButtonGroup>
+                                        <Button
+                                            variant={"primary_custom"}
+                                            size={"icon"}
+                                        >
+                                            <Mail />
+                                        </Button>
+                                        <Button
+                                            variant={"primary_custom"}
+                                            size={"icon"}
+                                        >
+                                            <Globe />
+                                        </Button>
+                                        <ContactStoriesLink
+                                            href={"#"}
+                                            numStories={faker.number.int({
+                                                min: 1,
+                                                max: 100,
+                                            })}
+                                        />
+                                    </RowButtonGroup>
                                 </ContactCardContent>
                             </ContactCard>
                         ))}
