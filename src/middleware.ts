@@ -29,6 +29,7 @@ const UNAUTHENTICATED_PATHS = [
     "/map-settings",
     "/images/:filename",
     "/about",
+    "/contact",
 ];
 const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path
@@ -65,7 +66,6 @@ function addCSPHeaders(response: Response): Response {
     );
     return response;
 }
-
 
 export default async function middleware(
     req: NextRequest,
@@ -128,7 +128,8 @@ export const config = {
         "/:slug/user-preferences",
         "/:slug/stories/elevation-requests",
         "/:slug/about",
+        "/:slug/contact",
         "/:slug/debug-settings",
-        "/universe/elevation-requests",
+        "/:slug/elevation-requests",
     ],
 };

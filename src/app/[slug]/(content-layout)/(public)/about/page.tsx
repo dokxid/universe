@@ -1,4 +1,4 @@
-import ExperienceView from "@/app/components/views/experience-view";
+import LabView from "@/app/components/views/experience-view";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
 
 export async function generateStaticParams() {
@@ -19,5 +19,5 @@ export default async function ExperiencesPage({
         return <div>Experience not found</div>;
     }
 
-    return <ExperienceView experiencePromise={experiencePromise} />;
+    return <LabView experiencePromise={experiencePromise} />;
 }

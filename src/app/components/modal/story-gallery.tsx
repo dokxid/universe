@@ -1,6 +1,13 @@
 "use client";
 
 import { StoryCard } from "@/app/components/cards/story-card";
+import {
+    Header,
+    HeaderContent,
+    HeaderDescription,
+    HeaderIcon,
+    HeaderTitle,
+} from "@/app/components/layout/header";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,34 +26,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { use, useMemo, useState } from "react";
 
-function universeStoryGalleryHeader() {
+function UniverseStoryGalleryHeader() {
     return (
-        <>
-            <h1 className={"prose-h1 mb-1"}>Stories</h1>
-            <p className="text-muted-foreground prose-lead">
-                Read through the diverse stories created by our community.
-            </p>
-        </>
+        <p className="text-muted-foreground prose-lead">
+            Read through the diverse stories created by our community.
+        </p>
     );
 }
 
-function labStoryGalleryHeader(slug: string) {
+function LabStoryGalleryHeader({ slug }: { slug: string }) {
     return (
-        <>
-            <h1 className={"prose-h1 mb-1"}>Stories</h1>
-            <p className="text-muted-foreground prose-lead">
-                Read through the diverse stories created by our{" "}
-                <Link
-                    href={`/${slug}/about`}
-                    className={
-                        "text-blue-500 dark:text-blue-300 font-semibold hover:underline after:content-['_↗']"
-                    }
-                >
-                    Heritage Lab
-                </Link>
-                .
-            </p>
-        </>
+        <p className="text-muted-foreground prose-lead">
+            Read through the diverse stories created by our{" "}
+            <Link
+                href={`/${slug}/about`}
+                className={
+                    "text-blue-500 dark:text-blue-300 font-semibold hover:underline after:content-['_↗']"
+                }
+            >
+                Heritage Lab
+            </Link>
+        </p>
     );
 }
 
@@ -83,22 +83,21 @@ export function StoryGallery({
     return (
         <div className="flex items-center w-full max-w-6xl my-10 px-4 lg:px-6">
             <div className={"flex flex-col w-full items-center"}>
-                <div
-                    className={
-                        "flex flex-col lg:flex-row w-full items-start lg:items-center"
-                    }
-                >
-                    <LibraryBig
-                        size={72}
-                        className={"mx-0 mb-3 md:mb-0 md:mr-6"}
-                    />
-                    <article className="self-start">
-                        {slug === "universe"
-                            ? universeStoryGalleryHeader()
-                            : labStoryGalleryHeader(slug)}
-                    </article>
-                </div>
-                <Separator className={"my-8"}></Separator>
+                <Header>
+                    <HeaderIcon>
+                        <LibraryBig size={80} />
+                    </HeaderIcon>
+                    <HeaderContent>
+                        <HeaderTitle>Stories</HeaderTitle>
+                        <HeaderDescription>
+                            {slug === "universe" ? (
+                                <UniverseStoryGalleryHeader />
+                            ) : (
+                                <LabStoryGalleryHeader slug={slug} />
+                            )}
+                        </HeaderDescription>
+                    </HeaderContent>
+                </Header>
                 <div
                     className={
                         "flex flex-col lg:flex-row gap-2 w-full mb-6 justify-between"

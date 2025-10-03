@@ -7,8 +7,20 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { pathFeatures } from "@/lib/path";
 import { usePathname } from "next/navigation";
+
+export const pathFeatures = new Map<string, string>([
+    ["map", "Map"],
+    ["stories", "Story collection"],
+    ["team", "Team"],
+    ["about", "About"],
+    ["experiences", "Heritage Labs"],
+    ["map-settings", "Map settings"],
+    ["user-preferences", "User preferences"],
+    ["debug-settings", "Debug settings"],
+    ["elevation-requests", "Elevation requests"],
+    ["contact", "Contact"],
+]);
 
 export function NavigationBreadcrumbs() {
     const pathname = usePathname();

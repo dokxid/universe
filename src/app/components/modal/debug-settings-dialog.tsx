@@ -46,7 +46,7 @@ export function DebugSettingsDialog() {
                 }
             >
                 <TriangleAlert
-                    size={72}
+                    size={80}
                     className={
                         "mx-0 mb-3 md:mb-0 md:mr-6 hover:rotate-180 transition-transform duration-1000 ease-in-out"
                     }

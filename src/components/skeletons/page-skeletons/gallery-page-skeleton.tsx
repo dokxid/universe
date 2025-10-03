@@ -3,19 +3,19 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 
 export default function GalleryPageSkeleton() {
     return (
-        <div className="w-full h-full flex px-4 lg:px-6">
+        <div className="w-full h-full flex px-4 lg:px-6 max-w-6xl mx-auto">
             {/* Content skeleton */}
-            <div className="flex flex-col gap-4 overflow-y-auto items-center max-w-6xl mx-auto w-full my-10">
+            <div className="flex flex-col gap-4 overflow-y-auto items-center w-full my-10">
                 {/* Page title skeleton */}
                 <div
                     className={
-                        "flex flex-col lg:flex-row w-full items-start lg:items-center gap-6"
+                        "flex flex-col lg:flex-row w-full items-start lg:items-center"
                     }
                 >
-                    <Skeleton className="size-[72px]" />
+                    <Skeleton className="size-[80px] mx-0 mb-3 md:mb-0 md:mr-6" />
                     <div className={"flex flex-col gap-2"}>
                         <Skeleton className="h-10 w-64" />
-                        <Skeleton className="h-6 w-96" />
+                        <Skeleton className="h-[28px] w-96" />
                     </div>
                 </div>
 

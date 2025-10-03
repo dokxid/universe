@@ -1,4 +1,4 @@
-import ContentLayout from "@/app/components/layout/content-layout";
+import PageLayout from "@/app/components/layout/page-layout";
 import { Impersonation } from "@workos-inc/authkit-nextjs/components";
 
 export default function RootLayout({
@@ -9,10 +9,10 @@ export default function RootLayout({
     modal: React.ReactNode;
 }) {
     return (
-        <ContentLayout>
+        <PageLayout>
             <Impersonation />
             {children}
             <div>{modal}</div>
-        </ContentLayout>
+        </PageLayout>
     );
 }
