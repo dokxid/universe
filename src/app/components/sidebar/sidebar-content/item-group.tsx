@@ -47,7 +47,7 @@ export function ItemGroup({
                             href={item.href}
                             className={`flex items-center w-full ${
                                 pathname === item.href
-                                    ? "bg-accent text-blue-200 group-hover/menu_item:text-blue-100 font-semibold rounded-md"
+                                    ? "bg-blue-100 dark:bg-accent text-blue-900 dark:text-blue-200 group-hover/menu_item:text-blue-800! dark:group-hover/menu_item:text-blue-100! font-semibold rounded-md"
                                     : "group-hover/menu_item:font-semibold group-hover/menu_item:text-primary"
                             }`}
                             aria-label={item.title}
@@ -57,7 +57,7 @@ export function ItemGroup({
                             <item.icon
                                 className={`${
                                     pathname === item.href
-                                        ? "stroke-blue-200 group-hover/menu_item:stroke-blue-100"
+                                        ? "text-blue-900 dark:stroke-blue-200 group-hover/menu_item:stroke-blue-800! dark:group-hover/menu_item:stroke-blue-100!"
                                         : "stroke-muted-foreground group-hover/menu_item:stroke-primary"
                                 }`}
                             />
