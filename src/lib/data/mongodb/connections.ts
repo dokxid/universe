@@ -1,4 +1,4 @@
-import { buildConnectionString } from "@/lib/utils/buildConnectionString";
+import { buildConnectionString } from "@/lib/utils/build-connection-string";
 import { attachDatabasePool } from "@vercel/functions";
 import mongoose from "mongoose";
 
