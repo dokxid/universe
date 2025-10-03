@@ -2,7 +2,7 @@ import S3Image from "@/app/components/embeds/s3-image";
 import { StoryDetailsHeader } from "@/app/components/map/map-overlay/story-details";
 import { Badge } from "@/components/ui/badge";
 import { useAppDispatch } from "@/lib/hooks";
-import { setSelectedStoryId } from "@/lib/redux/map/mapSlice";
+import { setSelectedStoryId } from "@/lib/redux/map/map-slice";
 import { getTagColorHex } from "@/lib/utils/color-string";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import Link from "next/link";

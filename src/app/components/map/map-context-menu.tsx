@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch } from "@/lib/hooks";
-import { setLngLat } from "@/lib/redux/dialogue/addStoryDialogSlice";
-import { setFlyPosition } from "@/lib/redux/map/mapSlice";
+import { setLngLat } from "@/lib/redux/dialogue/add-story-slice";
+import { setFlyPosition } from "@/lib/redux/map/map-slice";
 import { ClipboardCopy, FilePlus2, Plane } from "lucide-react";
 import Link from "next/link";
 

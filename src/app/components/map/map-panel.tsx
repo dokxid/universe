@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/hooks";
-import { setCurrentExperience } from "@/lib/redux/experiences/experiencesSlice";
+import { setCurrentExperience } from "@/lib/redux/experiences/experiences-slice";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
+import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
 import { ChevronsDownUp } from "lucide-react";
 
 export default function ToggleDescriptorButton({

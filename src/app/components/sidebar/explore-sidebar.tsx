@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
-import { setRightSideBarOpen } from "@/lib/redux/navigation/navigationSlice";
+import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
 import { Experience } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";

@@ -3,7 +3,7 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
+import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
