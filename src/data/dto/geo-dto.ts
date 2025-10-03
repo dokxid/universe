@@ -1,5 +1,5 @@
-import { getLineStringFromLocations } from "@/lib/geo";
-import { StoryDTO } from "@/types/api";
+import { getLineStringFromLocations } from "@/lib/utils/geo";
+import { StoryDTO } from "@/types/dtos";
 
 export type TaggedConnectionDTO = {
     tag: string;

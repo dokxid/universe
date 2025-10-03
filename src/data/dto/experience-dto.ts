@@ -1,16 +1,34 @@
-import dbConnect from "@/lib/mongodb/connections";
-import { Experience } from "@/types/api";
-import ExperienceModel from "@/types/models/experiences";
+import dbConnect from "@/lib/data/mongodb/connections";
+import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import { Experience } from "@/types/dtos";
 import { cache } from "react";
 
-function sanitizeExperience(experienceToSanitize: Experience) {
+const convertToString = (id: string | Buffer): string => {
+    if (!id) return "";
+    if (typeof id === "string") return id;
+    if (Buffer.isBuffer(id)) {
+        // Convert Buffer to hex string (ObjectId format)
+        return Buffer.from(id).toString("hex");
+    }
+    return String(id);
+};
+
+function sanitizeExperience(experienceToSanitize: {
+    toJSON: () => Experience;
+}) {
+    const plainExperience = experienceToSanitize.toJSON() as Experience;
     return {
-        ...experienceToSanitize,
-        _id: experienceToSanitize._id.toString(),
+        ...plainExperience,
+        _id: convertToString(plainExperience._id),
         stories:
-            experienceToSanitize.stories?.map((story) => ({
+            plainExperience.stories?.map((story) => ({
                 ...story,
-                _id: story._id?.toString(),
+                _id: convertToString(story._id),
+                elevation_requests:
+                    story.elevation_requests?.map((req) => ({
+                        ...req,
+                        _id: convertToString(req._id),
+                    })) || [],
             })) || [],
     };
 }
@@ -18,9 +36,7 @@ function sanitizeExperience(experienceToSanitize: Experience) {
 export async function getExperiences(): Promise<Experience[]> {
     try {
         await dbConnect();
-        const experiences = await ExperienceModel.find({})
-            .lean<Experience[]>()
-            .exec();
+        const experiences = await ExperienceModel.find({}).exec();
 
         const sanitizedExperiences = experiences.map((experience) =>
             sanitizeExperience(experience)
@@ -39,9 +55,7 @@ export async function getExperience(
         await dbConnect();
         const experience = await ExperienceModel.findOne({
             slug: experienceSlug,
-        })
-            .lean<Experience>()
-            .exec();
+        }).exec();
         if (!experience) throw new Error("experience not found");
         const sanitizedExperience = sanitizeExperience(experience);
         return sanitizedExperience;

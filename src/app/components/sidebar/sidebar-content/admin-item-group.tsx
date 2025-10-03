@@ -1,9 +1,8 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { Settings, Users } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ItemGroup } from "./item-group";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function AdminItemGroup({ visible }: { visible: boolean }) {
     const pathname = usePathname();

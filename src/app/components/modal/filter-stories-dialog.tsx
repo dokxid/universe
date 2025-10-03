@@ -1,3 +1,5 @@
+"use client";
+
 import { TagPicker } from "@/app/components/form/tag-picker";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,20 +10,35 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { setTags } from "@/lib/features/map/mapSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks";
+import { setSelectedTagsParams } from "@/lib/utils/param-setter";
+import { UnescoTagDTO } from "@/types/dtos";
 import { Funnel } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 
-export function FilterStoriesDialog() {
+export function FilterStoriesDialog({
+    tagsPromise,
+}: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
+}) {
+    const tags = React.use(tagsPromise);
     const [open] = React.useState(false);
     const tagState = useAppSelector((state) => state.map.tags);
-    const dispatch = useAppDispatch();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
+    const handleTagsChange = (newTags: string[]) => {
+        setSelectedTagsParams(pathname, searchParams, newTags);
+    };
 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant={"secondary"} className="size-10 hover:ring-2">
+                <Button
+                    variant={"secondary_custom"}
+                    className="size-10 hover:ring-2"
+                >
                     <Funnel />
                 </Button>
             </DialogTrigger>
@@ -33,8 +50,9 @@ export function FilterStoriesDialog() {
                     </DialogDescription>
                 </DialogHeader>
                 <TagPicker
+                    availableTags={tags}
                     selectedTags={tagState}
-                    onTagsChange={(newTags) => dispatch(setTags(newTags))}
+                    onTagsChange={handleTagsChange}
                     showLabel={open}
                 />
             </DialogContent>

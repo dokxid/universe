@@ -1,4 +1,4 @@
-import { Experience } from "@/types/api";
+import { Experience } from "@/types/dtos";
 
 export default function CurrentExperienceDescriptor(
     {experience}: { experience: Experience }

@@ -1,30 +1,32 @@
-import { StoryCardContent } from "@/app/components/map/map-overlay/story-card-content";
+import { StoryHoverCardContent } from "@/app/components/map/map-overlay/story-hover-card-content";
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
-import { StoryDTO } from "@/types/api";
+import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";
 
 function CustomMarker({
+    tags,
     story,
     isActive,
 }: {
+    tags: UnescoTagDTO[];
     story: StoryDTO;
     isActive: boolean;
-}) {
+    }) {
     return (
-        <HoverCard openDelay={30} closeDelay={30}>
+        <HoverCard openDelay={100} closeDelay={20}>
             <HoverCardTrigger>
                 <MapPin
-                    size={30}
+                    size={20}
                     fill={"#D7263D"}
                     className={cn(
-                        "cursor-pointer transition-all size-8 hover:size-10 hover:fill-blue-400",
+                        "cursor-pointer transition-all size-7 hover:size-9 hover:fill-blue-400",
                         {
                             "fill-blue-400": isActive,
                         }
@@ -34,7 +36,7 @@ function CustomMarker({
                 />
             </HoverCardTrigger>
             <HoverCardContent>
-                <StoryCardContent story={story} />
+                <StoryHoverCardContent tags={tags} story={story} />
                 <HoverCardArrow />
             </HoverCardContent>
         </HoverCard>

@@ -10,5 +10,46 @@ export const submitStoryFormSchema = z.object({
     latitude: z.number().refine((value) => value >= -90 && value <= 90, {}),
     tags: z.array(z.string()),
     draft: z.boolean(),
-    experience: z.string(),
+    universe: z.boolean(),
+    slug: z.string().min(1, { message: "This field is required" }),
+});
+
+export const teamSettingsFormSchema = z.object({
+    title: z.string().min(2, "Title must be at least 2 characters."),
+    subtitle: z.string().min(2, "Subtitle must be at least 2 characters."),
+    description: z
+        .string()
+        .min(10, "Description must be at least 10 characters."),
+    subdomain: z
+        .string()
+        .min(3, "Subdomain must be at least 3 characters.")
+        .regex(
+            /^[a-zA-Z0-9-]+$/,
+            "Subdomain can only contain letters, numbers, and hyphens."
+        ),
+    "featured-picture": z
+        .any()
+        .refine((files) => files?.length === 1, "Please upload a file.")
+        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
+        .refine(
+            (files) =>
+                files.type === "image/jpeg" || files.type === "image/png",
+            "Only .jpg, .png, and .webp files are accepted."
+        ),
+});
+
+export const userPreferencesFormSchema = z.object({
+    firstName: z.string().min(2, "First name must be at least 2 characters."),
+    lastName: z.string().min(2, "Last name must be at least 2 characters."),
+    email: z.email(),
+    profilePictureUrl: z.url().optional().nullable(),
+    profilePicture: z
+        .any()
+        .refine((files) => files?.length === 1, "Please upload a file.")
+        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
+        .refine(
+            (files) =>
+                files.type === "image/jpeg" || files.type === "image/png",
+            "Only .jpg, .png, and .webp files are accepted."
+        ),
 });

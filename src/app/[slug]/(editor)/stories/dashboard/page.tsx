@@ -1,13 +1,8 @@
 import ContentLayout from "@/app/components/layout/content-layout";
 
-export default async function EditorDashboardPage({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
+export default async function EditorDashboardPage() {
     return (
-        <ContentLayout slug={slug} feature={"Team settings"}>
+        <ContentLayout>
             <div
                 className={
                     "flex flex-col items-center justify-center w-lg mx-auto h-full"

@@ -1,5 +1,5 @@
+import S3Image from "@/app/components/embeds/s3-image";
 import ContentLayout from "@/app/components/layout/content-layout";
-import S3Image from "@/app/components/s3-image";
 import EditorView from "@/app/components/stories/editor-view";
 import { getStoryDTO } from "@/data/dto/story-dto";
 import { PenLine } from "lucide-react";
@@ -7,14 +7,14 @@ import { PenLine } from "lucide-react";
 export default async function StoryDetails({
     params,
 }: {
-    params: Promise<{ slug: string; id: string }>;
+    params: Promise<{ id: string }>;
 }) {
-    const { slug, id: storyId } = await params;
+    const { id: storyId } = await params;
     const story = await getStoryDTO(storyId);
     const storySerialized = JSON.stringify(story);
 
     return (
-        <ContentLayout slug={slug} feature={"Experiences"} className={"p-0"}>
+        <ContentLayout className={"p-0"}>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
                 <S3Image
                     experience={story.experience}

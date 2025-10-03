@@ -1,15 +1,22 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
-import { setSelectedStoryId } from "@/lib/features/map/mapSlice";
-import { setDescriptorOpen } from "@/lib/features/settings/settingsSlice";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Experience, StoryDTO } from "@/types/api";
-import { DeckProps, LayersList, MapViewState } from "@deck.gl/core";
+import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
+import { getTagColor } from "@/lib/utils/color-string";
+import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import {
+    DeckProps,
+    LayersList,
+    MapViewState,
+    PickingInfo,
+} from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
-import "maplibre-gl/dist/maplibre-gl.css";
-import { useSearchParams } from "next/navigation";
+import { EdgeInsets } from "maplibre-gl";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
     AttributionControl,
@@ -22,7 +29,7 @@ import {
 
 // source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 
-type DataType = {
+type TagConnection = {
     from: [longitude: number, latitude: number];
     to: [longitude: number, latitude: number];
     tag: string;
@@ -36,98 +43,117 @@ function DeckGLOverlay(props: DeckProps) {
 
 function MapController({
     currentExperience,
+    selectedStory,
 }: {
     currentExperience: Experience;
+    selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
+    const flyBackState = useAppSelector((state) => state.map.flyBack);
+    const isMobile = useIsMobile();
+
     useEffect(() => {
-        if (!map || !currentExperience) return;
-        map.flyTo({
+        let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
+        if (selectedStory) {
+            center = selectedStory.location.coordinates;
+            zoom = 12;
+            edgeInsets = isMobile
+                ? new EdgeInsets(0, 0, 0, 0)
+                : new EdgeInsets(0, 0, 0, 450);
+        } else {
+            center = currentExperience.center.coordinates;
+            zoom = currentExperience.initial_zoom;
+            edgeInsets = new EdgeInsets(0, 0, 0, 0);
+        }
+        map?.flyTo({
+            center,
+            zoom,
+            padding: edgeInsets,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentExperience, selectedStory]);
+    useEffect(() => {
+        map?.flyTo({
             center: currentExperience.center.coordinates,
             zoom: currentExperience.initial_zoom,
         });
-        // lint check skip bc it breaks if i resolve this
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentExperience]);
+    }, [flyBackState]);
     return null;
 }
 
-// color mapping for tags
-// const getTagColor = (tag: string): [number, number, number] => {
-//     const colorMap: { [key: string]: [number, number, number] } = {
-//         "Agriculture/Farms": [34, 139, 34], // Forest Green
-//         "Boats/Ships": [0, 100, 200], // Blue
-//         Clothing: [220, 20, 60], // Crimson
-//         Education: [138, 43, 226], // Blue Violet
-//         Family: [255, 140, 0], // Dark Orange
-//         Fishing: [50, 205, 50], // Lime Green
-//         Food: [255, 20, 147], // Deep Pink
-//         Hospitals: [255, 0, 0], // Red
-//         Housing: [255, 165, 0], // Orange
-//         Language: [75, 0, 130], // Indigo
-//         Marriage: [255, 105, 180], // Hot Pink
-//         // Add more tag colors as needed
-//         default: [128, 128, 128], // Gray for unknown tags
-//     };
-
-//     return colorMap[tag] || colorMap.default;
-// };
-
 export function DeckGLMap({
+    tags,
     stories,
     experiences,
     experienceSlug,
 }: {
+    tags: UnescoTagDTO[];
     stories: StoryDTO[];
     experiences: Experience[];
     experienceSlug: string;
 }) {
-    // next js router stuff
-    const { mainMap: map } = useMap();
-    const searchParams = useSearchParams();
-
-    // redux stuff
+    // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
     const mapState = useAppSelector((state) => state.map);
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const selectedFilterTags = searchParams.get("tags");
+    const isMobile = useIsMobile();
 
     // react state stuff
+    const [arcHeight, setArcHeight] = useState(0);
+    const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
-    const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
-    const [connections, setConnections] = useState<DataType[]>([]);
+    const [activeStory, setActiveStory] = useState<StoryDTO | null>(
+        stories.find((story) => story._id === searchParams.get("story")) || null
+    );
+    const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
 
-    // too many react hooks
+    // set correct experience
     const experience = useMemo(() => {
-        if (searchParams.size === 0) {
-            console.log(
-                "No search params, using experienceSlug: ",
-                experienceSlug
-            );
+        if (experienceSlug !== "universe") {
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
             ) as Experience;
-        } else {
-            return experiences.find(
-                (exp) => exp.slug === searchParams.get("exp")
-            ) as Experience;
         }
+        const experienceToShow = searchParams.get("exp")
+            ? searchParams.get("exp")
+            : "universe";
+        return experiences.find(
+            (exp) => exp.slug === experienceToShow
+        ) as Experience;
     }, [experienceSlug, experiences, searchParams]);
 
     const storiesFiltered = useMemo(() => {
-        if (mapState.tags.length === 0) return stories;
+        if (selectedFilterTags === null) return stories;
         return stories.filter((story) =>
-            story.tags.some((tag) => mapState.tags.includes(tag))
+            story.tags.some((tag) => selectedFilterTags.includes(tag))
         );
-    }, [mapState.tags, stories]);
+    }, [selectedFilterTags, stories]);
+
+    useEffect(() => {
+        if (searchParams.get("story") === "") {
+            setActiveStory(null);
+        } else {
+            setActiveStory(
+                stories.find(
+                    (story) => story._id === searchParams.get("story")
+                ) || null
+            );
+        }
+    }, [searchParams, stories]);
 
     useEffect(() => {
         if (!activeStory) {
-            console.log("No active story, clearing connections");
             setConnections([]);
+            setArcHeight(0.6);
             return;
         }
+        setArcHeight(0.6);
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );
@@ -136,7 +162,7 @@ export function DeckGLMap({
             storiesToUse,
             activeStory.tags
         );
-        const connectionsSanitized: DataType[] = newConnections.flatMap(
+        const connectionsSanitized: TagConnection[] = newConnections.flatMap(
             (conn) =>
                 conn.lineStrings.map((lineString) => {
                     const coords = lineString.coordinates;
@@ -147,12 +173,15 @@ export function DeckGLMap({
                     };
                 })
         );
+        setTimeout(() => {
+            setArcHeight(connectionsSanitized.length > 0 ? 1 : 0.6);
+        }, 100);
         setConnections(connectionsSanitized);
-    }, [activeStory, mapState.tags, storiesFiltered]);
+    }, [activeStory, selectedFilterTags, storiesFiltered]);
 
     const INITIAL_VIEW_STATE: MapViewState = {
-        longitude: mapState.flyPosition[0],
-        latitude: mapState.flyPosition[1],
+        longitude: experience.center.coordinates[0],
+        latitude: experience.center.coordinates[1],
         zoom: mapState.zoomLevel,
     };
 
@@ -165,7 +194,7 @@ export function DeckGLMap({
 
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        dispatch(setSelectedStoryId(story._id));
+        setSelectedStoryIdParams(pathname, searchParams, story._id);
     };
 
     function getTaggedConnections(
@@ -188,29 +217,66 @@ export function DeckGLMap({
 
     const layers: LayersList = useMemo(
         () => [
-            // colored arcs (different tags different colors, looks bad tho)
-            // new ArcLayer({
-            //     id: "arcs",
-            //     data: connections,
-            //     getSourcePosition: (d: DataType) => d.from,
-            //     getTargetPosition: (d: DataType) => d.to,
-            //     getSourceColor: (d: DataType) => getTagColor(d.tag), // Dynamic source color
-            //     getTargetColor: (d: DataType) => getTagColor(d.tag), // Dynamic target color
-            //     getWidth: 3,
+            // new GeoJsonLayer({
+            //     id: "tag_connections",
+            //     data: {
+            //         type: "FeatureCollection",
+            //         features: connections.map((conn, index) => ({
+            //             type: "Feature",
+            //             geometry: {
+            //                 type: "LineString",
+            //                 coordinates: [conn.from, conn.to],
+            //             },
+            //             properties: {
+            //                 tag: conn.tag,
+            //                 index: index,
+            //             },
+            //         })),
+            //     },
+            //     pickable: true,
+            //     stroked: true,
+            //     filled: false,
+            //     lineWidthMinPixels: 3,
+            //     getLineColor: [0, 128, 200],
+            //     getLineWidth: 3,
+            //     // onHover: (info) => {
+            //     //     const infoSanitized: PickingInfo<TagConnection> = {
+            //     //         ...info,
+            //     //         object: {
+            //     //             from: info.object.features.geometry.coordinates[0],
+            //     //             to: info.object.features.geometry.coordinates[1],
+            //     //             tag: info.object.features.properties.tag,
+            //     //         },
+            //     //     };
+            //     //     setHoverInfo(infoSanitized);
+            //     // },
+            //     updateTriggers: {
+            //         data: connections, // Force update when connections change
+            //     },
             // }),
-
-            // monocolor arcs (different tags same color)
+            // colored arcs (different tags different colors, looks bad tho)
             new ArcLayer({
                 id: "arcs",
                 data: connections,
-                getSourcePosition: (d: DataType) => d.from,
-                getTargetPosition: (d: DataType) => d.to,
-                getSourceColor: [0, 128, 200],
-                getTargetColor: [200, 0, 80],
+                greatCircle: true,
+                getSourcePosition: (d: TagConnection) => d.from,
+                getTargetPosition: (d: TagConnection) => d.to,
+                getSourceColor: (d: TagConnection) => getTagColor(tags, d.tag),
+                getTargetColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getWidth: 3,
+                pickable: true,
+                onHover: (info) => setHoverInfo(info),
+                getHeight: arcHeight,
+                transitions: {
+                    getHeight: {
+                        duration: 1000,
+                        easing: (t: number) => 1 - Math.pow(1 - t, 3), // Ease-out cubic
+                    },
+                },
             }),
         ],
-        [connections] // Re-create layers when connections change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [connections, arcHeight] // Re-create layers when connections change
     );
 
     return (
@@ -225,9 +291,10 @@ export function DeckGLMap({
             </div>
             <div className={"h-full w-full"}>
                 <Map
+                    reuseMaps={true}
                     onClick={() => {
                         setActiveStory(null);
-                        dispatch(setSelectedStoryId(""));
+                        setSelectedStoryIdParams(pathname, searchParams, "");
                         dispatch(setDescriptorOpen(false));
                     }}
                     id="mainMap"
@@ -245,9 +312,12 @@ export function DeckGLMap({
                 >
                     <AttributionControl
                         compact={true}
-                        position={"bottom-left"}
+                        position={"bottom-right"}
                     />
-                    <MapController currentExperience={experience} />
+                    <MapController
+                        currentExperience={experience}
+                        selectedStory={activeStory}
+                    />
                     {storiesFiltered.map((story, index) => (
                         <Marker
                             longitude={story.location.coordinates[0]}
@@ -256,17 +326,29 @@ export function DeckGLMap({
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();
                                 handleStorySelection(story);
-                                if (!map) return;
-                                map.panTo(story.location.coordinates);
                             }}
                         >
                             <CustomMarker
+                                tags={tags}
                                 story={story}
                                 isActive={activeStory?._id === story._id}
                             />
                         </Marker>
                     ))}
-                    <DeckGLOverlay layers={layers} />
+                    <DeckGLOverlay pickingRadius={15} layers={layers} />
+                    {hoverInfo?.object && !isMobile && (
+                        <div
+                            className={
+                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-base"
+                            }
+                            style={{
+                                left: hoverInfo.x,
+                                top: hoverInfo.y,
+                            }}
+                        >
+                            {`matching tags: ${hoverInfo.object.tag}`}
+                        </div>
+                    )}
                 </Map>
             </div>
         </div>

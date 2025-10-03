@@ -1,7 +1,7 @@
 import { Dialog } from "@/app/components/modal/dialog";
 import { UserPreferencesDialog } from "@/app/components/modal/user-preferences-dialog";
 
-export default function Page() {
+export default async function Page() {
     return (
         <Dialog
             title="User Preferences"

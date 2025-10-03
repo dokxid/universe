@@ -1,5 +1,5 @@
 import { fetcher } from "@/lib/data_hooks/fetcher";
-import { ImageURL } from "@/types/api";
+import { ImageURL } from "@/types/dtos";
 import useSWR from "swr";
 
 export function useImageURL(experience: string, fileName: string) {

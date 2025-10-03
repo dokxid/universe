@@ -1,33 +1,27 @@
+import { MapWidgetHolder } from "@/app/components/map/map-overlay/map-widget-holder";
+import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigation-widget-holder";
+import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
-import { VerticalWidgetHolder } from "@/app/components/map/map-overlay/vertical-widget-holder";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
+import { UnescoTagDTO } from "@/types/dtos";
+import { Suspense } from "react";
 
 export async function MapOverlay({
+    tagsPromise,
     slug,
-    experienceSearchParam,
 }: {
+    tagsPromise: Promise<UnescoTagDTO[]>;
     slug: string;
-    experienceSearchParam: string | string[] | undefined;
 }) {
-    const experienceSlug = slug ?? "universe";
-    const selectedExperience =
-        experienceSearchParam && !Array.isArray(experienceSearchParam)
-            ? experienceSearchParam
-            : slug;
-    const experiences = JSON.stringify(await getExperiencesDTO());
-    const stories = JSON.stringify(await getAllPublicStoriesDTO());
+    const experienceSlug = slug;
+    const storiesPromise = getAllPublicStoriesDTO();
 
     return (
         <div className={"relative w-full h-full p-4"}>
             <div className="relative w-full h-full">
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
-                    <VerticalWidgetHolder
-                        selectedExperience={selectedExperience}
-                        experiences={experiences}
-                        slug={experienceSlug}
-                    />
+                    <NavigationWidgetHolder slug={experienceSlug} />
                 </div>
 
                 {/* top right */}
@@ -36,9 +30,24 @@ export async function MapOverlay({
                         "absolute top-0 right-0 flex flex-col gap-3 h-full"
                     }
                 >
-                    <StoryWidgetHolder stories={stories} slug={slug} />
+                    <div className={"flex flex-col gap-3 items-end h-full"}>
+                        <Suspense fallback={<div>loading stories...</div>}>
+                            <StoryWidgetHolder slug={slug} />
+                        </Suspense>
+                        <Suspense>
+                            <StoryDetails
+                                slug={slug}
+                                tagsPromise={tagsPromise}
+                                storiesPromise={storiesPromise}
+                            />
+                        </Suspense>
+                    </div>
                 </div>
 
+                {/* bottom left */}
+                <div className={"absolute bottom-0 left-0 flex flex-col gap-3"}>
+                    <MapWidgetHolder slug={slug} />
+                </div>
                 {/* bottom right */}
                 <div
                     className={"absolute bottom-0 right-0 flex flex-col gap-3"}

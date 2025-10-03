@@ -1,26 +1,34 @@
-import { CurrentExperienceSelector } from "@/app/components/sidebar/current-experience-selector";
-import { CurrentExperienceSelectorSkeleton } from "@/components/skeletons/current-experience-selector-skeleton";
-import {
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Suspense } from "react";
+import { Separator } from "@/components/ui/separator";
+import { SidebarHeader } from "@/components/ui/sidebar";
+import Link from "next/link";
 
-export async function UniverseHeader() {
-    const experiencesSerialized = JSON.stringify(await getExperiencesDTO());
+export function UniverseHeader() {
     return (
-        <SidebarHeader className="">
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <Suspense fallback={<CurrentExperienceSelectorSkeleton />}>
-                        <CurrentExperienceSelector
-                            experiencesSerialized={experiencesSerialized}
-                        />
-                    </Suspense>
-                </SidebarMenuItem>
-            </SidebarMenu>
+        <SidebarHeader className="px-4 py-4">
+            {/* <Button className={"w-full relative h-[80px]"} variant={"ghost"}>
+                <ThemeImage
+                    srcLight="/img/logotype_normal.svg"
+                    srcDark="/img/logotype_white.svg"
+                    width={160}
+                    height={40}
+                    className="object-contain"
+                />
+            </Button> */}
+            <Link href={"/"} className={"no-underline"}>
+                <h1 className={"text-[44px]/[1] font-black"}>
+                    Heritage Universe
+                </h1>
+            </Link>
+            <p className={"mt-2 text-[12px]/[1.5]"}>
+                Heritage is not a hard science that can be completely defined by
+                a singular authorized interpretation around a practice or
+                object. It exists within and among communities, shaped by
+                memory, values, present realities, and future aspirations.
+                Encompassing our various projects, Heritage Universe explores
+                how heritage and memory overlap and differ between communities
+                and spaces.
+            </p>
+            <Separator className={"mt-4"} />
         </SidebarHeader>
     );
 }

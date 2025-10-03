@@ -1,5 +1,5 @@
+import S3Image from "@/app/components/embeds/s3-image";
 import { Dialog } from "@/app/components/modal/dialog";
-import S3Image from "@/app/components/s3-image";
 
 export default async function Page({
     params,

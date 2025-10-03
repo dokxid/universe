@@ -1,38 +1,29 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { getSignedS3URL } from "@/lib/data/uploader/s3";
 import { NextResponse } from "next/server";
-
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-    region: process.env.AWS_REGION,
-});
 
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ slug: string; name: string }> }
 ): Promise<Response> {
     const { slug, name } = await params;
+    let url: string;
 
     try {
-        const command = new GetObjectCommand({
-            Bucket: process.env.AWS_BUCKET_NAME!,
-            Key: slug + "/" + name,
-        });
-
-        const url = await getSignedUrl(s3, command);
-
+        if (process.env.LOCAL_UPLOADER === "true") {
+            url = new URL(`/uploads/${slug}/${name}`, request.url).toString();
+            return NextResponse.json({ url });
+        } else {
+            url = await getSignedS3URL(slug, name);
+        }
         return new NextResponse(JSON.stringify({ url }), {
             headers: {
                 "Content-Type": "application/json",
             },
         });
     } catch (error) {
-        console.error("Error fetching image from S3:", error);
+        console.error("Error fetching image:", error);
         return new NextResponse(
-            JSON.stringify({ error: "Error fetching image from S3" }),
+            JSON.stringify({ error: "Error fetching image" }),
             {
                 status: 500,
                 headers: {

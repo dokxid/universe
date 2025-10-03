@@ -1,3 +1,5 @@
+import { Impersonation } from "@workos-inc/authkit-nextjs/components";
+
 export default function RootLayout({
     children,
     modal,
@@ -7,6 +9,7 @@ export default function RootLayout({
 }) {
     return (
         <>
+            <Impersonation />
             <div>{modal}</div>
             {children}
         </>

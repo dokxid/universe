@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@import "maplibre-gl/dist/maplibre-gl.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -25,6 +25,8 @@
     --color-input: var(--input);
     --color-border: var(--border);
     --color-destructive: var(--destructive);
+    --color-selected-foreground: var(--selected-foreground);
+    --color-selected: var(--selected);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -43,6 +45,7 @@
     --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* default shadcn theme */
 :root {
     --radius: 0.625rem;
     --background: oklch(1 0 0);
@@ -57,7 +60,9 @@
     --secondary-foreground: oklch(0.205 0 0);
     --muted: oklch(0.97 0 0);
     --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
+    --selected: oklch(0.98 0 0);
+    --selected-foreground: oklch(0.205 0 0);
+    --accent: oklch(0.94 0 0);
     --accent-foreground: oklch(0.205 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
@@ -72,12 +77,13 @@
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent: oklch(0.94 0 0);
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* default shadcn dark theme */
 .dark {
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
@@ -91,6 +97,8 @@
     --secondary-foreground: oklch(0.985 0 0);
     --muted: oklch(0.269 0 0);
     --muted-foreground: oklch(0.708 0 0);
+    --selected: oklch(0.269 0 0);
+    --selected-foreground: oklch(0.985 0 0);
     --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
@@ -120,18 +128,38 @@
     body {
         @apply bg-background text-foreground;
     }
+
+    a {
+        @apply cursor-pointer;
+    }
+}
+
+@utility form-box-title {
+    @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
+}
+
+@utility form-bounding-box {
+    @apply max-w-2xl w-full;
+}
+
+@utility form-button-group {
+    @apply flex flex-col md:flex-row md:flex-wrap gap-2 pt-6;
+}
+
+@utility form-box {
+    @apply bg-transparent md:bg-card px-0 py-5 md:px-7 md:py-7 rounded-lg border-0 md:border-1 w-full max-w-6xl flex flex-col items-start;
 }
 
 @utility prose-h1 {
-    @apply scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance;
+    @apply scroll-m-20 text-left text-4xl font-extrabold tracking-tight text-balance mb-4;
 }
 
 @utility prose-h2 {
-    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+    @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
 }
 
 @utility prose-h3 {
-    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight mb-1;
 }
 
 @utility prose-h4 {
@@ -171,7 +199,7 @@
 }
 
 @utility prose-lead {
-    @apply text-xl text-muted-foreground;
+    @apply text-xl text-muted-foreground mb-2;
 }
 
 @utility prose-large {
@@ -179,7 +207,7 @@
 }
 
 @utility prose-small {
-    @apply text-sm font-medium leading-none;
+    @apply text-sm font-normal text-muted-foreground;
 }
 
 @utility prose-muted {

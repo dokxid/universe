@@ -1,10 +1,10 @@
 "use client";
 
-import { setCurrentExperience } from "@/lib/features/experiences/experiencesSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Experience, StoryDTO } from "@/types/api";
+import { setCurrentExperience } from "@/lib/redux/experiences/experiencesSlice";
+import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
-import { Suspense, useEffect } from "react";
+import { use, useEffect } from "react";
 
 // make dynamic loading
 const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
@@ -12,32 +12,30 @@ const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
 });
 
 export function MapPanel({
-    storiesSerialized,
-    experiencesSerialized,
+    tagsPromise,
+    storiesPromise,
+    experiencesPromise,
     experienceSlug,
 }: {
-    storiesSerialized: string;
-    experiencesSerialized: string;
+    tagsPromise: Promise<UnescoTagDTO[]>;
+    storiesPromise: Promise<StoryDTO[]>;
+    experiencesPromise: Promise<Experience[]>;
     experienceSlug: string;
 }) {
-    const stories = JSON.parse(storiesSerialized) as StoryDTO[];
-    const experiences = JSON.parse(experiencesSerialized) as Experience[];
+    const experiences = use(experiencesPromise);
+    const stories = use(storiesPromise);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setCurrentExperience(experienceSlug));
-        console.log("Set current experience to", experienceSlug);
     }, [dispatch, experienceSlug]);
 
     return (
-        <>
-            <Suspense fallback={<div>loading stories...</div>}>
-                <MapWrapper
-                    stories={stories}
-                    experiences={experiences}
-                    experienceSlug={experienceSlug}
-                />
-            </Suspense>
-        </>
+        <MapWrapper
+            tagsPromise={tagsPromise}
+            stories={stories}
+            experiences={experiences}
+            experienceSlug={experienceSlug}
+        />
     );
 }

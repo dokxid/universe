@@ -1,4 +1,5 @@
-import { uploadPublicFile } from "@/lib/aws/s3";
+import { uploadFileToPublicS3 } from "@/lib/data/uploader/s3";
+import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { cn } from "@/lib/utils";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Typography } from "@tiptap/extension-typography";
@@ -32,7 +33,24 @@ export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
 }
 
 async function fakeuploader(file: File): Promise<string> {
-    const src = await uploadPublicFile(file);
+    // NOTE: This is a fake upload function. Replace this with your own upload logic.
+    // This function should return the uploaded image URL.
+
+    // wait 3s to simulate upload
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const src = await fileToBase64(file);
+
+    return src;
+}
+
+async function s3Uploader(file: File): Promise<string> {
+    const src = await uploadFileToPublicS3(file);
+    return src;
+}
+
+async function serverFileUploader(file: File): Promise<string> {
+    const src = await uploadFileToPublicFolder(file);
     return src;
 }
 
@@ -176,6 +194,10 @@ const createExtensions = ({
     Placeholder.configure({ placeholder: () => placeholder }),
 ];
 
+const selectedUploader = process.env.LOCAL_UPLOADER
+    ? serverFileUploader
+    : s3Uploader;
+
 export const useMinimalTiptapEditor = ({
     value,
     output = "html",
@@ -184,7 +206,7 @@ export const useMinimalTiptapEditor = ({
     throttleDelay = 0,
     onUpdate,
     onBlur,
-    uploader,
+    uploader = selectedUploader,
     ...props
 }: UseMinimalTiptapEditorProps) => {
     const throttledSetValue = useThrottle(
@@ -213,7 +235,10 @@ export const useMinimalTiptapEditor = ({
 
     const editor = useEditor({
         immediatelyRender: false,
-        extensions: createExtensions({ placeholder, uploader }),
+        extensions: createExtensions({
+            placeholder,
+            uploader,
+        }),
         editorProps: {
             attributes: {
                 autocomplete: "off",

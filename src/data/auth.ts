@@ -1,7 +1,7 @@
 import "server-only";
 
-import { workos } from "@/lib/auth";
-import dbConnect from "@/lib/mongodb/connections";
+import { workos } from "@/lib/auth/workos/callback";
+import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";
@@ -75,19 +75,27 @@ export async function isUserAdmin(
     }
 }
 
-export async function isUserSuperAdmin(
-    user: User | null,
-    experienceSlug: string
-): Promise<boolean> {
+export async function isUserSuperAdmin(user: User | null): Promise<boolean> {
     try {
+        if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+            throw new Error("WORKOS_SUPER_ADMIN_ORG_ID is not set");
+        }
         if (!user) return false;
-        const userRelation = await getUserExperienceRelation(
-            user,
-            experienceSlug
-        );
-        return userRelation.isSuperAdmin;
-    } catch {
-        return false;
+        const organizationId =
+            process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID;
+        const membership =
+            await workos.userManagement.listOrganizationMemberships({
+                userId: user.id,
+                organizationId: organizationId,
+            });
+        const membershipToReturn = membership.data.pop();
+        if (membershipToReturn === undefined) {
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error("Error fetching user experience relation:", err);
+        throw err;
     }
 }
 

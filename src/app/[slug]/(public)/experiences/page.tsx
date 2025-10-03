@@ -1,18 +1,14 @@
 import ContentLayout from "@/app/components/layout/content-layout";
-import { ListExperiencesDialog } from "@/app/components/modal/list-experiences-dialog";
+import { ExperiencesGallery } from "@/app/components/modal/experiences-gallery";
 import { Suspense } from "react";
 
-export default async function ExperiencesPage({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
+export const experimental_ppr = true;
 
+export default async function ExperiencesPage() {
     return (
-        <ContentLayout slug={slug} feature={"Co-Labs"}>
+        <ContentLayout>
             <Suspense fallback={<div>Loading...</div>}>
-                <ListExperiencesDialog />
+                <ExperiencesGallery />
             </Suspense>
         </ContentLayout>
     );

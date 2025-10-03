@@ -14,9 +14,16 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+
+export type SidebarItemGroup = {
+    title: string;
+    href: string;
+    icon: React.ElementType;
+    dropdownItems?: { title: string; href: string }[];
+}[];
+
 export function ItemGroup({
     children,
     items,
@@ -28,8 +35,10 @@ export function ItemGroup({
 }) {
     const { setOpenMobile } = useSidebar();
     return (
-        <SidebarGroup>
-            <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
+        <SidebarGroup className={"py-2"}>
+            <SidebarGroupLabel className={"font-semibold"}>
+                {groupLabel}
+            </SidebarGroupLabel>
             {children}
             {items.map((item) => (
                 <SidebarMenuItem
@@ -43,8 +52,11 @@ export function ItemGroup({
                             aria-label={item.title}
                             onClick={() => setOpenMobile(false)}
                         >
-                            <item.icon />
+                            <item.icon className={"stroke-muted-foreground"} />
                             <span>{item.title}</span>
+                            {/* <ChevronRight
+                                className={"ml-auto stroke-muted-foreground"}
+                            /> */}
                         </Link>
                     </SidebarMenuButton>
                     {item.dropdownItems && (

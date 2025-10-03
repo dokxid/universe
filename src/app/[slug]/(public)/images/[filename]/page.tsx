@@ -21,7 +21,6 @@ export default async function ImagesPage({
         if (!imageData.url) {
             return <div>Image not found</div>;
         }
-        console.log("Redirecting to image URL:", imageData.url);
         url = imageData.url;
     } catch (error) {
         console.error("Failed to fetch image data:", error);

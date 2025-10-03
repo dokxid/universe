@@ -1,21 +1,52 @@
 "use client";
 
-import { SidebarItemGroup } from "@/types/sidebar-item-group";
-import { Globe } from "lucide-react";
-import { ItemGroup } from "./item-group";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { Link, Orbit } from "lucide-react";
+import { ItemGroup, SidebarItemGroup } from "./item-group";
 
-export function LinksItemGroup() {
-    const linksItems: SidebarItemGroup = [
+export function LinksItemGroup({
+    isUniverseView,
+}: {
+    isUniverseView?: boolean;
+}) {
+    const linksItemsIfUniverse: SidebarItemGroup = [
+        {
+            title: "GitHub Repository",
+            href: "https://github.com/dokxid/universe",
+            icon: SiGithub,
+        },
         {
             title: "Heritage Lab Website",
             href: "https://heritagelab.center/",
-            icon: Globe,
+            icon: Link,
         },
         {
             title: "CIE Website",
             href: "https://heritage-activities.org/",
-            icon: Globe,
+            icon: Link,
         },
     ];
-    return <ItemGroup items={linksItems} groupLabel="Links"></ItemGroup>;
+    const linksItemsIfLab: SidebarItemGroup = [
+        {
+            title: "CIE Website",
+            href: "https://heritage-activities.org/",
+            icon: Link,
+        },
+        {
+            title: "Universe View",
+            href: `/universe/map`,
+            icon: Orbit,
+        },
+        {
+            title: "Heritage Lab Website",
+            href: "https://heritagelab.center/",
+            icon: Link,
+        },
+    ];
+    return (
+        <ItemGroup
+            items={isUniverseView ? linksItemsIfUniverse : linksItemsIfLab}
+            groupLabel="More"
+        ></ItemGroup>
+    );
 }

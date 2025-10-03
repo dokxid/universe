@@ -13,43 +13,21 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { StoryDTO } from "@/types/api";
-import { ColumnDef } from "@tanstack/react-table";
+import { StoryDTO } from "@/types/dtos";
+import { createColumnHelper } from "@tanstack/react-table";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import { MoreHorizontal } from "lucide-react";
+import {
+    Map,
+    MapPinCheckInside,
+    MoreHorizontal,
+    Orbit,
+    PencilLine,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
-const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
-    const pathname = usePathname();
-    const slug = pathname.split("/")[1];
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <Link href={`/${slug}/stories/${story._id}`}>
-                        View story
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Link href={`/${slug}/stories/edit/${story._id}`}>
-                        Edit story
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>View payment details</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-};
+const columnHelper = createColumnHelper<StoryDTO>();
 
 const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
@@ -58,8 +36,42 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>Please log in to request elevation.</div>;
 
-    const handleElevationRequest = async () => {
-        await submitElevationRequest(story.experience, user, story._id);
+    const handleRejectedElevationRequest = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log("Starting elevation request...");
+
+        try {
+            await submitElevationRequest(
+                story._id,
+                user,
+                story.experience,
+                "rejected"
+            );
+            toast.success("Elevation request set to: rejected");
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    const handleApprovedElevationRequest = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log("Starting elevation request...");
+
+        try {
+            await submitElevationRequest(
+                story._id,
+                user,
+                story.experience,
+                "approved"
+            );
+            toast.success("Elevation request set to: approved");
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
     };
 
     return (
@@ -71,26 +83,152 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                    <p className={"font-bold"}>Actions</p>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href={`/${slug}/stories/${story._id}`}>
-                        View story
-                    </Link>
+                    <Button variant={"ghost"} className="w-full justify-start">
+                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                            Story page
+                        </Link>
+                    </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <form action={handleElevationRequest}>
-                        <Button type="submit">Request elevation</Button>
-                    </form>
+                    <Button variant={"ghost"} className="w-full justify-start">
+                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                            Elevation history
+                        </Link>
+                    </Button>
                 </DropdownMenuItem>
-                <DropdownMenuItem>View payment details</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={handleApprovedElevationRequest}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Approve elevation
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={handleRejectedElevationRequest}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Reject elevation
+                    </Button>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
 };
 
-export const manageStoryColumns: ColumnDef<StoryDTO>[] = [
-    {
+const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
+    const pathname = usePathname();
+    const slug = pathname.split("/")[1];
+    const { user, loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
+    if (!user) return <div>Please log in to request elevation.</div>;
+
+    const handlePendingElevationRequest = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log("Starting elevation request...");
+
+        try {
+            const result = await submitElevationRequest(
+                story._id,
+                user,
+                story.experience,
+                "pending"
+            );
+            toast.success("Elevation request completed: " + result);
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>
+                    <p className={"font-bold"}>Actions</p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <Button variant={"ghost"} className="w-full justify-start">
+                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                            View story
+                        </Link>
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button variant={"ghost"} className="w-full justify-start">
+                        <Link href={`/${slug}/stories/edit/${story._id}`}>
+                            Edit story
+                        </Link>
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => {
+                            toast.success(
+                                `Updating Visibility for story ${story.title} to: Draft.`
+                            );
+                        }}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set as draft
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => {
+                            toast.success(
+                                `Updating Visibility for story ${story.title} to: Public.`
+                            );
+                        }}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set as public
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={handlePendingElevationRequest}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Request elevation
+                    </Button>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
+export const manageStoryColumns = [
+    columnHelper.display({
         id: "select",
         header: ({ table }) => (
             <Checkbox
@@ -106,6 +244,7 @@ export const manageStoryColumns: ColumnDef<StoryDTO>[] = [
         ),
         cell: ({ row }) => (
             <Checkbox
+                className={"mr-2"}
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
@@ -113,70 +252,159 @@ export const manageStoryColumns: ColumnDef<StoryDTO>[] = [
         ),
         enableSorting: false,
         enableHiding: false,
-    },
-    {
-        accessorKey: "title",
+    }),
+    columnHelper.accessor("title", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Title" />
         ),
-    },
-    {
-        accessorKey: "author_name",
+        cell: (info) => <span className={""}>{info.getValue()}</span>,
+    }),
+    columnHelper.accessor("author_name", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
-    },
-    {
-        accessorKey: "published",
+        cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("draft", {
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Published" />
+            <DataTableColumnHeader column={column} title="Draft" />
         ),
-    },
-    {
-        accessorKey: "visible_universe",
+        cell: (info) => (
+            <Badge
+                className={
+                    info.getValue()
+                        ? "bg-secondary text-secondary-foreground"
+                        : "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                }
+            >
+                <span
+                    className={
+                        "font-semibold w-15 flex justify-center items-center"
+                    }
+                >
+                    {info.getValue() ? (
+                        <PencilLine size={16} className={"inline-block mr-1"} />
+                    ) : (
+                        <MapPinCheckInside
+                            size={16}
+                            className={"inline-block mr-1"}
+                        />
+                    )}
+                    {info.getValue() ? "draft" : "public"}
+                </span>
+            </Badge>
+        ),
+    }),
+    columnHelper.accessor("visible_universe", {
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Visible Universe" />
+            <DataTableColumnHeader column={column} title="On Level" />
         ),
-    },
-    {
-        accessorKey: "createdAt",
+        cell: (info) => (
+            <Badge
+                className={
+                    info.getValue()
+                        ? "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground"
+                }
+            >
+                <span
+                    className={
+                        "font-semibold w-15 flex justify-center items-center"
+                    }
+                >
+                    {info.getValue() ? (
+                        <Orbit size={16} className={"inline-block mr-1"} />
+                    ) : (
+                        <Map size={16} className={"inline-block mr-1"} />
+                    )}
+                    {info.getValue() ? "univ" : "lab"}
+                </span>
+            </Badge>
+        ),
+    }),
+    columnHelper.accessor(
+        (row) =>
+            row.elevation_requests[row.elevation_requests.length - 1].status,
+        {
+            id: "latest_elevation_request",
+            header: ({ column }) => (
+                <DataTableColumnHeader
+                    column={column}
+                    title="Elevation Requests"
+                />
+            ),
+            cell: (info) => {
+                if (info.getValue() === "approved") {
+                    return (
+                        <Badge
+                            className={
+                                "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                            }
+                        >
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                } else if (info.getValue() === "rejected") {
+                    return (
+                        <Badge
+                            className={
+                                "bg-red-400 text-secondary-foreground dark:text-primary-foreground"
+                            }
+                        >
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                } else {
+                    return (
+                        <Badge className={"bg-accent text-accent-foreground"}>
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                }
+            },
+        }
+    ),
+    columnHelper.accessor("createdAt", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Created At" />
         ),
-        cell: ({ row }) => {
-            const story = row.original;
+        cell: (info) => {
             return (
                 <span suppressHydrationWarning>
-                    {new Date(story.createdAt).toLocaleDateString()}
+                    {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             );
         },
-    },
-    {
-        accessorKey: "updatedAt",
+    }),
+    columnHelper.accessor("updatedAt", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Updated At" />
         ),
-        cell: ({ row }) => {
-            const story = row.original;
+        cell: (info) => {
             return (
                 <span suppressHydrationWarning>
-                    {new Date(story.updatedAt).toLocaleDateString()}
+                    {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             );
         },
-    },
-    {
+    }),
+    columnHelper.display({
         id: "actions",
         cell: ({ row }) => {
             const story = row.original;
             return <ManageStoriesActionsCell story={story} />;
         },
-    },
+    }),
 ];
 
-export const elevationRequestColumns: ColumnDef<StoryDTO>[] = [
-    {
+export const elevationRequestsColumns = [
+    columnHelper.display({
         id: "select",
         header: ({ table }) => (
             <Checkbox
@@ -192,6 +420,7 @@ export const elevationRequestColumns: ColumnDef<StoryDTO>[] = [
         ),
         cell: ({ row }) => (
             <Checkbox
+                className={"mr-2"}
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
@@ -199,73 +428,166 @@ export const elevationRequestColumns: ColumnDef<StoryDTO>[] = [
         ),
         enableSorting: false,
         enableHiding: false,
-    },
-    {
-        accessorKey: "title",
+    }),
+    columnHelper.accessor("title", {
         header: ({ column }) => (
-            <DataTableColumnHeader
-                column={column}
-                title="Title"
-                className={"w-fit"}
-            />
+            <DataTableColumnHeader column={column} title="Title" />
         ),
-        size: 100,
-    },
-    {
-        accessorKey: "author_name",
+        cell: (info) => <span className={""}>{info.getValue()}</span>,
+    }),
+    columnHelper.accessor("author_name", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
-    },
-    {
-        id: "status",
-        accessorFn: (row) => row.elevation_requests?.[0].status ?? "Unknown",
+        cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("draft", {
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Status" />
+            <DataTableColumnHeader column={column} title="Draft" />
         ),
-        cell: ({ row }) => {
-            const story = row.original;
-            const status = story.elevation_requests?.[0].status;
+        cell: (info) => (
+            <Badge
+                className={
+                    info.getValue()
+                        ? "bg-secondary text-secondary-foreground"
+                        : "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                }
+            >
+                <span
+                    className={
+                        "font-semibold w-15 flex justify-center items-center"
+                    }
+                >
+                    {info.getValue() ? (
+                        <PencilLine size={16} className={"inline-block mr-1"} />
+                    ) : (
+                        <MapPinCheckInside
+                            size={16}
+                            className={"inline-block mr-1"}
+                        />
+                    )}
+                    {info.getValue() ? "draft" : "public"}
+                </span>
+            </Badge>
+        ),
+    }),
+    columnHelper.accessor("visible_universe", {
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="On Level" />
+        ),
+        cell: (info) => (
+            <Badge
+                className={
+                    info.getValue()
+                        ? "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground"
+                }
+            >
+                <span
+                    className={
+                        "font-semibold w-15 flex justify-center items-center"
+                    }
+                >
+                    {info.getValue() ? (
+                        <Orbit size={16} className={"inline-block mr-1"} />
+                    ) : (
+                        <Map size={16} className={"inline-block mr-1"} />
+                    )}
+                    {info.getValue() ? "public" : "lab"}
+                </span>
+            </Badge>
+        ),
+    }),
+    columnHelper.accessor(
+        (row) =>
+            row.elevation_requests[row.elevation_requests.length - 1].status,
+        {
+            id: "latest_elevation_request",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Status" />
+            ),
+            cell: (info) => {
+                if (info.getValue() === "approved") {
+                    return (
+                        <Badge
+                            className={
+                                "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
+                            }
+                        >
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                } else if (info.getValue() === "rejected") {
+                    return (
+                        <Badge
+                            className={
+                                "bg-red-400 text-secondary-foreground dark:text-primary-foreground"
+                            }
+                        >
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                } else {
+                    return (
+                        <Badge className={"bg-accent text-accent-foreground"}>
+                            <span className={"font-semibold"}>
+                                {info.getValue()}
+                            </span>
+                        </Badge>
+                    );
+                }
+            },
+        }
+    ),
+    columnHelper.accessor(
+        (row) =>
+            row.elevation_requests[row.elevation_requests.length - 1]
+                .requested_at,
+        {
+            id: "requested_at",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Requested At" />
+            ),
+            cell: (info) => (
+                <span suppressHydrationWarning>
+                    {new Date(info.getValue()).toLocaleDateString()}
+                </span>
+            ),
+        }
+    ),
+    columnHelper.accessor("createdAt", {
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="created at" />
+        ),
+        cell: (info) => {
             return (
                 <span suppressHydrationWarning>
-                    <Badge
-                        className={
-                            status === "approved"
-                                ? "bg-green-400"
-                                : status === "rejected"
-                                ? "bg-red-400"
-                                : "bg-accent text-accent-foreground"
-                        }
-                    >
-                        {status}
-                    </Badge>
+                    {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             );
         },
-    },
-    {
-        id: "updated_at",
-        accessorFn: (row) => row.elevation_requests?.[0].updated_at ?? "",
+    }),
+    columnHelper.accessor("updatedAt", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Updated At" />
         ),
-        cell: ({ row }) => {
-            const story = row.original;
-            const updatedAt = story.elevation_requests?.[0].updated_at;
+        cell: (info) => {
             return (
                 <span suppressHydrationWarning>
-                    {updatedAt
-                        ? new Date(updatedAt).toLocaleDateString()
-                        : "N/A"}
+                    {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             );
         },
-    },
-    {
+    }),
+    columnHelper.display({
         id: "actions",
         cell: ({ row }) => {
             const story = row.original;
             return <ElevationRequestsActionsCell story={story} />;
         },
-    },
+    }),
 ];

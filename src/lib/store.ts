@@ -1,5 +1,6 @@
-import { experiencesSlice } from "@/lib/features/experiences/experiencesSlice";
-import { settingsSlice } from "@/lib/features/settings/settingsSlice";
+import { experiencesSlice } from "@/lib/redux/experiences/experiencesSlice";
+import { navigationSlice } from "@/lib/redux/navigation/navigationSlice";
+import { settingsSlice } from "@/lib/redux/settings/settingsSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import {
     FLUSH,
@@ -12,8 +13,8 @@ import {
     REHYDRATE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { addStoryDialogSlice } from "./features/dialogue/addStoryDialogSlice";
-import { mapSlice } from "./features/map/mapSlice";
+import { addStoryDialogSlice } from "./redux/dialogue/addStoryDialogSlice";
+import { mapSlice } from "./redux/map/mapSlice";
 
 const persistConfig = {
     key: "settings",
@@ -32,6 +33,7 @@ export const store = configureStore({
         addStoryDialog: addStoryDialogSlice.reducer,
         map: mapSlice.reducer,
         experiences: experiencesSlice.reducer,
+        navigation: navigationSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

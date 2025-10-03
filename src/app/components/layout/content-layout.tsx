@@ -1,50 +1,32 @@
+import { NavigationBreadcrumbs } from "@/app/components/layout/navigation-breadcrumbs";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export default function ContentLayout({
-    slug,
-    feature,
     children,
     className,
 }: {
-    slug: string;
-    feature: string;
     children: React.ReactNode;
     className?: string;
 }) {
     return (
         <div className="w-full h-full flex">
-            <AppSidebar slug={slug} />
+            <AppSidebar />
             <SidebarInset>
-                <header className="flex h-16 shrink-0 gap-2 border-b">
-                    <div className="flex items-center gap-2 px-3">
-                        <SidebarTrigger />
-                        <Separator
-                            orientation="vertical"
-                            className="mr-2 h-4"
+                <header className="flex h-16 shrink-0 gap-2 w-full">
+                    <div className="relative flex items-center gap-3 px-4 w-full">
+                        <SidebarTrigger
+                            variant={"ghost"}
+                            className={"size-12 rounded-xl static 2xl:absolute"}
                         />
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href={`/${slug}`}>
-                                        {slug}
-                                    </BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>{feature}</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
+                        <Breadcrumb
+                            className={
+                                "max-w-6xl w-full mx-0 2xl:mx-auto px-0 2xl:px-6"
+                            }
+                        >
+                            <NavigationBreadcrumbs />
                         </Breadcrumb>
                     </div>
                 </header>
