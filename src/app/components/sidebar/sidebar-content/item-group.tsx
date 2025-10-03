@@ -1,21 +1,14 @@
 "use client";
 
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export type SidebarItemGroup = {
     title: string;
@@ -34,8 +27,10 @@ export function ItemGroup({
     groupLabel: string;
 }) {
     const { setOpenMobile } = useSidebar();
+    const pathname = usePathname();
+
     return (
-        <SidebarGroup className={"py-2"}>
+        <SidebarGroup className={"py-2 gap-0.5"}>
             <SidebarGroupLabel className={"font-semibold"}>
                 {groupLabel}
             </SidebarGroupLabel>
@@ -43,48 +38,35 @@ export function ItemGroup({
             {items.map((item) => (
                 <SidebarMenuItem
                     key={item.title}
-                    className={"flex flex-row justify-between items-center"}
+                    className={
+                        "flex flex-row justify-between items-center group/menu_item"
+                    }
                 >
                     <SidebarMenuButton asChild>
                         <Link
                             href={item.href}
-                            className={"flex items-center w-full"}
+                            className={`flex items-center w-full ${
+                                pathname === item.href
+                                    ? "bg-accent text-blue-200 group-hover/menu_item:text-blue-100 font-semibold rounded-md"
+                                    : "group-hover/menu_item:font-semibold group-hover/menu_item:text-primary"
+                            }`}
                             aria-label={item.title}
                             onClick={() => setOpenMobile(false)}
+                            prefetch={true}
                         >
-                            <item.icon className={"stroke-muted-foreground"} />
+                            <item.icon
+                                className={`${
+                                    pathname === item.href
+                                        ? "stroke-blue-200 group-hover/menu_item:stroke-blue-100"
+                                        : "stroke-muted-foreground group-hover/menu_item:stroke-primary"
+                                }`}
+                            />
                             <span>{item.title}</span>
                             {/* <ChevronRight
                                 className={"ml-auto stroke-muted-foreground"}
                             /> */}
                         </Link>
                     </SidebarMenuButton>
-                    {item.dropdownItems && (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuAction>
-                                    <MoreHorizontal />
-                                </SidebarMenuAction>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                side="right"
-                                align="start"
-                                aria-label={"Dropdown area for " + item.title}
-                            >
-                                {item.dropdownItems.map((dropdownItem) => (
-                                    <DropdownMenuItem
-                                        key={dropdownItem.title}
-                                        aria-label={dropdownItem.title}
-                                        asChild
-                                    >
-                                        <a href={dropdownItem.href}>
-                                            <span>{dropdownItem.title}</span>
-                                        </a>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    )}
                 </SidebarMenuItem>
             ))}
         </SidebarGroup>

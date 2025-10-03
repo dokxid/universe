@@ -1,7 +1,7 @@
 import { NavigationBreadcrumbs } from "@/app/components/layout/navigation-breadcrumbs";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export default function ContentLayout({
@@ -14,7 +14,7 @@ export default function ContentLayout({
     return (
         <div className="w-full h-full flex">
             <AppSidebar />
-            <SidebarInset>
+            <div className={"bg-background relative flex w-full flex-col"}>
                 <header className="flex h-16 shrink-0 gap-2 w-full">
                     <div className="relative flex items-center gap-3 px-4 w-full">
                         <SidebarTrigger
@@ -34,13 +34,13 @@ export default function ContentLayout({
                 </header>
                 <div
                     className={cn(
-                        "flex flex-1 flex-col gap-4 p-4 overflow-y-auto items-center",
+                        "flex flex-col gap-4 px-4 overflow-y-auto items-center",
                         className
                     )}
                 >
                     {children}
                 </div>
-            </SidebarInset>
+            </div>
         </div>
     );
 }

@@ -45,7 +45,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         },
         {
             title: "Lab Members",
-            href: `/${slug}/stories`,
+            href: `/${slug}/about#members`,
             icon: Users,
         },
         {

@@ -6,7 +6,7 @@ export default async function StoryView({ storyId }: { storyId: string }) {
     const storySerialized = await getStoryDTO(storyId);
     const story = await storySerialized;
     return (
-        <>
+        <div className={"flex flex-col gap-4 items-center w-full"}>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
                 <S3Image
                     experience={story.experience}
@@ -21,6 +21,6 @@ export default async function StoryView({ storyId }: { storyId: string }) {
                 </p>
                 <div className="prose-content">{parse(story.content)}</div>
             </div>
-        </>
+        </div>
     );
 }
