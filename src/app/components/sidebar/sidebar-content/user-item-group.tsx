@@ -32,8 +32,8 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
             icon: LibraryBig,
         },
         {
-            title: "Contact",
-            href: `/universe/map`,
+            title: "Contact us",
+            href: `/universe/contact`,
             icon: Contact,
         },
     ];
@@ -59,7 +59,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
             icon: Map,
         },
         {
-            title: "Contact",
+            title: "Contact us",
             href: `/${slug}/contact`,
             icon: Contact,
         },

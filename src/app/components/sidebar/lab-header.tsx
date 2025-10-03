@@ -1,4 +1,3 @@
-import { CopyLinkClipboard } from "@/app/components/embeds/copy-link-clipboard";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,8 +36,15 @@ export default function LabHeader({ experience }: { experience: Experience }) {
                     }
                 >
                     <h3 className="text-[24px]/[1.2] font-bold mb-2">
-                        {experience.title}
-                        <CopyLinkClipboard link={experience.slug} />
+                        <Link
+                            className={
+                                "hover:text-accent-blue-foreground hover:after:content-['_→'] transition-all duration-100"
+                            }
+                            href={`/${experience.slug}/map`}
+                        >
+                            {experience.title}
+                        </Link>
+                        {/* <CopyLinkClipboard link={experience.slug} /> */}
                     </h3>
                 </div>
                 <p className="text-sm">{experience.subtitle}</p>
@@ -46,7 +52,11 @@ export default function LabHeader({ experience }: { experience: Experience }) {
                     {experience.description}
                 </p>
                 <Link href={`/${experience.slug}/about`}>
-                    <p className={"text-xs text-muted-foreground"}>
+                    <p
+                        className={
+                            "text-xs text-muted-foreground hover:text-accent-blue-foreground w-fit transition-all duration-100"
+                        }
+                    >
                         Read More
                         <ChevronRight
                             size={12}

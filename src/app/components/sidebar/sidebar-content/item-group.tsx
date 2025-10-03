@@ -1,5 +1,6 @@
 "use client";
 
+import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -7,6 +8,8 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
+import { CollapsibleContent } from "@radix-ui/react-collapsible";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -30,45 +33,59 @@ export function ItemGroup({
     const pathname = usePathname();
 
     return (
-        <SidebarGroup className={"py-2 gap-0.5"}>
-            <SidebarGroupLabel className={"font-semibold"}>
-                {groupLabel}
-            </SidebarGroupLabel>
-            {children}
-            {items.map((item) => (
-                <SidebarMenuItem
-                    key={item.title}
-                    className={
-                        "flex flex-row justify-between items-center group/menu_item"
-                    }
+        <Collapsible defaultOpen={true} className={"group/collapsible"}>
+            <SidebarGroup className={"py-2 gap-0.5"}>
+                <SidebarGroupLabel
+                    asChild
+                    className={"font-[650] font-stretch-90%"}
                 >
-                    <SidebarMenuButton asChild>
-                        <Link
-                            href={item.href}
-                            className={`flex items-center w-full ${
-                                pathname === item.href
-                                    ? "bg-blue-100 dark:bg-accent text-blue-900 dark:text-blue-200 group-hover/menu_item:text-blue-800! dark:group-hover/menu_item:text-blue-100! font-semibold rounded-md"
-                                    : "group-hover/menu_item:font-semibold group-hover/menu_item:text-primary"
-                            }`}
-                            aria-label={item.title}
-                            onClick={() => setOpenMobile(false)}
-                            prefetch={true}
+                    <CollapsibleTrigger
+                        className={
+                            "hover:font-[750] hover:*:stroke-2.5 transition-all duration-100 hover:text-accent-blue-foreground hover:cursor-pointer"
+                        }
+                    >
+                        <ChevronDown className="mr-1 -ml-0.25 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                        {groupLabel}
+                    </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                {children}
+                <CollapsibleContent>
+                    {items.map((item) => (
+                        <SidebarMenuItem
+                            key={item.title}
+                            className={
+                                "flex flex-row justify-between items-center"
+                            }
                         >
-                            <item.icon
-                                className={`${
-                                    pathname === item.href
-                                        ? "text-blue-900 dark:stroke-blue-200 group-hover/menu_item:stroke-blue-800! dark:group-hover/menu_item:stroke-blue-100!"
-                                        : "stroke-muted-foreground group-hover/menu_item:stroke-primary"
-                                }`}
-                            />
-                            <span>{item.title}</span>
-                            {/* <ChevronRight
+                            <SidebarMenuButton asChild>
+                                <Link
+                                    href={item.href}
+                                    className={`flex items-center w-full transition-all duration-100 ${
+                                        pathname === item.href
+                                            ? "bg-accent-blue/50 group-hover/menu-item:bg-accent-blue! text-accent-blue-foreground group-hover/menu-item:text-accent-blue-foreground/90! font-semibold rounded-md"
+                                            : "group-hover/menu-item:bg-accent-blue/30! group-hover/menu-item:font-semibold group-hover/menu-item:text-primary"
+                                    }`}
+                                    aria-label={item.title}
+                                    onClick={() => setOpenMobile(false)}
+                                    prefetch={true}
+                                >
+                                    <item.icon
+                                        className={`transition-all duration-100 group-hover/menu-item:rotate-3 ${
+                                            pathname === item.href
+                                                ? "stroke-accent-blue-foreground group-hover/menu-item:stroke-accent-blue-foreground/90!"
+                                                : "stroke-muted-foreground group-hover/menu-item:stroke-primary"
+                                        }`}
+                                    />
+                                    <span>{item.title}</span>
+                                    {/* <ChevronRight
                                 className={"ml-auto stroke-muted-foreground"}
-                            /> */}
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            ))}
-        </SidebarGroup>
+                                /> */}
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    ))}
+                </CollapsibleContent>
+            </SidebarGroup>
+        </Collapsible>
     );
 }
