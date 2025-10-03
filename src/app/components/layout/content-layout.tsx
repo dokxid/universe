@@ -18,8 +18,10 @@ export default function ContentLayout({
                 <header className="flex h-16 shrink-0 gap-2 w-full">
                     <div className="relative flex items-center gap-3 px-4 w-full">
                         <SidebarTrigger
-                            variant={"ghost"}
-                            className={"size-12 rounded-xl static 2xl:absolute"}
+                            variant={"sidebar_trigger_custom"}
+                            className={
+                                "size-10 rounded-md static 2xl:absolute left-3"
+                            }
                         />
                         <Breadcrumb
                             className={

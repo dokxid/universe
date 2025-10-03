@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# universe
 
-## Getting Started
+one day i will:
 
-First, run the development server:
+-   [ ] clean up this rushed readme.md
+-   [ ] make a github organization for heritage lab
+
+# setting up for development
+
+## 3rd party cloud services that may be needed
+
+-   [WorkOS](https://workos.com/) for auth
+    -   used rn for just authkit and their hosted login interfaces
+-   [MongoDB](https://www.mongodb.com/) for database (self hostable)
+-   [Mapbox](https://www.mapbox.com/) for reverse geocoding (optional)
+    -   this feature is disabled by default at the moment (it takes up too much ui space)
+-   [AWS S3](https://aws.amazon.com/) for storage (optional)
+    -   in the .env file u will see a `LOCAL_UPLOADER=` line, that will circumvent the s3 thing for now. but its still useful for testing production
+
+## installing dependencies
+
+yarn magic, or any other pacman u like, you know the drill
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/dokxid/universe.git
+cd universe
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+make sure to copy the .env.example to make ur own one for development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# in repo folder ofc
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+and fill it out with the things mentioned in the comments in that file
 
-## Learn More
+## seeding database
 
-To learn more about Next.js, take a look at the following resources:
+before u seed, make sure to fill out the mongodb section in the .env file, so the seeder knows, where to seed the data. ~~also make sure ure not accidentally seeding production~~
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+a script is included for seeding databases, you have to include ur own images for now though for the stories:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# copy image folder for our seeder
+cp /path/to/image/folder ./src/data/scripts/seeds/images
+yarn seed
+```
 
-## Deploy on Vercel
+> [!NOTE]
+> if you seed with this script, while the app is running, just be aware that the caches havent been revalidated yet, either revalidate manually or just seed within the app; we just need to seed it initially to get on the site without any bugs
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## running the server (finally)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+you did it!!
+
+```bash
+yarn dev
+```
+
+> [!NOTE]
+> dev:https is just there to test clipboard capabilities, see https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+
+## run tests
+
+> [!NOTE]
+> so far there are only e2e tests in cypress, no component tests yet
+
+### for running automated tests
+
+```bash
+yarn test
+yarn e2e:headless
+yarn component:headless # we dont have any tests for this
+```
+
+### cypress gui
+
+```bash
+yarn e2e
+```

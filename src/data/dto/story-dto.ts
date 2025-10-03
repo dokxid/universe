@@ -3,29 +3,23 @@ import "server-only";
 import {
     getCurrentUser,
     getCurrentUserOptional,
-    isUserAdmin,
     isUserMember,
     isUserPartOfOrganization,
     isUserSuperAdmin,
 } from "@/data/auth";
-import { getExperiences } from "@/data/dto/experience-dto";
-import { workos } from "@/lib/auth/workos/callback";
-import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import {
+    getAllStories,
+    insertStory,
+    queryStory,
+} from "@/data/fetcher/story-fetcher";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
-import {
-    Experience,
-    NewElevationRequestData,
-    NewStoryData,
-    Story,
-    StoryDTO,
-} from "@/types/dtos";
+import { NewStoryData, Story, StoryDTO } from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
 function isPublicStory(story: Story) {
@@ -65,117 +59,6 @@ export async function canUserEditStory(user: User | null, story: StoryDTO) {
     return false;
 }
 
-async function fetchAndMapAuthorsForStoryDTO(
-    stories: StoryDTO[]
-): Promise<StoryDTO[]> {
-    if (stories.length === 0) {
-        throw new Error("No stories provided");
-    }
-    try {
-        const users = [];
-        const authors = stories.map((story) => story.author);
-        const uniqueAuthors = [...new Set(authors)];
-        if (uniqueAuthors.length === 0) {
-            throw new Error("No authors found in the provided stories");
-        }
-        for (const author of uniqueAuthors) {
-            const user = await workos.userManagement.getUser(author);
-            if (!user) {
-                continue;
-            }
-            users.push(user);
-        }
-
-        if (users.length === 0) {
-            throw new Error("No authors found for the provided stories");
-        }
-        // map author ids to user data
-        const authorMap: { [key: string]: string } = {};
-        users.forEach((user) => {
-            authorMap[user.id] = user.firstName + " " + user.lastName;
-        });
-
-        // replace author ids with user data in stories
-        stories.forEach((story) => {
-            if (authorMap[story.author]) {
-                story.author_name = authorMap[story.author];
-            } else {
-                story.author_name = "Unknown Author";
-            }
-        });
-    } catch (err) {
-        console.error("Error fetching authors:", err);
-    }
-
-    return stories;
-}
-
-async function queryStory(storyId: mongoose.Types.ObjectId): Promise<StoryDTO> {
-    try {
-        await dbConnect();
-
-        const queryResult = (await ExperienceModel.aggregate([
-            { $unwind: "$stories" },
-            { $match: { "stories._id": storyId } },
-        ]).exec()) as Experience[];
-
-        // detect if no story was found
-        if (!queryResult || queryResult.length === 0) {
-            throw new Error("Story not found");
-        }
-
-        // add experience slug and author name to story dto
-        const queriedStory: StoryDTO = queryResult[0]
-            .stories as unknown as StoryDTO;
-        queriedStory.experience = queryResult[0].slug;
-        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([
-            queriedStory,
-        ]);
-
-        return storyWithAuthor[0];
-    } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function insertStory(
-    storyToInsert: NewStoryData,
-    experienceSlug: string
-) {
-    try {
-        dbConnect();
-        await ExperienceModel.findOneAndUpdate(
-            { slug: experienceSlug },
-            { $push: { stories: storyToInsert } },
-            { safe: true, upsert: false }
-        ).exec();
-    } catch (err) {
-        console.error("Error inserting story:", err);
-    }
-}
-
-async function insertElevationRequest(
-    slug: string,
-    requestToInsert: NewElevationRequestData,
-    storyId: mongoose.Types.ObjectId
-) {
-    try {
-        dbConnect();
-        await ExperienceModel.findOneAndUpdate(
-            { slug: slug, "stories._id": storyId },
-            {
-                $push: {
-                    "stories.$.elevation_requests": requestToInsert,
-                },
-            },
-            { safe: true, upsert: false }
-        ).exec();
-    } catch (err) {
-        console.error("Error inserting elevation request:", err);
-        throw err; // Re-throw to propagate the error
-    }
-}
-
 export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
     try {
         const stories = await getAllStories();
@@ -195,32 +78,6 @@ export async function getAllStoriesDTO(): Promise<StoryDTO[]> {
         const stories = await getAllStories();
         return stories;
     } catch (err) {
-        throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-async function getAllStories(): Promise<StoryDTO[]> {
-    try {
-        const experiences = await getExperiences();
-        const allSanitizedStories: StoryDTO[] = [];
-
-        for (const experience of experiences) {
-            if (!experience.stories || experience.stories.length === 0) {
-                continue; // Skip to the next experience if no stories found
-            }
-            const stories = experience.stories.flatMap((story) => ({
-                ...story,
-                experience: experience.slug,
-            })) as StoryDTO[];
-            const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
-                stories
-            );
-            allSanitizedStories.push(...sanitizedStories);
-        }
-
-        return allSanitizedStories;
-    } catch (err) {
-        console.log("Error getting all stories:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
@@ -364,38 +221,5 @@ export async function submitStoryDTO(formData: FormData) {
         revalidateTag(`stories`);
     } catch (e) {
         console.error("Error submitting story:", e);
-    }
-}
-
-export async function submitElevationRequestDTO(
-    storyID: string,
-    user: User | null,
-    slug: string,
-    status: "created" | "approved" | "rejected" | "pending"
-) {
-    try {
-        if (!isUserAdmin(user, slug)) {
-            throw new Error("You must be an admin to request elevation.");
-        }
-        const requestToInsert: NewElevationRequestData = {
-            status: status,
-            requested_at: new Date(),
-            resolved_at: new Date(),
-        };
-        await dbConnect();
-
-        // validate id before creating ObjectId
-        console.log("Submitting elevation request for story id:", storyID);
-        if (!mongoose.Types.ObjectId.isValid(storyID)) {
-            throw new Error("Invalid story id format.");
-        }
-
-        // parse serializable id to mongoose.Types.ObjectId
-        const objectId = new mongoose.Types.ObjectId(storyID);
-        await insertElevationRequest(slug, requestToInsert, objectId);
-        revalidatePath(`/universe/elevation_requests`);
-        revalidatePath(`/${slug}/stories/manage`);
-    } catch (err) {
-        console.error("Error submitting elevation request:", err);
     }
 }

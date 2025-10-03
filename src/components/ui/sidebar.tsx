@@ -2,7 +2,6 @@
 
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
-import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { Menu } from "lucide-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -165,6 +165,7 @@ function Sidebar({
     side = "left",
     variant = "sidebar",
     collapsible = "offcanvas",
+    sidebarBorder = true,
     className,
     children,
     ...props
@@ -172,6 +173,7 @@ function Sidebar({
     side?: "left" | "right";
     variant?: "sidebar" | "floating" | "inset";
     collapsible?: "offcanvas" | "icon" | "none";
+    sidebarBorder?: boolean;
 }) {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
@@ -250,7 +252,12 @@ function Sidebar({
                     // Adjust the padding for floating and inset variants.
                     variant === "floating" || variant === "inset"
                         ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-                        : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+                        : cn(
+                              "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+                              sidebarBorder
+                                  ? "group-data-[side=left]:border-r group-data-[side=right]:border-l"
+                                  : ""
+                          ),
                     className
                 )}
                 {...props}
@@ -287,7 +294,8 @@ function SidebarTrigger({
             }}
             {...props}
         >
-            <PanelLeftIcon />
+            <Menu />
+            {/* <PanelLeftIcon /> */}
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
     );
