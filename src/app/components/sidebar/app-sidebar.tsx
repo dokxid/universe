@@ -9,7 +9,7 @@ import { Suspense } from "react";
 export async function AppSidebar() {
     const experiencesPromise = getExperiencesDTO();
     return (
-        <Sidebar variant={"sidebar"} className={"p-0"}>
+        <Sidebar variant={"sidebar"} sidebarBorder={false} className={"p-0"}>
             <Suspense fallback={<Skeleton className="w-full h-16"></Skeleton>}>
                 <AppSidebarHeader experiencesPromise={experiencesPromise} />
             </Suspense>

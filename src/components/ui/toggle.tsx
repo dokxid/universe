@@ -15,10 +15,12 @@ const toggleVariants = cva(
                 outline:
                     "border border-input bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground",
                 secondary_custom:
-                    "pointer-events-auto hover:cursor-pointer shadow-xs bg-secondary text-secondary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:ring-2 hover:text-secondary-foreground",
+                    "pointer-events-auto hover:cursor-pointer shadow-xs bg-secondary text-secondary-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:ring-2 hover:bg-secondary/80 hover:text-secondary-foreground",
             },
             size: {
                 default: "h-9 min-w-9 text-xs px-4 py-2 has-[>svg]:px-3",
+                icon: "size-9",
+                "icon-lg": "size-10",
                 sm: "h-8 px-1.5 min-w-8",
                 lg: "h-10 px-2.5 min-w-10",
             },

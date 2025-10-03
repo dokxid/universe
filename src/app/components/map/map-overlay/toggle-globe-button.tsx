@@ -13,6 +13,7 @@ export default function ToggleGlobeButton() {
             pressed={settingsState.globeView}
             onPressedChange={(pressed) => dispatch(setGlobeView(pressed))}
             variant={"secondary_custom"}
+            size={"icon-lg"}
         >
             <Globe />
         </Toggle>

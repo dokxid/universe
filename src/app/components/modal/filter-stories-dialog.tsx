@@ -37,7 +37,8 @@ export function FilterStoriesDialog({
             <DialogTrigger asChild>
                 <Button
                     variant={"secondary_custom"}
-                    className="size-10 hover:ring-2"
+                    className="hover:ring-2"
+                    size={"icon-lg"}
                 >
                     <Funnel />
                 </Button>
