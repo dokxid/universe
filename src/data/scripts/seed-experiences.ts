@@ -9,7 +9,7 @@ import {
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 
 export async function seedExperiences(center: number[]) {
     await dbConnect();

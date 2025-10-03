@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { Experience } from "@/types/dtos";
 import { cache } from "react";
 

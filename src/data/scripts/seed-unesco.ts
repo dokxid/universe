@@ -2,7 +2,7 @@
 
 import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import UnescoTagsModel from "@/lib/data/mongodb/models/unesco-tags";
+import UnescoTagsModel from "@/lib/data/mongodb/models/unesco-tag-model";
 
 export async function seedUnescoTags() {
     await dbConnect();
