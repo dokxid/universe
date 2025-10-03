@@ -1,6 +1,6 @@
 "use server";
 
-import { submitElevationRequestDTO } from "@/data/dto/story-dto";
+import { submitElevationRequestDTO } from "@/data/dto/elevation-request-dto";
 import { User } from "@workos-inc/node";
 
 export async function submitElevationRequest(
