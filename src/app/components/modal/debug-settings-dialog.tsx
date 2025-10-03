@@ -106,7 +106,7 @@ export function DebugSettingsDialog() {
             </div>
             <div className="form-box">
                 <div className={"form-bounding-box"}>
-                    <h2 className={"form-box-title"}>Seed Database</h2>
+                    <h2 className={"form-box-title"}>Reset Database</h2>
                     <p className={"prose-small text-muted-foreground mb-6"}>
                         Reset and seed the entire database with the stock
                         Heritage Lab data and add a new test experience under
@@ -134,6 +134,7 @@ export function DebugSettingsDialog() {
                                 />
                             </div>
                             <Button
+                                variant={"destructive"}
                                 onClick={() => {
                                     try {
                                         seedDatabaseAction(numStories);
@@ -146,7 +147,7 @@ export function DebugSettingsDialog() {
                                     }
                                 }}
                             >
-                                Seed entire database
+                                Reset entire database
                             </Button>
                         </div>
                     </div>
