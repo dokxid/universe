@@ -112,7 +112,7 @@ export function StoryGallery({
                     <div className="flex flex-row gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="default" size={"icon"}>
+                                <Button variant="secondary" size={"icon"}>
                                     {sorting === "asc" ? (
                                         <SortAsc />
                                     ) : (
@@ -141,13 +141,13 @@ export function StoryGallery({
                         </DropdownMenu>
                         <Button
                             size={"icon"}
-                            variant={"default"}
+                            variant={"secondary"}
                             onClick={() => setTitleFilter("")}
                         >
                             <Filter></Filter>
                         </Button>
                         <Button
-                            variant={"default"}
+                            variant={"secondary"}
                             onClick={() => setTitleFilter("")}
                         >
                             Clear Filter
