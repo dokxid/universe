@@ -1,3 +1,16 @@
+import {
+    ContactCard,
+    ContactCardContent,
+    ContactDescription,
+    ContactImage,
+    ContactName,
+    ContactNameRole,
+    ContactRole,
+    ContactSocial,
+    ContactSocialIcon,
+    ContactSocialsGroup,
+    ContactStoriesLink,
+} from "@/app/components/cards/contact-card";
 import { ContentLayout } from "@/app/components/layout/content-layout";
 import {
     Header,
@@ -6,11 +19,9 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { faker } from "@faker-js/faker";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { Inbox, LibraryBig, Link, Phone } from "lucide-react";
+import { Contact, Inbox, Link, Phone } from "lucide-react";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();
@@ -19,114 +30,79 @@ export async function generateStaticParams() {
     }));
 }
 
-export default async function AboutPage({
-    params,
-}: {
-    params: Promise<{ slug: string }>;
-}) {
-    const { slug } = await params;
-
+export default async function AboutPage() {
     return (
         <>
             <ContentLayout>
                 <Header>
                     <HeaderIcon>
-                        <LibraryBig size={80} />
+                        <Contact size={80} />
                     </HeaderIcon>
                     <HeaderContent>
                         <HeaderTitle>Contact us</HeaderTitle>
                         <HeaderDescription>
                             Reach out to us for any inquiries, support, or
-                            feedback. We're here to help and would love to hear
-                            from you!
+                            feedback. We&apos;re here to help and would love to
+                            hear from you!
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
                 <div className={"flex flex-col gap-8 w-full"}>
-                    {Array.apply(null, Array(4)).map((_, i) => (
-                        <div className={"form-box"} key={i}>
-                            <div className={"form-bounding-box"}>
-                                <h2 className={"prose-h1 mb-8"}>
-                                    {faker.person.jobType()} –
-                                </h2>
-                                <div className={"flex flex-col gap-6"}>
-                                    {Array.apply(null, Array(4)).map((_, i) => (
-                                        <div
-                                            key={i}
+                    <div className={"form-box w-full"}>
+                        {[...Array(10)].map((_, i) => (
+                            <ContactCard key={i}>
+                                <ContactImage />
+                                <ContactCardContent>
+                                    <ContactNameRole>
+                                        <ContactName>
+                                            {faker.person.fullName()}
+                                        </ContactName>
+                                        <ContactRole>
+                                            {faker.person.jobTitle()}
+                                        </ContactRole>
+                                    </ContactNameRole>
+                                    <ContactSocialsGroup>
+                                        <ContactSocial>
+                                            <ContactSocialIcon asChild>
+                                                <Inbox />
+                                            </ContactSocialIcon>
+                                            {faker.internet
+                                                .email()
+                                                .toLocaleLowerCase()}
+                                        </ContactSocial>
+                                        <ContactSocial>
+                                            <ContactSocialIcon asChild>
+                                                <Phone />
+                                            </ContactSocialIcon>
+                                            {faker.phone.number({
+                                                style: "international",
+                                            })}
+                                        </ContactSocial>
+                                        <ContactSocial
                                             className={
-                                                "py-5 flex flex-row items-stretch"
+                                                "text-sm font-semibold font-stretch-90%"
                                             }
                                         >
-                                            <div
-                                                className={
-                                                    "flex-none w-[200px] mr-6"
-                                                }
-                                            >
-                                                <AspectRatio ratio={12 / 16}>
-                                                    <Skeleton
-                                                        className={
-                                                            "w-full h-full"
-                                                        }
-                                                    />
-                                                </AspectRatio>
-                                            </div>
-                                            <div
-                                                className={
-                                                    "flex flex-col justify-between"
-                                                }
-                                            >
-                                                <div
-                                                    className={
-                                                        "flex flex-col gap-2"
-                                                    }
-                                                >
-                                                    <h3
-                                                        className={
-                                                            "prose-h3 mb-0"
-                                                        }
-                                                    >
-                                                        {faker.person.fullName()}
-                                                    </h3>
-                                                    <p className={"text-sm"}>
-                                                        <Inbox
-                                                            size={20}
-                                                            className={
-                                                                "inline-block mr-2"
-                                                            }
-                                                        />
-                                                        {faker.internet.email()}
-                                                    </p>
-                                                    <p className={"text-sm"}>
-                                                        <Phone
-                                                            size={20}
-                                                            className={
-                                                                "inline-block mr-2"
-                                                            }
-                                                        />
-                                                        {faker.phone.number({
-                                                            style: "international",
-                                                        })}
-                                                    </p>
-                                                    <p className={"text-sm"}>
-                                                        <Link
-                                                            size={20}
-                                                            className={
-                                                                "inline-block mr-2"
-                                                            }
-                                                        />
-                                                        {faker.internet.url()}
-                                                    </p>
-                                                </div>
-                                                <p className={"line-clamp-5"}>
-                                                    {faker.lorem.paragraphs(2)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                                            <ContactSocialIcon asChild>
+                                                <Link />
+                                            </ContactSocialIcon>
+                                            {faker.internet.url()}
+                                        </ContactSocial>
+                                    </ContactSocialsGroup>
+                                    <ContactDescription>
+                                        {faker.lorem.paragraphs(2)}
+                                    </ContactDescription>
+                                    <ContactStoriesLink
+                                        href={"#"}
+                                        numStories={faker.number.int({
+                                            min: 1,
+                                            max: 100,
+                                        })}
+                                    />
+                                </ContactCardContent>
+                            </ContactCard>
+                        ))}
+                    </div>
                 </div>
             </ContentLayout>
         </>

@@ -19,7 +19,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { Filter, LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
