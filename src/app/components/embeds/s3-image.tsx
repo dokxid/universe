@@ -44,7 +44,7 @@ export default function S3Image({
     if (isError) return <p>Error loading image</p>;
     if (!imageUrl) return <p>No image available</p>;
 
-    const src = imageUrl.url;
+    const src = imageUrl;
 
     if (!link) return <ImageElement className={className} src={src} />;
 

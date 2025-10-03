@@ -3,7 +3,7 @@
 import { getCurrentUser } from "@/data/auth";
 import { canUserCreateStory, submitStoryDTO } from "@/data/dto/story-dto";
 
-export async function submitStory(formData: FormData) {
+export async function submitStoryAction(formData: FormData) {
     try {
         const user = await getCurrentUser();
         if (!user) throw new Error("You must be logged in to submit a story.");

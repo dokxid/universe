@@ -3,7 +3,7 @@
 import { submitElevationRequestDTO } from "@/data/dto/story-dto";
 import { User } from "@workos-inc/node";
 
-export async function submitElevationRequest(
+export async function submitElevationRequestAction(
     storyId: string,
     user: User | null,
     slug: string,

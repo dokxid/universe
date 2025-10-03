@@ -1,6 +1,6 @@
 "use client";
 
-import { submitElevationRequest } from "@/actions/submitElevationRequest";
+import { submitElevationRequestAction } from "@/actions/submit-elevation-request";
 import { DataTableColumnHeader } from "@/app/components/stories/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,7 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
         console.log("Starting elevation request...");
 
         try {
-            await submitElevationRequest(
+            await submitElevationRequestAction(
                 story._id,
                 user,
                 story.experience,
@@ -62,7 +62,7 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
         console.log("Starting elevation request...");
 
         try {
-            await submitElevationRequest(
+            await submitElevationRequestAction(
                 story._id,
                 user,
                 story.experience,
@@ -142,7 +142,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
         console.log("Starting elevation request...");
 
         try {
-            const result = await submitElevationRequest(
+            const result = await submitElevationRequestAction(
                 story._id,
                 user,
                 story.experience,

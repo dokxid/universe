@@ -1,6 +1,9 @@
 "use client";
 
-import { triggerRevalidatePath, triggerRevalidateTag } from "@/actions/cache";
+import {
+    triggerRevalidatePathAction,
+    triggerRevalidateTagAction,
+} from "@/actions/cache";
 import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,9 +76,11 @@ export function DebugSettingsDialog() {
                             className={"w-full md:w-fit"}
                             onClick={() => {
                                 try {
-                                    triggerRevalidatePath("/[slug]/map");
-                                    triggerRevalidatePath("/[slug]/stories");
-                                    triggerRevalidatePath(
+                                    triggerRevalidatePathAction("/[slug]/map");
+                                    triggerRevalidatePathAction(
+                                        "/[slug]/stories"
+                                    );
+                                    triggerRevalidatePathAction(
                                         "/[slug]/experiences"
                                     );
                                     toast.success(
@@ -93,10 +98,10 @@ export function DebugSettingsDialog() {
                             className={"w-full md:w-fit"}
                             onClick={() => {
                                 try {
-                                    triggerRevalidateTag("experiences");
-                                    triggerRevalidateTag("stories");
-                                    triggerRevalidateTag("tags");
-                                    triggerRevalidateTag("users");
+                                    triggerRevalidateTagAction("experiences");
+                                    triggerRevalidateTagAction("stories");
+                                    triggerRevalidateTagAction("tags");
+                                    triggerRevalidateTagAction("users");
                                     toast.success(
                                         "Tag revalidation successful"
                                     );
