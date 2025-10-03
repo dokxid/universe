@@ -36,7 +36,9 @@ export function ItemGroup({
     const { setOpenMobile } = useSidebar();
     return (
         <SidebarGroup className={"py-2"}>
-            <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
+            <SidebarGroupLabel className={"font-semibold"}>
+                {groupLabel}
+            </SidebarGroupLabel>
             {children}
             {items.map((item) => (
                 <SidebarMenuItem

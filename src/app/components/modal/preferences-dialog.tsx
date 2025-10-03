@@ -47,16 +47,11 @@ export function PreferencesDialog() {
                             aria-expanded={open}
                             className="w-[200px] justify-between"
                         >
-                            {settingsState.mapTiles
-                                ? Object.entries(MAP_TILES).find(
-                                      ([tileValue]) => {
-                                          return (
-                                              tileValue ===
-                                              settingsState.mapTiles
-                                          );
-                                      }
-                                  )?.[0]
-                                : "Select map tiles..."}
+                            {Object.keys(MAP_TILES).find(
+                                (key) =>
+                                    MAP_TILES[key as keyof typeof MAP_TILES] ===
+                                    settingsState.mapTiles
+                            ) ?? "Select map tiles"}
                             <ChevronsUpDown className="opacity-50" />
                         </Button>
                     </PopoverTrigger>

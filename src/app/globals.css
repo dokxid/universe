@@ -134,16 +134,24 @@
     }
 }
 
+@utility form-box-title {
+    @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
+}
+
+@utility form-box {
+    @apply bg-card px-7 py-7 rounded-lg border-2;
+}
+
 @utility prose-h1 {
     @apply scroll-m-20 text-left text-4xl font-extrabold tracking-tight text-balance mb-4;
 }
 
 @utility prose-h2 {
-    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+    @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
 }
 
 @utility prose-h3 {
-    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight mb-1;
 }
 
 @utility prose-h4 {
@@ -191,7 +199,7 @@
 }
 
 @utility prose-small {
-    @apply text-sm font-medium leading-none;
+    @apply text-sm font-normal text-muted-foreground;
 }
 
 @utility prose-muted {

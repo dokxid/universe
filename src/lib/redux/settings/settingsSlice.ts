@@ -10,13 +10,13 @@ export const MAP_TILES = {
 };
 
 export interface SettingsState {
-    mapTiles: string;
+    mapTiles: keyof typeof MAP_TILES;
     descriptorOpen: boolean;
     globeView: boolean;
 }
 
 const initialState: SettingsState = {
-    mapTiles: MAP_TILES["Alidade Smooth"],
+    mapTiles: "Alidade Smooth",
     descriptorOpen: true,
     globeView: false,
 };
