@@ -5,8 +5,10 @@ import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { faker } from "@faker-js/faker";
+import { TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -32,250 +34,290 @@ export function DebugSettingsDialog() {
     return (
         <div
             className={
-                "flex flex-col gap-10 items-start container max-w-2xl my-4 *:w-full"
+                "flex flex-col gap-10 my-10 items-start w-full max-w-full md:max-w-6xl px-4 lg:px-6"
             }
         >
-            <div className={"form-box"}>
-                <h2 className={"form-box-title"}>Revalidation</h2>
-                <p className={"prose-small text-muted-foreground mb-4"}>
-                    Revalidate paths and tags in the Next.js cache.
-                </p>
-                <div className="flex flex-col gap-2">
-                    <Button
-                        className={"w-full"}
-                        onClick={() => {
-                            try {
-                                triggerRevalidatePath("/[slug]/map");
-                                triggerRevalidatePath("/[slug]/stories");
-                                triggerRevalidatePath("/[slug]/experiences");
-                                toast.success("Path revalidation successful");
-                            } catch (error) {
-                                toast.error("Path revalidation failed");
-                                console.error(error);
-                            }
-                        }}
-                    >
-                        Revalidate Paths
-                    </Button>
-                    <Button
-                        className={"w-full"}
-                        onClick={() => {
-                            try {
-                                triggerRevalidateTag("experiences");
-                                triggerRevalidateTag("stories");
-                                triggerRevalidateTag("tags");
-                                triggerRevalidateTag("users");
-                                toast.success("Tag revalidation successful");
-                            } catch (error) {
-                                toast.error("Tag revalidation failed");
-                                console.error(error);
-                            }
-                        }}
-                    >
-                        Revalidate Tags
-                    </Button>
-                </div>
+            <div
+                className={
+                    "flex flex-col lg:flex-row w-full items-start lg:items-center"
+                }
+            >
+                <TriangleAlert
+                    size={72}
+                    className={"mx-0 mb-3 md:mb-0 md:mr-6"}
+                />
+                <article className="self-start">
+                    <h1 className={"prose-h1"}>Debug Settings</h1>
+                    <p className="text-muted-foreground prose-lead max-w-lg">
+                        Be careful when using these settings. They are meant for
+                        debugging purposes only and can cause data loss.
+                    </p>
+                </article>
             </div>
-            <div className="form-box">
-                <h2 className={"form-box-title"}>Seed Database</h2>
-                <p className={"prose-small text-muted-foreground mb-6"}>
-                    Reset and seed the entire database with the stock Heritage
-                    Lab data and add a new test experience under /test/map with
-                    the given amount of random generated stories.
-                </p>
-                <div className={"flex flex-col gap-8"}>
-                    <div className="">
-                        <div className="grid w-full max-w-sm items-center gap-3">
-                            <Label className={""}>
-                                Number of stories to create in test experience
-                            </Label>
-                            <Input
-                                className={"mb-4 w-sm"}
-                                placeholder="Number of stories"
-                                type="number"
-                                value={numStories}
-                                min={1}
-                                max={1000}
-                                step={1}
-                                onChange={(e) =>
-                                    setNumStories(Number(e.target.value))
-                                }
-                            />
-                        </div>
+            <Separator className={"my-8"}></Separator>
+            <div className={"form-box"}>
+                <div className={"form-bounding-box"}>
+                    <h2 className={"form-box-title"}>Revalidation</h2>
+                    <p className={"prose-small text-muted-foreground mb-4"}>
+                        Revalidate paths and tags in the Next.js cache.
+                    </p>
+                    <div className="flex flex-col md:flex-row md:flex-wrap gap-2">
                         <Button
+                            className={"w-full md:w-fit"}
                             onClick={() => {
                                 try {
-                                    seedDatabaseAction(numStories);
+                                    triggerRevalidatePath("/[slug]/map");
+                                    triggerRevalidatePath("/[slug]/stories");
+                                    triggerRevalidatePath(
+                                        "/[slug]/experiences"
+                                    );
                                     toast.success(
-                                        "Database seeding successful"
+                                        "Path revalidation successful"
                                     );
                                 } catch (error) {
-                                    toast.error("Database seeding failed");
+                                    toast.error("Path revalidation failed");
                                     console.error(error);
                                 }
                             }}
                         >
-                            Seed entire database
+                            Revalidate Paths
+                        </Button>
+                        <Button
+                            className={"w-full md:w-fit"}
+                            onClick={() => {
+                                try {
+                                    triggerRevalidateTag("experiences");
+                                    triggerRevalidateTag("stories");
+                                    triggerRevalidateTag("tags");
+                                    triggerRevalidateTag("users");
+                                    toast.success(
+                                        "Tag revalidation successful"
+                                    );
+                                } catch (error) {
+                                    toast.error("Tag revalidation failed");
+                                    console.error(error);
+                                }
+                            }}
+                        >
+                            Revalidate Tags
                         </Button>
                     </div>
                 </div>
             </div>
+            <div className="form-box">
+                <div className={"form-bounding-box"}>
+                    <h2 className={"form-box-title"}>Seed Database</h2>
+                    <p className={"prose-small text-muted-foreground mb-6"}>
+                        Reset and seed the entire database with the stock
+                        Heritage Lab data and add a new test experience under
+                        /test/map with the given amount of random generated
+                        stories.
+                    </p>
+                    <div className={"flex flex-col gap-8"}>
+                        <div className="">
+                            <div className="grid w-full max-w-sm items-center gap-3">
+                                <Label className={""}>
+                                    Number of stories to create in test
+                                    experience
+                                </Label>
+                                <Input
+                                    className={"mb-4 max-w-full"}
+                                    placeholder="Number of stories"
+                                    type="number"
+                                    value={numStories}
+                                    min={1}
+                                    max={1000}
+                                    step={1}
+                                    onChange={(e) =>
+                                        setNumStories(Number(e.target.value))
+                                    }
+                                />
+                            </div>
+                            <Button
+                                onClick={() => {
+                                    try {
+                                        seedDatabaseAction(numStories);
+                                        toast.success(
+                                            "Database seeding successful"
+                                        );
+                                    } catch (error) {
+                                        toast.error("Database seeding failed");
+                                        console.error(error);
+                                    }
+                                }}
+                            >
+                                Seed entire database
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className={"form-box"}>
-                <h2 className={"form-box-title"}>Seed new experience</h2>
-                <p className={"prose-small text-muted-foreground mb-6"}>
-                    First, create a new organization in the WorkOS Dashboard,
-                    and then generate a new Heritage Lab with this form. You can
-                    also generate random stories like explained in the seed
-                    database setting.
-                </p>
-                <div className={"flex flex-col gap-8 mb-6"}>
-                    <div className="">
-                        <div className="flex flex-row max-w-full gap-4">
-                            <div className="grid w-full items-center gap-3">
-                                <Label className={""}>Latitude</Label>
+                <div className={"form-bounding-box"}>
+                    <h2 className={"form-box-title"}>Seed new experience</h2>
+                    <p className={"prose-small text-muted-foreground mb-6"}>
+                        First, create a new organization in the WorkOS
+                        Dashboard, and then generate a new Heritage Lab with
+                        this form. You can also generate random stories like
+                        explained in the seed database setting.
+                    </p>
+                    <div className={"flex flex-col gap-8 mb-6"}>
+                        <div className="">
+                            <div className="flex flex-row max-w-full gap-4">
+                                <div className="grid w-full items-center gap-3">
+                                    <Label className={""}>Latitude</Label>
+                                    <Input
+                                        className={"mb-4"}
+                                        placeholder="Latitude"
+                                        type="number"
+                                        value={latitude}
+                                        min={-180}
+                                        max={180}
+                                        step={0.01}
+                                        onChange={(e) =>
+                                            setLatitude(Number(e.target.value))
+                                        }
+                                    />
+                                </div>
+                                <div className="grid w-full items-center gap-3">
+                                    <Label className={""}>Longitude</Label>
+                                    <Input
+                                        className={"mb-4"}
+                                        placeholder="Longitude"
+                                        type="number"
+                                        value={longitude}
+                                        min={-180}
+                                        max={180}
+                                        step={0.01}
+                                        onChange={(e) =>
+                                            setLongitude(Number(e.target.value))
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Title</Label>
                                 <Input
-                                    className={"mb-4"}
-                                    placeholder="Latitude"
-                                    type="number"
-                                    value={latitude}
-                                    min={-180}
-                                    max={180}
-                                    step={0.01}
+                                    className={"mb-4 w-full"}
+                                    placeholder="Title"
+                                    type="text"
+                                    value={title}
+                                    min={1}
+                                    max={1000}
+                                    step={1}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Slug</Label>
+                                <Input
+                                    className={"mb-4 w-full"}
+                                    placeholder="Slug"
+                                    type="text"
+                                    value={slug}
+                                    onChange={(e) => setSlug(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Description</Label>
+                                <Textarea
+                                    rows={8}
+                                    className={"mb-4 w-full"}
+                                    placeholder="Description"
+                                    value={description}
                                     onChange={(e) =>
-                                        setLatitude(Number(e.target.value))
+                                        setDescription(e.target.value)
                                     }
                                 />
                             </div>
-                            <div className="grid w-full items-center gap-3">
-                                <Label className={""}>Longitude</Label>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Subtitle</Label>
                                 <Input
-                                    className={"mb-4"}
-                                    placeholder="Longitude"
-                                    type="number"
-                                    value={longitude}
-                                    min={-180}
-                                    max={180}
-                                    step={0.01}
+                                    className={"mb-4 w-full"}
+                                    placeholder="Subtitle"
+                                    type="text"
+                                    value={subtitle}
                                     onChange={(e) =>
-                                        setLongitude(Number(e.target.value))
+                                        setSubtitle(e.target.value)
                                     }
                                 />
                             </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Organization ID</Label>
+                                <p className={"text-muted-foreground text-xs"}>
+                                    Generate from WorkOS Dashboard
+                                </p>
+                                <Input
+                                    className={"mb-4 w-full"}
+                                    placeholder="Organization ID"
+                                    type="text"
+                                    value={organizationId}
+                                    onChange={(e) =>
+                                        setOrganizationId(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>Initial Zoom</Label>
+                                <Input
+                                    className={"mb-4 w-full"}
+                                    placeholder="Initial Zoom"
+                                    type="number"
+                                    value={initialZoom}
+                                    min={1}
+                                    max={1000}
+                                    step={1}
+                                    onChange={(e) =>
+                                        setInitialZoom(Number(e.target.value))
+                                    }
+                                />
+                            </div>
+                            <div className="grid w-full max-w-full items-center gap-3">
+                                <Label className={""}>
+                                    Number of generated stories
+                                </Label>
+                                <Input
+                                    className={"mb-4 w-full"}
+                                    placeholder="Number of stories"
+                                    type="number"
+                                    value={experienceStories}
+                                    min={1}
+                                    max={1000}
+                                    step={1}
+                                    onChange={(e) =>
+                                        setExperienceStories(
+                                            Number(e.target.value)
+                                        )
+                                    }
+                                />
+                            </div>
+                            <Button
+                                onClick={() => {
+                                    try {
+                                        seedOneExperienceAction(
+                                            [longitude, latitude],
+                                            title,
+                                            slug,
+                                            description,
+                                            subtitle,
+                                            initialZoom,
+                                            organizationId,
+                                            experienceStories
+                                        );
+                                        toast.success(
+                                            "Experience seeding successful"
+                                        );
+                                    } catch (error) {
+                                        toast.error(
+                                            "Experience seeding failed"
+                                        );
+                                        console.error(error);
+                                    }
+                                }}
+                            >
+                                Seed experience
+                            </Button>
                         </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Title</Label>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Title"
-                                type="text"
-                                value={title}
-                                min={1}
-                                max={1000}
-                                step={1}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Slug</Label>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Slug"
-                                type="text"
-                                value={slug}
-                                onChange={(e) => setSlug(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Description</Label>
-                            <Textarea
-                                rows={8}
-                                className={"mb-4 w-full"}
-                                placeholder="Description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Subtitle</Label>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Subtitle"
-                                type="text"
-                                value={subtitle}
-                                onChange={(e) => setSubtitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Organization ID</Label>
-                            <p className={"text-muted-foreground text-xs"}>
-                                Generate from WorkOS Dashboard
-                            </p>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Organization ID"
-                                type="text"
-                                value={organizationId}
-                                onChange={(e) =>
-                                    setOrganizationId(e.target.value)
-                                }
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>Initial Zoom</Label>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Initial Zoom"
-                                type="number"
-                                value={initialZoom}
-                                min={1}
-                                max={1000}
-                                step={1}
-                                onChange={(e) =>
-                                    setInitialZoom(Number(e.target.value))
-                                }
-                            />
-                        </div>
-                        <div className="grid w-full max-w-full items-center gap-3">
-                            <Label className={""}>
-                                Number of generated stories
-                            </Label>
-                            <Input
-                                className={"mb-4 w-full"}
-                                placeholder="Number of stories"
-                                type="number"
-                                value={experienceStories}
-                                min={1}
-                                max={1000}
-                                step={1}
-                                onChange={(e) =>
-                                    setExperienceStories(Number(e.target.value))
-                                }
-                            />
-                        </div>
-                        <Button
-                            onClick={() => {
-                                try {
-                                    seedOneExperienceAction(
-                                        [longitude, latitude],
-                                        title,
-                                        slug,
-                                        description,
-                                        subtitle,
-                                        initialZoom,
-                                        organizationId,
-                                        experienceStories
-                                    );
-                                    toast.success(
-                                        "Experience seeding successful"
-                                    );
-                                } catch (error) {
-                                    toast.error("Experience seeding failed");
-                                    console.error(error);
-                                }
-                            }}
-                        >
-                            Seed experience
-                        </Button>
                     </div>
                 </div>
             </div>

@@ -138,8 +138,12 @@
     @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
 }
 
+@utility form-bounding-box {
+    @apply max-w-2xl w-full;
+}
+
 @utility form-box {
-    @apply bg-card px-7 py-7 rounded-lg border-2;
+    @apply bg-transparent md:bg-card px-0 py-5 md:px-7 md:py-10 rounded-lg border-0 md:border-2 w-full max-w-6xl flex flex-col items-start;
 }
 
 @utility prose-h1 {

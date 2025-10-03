@@ -88,7 +88,10 @@ export function StoryGallery({
                         "flex flex-col lg:flex-row w-full items-start lg:items-center"
                     }
                 >
-                    <LibraryBig size={48} className={"mx-0 mb-3 md:mr-4"} />
+                    <LibraryBig
+                        size={72}
+                        className={"mx-0 mb-3 md:mb-0 md:mr-6"}
+                    />
                     <article className="self-start">
                         {slug === "universe"
                             ? universeStoryGalleryHeader()
