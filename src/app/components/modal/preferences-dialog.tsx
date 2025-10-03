@@ -18,7 +18,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { MAP_TILES, setMapTiles } from "@/lib/redux/settings/settingsSlice";
+import { MAP_TILES, setMapTiles } from "@/lib/redux/settings/settings-slice";
 import { cn } from "@/lib/utils";
 
 export function PreferencesDialog() {

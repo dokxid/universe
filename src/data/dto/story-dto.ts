@@ -11,7 +11,7 @@ import {
 import { getExperiences } from "@/data/dto/experience-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
 import {

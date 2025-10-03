@@ -1,6 +1,6 @@
 "use client";
 
-import { submitStory } from "@/actions/submitStory";
+import { submitStoryAction } from "@/actions/submit-story";
 import { TagPickerField } from "@/app/components/form/tag-picker-field";
 import { TiptapEditor } from "@/app/components/form/tiptap-editor";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,7 @@ export default function AddStoryForm({
             formData.append("universe", values.universe.toString());
             formData.append("file", featuredImage as File);
 
-            submitStory(formData).then(
+            submitStoryAction(formData).then(
                 () => {
                     toast.success("Story added successfully!");
                     router.back();

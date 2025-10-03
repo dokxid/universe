@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/lib/hooks";
-import { decrementZoomLevel, setFlyBack } from "@/lib/redux/map/mapSlice";
+import { decrementZoomLevel, setFlyBack } from "@/lib/redux/map/map-slice";
 import { Navigation2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 

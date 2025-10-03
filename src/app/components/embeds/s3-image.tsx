@@ -1,6 +1,6 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useImageURL } from "@/lib/data_hooks/imageHook";
+import { useImageURL } from "@/lib/data_hooks/image-hook";
 import { cn } from "@/lib/utils";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
@@ -44,7 +44,7 @@ export default function S3Image({
     if (isError) return <p>Error loading image</p>;
     if (!imageUrl) return <p>No image available</p>;
 
-    const src = imageUrl.url;
+    const src = imageUrl;
 
     if (!link) return <ImageElement className={className} src={src} />;
 

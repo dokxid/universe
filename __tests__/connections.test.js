@@ -1,4 +1,4 @@
-import { buildConnectionString } from "@/lib/utils/buildConnectionString";
+import { buildConnectionString } from "@/lib/utils/build-connection-string";
 
 describe("MongoDB connection", () => {
     it("should generate a valid connection string with search parameters", () => {
