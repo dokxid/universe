@@ -10,7 +10,11 @@ export function MapWidgetHolder({ slug }: { slug: string }) {
         <div className={"flex flex-col gap-3 items-start h-full"}>
             <div className={"flex flex-row gap-3 pointer-events-auto w-fit"}>
                 <Link href={`/${slug}/map-settings`}>
-                    <Button variant={"secondary_custom"} className={"size-10"}>
+                    <Button
+                        variant={"secondary_custom"}
+                        className={"size-10"}
+                        id={"map-settings-button"}
+                    >
                         <SettingsIcon />
                     </Button>
                 </Link>

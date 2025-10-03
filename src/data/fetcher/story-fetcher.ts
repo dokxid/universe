@@ -3,7 +3,7 @@ import "server-only";
 import { getExperiences } from "@/data/fetcher/experience-fetcher";
 import { fetchAndMapAuthorsForStoryDTO } from "@/data/transformers/story-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { Experience, NewStoryData, StoryDTO } from "@/types/dtos";
 import mongoose from "mongoose";
 

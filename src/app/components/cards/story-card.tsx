@@ -21,6 +21,7 @@ export function StoryCard({
             href={buildStoryLink(story)}
             prefetch={false}
             className="flex flex-row items-center w-full gap-2"
+            data-testid={"story-card-link"}
         >
             <Card
                 key={story._id}
