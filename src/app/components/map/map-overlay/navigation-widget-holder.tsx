@@ -1,6 +1,8 @@
 import { ActiveFilterInformation } from "@/app/components/map/map-overlay/active-filter-information";
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTagsDTO } from "@/data/dto/tag-dto";
@@ -24,7 +26,13 @@ export async function NavigationWidgetHolder() {
                     variant={"secondary_custom"}
                     className="pointer-events-auto size-10 hover:ring-2"
                 />
-                <Suspense fallback={<div>loading tags...</div>}>
+                <Suspense
+                    fallback={
+                        <Button size={"icon"} disabled={true}>
+                            <Spinner />
+                        </Button>
+                    }
+                >
                     <FilterStoriesDialog tagsPromise={tagsPromise} />
                 </Suspense>
                 {/* {isUniverseView && (

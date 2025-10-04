@@ -42,7 +42,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                     <div className="absolute bottom-0 left-0 right-0 bg-card group-hover:bg-transparent group-hover:text-selected-foreground p-4 group flex flex-row items-center grow h-fit overflow-y-hidden py-4">
                         <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
                             <div className="flex-1 min-w-0 flex flex-col gap-1">
-                                <h1 className="text-base font-bold truncate md:whitespace-normal group-hover:text-white group-hover:text-xl group-hover:font-black group-hover:after:content-['_→']">
+                                <h1 className="text-base font-bold line-clamp-1 group-hover:line-clamp-3 group-hover:text-white group-hover:text-xl group-hover:font-black group-hover:after:content-['_→']">
                                     {story.title}
                                 </h1>
                                 <p className="text-sm text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
@@ -57,7 +57,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                                 <TagList
                                     tags={story.tags}
                                     variant={"add"}
-                                    className={"hidden group-hover:block"}
+                                    className={"hidden group-hover:flex"}
                                 />
                             </div>
                         </div>

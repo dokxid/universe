@@ -18,7 +18,7 @@ export function TagList({
         return (
             <div
                 data-slot={"tag-list"}
-                className={cn("flex-wrap space-x-1 space-y-1", className)}
+                className={cn("flex flex-wrap gap-2 my-3", className)}
             >
                 {tags.map((tag) => (
                     <TagSpan
@@ -40,7 +40,7 @@ export function TagList({
     return (
         <div
             data-slot={"tag-list"}
-            className={cn("flex-wrap space-x-1 space-y-1 my-3", className)}
+            className={cn("flex flex-wrap gap-1.5 my-3", className)}
         >
             {tagsToBeRendered.map((tag: UnescoTagDTO) => (
                 <TagSpan
