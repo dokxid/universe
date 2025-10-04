@@ -3,7 +3,10 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
+import {
+    MAP_TILES,
+    setDescriptorOpen,
+} from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
@@ -100,6 +103,7 @@ export function DeckGLMap({
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
     const isMobile = useIsMobile();
+    const mapStyleUrl = MAP_TILES[settingsState.mapTiles];
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);
@@ -300,7 +304,7 @@ export function DeckGLMap({
                     id="mainMap"
                     initialViewState={INITIAL_VIEW_STATE}
                     onRender={() => {}}
-                    mapStyle={settingsState.mapTiles}
+                    mapStyle={mapStyleUrl}
                     attributionControl={false}
                     onContextMenu={(e) => {
                         handleContextMenu(e);
