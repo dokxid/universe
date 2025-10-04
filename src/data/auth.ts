@@ -31,7 +31,7 @@ export async function isUserActive(
     experienceSlug: string
 ): Promise<boolean> {
     try {
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -48,7 +48,7 @@ export async function isUserMember(
     try {
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -65,7 +65,7 @@ export async function isUserAdmin(
     try {
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -113,7 +113,7 @@ export async function isUserPartOfOrganization(
     }
 }
 
-async function getUserExperienceRelation(
+async function getUserExperienceRelationBySlug(
     user: User | null,
     experienceSlug: string
 ): Promise<MembershipResult> {

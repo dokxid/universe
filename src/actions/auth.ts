@@ -13,9 +13,6 @@ async function signOutAction(slug?: string) {
     try {
         (await cookies()).delete("wos-session");
         if (!process.env.VERCEL_URL) {
-            console.log(
-                "Development environment detected, using localhost for returnTo URL"
-            );
             revalidateTag("user");
             returnTo = "http://localhost:3000" + returnTo;
             await signOut({ returnTo });

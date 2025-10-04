@@ -85,12 +85,6 @@ export function ElevationRequestsTable<TData extends StoryDTO, TValue>({
         onSortingChange: setSorting,
     });
 
-    console.log(
-        dataFetched[0]?.elevation_requests[
-            dataFetched[0]?.elevation_requests.length - 1
-        ]?.requested_at
-    );
-
     return (
         <div>
             <div>

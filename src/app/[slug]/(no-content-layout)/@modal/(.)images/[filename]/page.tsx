@@ -7,7 +7,6 @@ export default async function Page({
     params: { filename: string; slug: string };
 }) {
     const { filename, slug } = await params;
-    console.log("Modal params:", filename, slug);
     return (
         <Dialog title={"Image preview"} description={filename}>
             <div

@@ -40,8 +40,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log("Starting elevation request...");
-
         try {
             await submitElevationRequestAction(
                 story._id,
@@ -58,8 +56,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
     const handleApprovedElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-
-        console.log("Starting elevation request...");
 
         try {
             await submitElevationRequestAction(
@@ -138,8 +134,6 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     const handlePendingElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-
-        console.log("Starting elevation request...");
 
         try {
             const result = await submitElevationRequestAction(

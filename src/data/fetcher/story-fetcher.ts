@@ -28,7 +28,7 @@ export async function getAllStories(): Promise<StoryDTO[]> {
 
         return allSanitizedStories;
     } catch (err) {
-        console.log("Error getting all stories:", err);
+        console.error("Error getting all stories:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }

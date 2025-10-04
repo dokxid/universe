@@ -120,7 +120,6 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
     try {
         const user = await getCurrentUserOptional();
 
-        console.log("Fetching story with id:", id);
         // validate id before creating ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error("Invalid story id format.");
@@ -156,7 +155,6 @@ export async function submitStoryDTO(formData: FormData) {
 
         // Preprocess the FormData into the correct types
         const rawData = Object.fromEntries(formData);
-        console.log("Raw form data:", rawData);
         const processedData = {
             title: rawData.title as string,
             content: rawData.content as string,

@@ -9,7 +9,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 export function FlyBackButton() {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    console.log("slug", slug === "universe");
     const isUniverseView = slug === "universe";
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();

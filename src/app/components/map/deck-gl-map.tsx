@@ -108,7 +108,6 @@ export function DeckGLMap({
     const selectedFilterTags = searchParams.get("tags");
     const isMobile = useIsMobile();
     const mapStyleUrl = settingsState.mapTiles;
-    console.log("mapStyleUrl", mapStyleUrl);
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);

@@ -5,6 +5,7 @@ import {
     triggerRevalidateTagAction,
 } from "@/actions/cache";
 import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
+import { syncUsersWithDatabaseAction } from "@/actions/sync_users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -112,6 +113,30 @@ export function DebugSettingsDialog() {
                             }}
                         >
                             Revalidate Tags
+                        </Button>
+                    </div>
+                </div>
+            </div>
+            <div className={"form-box"}>
+                <div className={"form-bounding-box"}>
+                    <h2 className={"form-box-title"}>Sync users</h2>
+                    <p className={"prose-small text-muted-foreground"}>
+                        Sync users with the latest data from the database.
+                    </p>
+                    <div className="form-button-group">
+                        <Button
+                            className={"w-full md:w-fit"}
+                            onClick={() => {
+                                try {
+                                    syncUsersWithDatabaseAction();
+                                    toast.success("User sync successful");
+                                } catch (error) {
+                                    toast.error("User sync failed");
+                                    console.error(error);
+                                }
+                            }}
+                        >
+                            Sync users
                         </Button>
                     </div>
                 </div>
