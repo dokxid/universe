@@ -54,7 +54,11 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                                         story.createdAt
                                     ).toLocaleDateString()}
                                 </p>
-                                <TagList tags={story.tags} variant={"add"} />
+                                <TagList
+                                    tags={story.tags}
+                                    variant={"add"}
+                                    className={"hidden group-hover:block"}
+                                />
                             </div>
                         </div>
                     </div>

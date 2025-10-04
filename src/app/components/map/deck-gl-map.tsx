@@ -56,10 +56,11 @@ function MapController({
     const mapState = useAppSelector((state) => state.map);
 
     useEffect(() => {
+        if (!map) return;
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
         if (selectedStory) {
             center = selectedStory.location.coordinates;
-            zoom = 8;
+            zoom = map.getZoom() < 8 ? 8 : map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);
@@ -80,7 +81,9 @@ function MapController({
 
     useEffect(() => {
         if (!map) return;
-        map.zoomOut();
+        if (map.getZoom() > 8) {
+            map.zoomOut();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mapState.zoomOut]);
 

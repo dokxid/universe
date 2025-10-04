@@ -28,10 +28,6 @@ export function UserWidgetHolder() {
         );
     }
 
-    if (slug === "universe") {
-        return null;
-    }
-
     if (roles === undefined) {
         return <UserWidgetNotAuthorized slug={slug} />;
     }

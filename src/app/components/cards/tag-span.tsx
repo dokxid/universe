@@ -13,7 +13,7 @@ export const tagVariants = cva(
         variants: {
             variant: {
                 default: "hover:opacity-80",
-                add: "hover:bg-green-600 hover:text-white",
+                add: "hover:bg-green-600! hover:text-white",
                 remove: "hover:bg-destructive! after:content-['_x']",
             },
         },

@@ -107,7 +107,7 @@ export function ExploreSidebar({
     return (
         <div
             data-state={state}
-            className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
+            className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 max-w-70 xl:max-w-80 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
         >
             <ExploreSidebarContent experiences={experiences} />
         </div>
