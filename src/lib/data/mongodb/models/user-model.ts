@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const labSchema = new Schema({
     organizationId: { type: String, required: true },
+    slug: { type: String, required: true },
     role: { type: String, required: true },
 });
 
@@ -20,6 +21,7 @@ const userSchema = new Schema({
 
 export type LabRole = {
     organizationId: string;
+    slug: string;
     role: string;
 };
 
@@ -36,5 +38,6 @@ export type UserDTO = {
     description?: string;
 };
 
-export default mongoose.models.UserModel ||
+export const UserModel =
+    mongoose.models.UserModel ||
     mongoose.model("UserModel", userSchema, "users");

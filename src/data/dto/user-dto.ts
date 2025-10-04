@@ -1,22 +1,12 @@
 import "server-only";
 
-import { workos } from "@/lib/auth/workos/callback";
+import { getUsersFromOrganizationInDatabase } from "@/data/fetcher/user-fetcher";
 
-export async function getUserDTO(userId: string) {
+export async function getUsersByLabDTO(labSlug: string) {
     try {
-        return JSON.stringify(await workos.userManagement.getUser(userId));
+        return await getUsersFromOrganizationInDatabase(labSlug);
     } catch (err) {
-        console.error("Error fetching user:", err);
-        return "<error>";
-    }
-}
-
-export async function getUsersDTO() {
-    try {
-        const usersToReturn = await workos.userManagement.listUsers();
-        return JSON.stringify(usersToReturn.data);
-    } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error("Error fetching users by lab:", err);
         return "<error>";
     }
 }

@@ -4,6 +4,7 @@ import {
     getExperience,
     getExperiences,
 } from "@/data/fetcher/experience-fetcher";
+import experienceModel from "@/lib/data/mongodb/models/experience-model";
 import { Experience } from "@/types/dtos";
 import { cache } from "react";
 
@@ -45,5 +46,30 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
                 err instanceof Error ? err.message : "Unknown error"
             }`
         );
+    }
+}
+
+export async function getSlugFromOrganizationIdDTO(
+    organizationId: string
+): Promise<string | null> {
+    try {
+        const experience = await experienceModel.findOne({
+            organization_id: organizationId,
+        });
+        if (!experience) {
+            throw new Error(
+                `No experiences found for organization ID: ${organizationId}`
+            );
+        }
+        if (!experience?.slug) {
+            throw new Error(
+                `Could not find experience for organization ID: ${organizationId}`
+            );
+        }
+        console.log("experience slug: ", experience.slug);
+        return experience.slug;
+    } catch (err) {
+        console.error("Error fetching slug from organization ID:", err);
+        return null;
     }
 }

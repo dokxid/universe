@@ -1,5 +1,5 @@
-import { manageStoryColumns } from "@/app/components/stories/columns";
-import { StoryDataTable } from "@/app/components/stories/story-data-table";
+import { manageStoryColumns } from "@/app/components/data-tables/columns";
+import { StoryDataTable } from "@/app/components/data-tables/story-data-table";
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
 import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";

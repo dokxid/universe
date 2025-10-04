@@ -108,6 +108,23 @@ export const stock_experiences_doc = [
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
     },
+    {
+        center: {
+            type: "Point",
+            coordinates: [70.5, 10.75],
+        },
+        initial_zoom: "7",
+        slug: "superadmin",
+        title: "superadmin",
+        description: "superadmin",
+        subtitle: "superadmin",
+        featured_image:
+            "https://heritagelab.center/wp-content/uploads/2024/02/dd31a775-e3be-4b35-aa45-561b34bc4d03-870x570.jpg",
+        organization_id: "org_01K665S1EHENYXCWB6E5DSK7ZJ",
+        stories: [],
+        connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
+        visibility: "private",
+    },
 ];
 
 export const universe_experience_doc = () => ({

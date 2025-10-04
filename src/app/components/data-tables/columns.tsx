@@ -1,7 +1,7 @@
 "use client";
 
 import { submitElevationRequestAction } from "@/actions/submit-elevation-request";
-import { DataTableColumnHeader } from "@/app/components/stories/data-table-column-header";
+import { DataTableColumnHeader } from "@/app/components/data-tables/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";

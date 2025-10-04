@@ -10,12 +10,12 @@ export function AdminItemGroup({ visible }: { visible: boolean }) {
     const adminItems: SidebarItemGroup = [
         {
             title: "Manage Members",
-            href: `/${slug}/team/manage`,
+            href: `/${slug}/lab/manage`,
             icon: Users,
         },
         {
             title: "Team Settings",
-            href: `/${slug}/team/settings`,
+            href: `/${slug}/lab/settings`,
             icon: Settings,
         },
     ];

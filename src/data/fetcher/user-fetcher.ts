@@ -1,13 +1,13 @@
 import "server-only";
 
+import { getExperienceSignInDTO } from "@/data/dto/experience-dto";
 import {
     mergeMultipleOrganizationsUsers,
     sanitizeOrganizationMembers,
 } from "@/data/transformers/user-transformer";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
-import UserModel, { UserDTO } from "@/lib/data/mongodb/models/user-model";
-import { User } from "@workos-inc/node";
+import { UserDTO, UserModel } from "@/lib/data/mongodb/models/user-model";
 
 export type UserUpdateDTO = {
     firstName?: string;
@@ -37,7 +37,7 @@ export async function getAllUsers() {
 
         return sanitizedUsers;
     } catch (err) {
-        console.error("Error getting users:", err);
+        console.error(`Error getting users: ${err}`);
         return [];
     }
 }
@@ -46,7 +46,7 @@ export async function syncUsersWithDatabase() {
     try {
         await dbConnect();
         const users = await getAllUsers();
-        console.log("users: ", JSON.stringify(users, null, 2));
+        // console.log("users: ", JSON.stringify(users, null, 2));
         await UserModel.insertMany(users, {
             ordered: true,
         }).catch((err) => {
@@ -115,14 +115,16 @@ export async function deleteUser(userId: string) {
 }
 
 export async function getUserRoleFromOrganizationId(
-    user: User | null,
+    userId: string | null,
     organizationId: string
 ): Promise<string> {
     try {
-        if (!user) throw new Error("User is not authenticated");
+        if (!userId) {
+            throw new Error("User ID is required to fetch user role");
+        }
         const membership =
             await workos.userManagement.listOrganizationMemberships({
-                userId: user.id,
+                userId: userId,
                 organizationId,
             });
         const membershipToReturn = membership.data.pop();
@@ -133,5 +135,22 @@ export async function getUserRoleFromOrganizationId(
     } catch (err) {
         console.error("Error fetching user roles:", err);
         throw err;
+    }
+}
+export async function getUsersFromOrganizationInDatabase(slug: string) {
+    try {
+        await dbConnect();
+        const organizationId = (await getExperienceSignInDTO(slug))
+            .organization_id;
+        const users = await UserModel.find({
+            "labs.organizationId": organizationId,
+        }).exec();
+        return users;
+    } catch (err) {
+        console.error(
+            "Error fetching user from organization in database:",
+            err
+        );
+        return null;
     }
 }

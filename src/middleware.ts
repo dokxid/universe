@@ -1,4 +1,3 @@
-import { fetchUserFromWorkOS } from "@/lib/auth/workos/user";
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
@@ -86,18 +85,6 @@ export default async function middleware(
         response = NextResponse.next(); // Fallback to a default response
     }
 
-    // Sync user data if authenticated
-    const token = req.headers.get("Authorization")?.split("Bearer ")[1];
-    if (token) {
-        try {
-            const userData = await fetchUserFromWorkOS(token);
-            // Update local state or attach user data to the response
-            response.headers.set("X-User-Data", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Error syncing user data:", error);
-        }
-    }
-
     // add CSP if needed
     if (CSP_ENABLED) {
         return addCSPHeaders(response);
@@ -123,7 +110,7 @@ export const config = {
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
         "/:slug/stories/view/:id",
-        "/:slug/team/:page*",
+        "/:slug/team/settings",
         "/:slug/stories",
         "/:slug/user-preferences",
         "/:slug/stories/elevation-requests",
@@ -131,5 +118,6 @@ export const config = {
         "/:slug/contact",
         "/:slug/debug-settings",
         "/:slug/elevation-requests",
+        "/:slug/lab/manage",
     ],
 };

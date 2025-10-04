@@ -1,5 +1,5 @@
-import { elevationRequestsColumns } from "@/app/components/stories/columns";
-import { ElevationRequestsTable } from "@/app/components/stories/elevation-requests-data-table";
+import { elevationRequestsColumns } from "@/app/components/data-tables/columns";
+import { ElevationRequestsTable } from "@/app/components/data-tables/elevation-requests-data-table";
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
 import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";
