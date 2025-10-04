@@ -6,13 +6,13 @@ import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
 import { LabSidebarSkeleton } from "@/components/skeletons/lab-sidebar-skeleton";
 import { UniverseSidebarSkeleton } from "@/components/skeletons/universe-sidebar-skeleton";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
-import { useExperiences } from "@/lib/data_hooks/experiences-hook";
+import { useExperience } from "@/lib/data_hooks/experiences-hook";
 import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const { experiences, isLoading, isError } = useExperiences();
+    const { experience, isLoading, isError } = useExperience(slug);
     if (!slug) {
         return null;
     }
@@ -24,16 +24,16 @@ export function AppSidebar() {
         );
     }
     if (isError) {
-        return <div>Error loading experiences</div>;
+        return <div>Could not fetch experiences</div>;
     }
-    if (!experiences) {
-        return <div>No experiences found</div>;
+    if (!experience) {
+        return <div>No lab found</div>;
     }
 
     return (
         <Sidebar variant={"sidebar"} sidebarBorder={false} className={"p-0"}>
-            <AppSidebarHeader experiences={experiences} />
-            <AppSidebarContent experiences={experiences} />
+            <AppSidebarHeader experience={experience} />
+            <AppSidebarContent experience={experience} />
             <SidebarFooter className={"px-4 py-3"}>
                 <UserWidgetHolder />
             </SidebarFooter>

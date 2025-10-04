@@ -95,3 +95,14 @@ export type UnescoTagDTO = {
     _id: string;
     color: string;
 };
+
+export type ContactUserDTO = {
+    titles: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    email: string;
+    phone: string;
+    website: string;
+    description: string;
+};

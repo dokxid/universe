@@ -32,17 +32,6 @@ export async function generateStaticParams() {
     }));
 }
 
-type ContactUser = {
-    titles: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    email: string;
-    phone: string;
-    website: string;
-    description: string;
-};
-
 export default async function AboutPage() {
     return (
         <>
