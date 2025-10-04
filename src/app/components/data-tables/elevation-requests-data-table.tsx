@@ -86,7 +86,7 @@ export function ElevationRequestsTable<TData extends StoryDTO, TValue>({
     });
 
     return (
-        <div>
+        <div className={"max-w-6xl w-full"}>
             <div>
                 <div className="flex items-center py-4 justify-between">
                     <Input

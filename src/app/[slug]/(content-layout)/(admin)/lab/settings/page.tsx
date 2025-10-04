@@ -1,7 +1,14 @@
+import { ContentLayout } from "@/app/components/layout/content-layout";
+import {
+    Header,
+    HeaderContent,
+    HeaderDescription,
+    HeaderIcon,
+    HeaderTitle,
+} from "@/app/components/layout/header";
 import { TeamSettingsDialog } from "@/app/components/modal/team-settings-dialog";
-import { GenericFormSkeleton } from "@/components/skeletons/generic-form-skeleton";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Suspense } from "react";
+import { Newspaper } from "lucide-react";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();
@@ -18,8 +25,25 @@ export default async function Page({
     const { slug } = await params;
     const experience = JSON.stringify(await getExperienceDTO(slug));
     return (
-        <Suspense fallback={<GenericFormSkeleton />}>
-            <TeamSettingsDialog slug={slug} experienceSerialized={experience} />
-        </Suspense>
+        <>
+            <ContentLayout>
+                <Header>
+                    <HeaderIcon>
+                        <Newspaper size={80} />
+                    </HeaderIcon>
+                    <HeaderContent>
+                        <HeaderTitle>Elevation Requests</HeaderTitle>
+                        <HeaderDescription>
+                            Manage the elevation requests in all labs. Reject or
+                            approve them as needed.
+                        </HeaderDescription>
+                    </HeaderContent>
+                </Header>
+                <TeamSettingsDialog
+                    slug={slug}
+                    experienceSerialized={experience}
+                />
+            </ContentLayout>
+        </>
     );
 }

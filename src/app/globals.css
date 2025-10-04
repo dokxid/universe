@@ -152,6 +152,10 @@
     @apply scroll-m-20 pb-2 text-2xl font-semibold tracking-tight mb-1;
 }
 
+@utility form-box-description {
+    @apply prose-small text-muted-foreground mb-6;
+}
+
 @utility form-bounding-box {
     @apply max-w-2xl w-full;
 }

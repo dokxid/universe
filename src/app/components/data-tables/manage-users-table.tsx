@@ -56,6 +56,17 @@ const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
+                        onClick={() => {}}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        View profile
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
                         onClick={() => {
                             toast.success(
                                 `Removed ${user.firstName} ${user.lastName} from Heritage Lab successfully.`
