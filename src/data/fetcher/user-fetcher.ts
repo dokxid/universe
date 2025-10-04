@@ -1,6 +1,9 @@
 import "server-only";
 
-import { sanitizeOrganizationMembers } from "@/data/transformers/user-transformer";
+import {
+    mergeMultipleOrganizationsUsers,
+    sanitizeOrganizationMembers,
+} from "@/data/transformers/user-transformer";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
 import UserModel, { UserDTO } from "@/lib/data/mongodb/models/user-model";
@@ -28,7 +31,9 @@ export async function getAllUsers() {
         });
 
         const allUserArrays = await Promise.all(userPromises);
-        sanitizedUsers = allUserArrays.flat();
+        sanitizedUsers = await mergeMultipleOrganizationsUsers(
+            allUserArrays.flat()
+        );
 
         return sanitizedUsers;
     } catch (err) {
@@ -39,13 +44,17 @@ export async function getAllUsers() {
 
 export async function syncUsersWithDatabase() {
     try {
+        await dbConnect();
         const users = await getAllUsers();
-        dbConnect();
-        UserModel.insertMany(users, { ordered: true }).catch((err) => {
-            throw new Error("Error syncing users with database:", err);
+        console.log("users: ", JSON.stringify(users, null, 2));
+        await UserModel.insertMany(users, {
+            ordered: true,
+        }).catch((err) => {
+            throw new Error(`Error syncing users with database: ${err}`);
         });
     } catch (err) {
         console.error("Error syncing users with database:", err);
+        throw err;
     }
 }
 
@@ -105,7 +114,7 @@ export async function deleteUser(userId: string) {
     }
 }
 
-export async function getUserRolesFromOrganizationId(
+export async function getUserRoleFromOrganizationId(
     user: User | null,
     organizationId: string
 ): Promise<string> {

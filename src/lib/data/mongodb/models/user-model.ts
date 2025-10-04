@@ -1,9 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
-const userSchema = new Schema({
-    id: { type: String, required: true },
+const labSchema = new Schema({
     organizationId: { type: String, required: true },
-    roles: { type: String, required: true },
+    role: { type: String, required: true },
+});
+
+const userSchema = new Schema({
+    id: { type: String, required: true, unique: true },
+    labs: { type: [labSchema], default: [] },
     email: { type: String, required: true },
     firstName: { type: String },
     lastName: { type: String },
@@ -14,10 +18,14 @@ const userSchema = new Schema({
     description: { type: String },
 });
 
+export type LabRole = {
+    organizationId: string;
+    role: string;
+};
+
 export type UserDTO = {
     id: string;
-    organizationId: string;
-    roles: string;
+    labs?: LabRole[];
     email: string;
     firstName?: string;
     lastName?: string;
