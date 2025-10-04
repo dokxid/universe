@@ -164,7 +164,7 @@ export function StoryDetails({
                                 "flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"
                             }
                         >
-                            <TagList tags={activeStory.tags} />
+                            <TagList tags={activeStory.tags} variant={"add"} />
                         </div>
                         <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0 mb-10">
                             {parse(activeStory.content)}
@@ -223,7 +223,7 @@ export function StoryDetails({
             <div className={"px-6 pb-6 flex flex-col"}>
                 <StoryDetailsHeader story={activeStory} className={"bg-card"} />
                 <Separator className={"mb-6"} />
-                <TagList tags={activeStory.tags} />
+                <TagList tags={activeStory.tags} variant={"add"} />
                 <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 ">
                     {parse(activeStory.content)}
                 </div>

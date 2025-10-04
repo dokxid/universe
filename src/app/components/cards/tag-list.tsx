@@ -1,8 +1,8 @@
-import { TagSpan } from "@/app/components/cards/tag-span";
+import { TagSpan, tagVariants } from "@/app/components/cards/tag-span";
 import { useTags } from "@/lib/data_hooks/tag-hook";
 import { cn } from "@/lib/utils";
 import { UnescoTagDTO } from "@/types/dtos";
-import type { TagVariant } from "./tag-span";
+import { VariantProps } from "class-variance-authority";
 
 export function TagList({
     tags,
@@ -11,14 +11,14 @@ export function TagList({
 }: {
     tags: string[];
     className?: string;
-    variant?: TagVariant;
+    variant?: VariantProps<typeof tagVariants>["variant"];
 }) {
     const { tags: tagsSanitized, isLoading, isError } = useTags();
     if (isLoading || isError) {
         return (
             <div
                 data-slot={"tag-list"}
-                className={cn("flex-wrap space-x-1 space-y-1 my-3", className)}
+                className={cn("flex-wrap space-x-1 space-y-1", className)}
             >
                 {tags.map((tag) => (
                     <TagSpan

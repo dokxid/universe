@@ -42,10 +42,7 @@ export async function NavigationWidgetHolder() {
                 </Suspense>
                 {/* <ToggleDescriptorButton /> */}
             </div>
-            <div className={"p-2 bg-card"}>
-                <p>selected filters:</p>
-                <ActiveFilterInformation />
-            </div>
+            <ActiveFilterInformation />
         </div>
     );
 }

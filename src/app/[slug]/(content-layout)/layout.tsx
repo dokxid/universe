@@ -1,5 +1,4 @@
 import PageLayout from "@/app/components/layout/page-layout";
-import { Impersonation } from "@workos-inc/authkit-nextjs/components";
 
 export default function RootLayout({
     children,
@@ -10,7 +9,6 @@ export default function RootLayout({
 }) {
     return (
         <PageLayout>
-            <Impersonation />
             {children}
             <div>{modal}</div>
         </PageLayout>

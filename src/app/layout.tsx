@@ -3,7 +3,10 @@ import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
 import StoreProvider from "@/app/store-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
+import {
+    AuthKitProvider,
+    Impersonation,
+} from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
 import React from "react";
 import { Toaster } from "sonner";
@@ -36,6 +39,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                     disableTransitionOnChange
                                 >
                                     <SidebarLayout>
+                                        <Impersonation />
                                         <div className="flex grow">
                                             {children}
                                         </div>
