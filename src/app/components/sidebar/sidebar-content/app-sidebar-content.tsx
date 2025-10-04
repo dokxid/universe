@@ -12,16 +12,10 @@ import { Experience } from "@/types/dtos";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useParams } from "next/navigation";
 
-export function AppSidebarContent({
-    experiences,
-}: {
-    experiences: Experience[];
-}) {
+export function AppSidebarContent({ experience }: { experience: Experience }) {
     const { slug } = useParams<{ slug: string }>();
     const { roles, loading, organizationId, user } = useAuth();
-    const currentExperienceOrganizationId = experiences.find(
-        (exp) => exp.slug === slug
-    )?.organization_id;
+    const currentExperienceOrganizationId = experience.organization_id;
     const isUniverseView = slug === "universe";
 
     if (loading) return <Skeleton className={"h-10 w-full"} />;

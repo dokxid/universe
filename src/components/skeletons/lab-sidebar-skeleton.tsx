@@ -13,7 +13,7 @@ export function LabSidebarSkeleton() {
 
                 {/* Content Skeleton */}
                 <div className="px-5 py-4 flex flex-col gap-1 w-full">
-                    <div className="flex flex-row items-center justify-between w-full">
+                    <div className="flex flex-col items-start justify-between w-full">
                         {/* Title Skeleton */}
                         <Skeleton className="w-3/4 h-7 mb-2" />
                         <Skeleton className="w-1/2 h-7 mb-2" />
