@@ -1,4 +1,4 @@
-import { StoryGallery } from "@/app/components/modal/story-gallery";
+import { StoryCollection } from "@/app/components/modal/story-collection";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import {
     getAllPublicStoriesDTO,
@@ -32,7 +32,7 @@ export default async function StoriesPage({
     }
 
     return (
-        <StoryGallery
+        <StoryCollection
             storiesPromise={storiesPromise}
             tagsPromise={tagsPromise}
         />

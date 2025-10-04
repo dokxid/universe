@@ -1,6 +1,6 @@
+import { TagSpan } from "@/app/components/cards/tag-span";
 import S3Image from "@/app/components/embeds/s3-image";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { buildStoryLink } from "@/lib/path";
 import { getTagColorHex } from "@/lib/utils/color-string";
@@ -71,24 +71,15 @@ export function StoryCard({
                                     }
                                 >
                                     {story.tags.map((tag) => (
-                                        <Badge
-                                            style={{
-                                                backgroundColor: getTagColorHex(
-                                                    tags,
-                                                    tag
-                                                ),
-                                            }}
-                                            variant={"tag"}
+                                        <TagSpan
                                             key={tag}
-                                        >
-                                            {tag}
-                                        </Badge>
+                                            tag={tag}
+                                            variant={"add"}
+                                            color={getTagColorHex(tags, tag)}
+                                        />
                                     ))}
                                 </div>
                             </div>
-                            {/* <div className="shrink-0 ml-2">
-                        <ChevronRight className="size-4" />
-                    </div> */}
                         </div>
                     </div>
                 </div>
