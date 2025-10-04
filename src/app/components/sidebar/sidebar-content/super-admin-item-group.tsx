@@ -7,7 +7,6 @@ import { ItemGroup, SidebarItemGroup } from "./item-group";
 export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    console.log("SuperAdminItemGroup render, slug:", slug);
     const adminItems: SidebarItemGroup = [
         {
             title: "Manage Experiences",

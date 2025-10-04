@@ -18,6 +18,7 @@ export function ExploreExperienceCard({
     const selectedExperience = searchParams.get("exp");
     function createExperienceParam(slug: string) {
         const search = new URLSearchParams(searchParams.toString());
+        search.delete("story");
         search.set("exp", slug);
         return "?" + search.toString();
     }

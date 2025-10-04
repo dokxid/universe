@@ -6,7 +6,6 @@ import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
 import { Suspense } from "react";
 
 export async function MapOverlay({ slug }: { slug: string }) {
-    const experienceSlug = slug;
     const storiesPromise = getAllPublicStoriesDTO();
 
     return (
@@ -14,7 +13,7 @@ export async function MapOverlay({ slug }: { slug: string }) {
             <div className="relative w-full h-full">
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
-                    <NavigationWidgetHolder slug={experienceSlug} />
+                    <NavigationWidgetHolder />
                 </div>
 
                 {/* top right */}

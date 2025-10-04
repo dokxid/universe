@@ -1,6 +1,6 @@
 "use client";
 
-import { Toggle } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
 import { PanelRightOpen } from "lucide-react";
@@ -29,16 +29,25 @@ export function StoryWidgetHolder({ slug }: { slug: string }) {
                 </Button>
             )} */}
             {slug === "universe" && (
-                <Toggle
-                    onPressedChange={(pressed) =>
-                        dispatch(setRightSideBarOpen(pressed))
+                <Button
+                    data-state={
+                        navigationState.rightSideBarOpen ? "open" : "closed"
                     }
-                    pressed={navigationState.rightSideBarOpen}
+                    onClick={() =>
+                        dispatch(
+                            setRightSideBarOpen(
+                                !navigationState.rightSideBarOpen
+                            )
+                        )
+                    }
                     variant={"secondary_custom"}
+                    className={"group/button"}
                 >
                     <div className="hidden lg:inline-block">Explore</div>
-                    <PanelRightOpen />
-                </Toggle>
+                    <PanelRightOpen
+                        className={"group-data-[state=open]/button:rotate-180"}
+                    />
+                </Button>
             )}
         </div>
     );

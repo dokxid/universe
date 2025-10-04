@@ -2,24 +2,26 @@
 
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/lib/hooks";
-import { decrementZoomLevel, setFlyBack } from "@/lib/redux/map/map-slice";
+import { triggerZoomOut } from "@/lib/redux/map/map-slice";
 import { Navigation2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
-export function FlyBackButton({ isUniverseView }: { isUniverseView: boolean }) {
+export function FlyBackButton() {
+    const pathname = usePathname();
+    const slug = pathname.split("/")[1];
+    console.log("slug", slug === "universe");
+    const isUniverseView = slug === "universe";
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
-    const router = useRouter();
 
-    const isVisible = searchParams.get("exp") !== "universe";
+    const isVisible = searchParams.get("exp") !== null;
 
     return !isVisible ? null : (
         <Button
             onClick={() => {
-                dispatch(decrementZoomLevel());
-                dispatch(setFlyBack());
+                dispatch(triggerZoomOut());
                 if (isUniverseView) {
-                    router.push("/universe/map");
+                    history.pushState(null, "", "/universe/map");
                 }
             }}
             variant={"secondary"}
@@ -27,7 +29,7 @@ export function FlyBackButton({ isUniverseView }: { isUniverseView: boolean }) {
         >
             <Navigation2 size={4} />
             <p className={"text-xs hidden lg:inline-block"}>
-                {isUniverseView ? "Leave lab" : "Recentre"}
+                {isUniverseView ? "Leave Lab" : "Recentre to Lab"}
             </p>
         </Button>
     );

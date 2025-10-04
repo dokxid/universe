@@ -14,7 +14,7 @@ import { Suspense } from "react";
 //     { ssr: false }
 // );
 
-export async function NavigationWidgetHolder({ slug }: { slug: string }) {
+export async function NavigationWidgetHolder() {
     const tagsPromise = getTagsDTO();
 
     return (
@@ -38,7 +38,7 @@ export async function NavigationWidgetHolder({ slug }: { slug: string }) {
                     />
                 )} */}
                 <Suspense fallback={<Skeleton className="w-10 h-10" />}>
-                    <FlyBackButton isUniverseView={slug === "universe"} />
+                    <FlyBackButton />
                 </Suspense>
                 {/* <ToggleDescriptorButton /> */}
             </div>

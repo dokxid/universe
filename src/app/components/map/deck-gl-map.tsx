@@ -3,6 +3,7 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { triggerZoomOut } from "@/lib/redux/map/map-slice";
 import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
@@ -49,16 +50,16 @@ function MapController({
     selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
-    const flyBackState = useAppSelector((state) => state.map.flyBack);
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
     const experience = searchParams.get("exp");
+    const mapState = useAppSelector((state) => state.map);
 
     useEffect(() => {
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
         if (selectedStory) {
             center = selectedStory.location.coordinates;
-            zoom = map!.getZoom() < 6 ? 10 : map!.getZoom();
+            zoom = 8;
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);
@@ -76,13 +77,13 @@ function MapController({
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [experience, selectedStory]);
+
     useEffect(() => {
-        map?.flyTo({
-            center: currentExperience.center.coordinates,
-            zoom: currentExperience.initial_zoom,
-        });
+        if (!map) return;
+        map.zoomOut();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flyBackState]);
+    }, [mapState.zoomOut]);
+
     return null;
 }
 
@@ -99,7 +100,6 @@ export function DeckGLMap({
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
-    const mapState = useAppSelector((state) => state.map);
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
@@ -185,11 +185,17 @@ export function DeckGLMap({
         setConnections(connectionsSanitized);
     }, [activeStory, selectedFilterTags, storiesFiltered]);
 
-    const INITIAL_VIEW_STATE: MapViewState = {
-        longitude: experience.center.coordinates[0],
-        latitude: experience.center.coordinates[1],
-        zoom: mapState.zoomLevel,
-    };
+    const INITIAL_VIEW_STATE: MapViewState = activeStory
+        ? {
+              longitude: activeStory.location.coordinates[0],
+              latitude: activeStory.location.coordinates[1],
+              zoom: 8,
+          }
+        : {
+              longitude: experience.center.coordinates[0],
+              latitude: experience.center.coordinates[1],
+              zoom: experience.initial_zoom,
+          };
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
         e.preventDefault();
@@ -299,8 +305,15 @@ export function DeckGLMap({
                 <Map
                     reuseMaps={true}
                     onClick={() => {
-                        setActiveStory(null);
-                        setSelectedStoryIdParams(pathname, searchParams, "");
+                        if (activeStory) {
+                            setActiveStory(null);
+                            setSelectedStoryIdParams(
+                                pathname,
+                                searchParams,
+                                ""
+                            );
+                            dispatch(triggerZoomOut());
+                        }
                         dispatch(setDescriptorOpen(false));
                     }}
                     id="mainMap"

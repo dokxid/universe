@@ -23,7 +23,11 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
     );
 
     return (
-        <div className={"flex flex-col w-full items-start gap-5 p-2 md:p-5"}>
+        <div
+            className={
+                "flex flex-col w-full items-start gap-5 p-2 md:p-5 overflow-y-auto"
+            }
+        >
             <article className="prose dark:prose-invert prose-sm">
                 <h1>Heritage Labs</h1>
                 <p className="text-muted-foreground">
@@ -78,10 +82,10 @@ export function ExploreSidebar({
     const experiences = use(experiencesPromise);
     const navigationState = useAppSelector((state) => state.navigation);
     const dispatch = useDispatch();
+    const state = navigationState.rightSideBarOpen ? "open" : "closed";
 
     if (slug !== "universe") return null;
     if (!experiences) return <div>No experiences found.</div>;
-    if (!navigationState.rightSideBarOpen) return null;
     if (isMobile) {
         return (
             <Drawer
@@ -102,7 +106,8 @@ export function ExploreSidebar({
 
     return (
         <div
-            className={`bg-sidebar text-sidebar-foreground max-w-[20rem] flex h-screen flex-col overflow-y-auto`}
+            data-state={state}
+            className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
         >
             <ExploreSidebarContent experiences={experiences} />
         </div>
