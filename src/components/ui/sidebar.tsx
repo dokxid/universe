@@ -245,7 +245,7 @@ function Sidebar({
             <div
                 data-slot="sidebar-container"
                 className={cn(
-                    "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) md:flex duration-300",
+                    "fixed inset-y-0 z-10  group-data-[state=collapsed]:pointer-events-none hidden h-svh w-(--sidebar-width) md:flex duration-300",
                     side === "left" ? "left-0" : "right-0",
                     // Adjust the padding for floating and inset variants.
                     variant === "floating" || variant === "inset"
@@ -263,7 +263,7 @@ function Sidebar({
                 <div
                     data-sidebar="sidebar"
                     data-slot="sidebar-inner"
-                    className="bg-sidebar group-data-[state=collapsed]:-translate-x-3/4 group-data-[state=expanded]:translate-x-0 duration-300 transition-[translate] ease-in-out group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+                    className="bg-sidebar group-data-[state=collapsed]:-translate-x-[100%] group-data-[state=expanded]:translate-x-0 duration-300 transition-[translate] ease-in-out group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
                 >
                     {children}
                 </div>
