@@ -157,7 +157,7 @@
 }
 
 @utility form-bounding-box {
-    @apply max-w-2xl w-full;
+    @apply max-w-2xl w-full p-6;
 }
 
 @utility form-button-group {

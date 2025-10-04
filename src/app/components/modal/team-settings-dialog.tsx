@@ -210,7 +210,7 @@ export function TeamSettingsDialog({
                 </div>
                 <div className={"form-box"}>
                     {/* change visibility of experience // */}
-                    <div className={"p-6 rounded-lg flex flex-col gap-5"}>
+                    <div className={"form-bounding-box"}>
                         <article className={"mb-4"}>
                             <h1 className={"form-box-title"}>
                                 Change visibility?
@@ -285,7 +285,7 @@ export function TeamSettingsDialog({
 
                 <div className={"form-box"}>
                     {/* delete experience (disabled) */}
-                    <div className={"p-6 rounded-lg flex flex-col gap-5"}>
+                    <div className={"form-bounding-box"}>
                         <article className={"mb-4"}>
                             <h1 className={"form-box-title"}>
                                 Delete experience?
