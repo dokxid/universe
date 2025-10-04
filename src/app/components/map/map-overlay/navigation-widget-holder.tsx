@@ -1,3 +1,4 @@
+import { ActiveFilterInformation } from "@/app/components/map/map-overlay/active-filter-information";
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -17,7 +18,7 @@ export async function NavigationWidgetHolder({ slug }: { slug: string }) {
     const tagsPromise = getTagsDTO();
 
     return (
-        <>
+        <div className={"flex flex-col gap-3"}>
             <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
                 <SidebarTrigger
                     variant={"secondary_custom"}
@@ -41,6 +42,10 @@ export async function NavigationWidgetHolder({ slug }: { slug: string }) {
                 </Suspense>
                 {/* <ToggleDescriptorButton /> */}
             </div>
-        </>
+            <div className={"p-2 bg-card"}>
+                <p>selected filters:</p>
+                <ActiveFilterInformation />
+            </div>
+        </div>
     );
 }

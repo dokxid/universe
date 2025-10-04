@@ -1,19 +1,11 @@
+import { TagList } from "@/app/components/cards/tag-list";
 import S3Image from "@/app/components/embeds/s3-image";
 import { StoryDetailsHeader } from "@/app/components/map/map-overlay/story-details";
-import { Badge } from "@/components/ui/badge";
 import { useAppDispatch } from "@/lib/hooks";
 import { setSelectedStoryId } from "@/lib/redux/map/map-slice";
-import { getTagColorHex } from "@/lib/utils/color-string";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
-import Link from "next/link";
+import { StoryDTO } from "@/types/dtos";
 
-export function StoryHoverCardContent({
-    tags,
-    story,
-}: {
-    tags: UnescoTagDTO[];
-    story: StoryDTO;
-}) {
+export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
     const dispatch = useAppDispatch();
     return (
         <div className={"max-h-[400px] flex flex-col gap-1 overflow-y-auto"}>
@@ -36,19 +28,7 @@ export function StoryHoverCardContent({
                 profilePictureVisible={false}
             />
             {story.tags && story.tags.length > 0 && (
-                <div className={"flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"}>
-                    {story.tags.map((tag) => (
-                        <Badge
-                            style={{
-                                backgroundColor: getTagColorHex(tags, tag),
-                            }}
-                            variant={"tag"}
-                            key={tag}
-                        >
-                            <Link href={`/tags/${tag}`}>{tag}</Link>
-                        </Badge>
-                    ))}
-                </div>
+                <TagList tags={story.tags} variant={"add"} />
             )}
         </div>
     );

@@ -13,7 +13,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { getTagColorHex } from "@/lib/utils/color-string";
 import { groupByKey } from "@/lib/utils/group-by-key";
 import { UnescoTagDTO } from "@/types/dtos";
 import { PlusIcon, Tag, X } from "lucide-react";
@@ -38,17 +37,16 @@ export function TagPicker({
 }: TagPickerProps) {
     const [inputTags, setInputTags] = useState<UnescoTagDTO[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
-    const tags = availableTags;
 
     // sync inputTags with selected tags
     useEffect(() => {
-        if (tags && selectedTags) {
-            const tagObjects = tags.filter((tag) =>
+        if (availableTags && selectedTags) {
+            const tagObjects = availableTags.filter((tag) =>
                 selectedTags.includes(tag.name)
             );
             setInputTags(tagObjects);
         }
-    }, [tags, selectedTags]);
+    }, [availableTags, selectedTags]);
 
     const handleMouseEnter = () => {
         setTagPickerOpen(true);
@@ -90,7 +88,7 @@ export function TagPicker({
                     {inputTags.map((tag) => (
                         <Badge
                             style={{
-                                backgroundColor: getTagColorHex(tags, tag.name),
+                                backgroundColor: tag.color,
                             }}
                             key={tag._id}
                             variant={"tag"}
@@ -136,11 +134,7 @@ export function TagPicker({
                                     >
                                         {tagsInCategory.map((tag) => (
                                             <CommandItem
-                                                key={
-                                                    tag.theme +
-                                                    tag.category +
-                                                    tag._id
-                                                }
+                                                key={tag._id}
                                                 onSelect={() => {
                                                     handleTagAdd(tag);
                                                 }}
@@ -148,10 +142,9 @@ export function TagPicker({
                                                 <Tag
                                                     className={"stroke-primary"}
                                                     style={{
-                                                        fill: getTagColorHex(
-                                                            tags,
-                                                            tag.name
-                                                        ),
+                                                        fill: tag.color,
+                                                        strokeWidth: 1.5,
+                                                        stroke: "#333",
                                                     }}
                                                 ></Tag>
                                                 {tag.name}

@@ -5,20 +5,18 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { StoryDTO } from "@/types/dtos";
 import { HoverCardArrow } from "@radix-ui/react-hover-card";
 import { MapPin } from "lucide-react";
 import { memo } from "react";
 
 function CustomMarker({
-    tags,
     story,
     isActive,
 }: {
-    tags: UnescoTagDTO[];
     story: StoryDTO;
     isActive: boolean;
-    }) {
+}) {
     return (
         <HoverCard openDelay={100} closeDelay={20}>
             <HoverCardTrigger>
@@ -36,7 +34,7 @@ function CustomMarker({
                 />
             </HoverCardTrigger>
             <HoverCardContent>
-                <StoryHoverCardContent tags={tags} story={story} />
+                <StoryHoverCardContent story={story} />
                 <HoverCardArrow />
             </HoverCardContent>
         </HoverCard>

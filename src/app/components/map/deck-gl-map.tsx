@@ -3,10 +3,7 @@ import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-    MAP_TILES,
-    setDescriptorOpen,
-} from "@/lib/redux/settings/settings-slice";
+import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
@@ -54,19 +51,23 @@ function MapController({
     const { mainMap: map } = useMap();
     const flyBackState = useAppSelector((state) => state.map.flyBack);
     const isMobile = useIsMobile();
+    const searchParams = useSearchParams();
+    const experience = searchParams.get("exp");
 
     useEffect(() => {
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
         if (selectedStory) {
             center = selectedStory.location.coordinates;
-            zoom = 12;
+            zoom = map!.getZoom() < 6 ? 10 : map!.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);
-        } else {
+        } else if (experience && experience !== "universe") {
             center = currentExperience.center.coordinates;
             zoom = currentExperience.initial_zoom;
             edgeInsets = new EdgeInsets(0, 0, 0, 0);
+        } else {
+            return;
         }
         map?.flyTo({
             center,
@@ -74,7 +75,7 @@ function MapController({
             padding: edgeInsets,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentExperience, selectedStory]);
+    }, [experience, selectedStory]);
     useEffect(() => {
         map?.flyTo({
             center: currentExperience.center.coordinates,
@@ -103,7 +104,8 @@ export function DeckGLMap({
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
     const isMobile = useIsMobile();
-    const mapStyleUrl = MAP_TILES[settingsState.mapTiles];
+    const mapStyleUrl = settingsState.mapTiles;
+    console.log("mapStyleUrl", mapStyleUrl);
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);
@@ -333,7 +335,6 @@ export function DeckGLMap({
                             }}
                         >
                             <CustomMarker
-                                tags={tags}
                                 story={story}
                                 isActive={activeStory?._id === story._id}
                             />

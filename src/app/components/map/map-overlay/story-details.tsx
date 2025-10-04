@@ -1,8 +1,8 @@
 "use client";
 
+import { TagList } from "@/app/components/cards/tag-list";
 import S3Image from "@/app/components/embeds/s3-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
@@ -10,9 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
-import { getTagColorHex } from "@/lib/utils/color-string";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { StoryDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { X } from "lucide-react";
@@ -79,14 +78,11 @@ export function StoryDetailsHeader({
 
 export function StoryDetails({
     slug,
-    tagsPromise,
     storiesPromise,
 }: {
     slug: string;
-    tagsPromise: Promise<UnescoTagDTO[]>;
     storiesPromise: Promise<StoryDTO[]>;
 }) {
-    const tags = use(tagsPromise);
     const pathname = usePathname();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
@@ -168,20 +164,7 @@ export function StoryDetails({
                                 "flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"
                             }
                         >
-                            {activeStory.tags.map((tag) => (
-                                <Badge
-                                    style={{
-                                        backgroundColor: getTagColorHex(
-                                            tags,
-                                            tag
-                                        ),
-                                    }}
-                                    variant={"tag"}
-                                    key={tag}
-                                >
-                                    <Link href={`/tags/${tag}`}>{tag}</Link>
-                                </Badge>
-                            ))}
+                            <TagList tags={activeStory.tags} />
                         </div>
                         <div className="prose dark:prose-invert prose-headings:mb-2 prose-headings:mt-4 px-0 mb-10">
                             {parse(activeStory.content)}
@@ -240,19 +223,7 @@ export function StoryDetails({
             <div className={"px-6 pb-6 flex flex-col"}>
                 <StoryDetailsHeader story={activeStory} className={"bg-card"} />
                 <Separator className={"mb-6"} />
-                <div className={"flex flex-row flex-wrap gap-2 mb-3"}>
-                    {activeStory.tags.map((tag) => (
-                        <Badge
-                            style={{
-                                backgroundColor: getTagColorHex(tags, tag),
-                            }}
-                            variant={"tag"}
-                            key={tag}
-                        >
-                            <Link href={`/tags/${tag}`}>{tag}</Link>
-                        </Badge>
-                    ))}
-                </div>
+                <TagList tags={activeStory.tags} />
                 <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 prose-headings:mt-4 ">
                     {parse(activeStory.content)}
                 </div>

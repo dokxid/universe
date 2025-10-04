@@ -5,6 +5,8 @@ import { setSelectedTagsParams } from "@/lib/utils/param-setter";
 import { X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 
+export type TagVariant = "add" | "remove" | "default";
+
 export function TagSpan({
     tag,
     color,
@@ -12,7 +14,7 @@ export function TagSpan({
 }: {
     tag: string;
     color?: string;
-    variant?: "add" | "remove";
+    variant?: TagVariant;
 }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();

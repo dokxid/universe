@@ -1,25 +1,16 @@
-import { TagSpan } from "@/app/components/cards/tag-span";
+import { TagList } from "@/app/components/cards/tag-list";
 import S3Image from "@/app/components/embeds/s3-image";
-import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Card } from "@/components/ui/card";
 import { buildStoryLink } from "@/lib/path";
-import { getTagColorHex } from "@/lib/utils/color-string";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { StoryDTO } from "@/types/dtos";
 import Link from "next/link";
-import { Suspense } from "react";
 
-export function StoryCard({
-    story,
-    tags,
-}: {
-    story: StoryDTO;
-    tags: UnescoTagDTO[];
-}) {
+export function StoryCard({ story }: { story: StoryDTO }) {
     return (
         <Link
             key={story._id}
             href={buildStoryLink(story)}
-            prefetch={false}
+            prefetch={true}
             className="flex flex-row items-center w-full gap-2"
             data-testid={"story-card-link"}
         >
@@ -34,14 +25,12 @@ export function StoryCard({
                         }
                     >
                         {story.featured_image_url ? (
-                            <Suspense fallback={<ListExperiencesSkeleton />}>
-                                <S3Image
-                                    link={false}
-                                    experience={story.experience}
-                                    fileName={story.featured_image_url}
-                                    className="object-cover "
-                                />
-                            </Suspense>
+                            <S3Image
+                                link={false}
+                                experience={story.experience}
+                                fileName={story.featured_image_url}
+                                className="object-cover "
+                            />
                         ) : (
                             <div className="w-full h-full bg-muted rounded-t-md flex items-center justify-center">
                                 <span className="text-muted-foreground text-sm">
@@ -65,20 +54,7 @@ export function StoryCard({
                                         story.createdAt
                                     ).toLocaleDateString()}
                                 </p>
-                                <div
-                                    className={
-                                        "group-hover:flex flex-row flex-wrap gap-2 my-3 hidden group-hover:visible"
-                                    }
-                                >
-                                    {story.tags.map((tag) => (
-                                        <TagSpan
-                                            key={tag}
-                                            tag={tag}
-                                            variant={"add"}
-                                            color={getTagColorHex(tags, tag)}
-                                        />
-                                    ))}
-                                </div>
+                                <TagList tags={story.tags} variant={"add"} />
                             </div>
                         </div>
                     </div>

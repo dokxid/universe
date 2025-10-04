@@ -96,7 +96,7 @@ export default async function MapView({
                         <Suspense
                             fallback={<Skeleton className="w-full h-full" />}
                         >
-                            <MapOverlay tagsPromise={tagsPromise} slug={slug} />
+                            <MapOverlay slug={slug} />
                         </Suspense>
                     </div>
                 </div>

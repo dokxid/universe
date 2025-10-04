@@ -37,7 +37,7 @@ export default function GalleryPageSkeleton() {
                 <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {Array.from({ length: 6 }).map((_, i) => (
                         <div key={i} className="space-y-4">
-                            <Skeleton className="h-48 w-full rounded-lg" />
+                            <Skeleton className="h-60 md:h-90 w-full rounded-lg" />
                             <div className="space-y-6">
                                 <Skeleton className="h-6 w-3/4" />
                                 <Skeleton className="h-4 w-full" />

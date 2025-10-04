@@ -1,7 +1,7 @@
 "use client";
 
 import { StoryCard } from "@/app/components/cards/story-card";
-import { TagSpan } from "@/app/components/cards/tag-span";
+import { TagList } from "@/app/components/cards/tag-list";
 import {
     Header,
     HeaderContent,
@@ -21,7 +21,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { getTagColorHex } from "@/lib/utils/color-string";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -62,7 +61,6 @@ export function StoryCollection({
     const [titleFilter, setTitleFilter] = useState("");
     const [sorting, setSorting] = useState<"asc" | "desc">("desc");
     const stories = use(storiesPromise);
-    const tags = use(tagsPromise);
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const searchParams = useSearchParams();
@@ -170,16 +168,14 @@ export function StoryCollection({
                     </div>
                     <div className={"self-start"}>
                         {selectedFilterTags && (
-                            <div className="flex flex-wrap gap-2">
-                                filtered by:{" "}
-                                {selectedFilterTags.map((tag) => (
-                                    <TagSpan
-                                        key={tag}
-                                        tag={tag}
-                                        variant={"remove"}
-                                        color={getTagColorHex(tags, tag)}
-                                    />
-                                ))}
+                            <div className="flex flex-wrap items-center">
+                                <p className="text-sm text-muted-foreground mr-2">
+                                    showing tags:{" "}
+                                </p>
+                                <TagList
+                                    tags={selectedFilterTags}
+                                    variant={"remove"}
+                                />
                             </div>
                         )}
                     </div>
@@ -195,7 +191,7 @@ export function StoryCollection({
                 )}
                 <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
                     {filteredStories.map((story) => (
-                        <StoryCard key={story._id} story={story} tags={tags} />
+                        <StoryCard key={story._id} story={story} />
                     ))}
                     {filteredStories.length === 0 && (
                         <>

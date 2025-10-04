@@ -9,9 +9,11 @@ import Link from "next/link";
 export function ImageElement({
     className,
     src,
+    internal = true,
 }: {
     className?: string;
     src: string;
+    internal?: boolean;
 }) {
     return (
         <div className={"relative w-full h-full aspect-video"}>
@@ -23,6 +25,7 @@ export function ImageElement({
                 sizes="(min-width: 808px) 50vw, 100vw"
                 className={cn("object-cover", className)}
                 placeholder={shimmerDataUrl(400, 225)}
+                unoptimized={!internal}
             />
         </div>
     );
@@ -33,11 +36,13 @@ export default function S3Image({
     fileName,
     className,
     link = true,
+    internal = true,
 }: {
     experience: string;
     fileName: string;
     className?: string;
     link?: boolean;
+    internal?: boolean;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
@@ -46,14 +51,17 @@ export default function S3Image({
 
     const src = imageUrl;
 
-    if (!link) return <ImageElement className={className} src={src} />;
+    if (!link)
+        return (
+            <ImageElement className={className} src={src} internal={internal} />
+        );
 
     return (
         <Link
             href={`/${experience}/images/${fileName}`}
             className={"relative block w-full h-full"}
         >
-            <ImageElement className={className} src={src} />
+            <ImageElement className={className} src={src} internal={internal} />
         </Link>
     );
 }
