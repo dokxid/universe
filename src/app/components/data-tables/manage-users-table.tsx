@@ -83,15 +83,12 @@ const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
     );
 };
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps {
     data: string; // JSON stringified array of TData
     slug: string;
 }
 
-export function ManageUsersTable<TData extends UserDTO, TValue>({
-    data,
-    slug,
-}: DataTableProps<TData, TValue>) {
+export function ManageUsersTable({ data, slug }: DataTableProps) {
     const [rowSelection, setRowSelection] = React.useState({});
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] =
@@ -99,7 +96,7 @@ export function ManageUsersTable<TData extends UserDTO, TValue>({
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
     const dataFetched = React.useMemo(
-        () => JSON.parse(data) as UserDTO[] as TData[],
+        () => JSON.parse(data) as UserDTO[],
         [data]
     );
 
