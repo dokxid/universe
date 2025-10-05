@@ -383,6 +383,10 @@ export function DeckGLMap({
                     }}
                     projection={settingsState.globeView ? "globe" : "mercator"}
                 >
+                    <MapController
+                        currentExperience={experience}
+                        selectedStory={activeStory}
+                    />
                     <AttributionControl
                         compact={true}
                         position={"bottom-right"}
