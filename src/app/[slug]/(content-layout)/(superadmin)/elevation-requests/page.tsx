@@ -11,7 +11,7 @@ import {
 import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
 import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";
-import { Newspaper } from "lucide-react";
+import { Grid2X2Check } from "lucide-react";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = await params;
@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ContentLayout>
                 <Header>
                     <HeaderIcon>
-                        <Newspaper size={80} />
+                        <Grid2X2Check size={80} />
                     </HeaderIcon>
                     <HeaderContent>
                         <HeaderTitle>Elevation Requests</HeaderTitle>

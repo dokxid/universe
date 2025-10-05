@@ -6,6 +6,8 @@ import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
+const USER_PREFERENCES_URL = `/account/user-preferences`;
+
 export function UserWidgetNoAuth() {
     return (
         <div
@@ -38,7 +40,7 @@ export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
             <SignOutButton slug={slug} />
             <div className={"flex flex-row items-center gap-2 flex-none"}>
                 <ThemeSwitchButton />
-                <Link href={`/${slug}/user-preferences`}>
+                <Link href={`/${slug}/${USER_PREFERENCES_URL}`}>
                     <Button variant={"ghost"} size={"icon"}>
                         <Settings
                             strokeWidth={1.5}
@@ -91,7 +93,7 @@ export function UserWidgetAuthorized({
             </div>
             <div className={"flex flex-row items-center gap-2 flex-none"}>
                 <ThemeSwitchButton />
-                <Link href={`/${slug}/user-preferences`}>
+                <Link href={`/${slug}/${USER_PREFERENCES_URL}`}>
                     <Button variant={"ghost"} size={"icon"}>
                         <Settings
                             strokeWidth={1.5}

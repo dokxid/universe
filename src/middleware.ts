@@ -24,7 +24,7 @@ const UNAUTHENTICATED_PATHS = [
     "/map",
     "/stories",
     "/stories/view/:id",
-    "/experiences",
+    "/labs",
     "/map-settings",
     "/images/:filename",
     "/about",
@@ -96,30 +96,30 @@ export default async function middleware(
 // Match against pages that require authentication
 export const config = {
     matcher: [
+        // public paths
         "/:slug/",
         "/:slug/images/:filename",
-        // map and related paths
+        "/:slug/labs",
         "/:slug/map",
         "/:slug/map/:page*",
-        "/:slug/experiences",
         "/:slug/map-settings",
-        // lab and lab information pages
-        "/:slug/lab/manage",
-        "/:slug/lab/settings",
         "/:slug/about",
         "/:slug/contact",
-        // stories and related paths
         "/:slug/stories",
+        "/:slug/stories/view/:id",
+        // editor+ paths
+        "/:slug/account/user-preferences",
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
-        "/:slug/stories/view/:id",
-        "/:slug/stories/elevation-requests",
         "/:slug/elevation-requests",
+        // admin paths
+        "/:slug/lab/settings",
+        "/:slug/lab/manage",
         // super admin paths
         "/:slug/debug-settings",
-        "/universe/labs",
+        "/universe/labs/manage",
         "/universe/labs/view/:id",
         // account and related paths
         "/:slug/user-preferences",

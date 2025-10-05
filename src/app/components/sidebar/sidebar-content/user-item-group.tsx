@@ -15,7 +15,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         },
         {
             title: "Heritage Labs",
-            href: `/universe/experiences`,
+            href: `/universe/labs`,
             icon: Earth,
         },
         {

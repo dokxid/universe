@@ -8,7 +8,7 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Newspaper } from "lucide-react";
+import { Earth } from "lucide-react";
 
 export default async function Page({ params }: { params: { slug: string } }) {
     const { slug } = await params;
@@ -19,13 +19,13 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <ContentLayout>
                 <Header>
                     <HeaderIcon>
-                        <Newspaper size={80} />
+                        <Earth size={80} />
                     </HeaderIcon>
                     <HeaderContent>
-                        <HeaderTitle>Elevation Requests</HeaderTitle>
+                        <HeaderTitle>Manage Heritage Labs</HeaderTitle>
                         <HeaderDescription>
-                            Manage the elevation requests in all labs. Reject or
-                            approve them as needed.
+                            Manage the Heritage Labs and all of their stories.
+                            Invite new labs and manage existing Heritage Labs.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>

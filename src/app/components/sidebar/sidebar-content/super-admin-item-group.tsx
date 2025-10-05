@@ -1,6 +1,6 @@
 "use client";
 
-import { Earth, Grid2X2Check, Settings } from "lucide-react";
+import { Earth, Grid2X2Check, TriangleAlert } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup, SidebarItemGroup } from "./item-group";
 
@@ -10,7 +10,7 @@ export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
     const adminItems: SidebarItemGroup = [
         {
             title: "Manage Heritage Labs",
-            href: `/universe/labs`,
+            href: `/universe/labs/manage`,
             icon: Earth,
         },
         {
@@ -21,7 +21,7 @@ export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
         {
             title: "Debug Settings",
             href: `/${slug}/debug-settings`,
-            icon: Settings,
+            icon: TriangleAlert,
         },
     ];
     if (!visible) {
