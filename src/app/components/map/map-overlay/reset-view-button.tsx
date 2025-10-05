@@ -10,7 +10,8 @@ export default function ResetViewButton() {
         <Button
             onClick={() => dispatch(resetView())}
             variant={"secondary_custom"}
-            size={"icon"}
+            size={"icon-lg"}
+            className={"font-semibold"}
         >
             N↑
         </Button>
