@@ -113,6 +113,7 @@ export function DeckGLMap({
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
+    const mapState = useAppSelector((state) => state.map);
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
@@ -331,6 +332,7 @@ export function DeckGLMap({
                 getSourceColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getTargetColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getWidth: 3,
+                widthMinPixels: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
                 onClick: (info) => {
@@ -399,7 +401,7 @@ export function DeckGLMap({
                         <Marker
                             longitude={story.location.coordinates[0]}
                             latitude={story.location.coordinates[1]}
-                            rotationAlignment={"map"}
+                            rotationAlignment={settingsState.markerProjection}
                             key={index}
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();

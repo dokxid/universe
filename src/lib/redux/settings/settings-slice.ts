@@ -13,12 +13,14 @@ export interface SettingsState {
     mapTiles: keyof typeof MAP_TILES;
     descriptorOpen: boolean;
     globeView: boolean;
+    markerProjection?: "viewport" | "map";
 }
 
 const initialState: SettingsState = {
     mapTiles: "Alidade Smooth",
     descriptorOpen: true,
     globeView: false,
+    markerProjection: "viewport",
 };
 
 export const settingsSlice = createSlice({
@@ -34,9 +36,16 @@ export const settingsSlice = createSlice({
         setGlobeView: (state, action) => {
             state.globeView = action.payload;
         },
+        setMarkerProjection: (state, action) => {
+            state.markerProjection = action.payload;
+        },
     },
 });
 
-export const { setMapTiles, setDescriptorOpen, setGlobeView } =
-    settingsSlice.actions;
+export const {
+    setMapTiles,
+    setDescriptorOpen,
+    setGlobeView,
+    setMarkerProjection,
+} = settingsSlice.actions;
 export default settingsSlice.reducer;
