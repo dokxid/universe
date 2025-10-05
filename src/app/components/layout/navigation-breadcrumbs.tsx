@@ -7,7 +7,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Orbit } from "lucide-react";
+import { Earth, Orbit } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export const pathFeatures = new Map<string, string>([
@@ -34,7 +34,10 @@ export function NavigationBreadcrumbs() {
         <BreadcrumbList className={"max-w-full"}>
             <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href={`/${slug}`}>
-                    {slug === "universe" ? <Orbit /> : slug}
+                    <div className={"flex flex-row items-center gap-2"}>
+                        {slug === "universe" ? <Orbit /> : <Earth />}
+                        {slug === "universe" ? "" : `/ ${slug}`}
+                    </div>
                 </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator className="hidden md:block" />

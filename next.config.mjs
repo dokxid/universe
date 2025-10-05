@@ -23,6 +23,7 @@ const config = {
 
     experimental: {
         ppr: "incremental",
+        globalNotFound: true,
     },
 
     async redirects() {

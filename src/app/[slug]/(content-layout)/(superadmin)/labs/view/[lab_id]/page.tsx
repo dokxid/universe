@@ -20,7 +20,7 @@ export default async function PrivacyPage({
     const { lab_id } = await params;
     const labDetails = await getLabByObjectIdDTO(lab_id);
 
-    const { stories, __v, ...rest } = labDetails;
+    const { stories, center, ...rest } = labDetails;
     const labDetailsFiltered = rest;
 
     return (
@@ -39,12 +39,14 @@ export default async function PrivacyPage({
                     </HeaderContent>
                 </Header>
                 <ContentLayoutInner>
-                    {Object.entries(rest).map(([key, value]) => (
+                    {Object.entries(labDetailsFiltered).map(([key, value]) => (
                         <p key={key}>
-                            <b>{key}</b>: {JSON.stringify(value)}
+                            {key}: {JSON.stringify(value)}
                         </p>
                     ))}
-                    stories amount: {stories.length}
+                    latitude: {center.coordinates[0]} <br />
+                    longitude: {center.coordinates[1]} <br />
+                    stories amount: {stories.length} <br />
                 </ContentLayoutInner>
             </ContentLayout>
         </>

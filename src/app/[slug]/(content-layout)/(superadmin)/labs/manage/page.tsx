@@ -10,8 +10,7 @@ import {
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Earth } from "lucide-react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const { slug } = await params;
+export default async function Page() {
     const data = JSON.stringify(await getExperiencesDTO());
 
     return (

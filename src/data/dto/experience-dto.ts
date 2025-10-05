@@ -20,6 +20,18 @@ export const getExperiencesDTO = cache(async (): Promise<Experience[]> => {
     }
 });
 
+export const getPublicLabsDTO = cache(async (): Promise<Experience[]> => {
+    try {
+        const experiences = await getExperiences();
+        return experiences.filter((exp) => exp.visibility === "public");
+    } catch (err) {
+        throw new Error(
+            "Error fetching public labs: " +
+                (err instanceof Error ? err.message : "Unknown error")
+        );
+    }
+});
+
 export async function getExperienceDTO(
     experienceSlug: string
 ): Promise<Experience> {

@@ -27,7 +27,6 @@ import {
     Map,
     MapLayerMouseEvent,
     Marker,
-    NavigationControl,
     useControl,
     useMap,
 } from "react-map-gl/maplibre";
@@ -44,6 +43,10 @@ function DeckGLOverlay(props: DeckProps) {
     return null;
 }
 
+/*
+    react-hooks/exhaustive-deps will cry around here, but we don't want to add maps to
+    the dependency array, as it would cause infinite loops and break functionality.
+*/
 function MapController({
     currentExperience,
     selectedStory,
@@ -95,6 +98,7 @@ function MapController({
             map.setPitch(0);
             map.setBearing(0);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mapState.resetView]);
 
     return null;
@@ -113,7 +117,6 @@ export function DeckGLMap({
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
-    const mapState = useAppSelector((state) => state.map);
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
@@ -390,12 +393,6 @@ export function DeckGLMap({
                     <AttributionControl
                         compact={true}
                         position={"bottom-right"}
-                    />
-                    <NavigationControl
-                        position={"bottom-right"}
-                        showZoom={false}
-                        visualizePitch={true}
-                        visualizeRoll={true}
                     />
                     {storiesFiltered.map((story, index) => (
                         <Marker
