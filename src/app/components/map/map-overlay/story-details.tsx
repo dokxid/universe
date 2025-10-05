@@ -23,16 +23,18 @@ export function StoryDetailsHeader({
     story,
     className,
     profilePictureVisible = true,
+    lines = 2,
 }: {
     slug?: string;
     story: StoryDTO;
     className?: string;
     profilePictureVisible?: boolean;
+    lines?: number;
 }) {
     return (
         <div
             className={cn(
-                "flex flex-row items-center mb-1 justify-between sticky py-4 top-0",
+                "flex flex-row items-center mb-1 justify-between sticky py-4 top-0 transition-all duration-200",
                 className
             )}
         >
@@ -53,13 +55,11 @@ export function StoryDetailsHeader({
                             story._id
                         }
                     >
-                        <p
-                            className={
-                                "font-semibold line-clamp-2 leading-none overflow-hidden hover:underline"
-                            }
+                        <h3
+                            className={`font-semibold line-clamp-${lines} leading-none overflow-hidden`}
                         >
                             {story.title}
-                        </p>
+                        </h3>
                     </Link>
                     <p className={"text-sm text-muted-foreground"}>
                         {"by "}

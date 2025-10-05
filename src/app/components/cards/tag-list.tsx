@@ -8,10 +8,12 @@ export function TagList({
     tags,
     className,
     variant = "default",
+    size = "default",
 }: {
     tags: string[];
     className?: string;
     variant?: VariantProps<typeof tagVariants>["variant"];
+    size?: VariantProps<typeof tagVariants>["size"];
 }) {
     const { tags: tagsSanitized, isLoading, isError } = useTags();
     if (isLoading || isError) {
@@ -26,6 +28,7 @@ export function TagList({
                         tag={tag}
                         variant={variant}
                         color={"#333"}
+                        size={size}
                     />
                 ))}
             </div>
@@ -40,7 +43,10 @@ export function TagList({
     return (
         <div
             data-slot={"tag-list"}
-            className={cn("flex flex-wrap gap-1.5 my-3", className)}
+            className={cn(
+                "flex flex-wrap gap-1.5 my-3 pointer-events-none",
+                className
+            )}
         >
             {tagsToBeRendered.map((tag: UnescoTagDTO) => (
                 <TagSpan
@@ -48,6 +54,7 @@ export function TagList({
                     tag={tag.name}
                     variant={variant}
                     color={tag.color}
+                    size={size}
                 />
             ))}
         </div>

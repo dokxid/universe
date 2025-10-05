@@ -1,35 +1,66 @@
+"use client";
+
 import { TagList } from "@/app/components/cards/tag-list";
 import S3Image from "@/app/components/embeds/s3-image";
 import { StoryDetailsHeader } from "@/app/components/map/map-overlay/story-details";
-import { useAppDispatch } from "@/lib/hooks";
-import { setSelectedStoryId } from "@/lib/redux/map/map-slice";
+import { HoverCardContent } from "@/components/ui/hover-card";
+import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { StoryDTO } from "@/types/dtos";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
-    const dispatch = useAppDispatch();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     return (
-        <div className={"max-h-[400px] flex flex-col gap-1 overflow-y-auto"}>
+        <HoverCardContent className={"p-0 border-none bg-transparent"}>
             <div
-                onClick={() => dispatch(setSelectedStoryId(story._id))}
                 className={
-                    "relative h-[150px] w-full flex justify-center items-center shrink-0 rounded-md hover:brightness-75 hover:cursor-pointer transition-all duration-200 overflow-hidden"
+                    "relative h-[400px] flex flex-col gap-1 overflow-y-auto hover:outline-2 outline-white dark:outline-accent-blue-foreground rounded-2xl shadow-lg"
                 }
             >
-                <S3Image
-                    className={"hover:scale-105 transition-all duration-200"}
-                    link={false}
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
+                <div
+                    className={
+                        "relative h-full w-full overflow-hidden group/card"
+                    }
+                    onClick={() => {
+                        setSelectedStoryIdParams(
+                            pathname,
+                            searchParams,
+                            story._id
+                        );
+                        console.log("story clicked", story._id);
+                    }}
+                >
+                    <S3Image
+                        className={
+                            "group-hover/card:scale-105 transition-all duration-200 brightness-40 cursor-pointer"
+                        }
+                        link={false}
+                        experience={story.experience}
+                        fileName={story.featured_image_url}
+                    />
+                    <StoryDetailsHeader
+                        story={story}
+                        className={
+                            "absolute top-2 left-4 right-4 bg-transparent [&_h3]:text-md [&_h3]:group-hover/card:font-black [&_h3]:group-hover/card:after:content-['_→'] [&_p]:text-xs [&_p]:font-medium **:text-white"
+                        }
+                        profilePictureVisible={false}
+                        lines={2}
+                    />
+                </div>
+                <div className={"absolute bottom-2 left-4 right-4"}>
+                    <p className={"prose-group-label -mb-2 text-white"}>
+                        Tags:
+                    </p>
+                    {story.tags && story.tags.length > 0 && (
+                        <TagList
+                            tags={story.tags}
+                            variant={"add"}
+                            size={"sm"}
+                        />
+                    )}
+                </div>
             </div>
-            <StoryDetailsHeader
-                story={story}
-                className={"bg-card"}
-                profilePictureVisible={false}
-            />
-            {story.tags && story.tags.length > 0 && (
-                <TagList tags={story.tags} variant={"add"} />
-            )}
-        </div>
+        </HoverCardContent>
     );
 }

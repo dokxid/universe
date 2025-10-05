@@ -228,6 +228,10 @@
     @apply text-sm font-normal text-muted-foreground;
 }
 
+@utility prose-group-label {
+    @apply text-[0.65rem] font-[650] font-stretch-90% text-muted-foreground uppercase;
+}
+
 @utility prose-muted {
     @apply text-sm text-muted-foreground;
 }

@@ -88,11 +88,6 @@ export function StoryCollection({
         return filteredStories;
     }, [stories, titleFilter, sorting, selectedFilterTags]);
 
-    const clearFilters = () => {
-        setTitleFilter("");
-        history.pushState(null, "", pathname);
-    };
-
     return (
         <div className="flex items-center w-full max-w-6xl my-10 px-4 lg:px-6">
             <div className={"flex flex-col w-full items-center"}>
