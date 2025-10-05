@@ -119,6 +119,8 @@ export const config = {
         "/:slug/elevation-requests",
         // super admin paths
         "/:slug/debug-settings",
+        "/universe/labs",
+        "/universe/labs/view/:id",
         // account and related paths
         "/:slug/user-preferences",
         // static pages

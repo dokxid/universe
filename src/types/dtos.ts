@@ -1,5 +1,6 @@
 export type Experience = {
     _id: string;
+    __v: number;
     slug: string;
     center: { coordinates: [number, number] };
     initial_zoom: number;

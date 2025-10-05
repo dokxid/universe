@@ -9,8 +9,8 @@ export function SuperAdminItemGroup({ visible }: { visible: boolean }) {
     const slug = pathname.split("/")[1];
     const adminItems: SidebarItemGroup = [
         {
-            title: "Manage Experiences",
-            href: `/${slug}/experiences/manage`,
+            title: "Manage Heritage Labs",
+            href: `/universe/labs`,
             icon: Earth,
         },
         {
