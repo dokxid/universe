@@ -21,6 +21,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -116,54 +117,58 @@ export function StoryCollection({
                             "flex flex-col lg:flex-row gap-2 w-full justify-between"
                         }
                     >
-                        <Input
-                            type="text"
-                            placeholder="Filter by title..."
-                            value={titleFilter}
-                            onChange={(e) => setTitleFilter(e.target.value)}
-                            className="w-full max-w-full lg:max-w-sm self-start mb-2 lg:mb-0"
-                        ></Input>
-                        <div className="flex flex-row gap-2">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="secondary" size={"icon"}>
-                                        {sorting === "asc" ? (
-                                            <SortAsc />
-                                        ) : (
-                                            <SortDesc />
-                                        )}
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56">
-                                    <DropdownMenuLabel>
-                                        Sorting options
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuCheckboxItem
-                                        checked={sorting === "desc"}
-                                        onCheckedChange={() =>
-                                            setSorting("desc")
-                                        }
-                                    >
-                                        Newest first
-                                    </DropdownMenuCheckboxItem>
-                                    <DropdownMenuCheckboxItem
-                                        checked={sorting === "asc"}
-                                        onCheckedChange={() =>
-                                            setSorting("asc")
-                                        }
-                                    >
-                                        Oldest first
-                                    </DropdownMenuCheckboxItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <FilterStoriesDialog tagsPromise={tagsPromise} />
-                            <Button
-                                variant={"secondary"}
-                                onClick={clearFilters}
-                            >
-                                Clear Filter
-                            </Button>
+                        <div className="flex flex-col gap-3">
+                            <Label>Filter:</Label>
+                            <div className="flex flex-row gap-2">
+                                <Input
+                                    type="text"
+                                    placeholder="Filter by title..."
+                                    value={titleFilter}
+                                    onChange={(e) =>
+                                        setTitleFilter(e.target.value)
+                                    }
+                                    className="w-full max-w-full lg:max-w-sm self-start mb-2 lg:mb-0"
+                                ></Input>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="secondary_custom"
+                                            size={"icon"}
+                                        >
+                                            {sorting === "asc" ? (
+                                                <SortAsc />
+                                            ) : (
+                                                <SortDesc />
+                                            )}
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                        <DropdownMenuLabel>
+                                            Sorting options
+                                        </DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuCheckboxItem
+                                            checked={sorting === "desc"}
+                                            onCheckedChange={() =>
+                                                setSorting("desc")
+                                            }
+                                        >
+                                            Newest first
+                                        </DropdownMenuCheckboxItem>
+                                        <DropdownMenuCheckboxItem
+                                            checked={sorting === "asc"}
+                                            onCheckedChange={() =>
+                                                setSorting("asc")
+                                            }
+                                        >
+                                            Oldest first
+                                        </DropdownMenuCheckboxItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                                <FilterStoriesDialog
+                                    tagsPromise={tagsPromise}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className={"self-start"}>

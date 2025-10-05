@@ -33,7 +33,10 @@ export async function NavigationWidgetHolder() {
                         </Button>
                     }
                 >
-                    <FilterStoriesDialog tagsPromise={tagsPromise} />
+                    <FilterStoriesDialog
+                        tagsPromise={tagsPromise}
+                        size={"icon-lg"}
+                    />
                 </Suspense>
                 {/* {isUniverseView && (
                     <Geocoder

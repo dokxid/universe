@@ -19,8 +19,10 @@ import React from "react";
 
 export function FilterStoriesDialog({
     tagsPromise,
+    size = "icon",
 }: {
     tagsPromise: Promise<UnescoTagDTO[]>;
+    size?: "icon" | "icon-lg";
 }) {
     const tags = React.use(tagsPromise);
     const [open] = React.useState(false);
@@ -38,7 +40,7 @@ export function FilterStoriesDialog({
                 <Button
                     variant={"secondary_custom"}
                     className="hover:ring-2"
-                    size={"icon-lg"}
+                    size={size}
                 >
                     <Funnel />
                 </Button>
