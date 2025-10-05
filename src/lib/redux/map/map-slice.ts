@@ -7,6 +7,7 @@ export interface MapState {
     showConnections: boolean;
     selectedStoryId: string;
     zoomOut: boolean;
+    resetView: boolean;
 }
 
 const initialState: MapState = {
@@ -16,6 +17,7 @@ const initialState: MapState = {
     showConnections: false,
     selectedStoryId: "",
     zoomOut: false,
+    resetView: false,
 };
 
 export const mapSlice = createSlice({
@@ -44,6 +46,9 @@ export const mapSlice = createSlice({
         triggerZoomOut: (state) => {
             state.zoomOut = !state.zoomOut;
         },
+        resetView: (state) => {
+            state.resetView = !state.resetView;
+        },
     },
 });
 
@@ -55,5 +60,6 @@ export const {
     setShowConnections,
     setSelectedStoryId,
     triggerZoomOut,
+    resetView,
 } = mapSlice.actions;
 export default mapSlice.reducer;

@@ -27,11 +27,10 @@ import {
     Map,
     MapLayerMouseEvent,
     Marker,
+    NavigationControl,
     useControl,
     useMap,
 } from "react-map-gl/maplibre";
-
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 
 type TagConnection = {
     from: [longitude: number, latitude: number];
@@ -89,6 +88,14 @@ function MapController({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mapState.zoomOut]);
+
+    useEffect(() => {
+        if (!map) return;
+        if (mapState.resetView) {
+            map.setPitch(0);
+            map.setBearing(0);
+        }
+    }, [mapState.resetView]);
 
     return null;
 }
@@ -378,6 +385,12 @@ export function DeckGLMap({
                         compact={true}
                         position={"bottom-right"}
                     />
+                    <NavigationControl
+                        position={"bottom-right"}
+                        showZoom={false}
+                        visualizePitch={true}
+                        visualizeRoll={true}
+                    />
                     <MapController
                         currentExperience={experience}
                         selectedStory={activeStory}
@@ -386,6 +399,7 @@ export function DeckGLMap({
                         <Marker
                             longitude={story.location.coordinates[0]}
                             latitude={story.location.coordinates[1]}
+                            rotationAlignment={"map"}
                             key={index}
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();

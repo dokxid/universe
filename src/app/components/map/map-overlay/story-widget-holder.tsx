@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
-import { PanelRightOpen } from "lucide-react";
+import { Compass } from "lucide-react";
 
 export function StoryWidgetHolder({ slug }: { slug: string }) {
     const navigationState = useAppSelector((state) => state.navigation);
@@ -44,9 +44,7 @@ export function StoryWidgetHolder({ slug }: { slug: string }) {
                     className={"group/button"}
                 >
                     <div className="hidden lg:inline-block">Explore</div>
-                    <PanelRightOpen
-                        className={"group-data-[state=open]/button:rotate-180"}
-                    />
+                    <Compass />
                 </Button>
             )}
         </div>

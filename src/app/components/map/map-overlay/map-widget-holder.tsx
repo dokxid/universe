@@ -1,5 +1,6 @@
 "use client";
 
+import ResetViewButton from "@/app/components/map/map-overlay/reset-view-button";
 import ToggleGlobeButton from "@/app/components/map/map-overlay/toggle-globe-button";
 import { Button } from "@/components/ui/button";
 import { SettingsIcon } from "lucide-react";
@@ -19,6 +20,7 @@ export function MapWidgetHolder({ slug }: { slug: string }) {
                     </Button>
                 </Link>
                 <ToggleGlobeButton />
+                <ResetViewButton />
             </div>
         </div>
     );
