@@ -25,7 +25,7 @@ function CustomMarker({
                             "fill-blue-400": isActive,
                         }
                     )}
-                    strokeWidth={1.5}
+                    strokeWidth={1}
                     stroke={"#111"}
                 />
             </HoverCardTrigger>

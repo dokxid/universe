@@ -393,10 +393,6 @@ export function DeckGLMap({
                         visualizePitch={true}
                         visualizeRoll={true}
                     />
-                    <MapController
-                        currentExperience={experience}
-                        selectedStory={activeStory}
-                    />
                     {storiesFiltered.map((story, index) => (
                         <Marker
                             longitude={story.location.coordinates[0]}

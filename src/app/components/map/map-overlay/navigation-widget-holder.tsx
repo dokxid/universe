@@ -21,7 +21,7 @@ export async function NavigationWidgetHolder() {
 
     return (
         <div className={"flex flex-col gap-3"}>
-            <div className={"flex flex-row gap-3 pointer-events-auto h-10"}>
+            <div className={"flex flex-row gap-2 pointer-events-auto h-10"}>
                 <SidebarTrigger
                     variant={"secondary_custom"}
                     className="pointer-events-auto size-10 hover:ring-2"
