@@ -13,7 +13,7 @@ function CustomMarker({
     isActive: boolean;
 }) {
     return (
-        <HoverCard openDelay={100} closeDelay={20}>
+        <HoverCard openDelay={500} closeDelay={100}>
             <HoverCardTrigger>
                 <MapPin
                     data-state={isActive ? "active" : "inactive"}

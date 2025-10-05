@@ -6,7 +6,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { triggerZoomOut } from "@/lib/redux/map/map-slice";
 import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
-import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
+import {
+    addSelectedTagParam,
+    setSelectedStoryIdParams,
+} from "@/lib/utils/param-setter";
 import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import {
     DeckProps,
@@ -199,6 +202,49 @@ export function DeckGLMap({
               zoom: experience.initial_zoom,
           };
 
+    const getSameRouteConnections = (
+        connections: TagConnection[],
+        connection: TagConnection
+    ) => {
+        const sameRouteConnections = connections.filter(
+            (conn) =>
+                (conn.from[0] === connection.from[0] &&
+                    conn.from[1] === connection.from[1] &&
+                    conn.to[0] === connection.to[0] &&
+                    conn.to[1] === connection.to[1]) ||
+                (conn.from[0] === connection.to[0] &&
+                    conn.from[1] === connection.to[1] &&
+                    conn.to[0] === connection.from[0] &&
+                    conn.to[1] === connection.from[1])
+        );
+        return sameRouteConnections;
+    };
+
+    const getArcHeight = (
+        connection: TagConnection,
+        index: number,
+        connections: TagConnection[]
+    ) => {
+        // Find all connections between the same two points
+        const sameRouteConnections = getSameRouteConnections(
+            connections,
+            connection
+        );
+
+        if (sameRouteConnections.length === 1) {
+            return arcHeight; // Single arc, use base height
+        }
+
+        // Multiple arcs between same points - create different heights
+        const arcIndex = sameRouteConnections.indexOf(connection);
+        const totalArcs = sameRouteConnections.length;
+        const heightVariation = 0.3; // Adjust this to control how much arcs spread
+
+        // Create alternating heights above and below the base
+        const offset = (arcIndex - (totalArcs - 1) / 2) * heightVariation;
+        return Math.max(0.1, arcHeight + offset);
+    };
+
     const handleContextMenu = (e: MapLayerMouseEvent) => {
         e.preventDefault();
         setCoords({ x: e.point.x, y: e.point.y });
@@ -280,7 +326,16 @@ export function DeckGLMap({
                 getWidth: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
-                getHeight: arcHeight,
+                onClick: (info) => {
+                    addSelectedTagParam(
+                        pathname,
+                        searchParams,
+                        info.object?.tag
+                    );
+                    return true;
+                },
+                getHeight: (d: TagConnection & { index: number }) =>
+                    getArcHeight(d, d.index, connections),
                 transitions: {
                     getHeight: {
                         duration: 1000,
@@ -306,18 +361,6 @@ export function DeckGLMap({
             <div className={"h-full w-full"}>
                 <Map
                     reuseMaps={true}
-                    onClick={() => {
-                        if (activeStory) {
-                            setActiveStory(null);
-                            setSelectedStoryIdParams(
-                                pathname,
-                                searchParams,
-                                ""
-                            );
-                            dispatch(triggerZoomOut());
-                        }
-                        dispatch(setDescriptorOpen(false));
-                    }}
                     id="mainMap"
                     initialViewState={INITIAL_VIEW_STATE}
                     onRender={() => {}}
@@ -355,18 +398,34 @@ export function DeckGLMap({
                             />
                         </Marker>
                     ))}
-                    <DeckGLOverlay pickingRadius={15} layers={layers} />
+                    <DeckGLOverlay
+                        pickingRadius={15}
+                        layers={layers}
+                        onClick={() => {
+                            if (activeStory) {
+                                setActiveStory(null);
+                                setSelectedStoryIdParams(
+                                    pathname,
+                                    searchParams,
+                                    ""
+                                );
+                                dispatch(triggerZoomOut());
+                            }
+                            dispatch(setDescriptorOpen(false));
+                        }}
+                    />
                     {hoverInfo?.object && !isMobile && (
                         <div
                             className={
-                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-base"
+                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-sm"
                             }
                             style={{
                                 left: hoverInfo.x,
                                 top: hoverInfo.y,
                             }}
                         >
-                            {`matching tags: ${hoverInfo.object.tag}`}
+                            <p>{`click to filter for:`}</p>
+                            <p>{`${hoverInfo.object.tag}`}</p>
                         </div>
                     )}
                 </Map>
