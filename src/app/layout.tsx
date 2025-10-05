@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children, modal }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
@@ -43,6 +43,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                         <div className="flex grow">
                                             {children}
                                         </div>
+                                        <div>{modal}</div>
                                         <Toaster />
                                         <SpeedInsights />
                                     </SidebarLayout>

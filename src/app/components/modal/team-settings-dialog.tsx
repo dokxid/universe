@@ -1,5 +1,14 @@
 "use client";
 
+import {
+    SettingsBoxContent,
+    SettingsBoxForm,
+    SettingsFormBox,
+    SettingsFormButtonGroup,
+    SettingsFormDescription,
+    SettingsFormTitle,
+    SettingsLayout,
+} from "@/app/components/layout/content-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,26 +55,22 @@ export function TeamSettingsDialog({
 
     return (
         <>
-            <div
-                className={
-                    "flex flex-col gap-10 my-10 items-start w-full max-w-full md:max-w-6xl"
-                }
-            >
-                <div className={"form-box"}>
-                    <div className={"form-bounding-box"}>
-                        <h1 className={"form-box-title"}>
-                            Change public appearance
-                        </h1>
-                        <p className={"form-box-description"}>
-                            Changing your public appearance will update how it
-                            is displayed to others.
-                        </p>
-                        <Form {...form}>
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit)}
-                                className="w-full"
-                            >
-                                <div className={"flex flex-col space-y-8"}>
+            <SettingsLayout>
+                <SettingsFormBox>
+                    <SettingsFormTitle>
+                        Change public appearance
+                    </SettingsFormTitle>
+                    <SettingsFormDescription>
+                        Changing your public appearance will update how it is
+                        displayed to others.
+                    </SettingsFormDescription>
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="w-full"
+                        >
+                            <SettingsBoxContent>
+                                <SettingsBoxForm>
                                     <FormField
                                         control={form.control}
                                         name="title"
@@ -187,41 +192,35 @@ export function TeamSettingsDialog({
                                             </FormItem>
                                         )}
                                     />
-                                    <div>
-                                        <Button
-                                            variant={"default"}
-                                            className={"w-fit"}
-                                            disabled
-                                        >
-                                            Apply
-                                        </Button>
-                                        <Button
-                                            variant={"ghost"}
-                                            className={"w-fit"}
-                                            disabled
-                                        >
-                                            Revert
-                                        </Button>
-                                    </div>
-                                </div>
-                            </form>
-                        </Form>
-                    </div>
-                </div>
-                <div className={"form-box"}>
-                    {/* change visibility of experience // */}
-                    <div className={"form-bounding-box"}>
-                        <article className={"mb-4"}>
-                            <h1 className={"form-box-title"}>
-                                Change visibility?
-                            </h1>
-                            <p>
-                                Make your site only available to team members by
-                                setting it to private, or make it only viewable
-                                through an URL.
-                            </p>
-                        </article>
-                        <div className="flex flex-col gap-6">
+                                </SettingsBoxForm>
+                                <SettingsFormButtonGroup>
+                                    <Button
+                                        variant={"default"}
+                                        className={"w-fit"}
+                                        disabled
+                                    >
+                                        Apply
+                                    </Button>
+                                    <Button
+                                        variant={"ghost"}
+                                        className={"w-fit"}
+                                        disabled
+                                    >
+                                        Revert
+                                    </Button>
+                                </SettingsFormButtonGroup>
+                            </SettingsBoxContent>
+                        </form>
+                    </Form>
+                </SettingsFormBox>
+                <SettingsFormBox>
+                    <SettingsFormTitle>Change visibility?</SettingsFormTitle>
+                    <SettingsFormDescription>
+                        Make your site only available to team members by setting
+                        it to private, or make it only viewable through an URL.
+                    </SettingsFormDescription>
+                    <SettingsBoxContent>
+                        <SettingsBoxForm>
                             <RadioGroup defaultValue={experience.visibility}>
                                 <div className="flex items-center gap-3">
                                     <RadioGroupItem
@@ -272,6 +271,8 @@ export function TeamSettingsDialog({
                                     </div>
                                 </div>
                             </RadioGroup>
+                        </SettingsBoxForm>
+                        <SettingsFormButtonGroup>
                             <Button
                                 variant={"default"}
                                 className={"w-fit"}
@@ -279,32 +280,29 @@ export function TeamSettingsDialog({
                             >
                                 Apply
                             </Button>
-                        </div>
-                    </div>
-                </div>
+                        </SettingsFormButtonGroup>
+                    </SettingsBoxContent>
+                </SettingsFormBox>
 
-                <div className={"form-box"}>
-                    {/* delete experience (disabled) */}
-                    <div className={"form-bounding-box"}>
-                        <article className={"mb-4"}>
-                            <h1 className={"form-box-title"}>
-                                Delete experience?
-                            </h1>
-                            <p>
-                                Deleting your experience is permanent and cannot
-                                be undone.
-                            </p>
-                        </article>
-                        <Button
-                            variant={"destructive"}
-                            className={"w-fit"}
-                            disabled
-                        >
-                            Delete experience
-                        </Button>
-                    </div>
-                </div>
-            </div>
+                <SettingsFormBox>
+                    <SettingsFormTitle>Delete experience?</SettingsFormTitle>
+                    <SettingsFormDescription>
+                        Deleting your experience is permanent and cannot be
+                        undone.
+                    </SettingsFormDescription>
+                    <SettingsBoxContent>
+                        <SettingsFormButtonGroup>
+                            <Button
+                                variant={"destructive"}
+                                className={"w-fit"}
+                                disabled
+                            >
+                                Delete experience
+                            </Button>
+                        </SettingsFormButtonGroup>
+                    </SettingsBoxContent>
+                </SettingsFormBox>
+            </SettingsLayout>
         </>
     );
 }

@@ -153,15 +153,15 @@
 }
 
 @utility form-box-description {
-    @apply prose-small text-muted-foreground mb-6;
+    @apply prose-small text-muted-foreground;
 }
 
 @utility form-bounding-box {
-    @apply max-w-2xl w-full p-6;
+    @apply max-w-2xl w-full p-6 h-fit;
 }
 
 @utility form-button-group {
-    @apply flex flex-col md:flex-row md:flex-wrap gap-2 pt-6;
+    @apply flex flex-col md:flex-row md:flex-wrap gap-2;
 }
 
 @utility form-box {

@@ -98,26 +98,32 @@ export const config = {
     matcher: [
         "/:slug/",
         "/:slug/images/:filename",
+        // map and related paths
         "/:slug/map",
         "/:slug/map/:page*",
         "/:slug/experiences",
         "/:slug/map-settings",
-        "/:slug/account/:page*",
-        "/:slug/lab/:page*",
+        // lab and lab information pages
+        "/:slug/lab/manage",
+        "/:slug/lab/settings",
+        "/:slug/about",
+        "/:slug/contact",
+        // stories and related paths
         "/:slug/stories",
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
         "/:slug/stories/view/:id",
-        "/:slug/team/settings",
-        "/:slug/stories",
-        "/:slug/user-preferences",
         "/:slug/stories/elevation-requests",
-        "/:slug/about",
-        "/:slug/contact",
-        "/:slug/debug-settings",
         "/:slug/elevation-requests",
-        "/:slug/lab/manage",
+        // super admin paths
+        "/:slug/debug-settings",
+        // account and related paths
+        "/:slug/user-preferences",
+        // static pages
+        "/:slug/legal/privacy",
+        "/:slug/legal/terms",
+        "/:slug/legal/security",
     ],
 };
