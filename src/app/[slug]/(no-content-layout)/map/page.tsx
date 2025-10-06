@@ -9,7 +9,6 @@ import {
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
-import { unstable_cache } from "next/cache";
 import { Suspense } from "react";
 
 export const experimental_ppr = true;
@@ -21,38 +20,13 @@ export async function generateStaticParams() {
     }));
 }
 
-// Create cached versions of your data fetching functions
-const getCachedPublicLabs = unstable_cache(
-    async () => getPublicLabsDTO(),
-    ["experiences"],
-    {
-        revalidate: 3600, // Cache for 1 hour
-        tags: ["experiences"],
+async function getStoriesForSlug(slug: string) {
+    if (slug === "universe") {
+        return getAllPublicStoriesDTO();
+    } else {
+        return getLabPublicStoriesDTO(slug);
     }
-);
-
-const getCachedTags = unstable_cache(async () => getTagsDTO(), ["tags"], {
-    revalidate: 3600, // Cache for 1 hour
-    tags: ["tags"],
-});
-
-const getCachedPublicStories = unstable_cache(
-    async () => getAllPublicStoriesDTO(),
-    ["public-stories"],
-    {
-        revalidate: 1800, // Cache for 30 minutes
-        tags: ["stories", "public-stories"],
-    }
-);
-
-const getCachedLabStories = unstable_cache(
-    async (slug: string) => getLabPublicStoriesDTO(slug),
-    ["lab-stories"],
-    {
-        revalidate: 1800, // Cache for 30 minutes
-        tags: ["stories", "lab-stories"],
-    }
-);
+}
 
 export default async function MapView({
     params,
@@ -62,15 +36,9 @@ export default async function MapView({
     const { slug } = await params;
 
     // Use cached functions
-    let storiesPromise;
-    if (slug === "universe") {
-        storiesPromise = getCachedPublicStories();
-    } else {
-        storiesPromise = getCachedLabStories(slug);
-    }
-
-    const experiencesPromise = getCachedPublicLabs();
-    const tagsPromise = getCachedTags();
+    const storiesPromise = getStoriesForSlug(slug);
+    const experiencesPromise = getPublicLabsDTO();
+    const tagsPromise = getTagsDTO();
 
     return (
         <div className="relative w-screen h-screen flex">

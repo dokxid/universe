@@ -14,14 +14,13 @@ import "./globals.css";
 
 type RootLayoutProps = {
     children: React.ReactNode;
-    modal?: React.ReactNode;
 };
 
 export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
-export default function RootLayout({ children, modal }: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
@@ -43,7 +42,6 @@ export default function RootLayout({ children, modal }: RootLayoutProps) {
                                         <div className="flex grow">
                                             {children}
                                         </div>
-                                        <div>{modal}</div>
                                         <Toaster />
                                         <SpeedInsights />
                                     </SidebarLayout>

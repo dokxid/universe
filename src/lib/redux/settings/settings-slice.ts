@@ -14,6 +14,7 @@ export interface SettingsState {
     descriptorOpen: boolean;
     globeView: boolean;
     markerProjection?: "viewport" | "map";
+    debug?: boolean;
 }
 
 const initialState: SettingsState = {
@@ -21,6 +22,7 @@ const initialState: SettingsState = {
     descriptorOpen: true,
     globeView: false,
     markerProjection: "viewport",
+    debug: false,
 };
 
 export const settingsSlice = createSlice({
@@ -39,6 +41,9 @@ export const settingsSlice = createSlice({
         setMarkerProjection: (state, action) => {
             state.markerProjection = action.payload;
         },
+        setDebug: (state, action) => {
+            state.debug = action.payload;
+        },
     },
 });
 
@@ -47,5 +52,6 @@ export const {
     setDescriptorOpen,
     setGlobeView,
     setMarkerProjection,
+    setDebug,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

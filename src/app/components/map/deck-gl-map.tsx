@@ -1,6 +1,6 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
-import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
+import { getTaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrevious } from "@/hooks/use-previous";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -205,24 +205,17 @@ export function DeckGLMap({
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );
+        const tagFilters = selectedFilterTags
+            ? selectedFilterTags.split(",")
+            : activeStory.tags;
         const storiesToUse = [activeStory, ...storiesExceptActive];
-        const newConnections = getTaggedConnections(
+        const connectionsSanitized = getTaggedConnectionDTO(
             storiesToUse,
-            activeStory.tags
+            tagFilters
         );
-        const connectionsSanitized: TagConnection[] = newConnections.flatMap(
-            (conn) =>
-                conn.lineStrings.map((lineString) => {
-                    const coords = lineString.coordinates;
-                    return {
-                        from: coords[0] as [number, number],
-                        to: coords[coords.length - 1] as [number, number],
-                        tag: conn.tag, // Include the tag
-                    };
-                })
-        );
+        console.log("connectionsSanitized", connectionsSanitized);
         setTimeout(() => {
-            setArcHeight(connectionsSanitized.length > 0 ? 1 : 0.6);
+            setArcHeight(connectionsSanitized.length > 0 ? 1.5 : 0.6);
         }, 100);
         setConnections(connectionsSanitized);
     }, [activeStory, selectedFilterTags, storiesFiltered]);
@@ -293,24 +286,6 @@ export function DeckGLMap({
         setActiveStory(story);
         setSelectedStoryIdParams(pathname, searchParams, story._id);
     };
-
-    function getTaggedConnections(
-        stories: StoryDTO[],
-        tags: string[]
-    ): TaggedConnectionDTO[] {
-        const dtoToReturn: TaggedConnectionDTO[] = [];
-        for (const tag of tags) {
-            const filteredStories = stories.filter((story) =>
-                story.tags.includes(tag)
-            );
-            const tagLines = getTagLines(filteredStories);
-            dtoToReturn.push({
-                tag: tag,
-                lineStrings: tagLines,
-            });
-        }
-        return dtoToReturn;
-    }
 
     const layers: LayersList = useMemo(
         () => [
@@ -468,6 +443,27 @@ export function DeckGLMap({
                         >
                             <p>{`click to filter for:`}</p>
                             <p>{`${hoverInfo.object.tag}`}</p>
+                            {settingsState.debug && (
+                                <div className={"pt-2"}>
+                                    <p className={"text-xs font-mono"}>
+                                        {`from: [${hoverInfo.object.from[0].toFixed(
+                                            2
+                                        )}, ${hoverInfo.object.from[1].toFixed(
+                                            2
+                                        )}]`}
+                                    </p>
+                                    <p className={"text-xs font-mono"}>
+                                        {`to: [${hoverInfo.object.to[0].toFixed(
+                                            2
+                                        )}, ${hoverInfo.object.to[1].toFixed(
+                                            2
+                                        )}]`}
+                                    </p>
+                                    <p className={"text-xs font-mono"}>
+                                        {`tag: ${hoverInfo.object.tag}`}{" "}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     )}
                 </Map>

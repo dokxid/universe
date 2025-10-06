@@ -6,7 +6,7 @@ import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
-const USER_PREFERENCES_URL = `/account/user-preferences`;
+const USER_PREFERENCES_URL = `account/user-preferences`;
 
 export function UserWidgetNoAuth() {
     return (

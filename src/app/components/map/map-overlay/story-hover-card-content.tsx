@@ -28,7 +28,6 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                             searchParams,
                             story._id
                         );
-                        console.log("story clicked", story._id);
                     }}
                 >
                     <S3Image

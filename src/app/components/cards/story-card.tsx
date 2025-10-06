@@ -10,7 +10,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
         <Link
             key={story._id}
             href={buildStoryLink(story)}
-            prefetch={true}
+            prefetch={false}
             className="flex flex-row items-center w-full gap-2"
             data-testid={"story-card-link"}
         >
