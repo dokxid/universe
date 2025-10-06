@@ -57,6 +57,10 @@ const config = {
                 port: "3000",
                 pathname: "/uploads/**",
             },
+            {
+                protocol: "https",
+                hostname: "picsum.photos",
+            },
         ],
     },
 };

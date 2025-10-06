@@ -159,7 +159,9 @@ export const test_experiences_doc = async (slug: string, center: number[]) => {
         featured_image_url:
             process.env.LOCAL_UPLOADER === "true"
                 ? await getLocalFeaturedLabImageUrl()
-                : "https://picsum.photos/seed/" + slug + "/870/570",
+                : "https://picsum.photos/seed/" +
+                  faker.string.alphanumeric(10) +
+                  "/800/600",
         organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
         stories: [],
         description: faker.lorem.sentence({ min: 40, max: 60 }),
