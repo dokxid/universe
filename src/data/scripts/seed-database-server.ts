@@ -1,6 +1,10 @@
-import { seedDatabase } from "@/data/scripts/seed-database";
+import "server-only";
 
-export async function seedDatabaseScript(
+import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
+import { seedDatabase } from "@/data/scripts/seed-database";
+import { revalidateTag } from "next/cache";
+
+export async function startSeedingDatabase(
     numRandomCityCenters: number,
     numStories: number
 ) {
@@ -15,12 +19,15 @@ export async function seedDatabaseScript(
         );
     }
     try {
-        await seedDatabase(numRandomCityCenters, numStories);
-        fetch("http://localhost:3000/api/revalidate-all");
-        process.exit(0);
+        const user = await getCurrentUser();
+        if ((await isUserSuperAdmin(user)) === false) {
+            throw new Error("Only super admins can seed the database");
+        }
+        await seedDatabase(numStories, numRandomCityCenters);
+        revalidateTag("experiences");
+        revalidateTag("stories");
+        revalidateTag("tags");
     } catch (error) {
         console.error("Error during database seeding:", error);
     }
 }
-
-seedDatabaseScript(5, 50);

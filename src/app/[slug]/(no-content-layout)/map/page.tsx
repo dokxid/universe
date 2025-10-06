@@ -3,7 +3,7 @@ import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { ExploreSidebar } from "@/app/components/sidebar/explore-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getExperiencesDTO, getPublicLabsDTO } from "@/data/dto/experience-dto";
 import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
@@ -22,8 +22,8 @@ export async function generateStaticParams() {
 }
 
 // Create cached versions of your data fetching functions
-const getCachedExperiences = unstable_cache(
-    async () => getExperiencesDTO(),
+const getCachedPublicLabs = unstable_cache(
+    async () => getPublicLabsDTO(),
     ["experiences"],
     {
         revalidate: 3600, // Cache for 1 hour
@@ -69,7 +69,7 @@ export default async function MapView({
         storiesPromise = getCachedLabStories(slug);
     }
 
-    const experiencesPromise = getCachedExperiences();
+    const experiencesPromise = getCachedPublicLabs();
     const tagsPromise = getCachedTags();
 
     return (

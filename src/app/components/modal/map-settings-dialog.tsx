@@ -35,7 +35,7 @@ import {
 } from "@/lib/redux/settings/settings-slice";
 import { cn } from "@/lib/utils";
 
-export function PreferencesDialog() {
+export function MapSettingsDialog() {
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
     const [open, setOpen] = React.useState(false);

@@ -168,7 +168,7 @@ export function TeamSettingsDialog({
                                                 >
                                                     <AvatarImage
                                                         src={
-                                                            experience.featured_image
+                                                            experience.featured_image_url
                                                         }
                                                         alt={
                                                             "featured image for " +

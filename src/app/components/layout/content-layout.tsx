@@ -89,6 +89,14 @@ export function SettingsBoxForm({
     return <div className={cn("flex flex-col gap-5", className)} {...props} />;
 }
 
+// expected to include label and input
+export function SettingsBoxFormElement({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return <div className={cn("flex flex-col gap-2", className)} {...props} />;
+}
+
 export function SettingsFormButtonGroup({
     className,
     ...props

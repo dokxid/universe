@@ -10,7 +10,7 @@ export default async function LabView({
     return (
         <>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
-                <ImageElement src={experience.featured_image} />
+                <ImageElement src={experience.featured_image_url} />
             </div>
             <div className="flex-1 p-4 px-8 prose dark:prose-invert mb-15">
                 <h1 className="flex flex-row items-center">

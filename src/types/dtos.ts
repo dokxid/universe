@@ -7,7 +7,7 @@ export type Experience = {
     title: string;
     subtitle: string;
     description: string;
-    featured_image: string;
+    featured_image_url: string;
     stories: Story[];
     organization_id?: string;
     connection_id?: string;

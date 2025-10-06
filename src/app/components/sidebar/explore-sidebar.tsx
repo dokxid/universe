@@ -41,10 +41,6 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
                     matter of ethics and practice.
                 </p>
             </article>
-            {/* <CurrentExperienceSelector
-            experiences={experiences}
-            className={"p-2 md:p-5"}
-        /> */}
             <Separator className="w-full my-2" />
             <div className={"w-full flex flex-col gap-3"}>
                 <Label htmlFor="Search experiences">
@@ -79,7 +75,9 @@ export function ExploreSidebar({
     experiencesPromise: Promise<Experience[]>;
 }) {
     const isMobile = useIsMobile();
-    const experiences = use(experiencesPromise);
+    const experiences = use(experiencesPromise).filter(
+        (exp) => exp.slug !== "universe"
+    );
     const navigationState = useAppSelector((state) => state.navigation);
     const dispatch = useDispatch();
     const state = navigationState.rightSideBarOpen ? "open" : "closed";

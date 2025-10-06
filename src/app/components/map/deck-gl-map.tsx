@@ -2,9 +2,13 @@ import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
 import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePrevious } from "@/hooks/use-previous";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { triggerZoomOut } from "@/lib/redux/map/map-slice";
-import { setDescriptorOpen } from "@/lib/redux/settings/settings-slice";
+import {
+    MAP_TILES,
+    setDescriptorOpen,
+} from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
 import {
     addSelectedTagParam,
@@ -19,7 +23,7 @@ import {
 } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
-import { EdgeInsets } from "maplibre-gl";
+import { EdgeInsets, FlyToOptions } from "maplibre-gl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -57,32 +61,55 @@ function MapController({
     const { mainMap: map } = useMap();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
-    const experience = searchParams.get("exp");
+    const experience = useMemo(() => searchParams.get("exp"), [searchParams]);
     const mapState = useAppSelector((state) => state.map);
+    const navigationState = useAppSelector((state) => state.navigation);
+    const prevStoryCenter = usePrevious(selectedStory?.location.coordinates);
 
     useEffect(() => {
         if (!map) return;
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
+        let options: FlyToOptions = {};
+
         if (selectedStory) {
+            // case: story_old || !story -> story_new selected
             center = selectedStory.location.coordinates;
             zoom = map.getZoom() < 8 ? 8 : map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);
-        } else if (experience && experience !== "universe") {
-            center = currentExperience.center.coordinates;
-            zoom = currentExperience.initial_zoom;
-            edgeInsets = new EdgeInsets(0, 0, 0, 0);
         } else {
-            return;
+            // case: story -> !story
+            center = prevStoryCenter || currentExperience.center.coordinates;
+            zoom = map.getZoom() < 8 ? 8 : map.getZoom();
+            edgeInsets = isMobile
+                ? new EdgeInsets(0, 0, 0, 0)
+                : navigationState.rightSideBarOpen
+                ? new EdgeInsets(0, 0, 0, 0)
+                : new EdgeInsets(0, 0, 0, 0);
+            options = { maxDuration: 0 };
         }
-        map?.flyTo({
+        map.flyTo({
+            center,
+            zoom,
+            padding: edgeInsets,
+            ...options,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedStory]);
+
+    useEffect(() => {
+        if (!map) return;
+        const center = currentExperience.center.coordinates;
+        const zoom = currentExperience.initial_zoom;
+        const edgeInsets = new EdgeInsets(0, 0, 0, 0);
+        map.flyTo({
             center,
             zoom,
             padding: edgeInsets,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [experience, selectedStory]);
+    }, [experience]);
 
     useEffect(() => {
         if (!map) return;
@@ -121,7 +148,6 @@ export function DeckGLMap({
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
     const isMobile = useIsMobile();
-    const mapStyleUrl = settingsState.mapTiles;
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);
@@ -376,7 +402,10 @@ export function DeckGLMap({
                     id="mainMap"
                     initialViewState={INITIAL_VIEW_STATE}
                     onRender={() => {}}
-                    mapStyle={mapStyleUrl}
+                    mapStyle={
+                        MAP_TILES[settingsState.mapTiles] ||
+                        settingsState.mapTiles
+                    }
                     attributionControl={false}
                     onContextMenu={(e) => {
                         handleContextMenu(e);

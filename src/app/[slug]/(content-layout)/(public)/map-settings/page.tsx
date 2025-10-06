@@ -9,10 +9,10 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { PreferencesDialog } from "@/app/components/modal/preferences-dialog";
+import { MapSettingsDialog } from "@/app/components/modal/map-settings-dialog";
 import { TriangleAlert } from "lucide-react";
 
-export default async function Page() {
+export default async function MapSettingsPage() {
     return (
         <ContentLayout>
             <Header>
@@ -27,7 +27,7 @@ export default async function Page() {
                 </HeaderContent>
             </Header>
             <ContentLayoutInner>
-                <PreferencesDialog />
+                <MapSettingsDialog />
             </ContentLayoutInner>
         </ContentLayout>
     );

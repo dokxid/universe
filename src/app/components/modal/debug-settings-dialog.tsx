@@ -9,6 +9,7 @@ import { syncUsersWithDatabaseAction } from "@/actions/sync_users";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
+    SettingsBoxFormElement,
     SettingsFormBox,
     SettingsFormButtonGroup,
     SettingsFormDescription,
@@ -26,6 +27,7 @@ import { toast } from "sonner";
 export function DebugSettingsDialog() {
     const location = faker.location.city();
     const [numStories, setNumStories] = useState(40);
+    const [numCityCenters, setNumCityCenters] = useState(5);
     const [longitude, setLongitude] = useState(faker.location.longitude());
     const [latitude, setLatitude] = useState(faker.location.latitude());
     const [title, setTitle] = useState(location + " Lab");
@@ -128,28 +130,51 @@ export function DebugSettingsDialog() {
                 </SettingsFormDescription>
                 <SettingsBoxContent>
                     <SettingsBoxForm>
-                        <Label className={""}>
-                            Number of stories to create in test experience
-                        </Label>
-                        <Input
-                            className={"max-w-full"}
-                            placeholder="Number of stories"
-                            type="number"
-                            value={numStories}
-                            min={1}
-                            max={1000}
-                            step={1}
-                            onChange={(e) =>
-                                setNumStories(Number(e.target.value))
-                            }
-                        />
+                        <SettingsBoxFormElement>
+                            <Label className={""}>
+                                Number of random cities to create in test
+                                experience
+                            </Label>
+                            <Input
+                                className={"max-w-full"}
+                                placeholder="Number of random cities"
+                                type="number"
+                                value={numCityCenters}
+                                min={1}
+                                max={1000}
+                                step={1}
+                                onChange={(e) =>
+                                    setNumCityCenters(Number(e.target.value))
+                                }
+                            />
+                        </SettingsBoxFormElement>
+                        <SettingsBoxFormElement>
+                            <Label className={""}>
+                                Number of stories to create in test experience
+                            </Label>
+                            <Input
+                                className={"max-w-full"}
+                                placeholder="Number of stories"
+                                type="number"
+                                value={numStories}
+                                min={1}
+                                max={1000}
+                                step={1}
+                                onChange={(e) =>
+                                    setNumStories(Number(e.target.value))
+                                }
+                            />
+                        </SettingsBoxFormElement>
                     </SettingsBoxForm>
                     <SettingsFormButtonGroup>
                         <Button
                             variant={"destructive"}
                             onClick={() => {
                                 try {
-                                    seedDatabaseAction(numStories);
+                                    seedDatabaseAction(
+                                        numCityCenters,
+                                        numStories
+                                    );
                                     toast.success(
                                         "Database seeding successful"
                                     );

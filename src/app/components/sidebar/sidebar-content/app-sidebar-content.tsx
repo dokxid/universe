@@ -20,8 +20,15 @@ export function AppSidebarContent({ experience }: { experience: Experience }) {
 
     if (loading) return <Skeleton className={"h-10 w-full"} />;
 
+    // ensure super admin organization id is defined
+    if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+        throw new Error("Super admin org id is not defined");
+    }
+
     // case super admin
     if (organizationId === process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+        console.log("organizationId", organizationId);
+        console.log("rendering super admin sidebar");
         return (
             <SidebarContent className={"px-1 flex flex-col gap-1"}>
                 <UserItemGroup isUniverseView={isUniverseView} />

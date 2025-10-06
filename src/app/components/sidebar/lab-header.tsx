@@ -12,7 +12,7 @@ export default function LabHeader({ experience }: { experience: Experience }) {
             <AspectRatio ratio={16 / 9} className="relative w-full">
                 <Image
                     key={experience.slug}
-                    src={experience.featured_image}
+                    src={experience.featured_image_url}
                     alt={experience.title}
                     width={400}
                     height={225}

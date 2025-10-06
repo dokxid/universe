@@ -1,4 +1,4 @@
-import { getImagesInFolder } from "@/data/scripts/seeds/image-url-seeds";
+import { getImagesInSeedsFolder } from "@/data/scripts/seeds/image-url-seeds";
 import { ALL_UNESCO_TAGS } from "@/data/scripts/seeds/unesco-tags-seeds";
 import { faker } from "@faker-js/faker";
 
@@ -68,7 +68,7 @@ export const test_story_doc = async (experience_center: number[]) => {
         year: faker.number.int({ min: 1800, max: 2024 }),
         visible_universe: faker.datatype.boolean(),
         featured_image_url: faker.helpers.arrayElement(
-            await getImagesInFolder()
+            await getImagesInSeedsFolder()
         ),
         elevation_requests: [],
         createdAt: date,
