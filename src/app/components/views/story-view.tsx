@@ -3,6 +3,7 @@ import S3Image from "@/app/components/embeds/s3-image";
 import {
     ContentLayout,
     ContentLayoutInner,
+    SettingsFormButtonGroup,
 } from "@/app/components/layout/content-layout";
 import {
     Header,
@@ -11,8 +12,10 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { StoryViewDetails } from "@/app/components/layout/story-view-details";
+import { Button } from "@/components/ui/button";
 import { getStoryDTO } from "@/data/dto/story-dto";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 export default async function StoryView({ storyId }: { storyId: string }) {
     const story = await getStoryDTO(storyId);
@@ -26,19 +29,39 @@ export default async function StoryView({ storyId }: { storyId: string }) {
             </div>
             <ContentLayout>
                 <Header>
-                    <HeaderContent>
-                        <TagList tags={story.tags} variant={"default"} />
-                        <HeaderTitle>{story.title}</HeaderTitle>
-                        <HeaderDescription>
-                            <StoryViewDetails
-                                author={story.author_name}
-                                slug={story.experience}
-                                createdAt={story.createdAt}
-                            />
-                            {/* {story.author_name} - Published on{" "}
+                    <div className={"flex flex-row justify-between w-full"}>
+                        <HeaderContent className={"flex flex-col gap-3"}>
+                            <TagList tags={story.tags} variant={"default"} />
+                            <HeaderTitle>{story.title}</HeaderTitle>
+                            <HeaderDescription>
+                                <StoryViewDetails
+                                    author={story.author_name}
+                                    slug={story.experience}
+                                    createdAt={story.createdAt}
+                                />
+                                {/* {story.author_name} - Published on{" "}
                             {new Date(story.createdAt).toLocaleDateString()} */}
-                        </HeaderDescription>
-                    </HeaderContent>
+                            </HeaderDescription>
+                        </HeaderContent>
+                        <SettingsFormButtonGroup
+                            className={"h-full self-center"}
+                        >
+                            <Link
+                                href={`/${story.experience}/stories/edit/${story._id}`}
+                            >
+                                <Button variant={"secondary_custom"}>
+                                    Edit
+                                </Button>
+                            </Link>
+                            <Link
+                                href={`/${story.experience}/map?story=${story._id}`}
+                            >
+                                <Button variant={"primary_custom"}>
+                                    View on map
+                                </Button>
+                            </Link>
+                        </SettingsFormButtonGroup>
+                    </div>
                 </Header>
                 <ContentLayoutInner>
                     <div>
