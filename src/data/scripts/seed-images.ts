@@ -7,6 +7,10 @@ import fs from "fs";
 
 export async function initializeFeaturedLabImages() {
     try {
+        if (process.env.LOCAL_UPLOADER !== "true") {
+            console.log("Skipping seeding of images in non-local environment");
+            return;
+        }
         await fs.promises.rm(`public/uploads/labs/featured`, {
             recursive: true,
             force: true,
@@ -29,6 +33,12 @@ export async function initializeFeaturedLabImages() {
 
 export async function deleteUploadsFolder() {
     try {
+        if (process.env.LOCAL_UPLOADER !== "true") {
+            console.log(
+                "Skipping deletion of uploads folder in non-local environment"
+            );
+            return;
+        }
         await fs.promises.rm(`public/uploads`, {
             recursive: true,
             force: true,
@@ -41,6 +51,10 @@ export async function deleteUploadsFolder() {
 
 async function initializeLabImageFolders(slug: string) {
     try {
+        if (process.env.LOCAL_UPLOADER !== "true") {
+            console.log("Skipping seeding of images in non-local environment");
+            return;
+        }
         await fs.promises.rm(`public/uploads/${slug}/story-img`, {
             recursive: true,
             force: true,
@@ -63,6 +77,10 @@ async function initializeLabImageFolders(slug: string) {
 
 export async function seedAllStoryImages() {
     try {
+        if (process.env.LOCAL_UPLOADER !== "true") {
+            console.log("Skipping seeding of images in non-local environment");
+            return;
+        }
         await dbConnect();
         const allExperiences = (await experiences.find({})) as Experience[];
         await Promise.all(
