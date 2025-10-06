@@ -32,7 +32,9 @@ export function StoryViewDetails({
                         <AvatarFallback>{author.charAt(0)}</AvatarFallback>
                     </Avatar>
                 )}
-                <article className={"flex flex-col text-left"}>
+                <article
+                    className={"flex flex-col text-left h-10 justify-between"}
+                >
                     <p className={"text-sm text-muted-foreground"}>
                         {"by "}
                         <Link
