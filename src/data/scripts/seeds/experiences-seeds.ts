@@ -1,4 +1,4 @@
-import { getImageUrls } from "@/data/scripts/seeds/image-url-seeds";
+import { getLocalFeaturedLabImageUrl } from "@/data/scripts/seeds/image-url-seeds";
 import { faker } from "@faker-js/faker";
 
 export const stock_experiences_doc = [
@@ -156,7 +156,10 @@ export const test_experiences_doc = async (slug: string, center: number[]) => {
         title:
             faker.lorem.sentence({ min: 2, max: 3 }).replace(".", "") + " Lab",
         slug: slug,
-        featured_image_url: await getImageUrls(),
+        featured_image_url:
+            process.env.LOCAL_UPLOADER === "true"
+                ? await getLocalFeaturedLabImageUrl()
+                : "https://picsum.photos/seed/" + slug + "/870/570",
         organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
         stories: [],
         description: faker.lorem.sentence({ min: 40, max: 60 }),

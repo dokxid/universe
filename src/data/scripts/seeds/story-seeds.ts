@@ -67,9 +67,10 @@ export const test_story_doc = async (experience_center: number[]) => {
         ),
         year: faker.number.int({ min: 1800, max: 2024 }),
         visible_universe: faker.datatype.boolean(),
-        featured_image_url: faker.helpers.arrayElement(
-            await getImagesInSeedsFolder()
-        ),
+        featured_image_url:
+            process.env.LOCAL_UPLOADER === "true"
+                ? faker.helpers.arrayElement(await getImagesInSeedsFolder())
+                : "https://picsum.photos/seed/",
         elevation_requests: [],
         createdAt: date,
         updatedAt: faker.date.between({ from: date, to: new Date() }),

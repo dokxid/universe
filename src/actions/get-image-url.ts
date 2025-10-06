@@ -10,7 +10,11 @@ export async function getImageURLAction(
         if (process.env.LOCAL_UPLOADER === "true") {
             return `/uploads/${slug}/story-img/${fileName}`;
         } else {
-            return await getSignedS3URL(slug, fileName);
+            if (fileName.startsWith("http")) {
+                return fileName;
+            } else {
+                return await getSignedS3URL(slug, fileName);
+            }
         }
     } catch (error) {
         console.error("Error fetching image:", error);
