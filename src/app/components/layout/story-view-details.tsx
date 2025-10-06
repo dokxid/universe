@@ -26,12 +26,12 @@ export function StoryViewDetails({
         >
             <div className={"flex flex-row items-center gap-3"}>
                 {profilePictureVisible && (
-                    <Avatar className={"size-10"}>
+                    <Avatar className={"size-9"}>
                         <AvatarFallback>{author.charAt(0)}</AvatarFallback>
                     </Avatar>
                 )}
                 <article
-                    className={"flex flex-col text-left h-10 justify-between"}
+                    className={"flex flex-col text-left h-9 justify-between"}
                 >
                     <p className={"text-sm text-muted-foreground"}>
                         {"by "}
@@ -39,7 +39,7 @@ export function StoryViewDetails({
                             className={"hover:underline cursor-pointer"}
                             href={`/${slug}/user/${author}`}
                         >
-                            {`${author}`}
+                            <b>{`${author}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>

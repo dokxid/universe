@@ -29,38 +29,44 @@ export default async function StoryView({ storyId }: { storyId: string }) {
             </div>
             <ContentLayout>
                 <Header>
-                    <div className={"flex flex-row justify-between w-full"}>
-                        <HeaderContent className={"flex flex-col gap-3"}>
-                            <TagList tags={story.tags} variant={"default"} />
-                            <HeaderTitle>{story.title}</HeaderTitle>
-                            <HeaderDescription>
-                                <StoryViewDetails
-                                    author={story.author_name}
-                                    slug={story.experience}
-                                    createdAt={story.createdAt}
-                                />
-                                {/* {story.author_name} - Published on{" "}
-                            {new Date(story.createdAt).toLocaleDateString()} */}
-                            </HeaderDescription>
-                        </HeaderContent>
-                        <SettingsFormButtonGroup
-                            className={"h-full self-center"}
-                        >
-                            <Link
-                                href={`/${story.experience}/stories/edit/${story._id}`}
+                    <div className={"flex flex-col gap-3 w-full"}>
+                        <TagList
+                            tags={story.tags}
+                            variant={"default"}
+                            className={"max-w-lg"}
+                        />
+                        <div className={"flex flex-row justify-between w-full"}>
+                            <HeaderContent className={"flex flex-col"}>
+                                <HeaderTitle>{story.title}</HeaderTitle>
+                                <HeaderDescription>
+                                    <StoryViewDetails
+                                        author={story.author_name}
+                                        slug={story.experience}
+                                        createdAt={story.createdAt}
+                                    />
+                                    {/* {story.author_name} - Published on{" "}
+                                {new Date(story.createdAt).toLocaleDateString()} */}
+                                </HeaderDescription>
+                            </HeaderContent>
+                            <SettingsFormButtonGroup
+                                className={"h-full self-start"}
                             >
-                                <Button variant={"secondary_custom"}>
-                                    Edit
-                                </Button>
-                            </Link>
-                            <Link
-                                href={`/${story.experience}/map?story=${story._id}`}
-                            >
-                                <Button variant={"primary_custom"}>
-                                    View on map
-                                </Button>
-                            </Link>
-                        </SettingsFormButtonGroup>
+                                <Link
+                                    href={`/${story.experience}/stories/edit/${story._id}`}
+                                >
+                                    <Button variant={"secondary_custom"}>
+                                        Edit
+                                    </Button>
+                                </Link>
+                                <Link
+                                    href={`/${story.experience}/map?story=${story._id}`}
+                                >
+                                    <Button variant={"primary_custom"}>
+                                        View on map
+                                    </Button>
+                                </Link>
+                            </SettingsFormButtonGroup>
+                        </div>
                     </div>
                 </Header>
                 <ContentLayoutInner>
