@@ -224,7 +224,7 @@ export function StoryDetails({
                 <StoryDetailsHeader story={activeStory} className={"bg-card"} />
                 <Separator className={"mb-6"} />
                 <TagList tags={activeStory.tags} variant={"add"} />
-                <div className="prose dark:prose-invert prose-sm prose-headings:mb-2">
+                <div className="prose dark:prose-invert prose-sm prose-headings:mb-2 mt-3">
                     {parse(activeStory.content)}
                 </div>
             </div>

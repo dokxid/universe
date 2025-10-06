@@ -1,3 +1,5 @@
+"use client";
+
 import { TagSpan, tagVariants } from "@/app/components/cards/tag-span";
 import { useTags } from "@/lib/data_hooks/tag-hook";
 import { cn } from "@/lib/utils";
