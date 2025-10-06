@@ -8,7 +8,7 @@ export function useIsMobile() {
 
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
+            setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
         };
 
         // Check on mount
