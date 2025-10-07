@@ -9,7 +9,7 @@ export type Experience = {
     description: string;
     featured_image_url: string;
     stories: Story[];
-    organization_id?: string;
+    organization_id: string;
     connection_id?: string;
     visibility: "public" | "unlisted" | "private";
 };

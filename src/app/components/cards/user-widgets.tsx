@@ -8,14 +8,14 @@ import Link from "next/link";
 
 const USER_PREFERENCES_URL = `account/user-preferences`;
 
-export function UserWidgetNoAuth() {
+export function UserWidgetNoAuth({ slug }: { slug: string }) {
     return (
         <div
             className={
                 "flex flex-row items-center justify-between gap-2 rounded-md"
             }
         >
-            <Link href={`/auth/login`} prefetch={false} className={"grow"}>
+            <Link href={`/${slug}/login`} prefetch={false} className={"grow"}>
                 <Button variant={"primary_custom"} className={"grow w-full"}>
                     Sign in
                 </Button>
@@ -37,7 +37,7 @@ export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
             <p className={"text-xs"}>
                 You are not a member of this organization.
             </p>
-            <SignOutButton slug={slug} />
+            <SignOutButton />
             <div className={"flex flex-row items-center gap-2 flex-none"}>
                 <ThemeSwitchButton />
                 <Link href={`/${slug}/${USER_PREFERENCES_URL}`}>
@@ -87,7 +87,7 @@ export function UserWidgetAuthorized({
                         }
                     >
                         <p className={"text-xs"}>{role}</p>
-                        <SignOutButton slug={slug} className={""} />
+                        <SignOutButton className={""} />
                     </div>
                 </div>
             </div>

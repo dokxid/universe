@@ -28,7 +28,7 @@ export default function PageLayout({
                 </header>
                 <div
                     className={cn(
-                        "flex flex-col gap-4 px-4 overflow-y-auto items-center",
+                        "flex flex-col grow gap-4 px-4 overflow-y-auto items-center",
                         className
                     )}
                 >
