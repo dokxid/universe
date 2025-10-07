@@ -7,11 +7,14 @@ export function ContentLayout({
     return (
         <div
             className={
-                "flex flex-col gap-10 my-10 items-start w-full max-w-full md:max-w-6xl px-4 lg:px-6"
+                "flex flex-col gap-10 my-10 items-start w-full max-w-full md:max-w-6xl px-4 lg:px-6 h-full"
             }
         >
             <div
-                className={cn("flex flex-col w-full items-center", className)}
+                className={cn(
+                    "flex flex-col w-full items-center h-full",
+                    className
+                )}
                 {...props}
             />
         </div>

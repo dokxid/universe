@@ -29,6 +29,7 @@ const UNAUTHENTICATED_PATHS = [
     "/images/:filename",
     "/about",
     "/contact",
+    "/login",
 ];
 const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path
@@ -107,6 +108,7 @@ export const config = {
         "/:slug/contact",
         "/:slug/stories",
         "/:slug/stories/view/:id",
+        "/:slug/login",
         // editor+ paths
         "/:slug/account/user-preferences",
         "/:slug/stories/create",

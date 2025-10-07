@@ -23,10 +23,10 @@ export function UserWidgetHolder() {
         [roles, loading, organizationId, user]
     );
 
-    if (cachedAuthData.loading) return <UserWidgetNoAuth />;
+    if (cachedAuthData.loading) return <UserWidgetNoAuth slug={slug} />;
 
     if (!cachedAuthData.user) {
-        return <UserWidgetNoAuth />;
+        return <UserWidgetNoAuth slug={slug} />;
     }
 
     if (

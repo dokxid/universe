@@ -9,6 +9,7 @@ import {
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export const experimental_ppr = true;
@@ -35,6 +36,9 @@ export default async function MapView({
 }) {
     const { slug } = await params;
 
+    if (slug === "superadmin") {
+        redirect("/universe");
+    }
     // Use cached functions
     const storiesPromise = getStoriesForSlug(slug);
     const experiencesPromise = getPublicLabsDTO();

@@ -112,9 +112,9 @@ export const stock_experiences_doc = [
     {
         center: {
             type: "Point",
-            coordinates: [70.5, 10.75],
+            coordinates: [0, 0],
         },
-        initial_zoom: "7",
+        initial_zoom: "1",
         slug: "superadmin",
         title: "superadmin",
         description: "superadmin",
