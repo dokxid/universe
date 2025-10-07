@@ -10,7 +10,7 @@ export async function seedStories(
 ) {
     try {
         for (let i = 0; i < numStories; i++) {
-            const doc = await test_story_doc(center);
+            const doc = await test_story_doc(center, experienceSlug);
             await ExperienceModel.findOneAndUpdate(
                 { slug: experienceSlug },
                 { $push: { stories: doc } },

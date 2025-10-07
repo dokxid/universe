@@ -10,7 +10,6 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
-import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -21,12 +20,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { use, useMemo, useState } from "react";
+import React, { use, useMemo, useState } from "react";
 
 function UniverseStoryCollectionHeader() {
     return (
@@ -67,6 +66,30 @@ export function StoryCollection({
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags")?.split(",") || null;
 
+    const [columns, setColumns] = useState(3);
+    React.useEffect(() => {
+        const updateColumns = () => {
+            const width = window.innerWidth;
+            if (width < 768) {
+                setColumns(1);
+            } else if (width < 1024) {
+                setColumns(2);
+            } else {
+                setColumns(3);
+            }
+        };
+        updateColumns();
+        window.addEventListener("resize", updateColumns);
+        return () => window.removeEventListener("resize", updateColumns);
+    }, []);
+    const parentRef = React.useRef<HTMLDivElement>(null);
+    const rowVirtualizer = useVirtualizer({
+        count: Math.ceil(stories.length / columns),
+        getScrollElement: () => parentRef.current,
+        estimateSize: () => 360,
+        overscan: 5,
+    });
+
     const filteredStories = useMemo(() => {
         let filteredStories = stories.filter((story) =>
             story.title.toLocaleLowerCase().includes(titleFilter.toLowerCase())
@@ -106,14 +129,20 @@ export function StoryCollection({
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <div className={"mb-6 flex flex-col w-full gap-4"}>
+                <div
+                    className={
+                        "flex flex-col w-full gap-4 sticky top-0 z-10 bg-background py-2"
+                    }
+                >
                     <div
                         className={
                             "flex flex-col lg:flex-row gap-2 w-full justify-between"
                         }
                     >
-                        <div className="flex flex-col gap-3">
-                            <Label>Filter:</Label>
+                        <div className="flex flex-row gap-3">
+                            {/* <Label className={"text-muted-foreground"}>
+                                Filters:
+                            </Label> */}
                             <div className="flex flex-row gap-2">
                                 <Input
                                     type="text"
@@ -189,9 +218,50 @@ export function StoryCollection({
                         No stories found for this lab.
                     </div>
                 )}
-                <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-                    {filteredStories.map((story) => (
-                        <StoryCard key={story._id} story={story} />
+                <div
+                    className="relative max-w-6xl gap-4 w-full"
+                    ref={parentRef}
+                >
+                    <div
+                        className={"w-full"}
+                        style={{
+                            height: `${rowVirtualizer.getTotalSize()}px`,
+                            position: "relative",
+                        }}
+                    >
+                        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                            // console.log("Virtual Row:", virtualRow);
+                            const startStoryIndex = virtualRow.index * columns;
+                            const endStoryIndex = startStoryIndex + columns;
+                            console.log("row: " + JSON.stringify(virtualRow));
+                            const rowStories = filteredStories.slice(
+                                startStoryIndex,
+                                endStoryIndex
+                            );
+                            return (
+                                <div
+                                    key={virtualRow.key}
+                                    className={`absolute grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
+                                    style={{
+                                        transform: `translateY(${
+                                            virtualRow.start +
+                                            24 * virtualRow.index
+                                        }px)`,
+                                        height: `${virtualRow.size}px`,
+                                    }}
+                                >
+                                    {rowStories.map((story) => (
+                                        <StoryCard
+                                            key={story._id}
+                                            story={story}
+                                        />
+                                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {/* {filteredStories.map((story) => (
+                    <StoryCard key={story._id} story={story} />
                     ))}
                     {filteredStories.length === 0 && (
                         <>
@@ -200,7 +270,7 @@ export function StoryCollection({
                             <ListExperiencesSkeleton />
                             <ListExperiencesSkeleton />
                         </>
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>

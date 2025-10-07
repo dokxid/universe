@@ -1,5 +1,5 @@
 import { TagList } from "@/app/components/cards/tag-list";
-import S3Image from "@/app/components/embeds/s3-image";
+import { StoryImage } from "@/app/components/embeds/s3-image";
 import { Card } from "@/components/ui/card";
 import { buildStoryLink } from "@/lib/path";
 import { StoryDTO } from "@/types/dtos";
@@ -25,10 +25,9 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                         }
                     >
                         {story.featured_image_url ? (
-                            <S3Image
+                            <StoryImage
+                                imageUrl={story.featured_image_url}
                                 link={false}
-                                experience={story.experience}
-                                fileName={story.featured_image_url}
                                 className="object-cover "
                             />
                         ) : (

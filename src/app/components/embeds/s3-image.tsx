@@ -20,18 +20,18 @@ export function ImageElement({
             <Image
                 src={src}
                 alt="s3url"
-                priority={true}
                 fill
                 sizes="(min-width: 808px) 50vw, 100vw"
                 className={cn("object-cover", className)}
                 placeholder={shimmerDataUrl(400, 225)}
                 unoptimized={!internal}
+                loading={"lazy"}
             />
         </div>
     );
 }
 
-export default function S3Image({
+export function S3Image({
     experience,
     fileName,
     className,
@@ -61,6 +61,31 @@ export default function S3Image({
             href={`/${experience}/images/${fileName}`}
             className={"relative block w-full h-full"}
         >
+            <ImageElement className={className} src={src} internal={internal} />
+        </Link>
+    );
+}
+
+export function StoryImage({
+    imageUrl,
+    className,
+    link = true,
+    internal = true,
+}: {
+    imageUrl: string;
+    link?: boolean;
+    className?: string;
+    internal?: boolean;
+}) {
+    const src = imageUrl;
+
+    if (!link)
+        return (
+            <ImageElement className={className} src={src} internal={internal} />
+        );
+
+    return (
+        <Link href={imageUrl} className={"relative block w-full h-full"}>
             <ImageElement className={className} src={src} internal={internal} />
         </Link>
     );

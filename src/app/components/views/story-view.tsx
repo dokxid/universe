@@ -1,5 +1,5 @@
 import { TagList } from "@/app/components/cards/tag-list";
-import S3Image from "@/app/components/embeds/s3-image";
+import { StoryImage } from "@/app/components/embeds/s3-image";
 import {
     ContentLayout,
     ContentLayoutInner,
@@ -22,10 +22,7 @@ export default async function StoryView({ storyId }: { storyId: string }) {
     return (
         <div className={"flex flex-col gap-4 items-center w-full"}>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
-                <S3Image
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
+                <StoryImage imageUrl={story.featured_image_url} />
             </div>
             <ContentLayout>
                 <Header>

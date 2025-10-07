@@ -13,9 +13,9 @@ async function signOutAction(slug?: string) {
     try {
         (await cookies()).delete("wos-session");
         if (!process.env.VERCEL_URL) {
-            revalidateTag("user");
             returnTo = "http://localhost:3000" + returnTo;
             await signOut({ returnTo });
+            revalidateTag("user");
             redirect(returnTo);
         }
         revalidateTag("user");

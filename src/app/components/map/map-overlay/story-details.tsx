@@ -1,7 +1,7 @@
 "use client";
 
 import { TagList } from "@/app/components/cards/tag-list";
-import S3Image from "@/app/components/embeds/s3-image";
+import { StoryImage } from "@/app/components/embeds/s3-image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -149,13 +149,12 @@ export function StoryDetails({
                                 "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
                             }
                         >
-                            <S3Image
+                            <StoryImage
                                 className={
                                     "hover:scale-105 transition-all duration-200"
                                 }
                                 link={false}
-                                experience={activeStory.experience}
-                                fileName={activeStory.featured_image_url}
+                                imageUrl={activeStory.featured_image_url}
                             />
                         </Link>
                         <Separator className={"my-4"} />
@@ -213,11 +212,10 @@ export function StoryDetails({
                     "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden relative"
                 }
             >
-                <S3Image
+                <StoryImage
                     className={"hover:scale-105 transition-all duration-200"}
                     link={false}
-                    experience={activeStory.experience}
-                    fileName={activeStory.featured_image_url}
+                    imageUrl={activeStory.featured_image_url}
                 />
             </Link>
             <div className={"px-6 pb-6 flex flex-col"}>

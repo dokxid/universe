@@ -1,4 +1,4 @@
-import { getImagesInSeedsFolder } from "@/data/scripts/seeds/image-url-seeds";
+import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
 import { ALL_UNESCO_TAGS } from "@/data/scripts/seeds/unesco-tags-seeds";
 import { faker } from "@faker-js/faker";
 
@@ -45,7 +45,10 @@ function getContent() {
     return getRandomH1();
 }
 
-export const test_story_doc = async (experience_center: number[]) => {
+export const test_story_doc = async (
+    experience_center: number[],
+    experienceSlug: string
+) => {
     const date = faker.date.past({ years: 3 });
     const doc = {
         author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
@@ -69,7 +72,7 @@ export const test_story_doc = async (experience_center: number[]) => {
         visible_universe: faker.datatype.boolean(),
         featured_image_url:
             process.env.LOCAL_UPLOADER === "true"
-                ? faker.helpers.arrayElement(await getImagesInSeedsFolder())
+                ? await getStoryImageUrl(experienceSlug)
                 : "https://picsum.photos/seed/" +
                   faker.string.alphanumeric(10) +
                   "/800/600",

@@ -1,4 +1,4 @@
-import S3Image from "@/app/components/embeds/s3-image";
+import { StoryImage } from "@/app/components/embeds/s3-image";
 import EditorView from "@/app/components/stories/editor-view";
 import { getStoryDTO } from "@/data/dto/story-dto";
 import { PenLine } from "lucide-react";
@@ -15,10 +15,7 @@ export default async function StoryDetails({
     return (
         <>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
-                <S3Image
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
+                <StoryImage imageUrl={story.featured_image_url} />
             </div>
             <div className="flex flex-col w-full p-4 px-8">
                 <div className="prose dark:prose-invert mb-8">
