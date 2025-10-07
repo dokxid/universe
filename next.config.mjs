@@ -1,4 +1,5 @@
 // next.config.mjs
+import DotenvFlow from "dotenv-flow";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -6,7 +7,19 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// allow more .env files
+DotenvFlow.config({
+    node_env: process.env.APP_ENV || process.env.NODE_ENV || "development",
+});
+const env = {};
+Object.keys(process.env).forEach((key) => {
+    if (key.startsWith("NEXT_PUBLIC_")) {
+        env[key] = process.env[key];
+    }
+});
+
 const config = {
+    env,
     turbopack: {
         rules: {
             "*.svg": {
