@@ -38,10 +38,23 @@ export const teamSettingsFormSchema = z.object({
         ),
 });
 
-export const userPreferencesFormSchema = z.object({
+export const userPreferencesDisplayNameFormSchema = z.object({
+    displayName: z
+        .string()
+        .min(2, "Display name must be at least 2 characters."),
     firstName: z.string().min(2, "First name must be at least 2 characters."),
     lastName: z.string().min(2, "Last name must be at least 2 characters."),
-    email: z.email(),
+});
+
+export const userPreferencesDetailsFormSchema = z.object({
+    publicEmail: z.email().optional().nullable(),
+    position: z.string().optional().nullable(),
+    phoneNumber: z.string().optional().nullable(),
+    website: z.url().optional().nullable(),
+    description: z.string().optional().nullable(),
+});
+
+export const userPreferencesProfilePictureFormSchema = z.object({
     profilePictureUrl: z.url().optional().nullable(),
     profilePicture: z
         .any()
