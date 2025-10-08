@@ -8,7 +8,9 @@ import fs from "fs";
 export async function initializeFeaturedLabImages() {
     try {
         if (process.env.LOCAL_UPLOADER !== "true") {
-            console.log("Skipping seeding of images in non-local environment");
+            console.log(
+                "Featured Lab Images: Skipping seeding of images in non-local environment"
+            );
             return;
         }
         await fs.promises.rm(`public/uploads/labs/featured`, {
@@ -78,7 +80,9 @@ async function initializeLabImageFolders(slug: string) {
 export async function seedAllStoryImages() {
     try {
         if (process.env.LOCAL_UPLOADER !== "true") {
-            console.log("Skipping seeding of images in non-local environment");
+            console.log(
+                "Story Images: Skipping seeding of images in non-local environment"
+            );
             return;
         }
         await dbConnect();

@@ -41,3 +41,17 @@ export const addSelectedTagParam = (
     history.pushState(null, "", pathname + "?" + search.toString());
     return true;
 };
+
+export const setSelectedLabParams = (
+    pathname: string,
+    searchParams: URLSearchParams,
+    newLabSlug: string
+) => {
+    const search = new URLSearchParams(searchParams);
+    if (newLabSlug === "") {
+        search.delete("exp");
+    } else {
+        search.set("exp", newLabSlug);
+    }
+    history.pushState(null, "", pathname + "?" + search.toString());
+};

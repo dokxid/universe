@@ -33,6 +33,9 @@ export async function seedAllStories(numStories: number = 40) {
                     experience.center.coordinates,
                     numStories
                 );
+                console.log(
+                    `Seeded ${numStories} stories for experience: ${experience.slug}`
+                );
             })
         );
         console.log("Stories seeding completed");

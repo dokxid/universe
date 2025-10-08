@@ -41,9 +41,17 @@ export function StoryWidgetHolder({ slug }: { slug: string }) {
                         )
                     }
                     variant={"secondary_custom"}
-                    className={"group/button"}
+                    className={
+                        "group/button flex flex-row gap-2 items-center h-10 hover:ring-2"
+                    }
                 >
-                    <div className="hidden lg:inline-block">Explore</div>
+                    <p
+                        className={
+                            "text-xs hidden lg:inline-block hidden lg:inline-block"
+                        }
+                    >
+                        Explore
+                    </p>
                     <Compass />
                 </Button>
             )}
