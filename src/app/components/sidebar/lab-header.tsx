@@ -1,12 +1,16 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LabHeader({ experience }: { experience: Experience }) {
+export default function LabHeader({
+    experience,
+}: {
+    experience: ExperienceDTO;
+}) {
     return (
         <SidebarHeader className="flex flex-col items-start px-0 py-0 gap-0">
             <AspectRatio ratio={16 / 9} className="relative w-full">

@@ -2,7 +2,7 @@ import { StoryHoverCardContent } from "@/app/components/map/map-overlay/story-ho
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/dtos";
-import { MapPin } from "lucide-react";
+import { Hexagon } from "lucide-react";
 import { memo } from "react";
 
 function CustomMarker({
@@ -15,7 +15,7 @@ function CustomMarker({
     return (
         <HoverCard openDelay={500} closeDelay={100}>
             <HoverCardTrigger>
-                <MapPin
+                <Hexagon
                     data-state={isActive ? "active" : "inactive"}
                     size={20}
                     fill={"#D7263D"}

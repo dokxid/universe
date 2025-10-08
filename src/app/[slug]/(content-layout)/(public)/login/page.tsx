@@ -8,7 +8,7 @@ import { getExperiencesDTO } from "@/data/dto/experience-dto";
 export default async function LoginPage() {
     const labs = (await getExperiencesDTO()).map((experience) => ({
         label: experience.slug,
-        value: experience.organization_id,
+        value: experience.organizationId,
     }));
     return (
         <ContentLayout>

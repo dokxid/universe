@@ -7,7 +7,7 @@ const labSchema = new Schema({
 });
 
 const userSchema = new Schema({
-    id: { type: String, required: true, unique: true },
+    externalId: { type: String },
     labs: { type: [labSchema], default: [] },
     email: { type: String, required: true },
     firstName: { type: String },
@@ -17,6 +17,8 @@ const userSchema = new Schema({
     phoneNumber: { type: String },
     website: { type: String },
     description: { type: String },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
 });
 
 export type LabRole = {
@@ -25,17 +27,23 @@ export type LabRole = {
     role: string;
 };
 
+export type InsertUserDTO = Omit<UserDTO, "_id">;
+
 export type UserDTO = {
-    id: string;
+    _id: string;
+    externalId?: string;
     labs?: LabRole[];
     email: string;
     firstName?: string;
     lastName?: string;
+    displayName?: string;
     profilePictureUrl?: string;
     position?: string;
     phoneNumber?: string;
     website?: string;
     description?: string;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export const UserModel =

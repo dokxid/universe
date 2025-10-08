@@ -1,10 +1,10 @@
 import { ImageElement } from "@/app/components/embeds/s3-image";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 
 export default async function LabView({
     experiencePromise,
 }: {
-    experiencePromise: Promise<Experience>;
+    experiencePromise: Promise<ExperienceDTO>;
 }) {
     const experience = await experiencePromise;
     return (

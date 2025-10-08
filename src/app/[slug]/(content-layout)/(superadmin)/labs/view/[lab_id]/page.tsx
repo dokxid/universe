@@ -20,7 +20,7 @@ export default async function PrivacyPage({
     const { lab_id } = await params;
     const labDetails = await getLabByObjectIdDTO(lab_id);
 
-    const { stories, center, ...rest } = labDetails;
+    const { amountStories, center, ...rest } = labDetails;
     const labDetailsFiltered = rest;
 
     return (
@@ -46,7 +46,7 @@ export default async function PrivacyPage({
                     ))}
                     latitude: {center.coordinates[0]} <br />
                     longitude: {center.coordinates[1]} <br />
-                    stories amount: {stories.length} <br />
+                    stories amount: {amountStories} <br />
                 </ContentLayoutInner>
             </ContentLayout>
         </>

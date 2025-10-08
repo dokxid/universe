@@ -6,12 +6,17 @@ import {
     getLabByObjectId,
 } from "@/data/fetcher/experience-fetcher";
 import experienceModel from "@/lib/data/mongodb/models/experience-model";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import { cache } from "react";
 
-export const getExperiencesDTO = cache(async (): Promise<Experience[]> => {
+export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
     try {
-        return await getExperiences();
+        const labs = await getExperiences();
+        const sanitizedLabs: ExperienceDTO[] = labs.map((lab) => ({
+            ...lab,
+            amountStories: lab.stories.length,
+        }));
+        return sanitizedLabs;
     } catch (err) {
         throw new Error(
             "Error fetching experiences: " +
@@ -20,10 +25,15 @@ export const getExperiencesDTO = cache(async (): Promise<Experience[]> => {
     }
 });
 
-export const getPublicLabsDTO = cache(async (): Promise<Experience[]> => {
+export const getPublicLabsDTO = cache(async (): Promise<ExperienceDTO[]> => {
     try {
         const experiences = await getExperiences();
-        return experiences.filter((exp) => exp.visibility === "public");
+        const sanitizedExperiences: ExperienceDTO[] = experiences.map(
+            (exp) => ({ ...exp, amountStories: exp.stories.length })
+        );
+        return sanitizedExperiences.filter(
+            (exp) => exp.visibility === "public"
+        );
     } catch (err) {
         throw new Error(
             "Error fetching public labs: " +
@@ -34,9 +44,14 @@ export const getPublicLabsDTO = cache(async (): Promise<Experience[]> => {
 
 export async function getExperienceDTO(
     experienceSlug: string
-): Promise<Experience> {
+): Promise<ExperienceDTO> {
     try {
-        return await getExperience(experienceSlug);
+        const lab = await getExperience(experienceSlug);
+        const sanitizedLab: ExperienceDTO = {
+            ...lab,
+            amountStories: lab.stories.length,
+        };
+        return sanitizedLab;
     } catch (err) {
         throw new Error(
             `Error fetching experience ${experienceSlug}: ${
@@ -46,13 +61,19 @@ export async function getExperienceDTO(
     }
 }
 
-export async function getLabByObjectIdDTO(labId: string): Promise<Experience> {
+export async function getLabByObjectIdDTO(
+    labId: string
+): Promise<ExperienceDTO> {
     try {
         const lab = await getLabByObjectId(labId);
+        const sanitizedLab: ExperienceDTO = {
+            ...lab,
+            amountStories: lab.stories.length,
+        };
         if (!lab) {
             throw new Error(`Lab not found for ID: ${labId}`);
         }
-        return lab;
+        return sanitizedLab;
     } catch (err) {
         throw new Error(
             `Error fetching lab by ID ${labId}: ${
@@ -66,7 +87,7 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
     try {
         const experience = await getExperience(experienceSlug);
         return {
-            organization_id: experience.organization_id,
+            organization_id: experience.organizationId,
             connection_id: experience.connection_id,
         };
     } catch (err) {
@@ -83,7 +104,7 @@ export async function getSlugFromOrganizationIdDTO(
 ): Promise<string | null> {
     try {
         const experience = await experienceModel.findOne({
-            organization_id: organizationId,
+            organizationId: organizationId,
         });
         if (!experience) {
             throw new Error(

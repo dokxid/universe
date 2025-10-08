@@ -62,7 +62,7 @@ const experienceSchema = new Schema({
     description: { type: String, required: true },
     featured_image_url: { type: String, required: true },
     stories: { type: [storySchema], required: true },
-    organization_id: { type: String, required: true },
+    organizationId: { type: String, required: true },
     visibility: {
         type: String,
         enum: ["public", "unlisted", "private"],

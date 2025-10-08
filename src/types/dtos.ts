@@ -9,8 +9,22 @@ export type Experience = {
     description: string;
     featured_image_url: string;
     stories: Story[];
-    organization_id: string;
+    organizationId: string;
     connection_id?: string;
+    visibility: "public" | "unlisted" | "private";
+};
+
+export type ExperienceDTO = {
+    _id: string;
+    slug: string;
+    center: { coordinates: [number, number] };
+    amountStories: number;
+    initial_zoom: number;
+    title: string;
+    subtitle: string;
+    description: string;
+    featured_image_url: string;
+    organizationId: string;
     visibility: "public" | "unlisted" | "private";
 };
 

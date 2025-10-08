@@ -2,7 +2,7 @@
 
 import { useAppDispatch } from "@/lib/hooks";
 import { setCurrentExperience } from "@/lib/redux/experiences/experiences-slice";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
 
@@ -19,7 +19,7 @@ export function MapPanel({
 }: {
     tagsPromise: Promise<UnescoTagDTO[]>;
     storiesPromise: Promise<StoryDTO[]>;
-    experiencesPromise: Promise<Experience[]>;
+    experiencesPromise: Promise<ExperienceDTO[]>;
     experienceSlug: string;
 }) {
     const experiences = use(experiencesPromise);

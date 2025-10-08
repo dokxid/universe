@@ -79,12 +79,33 @@ export function DebugSettingsDialog() {
                             className={"w-full md:w-fit"}
                             onClick={() => {
                                 try {
-                                    triggerRevalidateTagAction("experiences");
-                                    triggerRevalidateTagAction("stories");
-                                    triggerRevalidateTagAction("tags");
-                                    triggerRevalidateTagAction("users");
-                                    toast.success(
-                                        "Tag revalidation successful"
+                                    triggerRevalidateTagAction(
+                                        "experiences"
+                                    ).then(() => {
+                                        toast.success(
+                                            "Heritage Lab revalidation successful"
+                                        );
+                                    });
+                                    triggerRevalidateTagAction("stories").then(
+                                        () => {
+                                            toast.success(
+                                                "Story revalidation successful"
+                                            );
+                                        }
+                                    );
+                                    triggerRevalidateTagAction("tags").then(
+                                        () => {
+                                            toast.success(
+                                                "Tag revalidation successful"
+                                            );
+                                        }
+                                    );
+                                    triggerRevalidateTagAction("users").then(
+                                        () => {
+                                            toast.success(
+                                                "User revalidation successful"
+                                            );
+                                        }
                                     );
                                 } catch (error) {
                                     toast.error("Tag revalidation failed");
@@ -108,8 +129,9 @@ export function DebugSettingsDialog() {
                             className={"w-full md:w-fit"}
                             onClick={() => {
                                 try {
-                                    syncUsersWithDatabaseAction();
-                                    toast.success("User sync successful");
+                                    syncUsersWithDatabaseAction().then(() => {
+                                        toast.success("User sync successful");
+                                    });
                                 } catch (error) {
                                     toast.error("User sync failed");
                                     console.error(error);

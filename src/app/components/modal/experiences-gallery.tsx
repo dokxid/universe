@@ -2,7 +2,7 @@ import { ExperienceCard } from "@/app/components/cards/experience-card";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Separator } from "@/components/ui/separator";
 import { getPublicLabsDTO } from "@/data/dto/experience-dto";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 
 export async function ExperiencesGallery() {
     const experiences = await getPublicLabsDTO();
@@ -23,7 +23,7 @@ export async function ExperiencesGallery() {
                 </article>
                 <Separator className={"my-8"}></Separator>
                 <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-                    {sanitizedExperiences.map((experience: Experience) => (
+                    {sanitizedExperiences.map((experience: ExperienceDTO) => (
                         <ExperienceCard
                             key={experience.slug}
                             experience={experience}

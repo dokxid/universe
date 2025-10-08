@@ -9,12 +9,16 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";
 import { useDispatch } from "react-redux";
 
-function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
+function ExploreSidebarContent({
+    experiences,
+}: {
+    experiences: ExperienceDTO[];
+}) {
     const [experiencesSearchTerm, setExperiencesSearchTerm] = useState("");
     const filteredExperiences = experiences.filter((experiences) =>
         experiences.title
@@ -55,7 +59,7 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
                 />
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
-                {filteredExperiences.map((experience: Experience) => (
+                {filteredExperiences.map((experience: ExperienceDTO) => (
                     <ExploreExperienceCard
                         key={experience.slug}
                         experience={experience}
@@ -72,7 +76,7 @@ export function ExploreSidebar({
     experiencesPromise,
 }: {
     slug: string;
-    experiencesPromise: Promise<Experience[]>;
+    experiencesPromise: Promise<ExperienceDTO[]>;
 }) {
     const isMobile = useIsMobile();
     const experiences = use(experiencesPromise).filter(

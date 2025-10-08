@@ -1,9 +1,9 @@
 "use server";
 
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 
-export async function getExperiencesAction(): Promise<Experience[]> {
+export async function getExperiencesAction(): Promise<ExperienceDTO[]> {
     try {
         const experiences = await getExperiencesDTO();
         return experiences;
@@ -15,7 +15,7 @@ export async function getExperiencesAction(): Promise<Experience[]> {
 
 export async function getExperienceAction(
     slug: string
-): Promise<Experience | null> {
+): Promise<ExperienceDTO | null> {
     try {
         const experience = await getExperienceDTO(slug);
         return experience;

@@ -7,6 +7,7 @@ import {
 } from "@/data/scripts/seed-images";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
+import { seedUsers } from "@/data/scripts/seed-users";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -55,6 +56,7 @@ export async function seedDatabase(
         await deleteUploadsFolder();
         await seedUnescoTags();
         await seedExperiences(randomCityCenters);
+        await seedUsers(10, 1);
         await seedAllStoryImages();
         await initializeFeaturedLabImages();
         await seedAllStories(numStories);

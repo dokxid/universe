@@ -22,11 +22,14 @@ export async function seedExperiences(cityCenters: number[][]) {
     );
     console.log(`Inserted ${result_stock_experiences.length} experiences`);
 
-    // seed test experience
+    // create unique slugs
     const uniqueSlugArray = faker.helpers.uniqueArray(
         faker.word.adverb,
-        cityCenters.length
+        cityCenters.length - 1
     );
+    uniqueSlugArray.push("test");
+
+    // create experiences for each city center
     await Promise.all(
         cityCenters.map(async (center, index) => {
             const test_experience = await test_experiences_doc(

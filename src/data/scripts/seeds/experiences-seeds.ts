@@ -14,7 +14,7 @@ export const stock_experiences_doc = [
             "https://heritagelab.center/wp-content/uploads/2022/10/WhatsApp-Image-2023-06-12-at-13.29.04-e1686618130600.jpeg",
         description: "Explore Istanbul",
         subtitle: "Explore Istanbul",
-        organization_id: "org_01K592D7VFJ26R5XXM71SBTHYW",
+        organizationId: "org_01K592D7VFJ26R5XXM71SBTHYW",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -32,7 +32,7 @@ export const stock_experiences_doc = [
         subtitle: "A 6000 year old city reunited with its heritage",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2024/02/Jaffa-Link-Buttoon.jpg",
-        organization_id: "org_01K592DVCET7ECBWS5JSR1RN7Y",
+        organizationId: "org_01K592DVCET7ECBWS5JSR1RN7Y",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -50,7 +50,7 @@ export const stock_experiences_doc = [
         subtitle: "Living through Heritage",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2022/06/Button-Moz-Island_Beach-with-dhows_view-from-the-pier_Stone-town_VeronicaMP_2017-870x570.jpg",
-        organization_id: "org_01K592EDBMYVJVJ26KTE2D5T0J",
+        organizationId: "org_01K592EDBMYVJVJ26KTE2D5T0J",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -68,7 +68,7 @@ export const stock_experiences_doc = [
             "A hidden gem nestled amid the waters of the Arabian Gulf, Umm al Quwain is a site of encounters between natural and cultural heritage. In addition to the unique natural environment, the Emirate is home to a plethora of archaeological sites reaching back over 7000 years. These ruins attest to its rich history and cultural value of the site, providing evidence for the encounters between religions, cultures, and the exchange of ideas and values.",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2023/04/ummalquiwain.jpg",
-        organization_id: "org_01K592F16V5Q352PB1JEDP338D",
+        organizationId: "org_01K592F16V5Q352PB1JEDP338D",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -86,7 +86,7 @@ export const stock_experiences_doc = [
         initial_zoom: "15",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2022/05/Zanzibar-Button-Photo-870x570.jpeg",
-        organization_id: "org_01K592FQE8MNC146MB8Z0XNAEB",
+        organizationId: "org_01K592FQE8MNC146MB8Z0XNAEB",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -104,7 +104,7 @@ export const stock_experiences_doc = [
         subtitle: "Exploring the state of traditional heritage",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2024/02/dd31a775-e3be-4b35-aa45-561b34bc4d03-870x570.jpg",
-        organization_id: "org_01K592G5EPPYM481PX4Z1NJEVG",
+        organizationId: "org_01K592G5EPPYM481PX4Z1NJEVG",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
@@ -121,7 +121,7 @@ export const stock_experiences_doc = [
         subtitle: "superadmin",
         featured_image_url:
             "https://heritagelab.center/wp-content/uploads/2024/02/dd31a775-e3be-4b35-aa45-561b34bc4d03-870x570.jpg",
-        organization_id: "org_01K665S1EHENYXCWB6E5DSK7ZJ",
+        organizationId: "org_01K665S1EHENYXCWB6E5DSK7ZJ",
         stories: [],
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "private",
@@ -139,7 +139,7 @@ export const universe_experience_doc = () => ({
     slug: "universe",
     featured_image_url:
         "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
-    organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
+    organizationId: "org_01K54BP4P0SK51TERJHPV4GPA1",
     stories: [],
     description: "Universe Map",
     connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
@@ -162,7 +162,7 @@ export const test_experiences_doc = async (slug: string, center: number[]) => {
                 : "https://picsum.photos/seed/" +
                   faker.string.alphanumeric(10) +
                   "/800/600",
-        organization_id: "org_01K54BP4P0SK51TERJHPV4GPA1",
+        organizationId: "org_01K54BP4P0SK51TERJHPV4GPA1",
         stories: [],
         description: faker.lorem.sentence({ min: 40, max: 60 }),
         subtitle: faker.lorem.words({ min: 5, max: 10 }).replace(".", ""),

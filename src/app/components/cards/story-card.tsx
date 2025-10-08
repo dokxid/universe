@@ -21,7 +21,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                 <div className="overflow-hidden relative">
                     <div
                         className={
-                            "origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-60 md:h-90 group-hover:brightness-25"
+                            "origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-60 md:h-90 group-hover:blur-[2px] group-hover:brightness-25"
                         }
                     >
                         {story.featured_image_url ? (
@@ -47,7 +47,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                                 <p className="text-sm text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
                                     by {story.author_name}
                                 </p>
-                                <p className="text-xs text-muted-foreground group-hover:text-gray-300 group-hover:font-semibold truncate">
+                                <p className="text-xs text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
                                     published:{" "}
                                     {new Date(
                                         story.createdAt

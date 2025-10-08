@@ -1,7 +1,7 @@
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +11,7 @@ export function ExploreExperienceCard({
     experience,
     queryStringURL = false,
 }: {
-    experience: Experience;
+    experience: ExperienceDTO;
     queryStringURL?: boolean;
 }) {
     const searchParams = useSearchParams();

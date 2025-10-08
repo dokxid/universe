@@ -15,7 +15,7 @@
     "e2e:headless": "cypress run --e2e 2>/dev/null",
     "component": "cypress open --component",
     "component:headless": "cypress run --component",
-    "seed:local": "tsx --env-file=.env.local src/data/scripts/seed-database-script.ts",
+    "seed:local": "tsx --trace-warnings --env-file=.env.local src/data/scripts/seed-database-script.ts",
     "seed:staging": "tsx --env-file=.env.staging src/data/scripts/seed-database-script.ts",
     "prepare": "husky"
   },

@@ -1,12 +1,12 @@
 import { getSlugFromOrganizationIdDTO } from "@/data/dto/experience-dto";
 import { getUserRoleFromOrganizationId } from "@/data/fetcher/user-fetcher";
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { InsertUserDTO } from "@/lib/data/mongodb/models/user-model";
 import { User } from "@workos-inc/node";
 
 export async function sanitizeOrganizationMembers(
     organizationId: string,
     users: User[]
-): Promise<UserDTO[] | null> {
+): Promise<InsertUserDTO[] | null> {
     try {
         const slug = await getSlugFromOrganizationIdDTO(organizationId);
         if (!slug) {
@@ -20,13 +20,15 @@ export async function sanitizeOrganizationMembers(
                     user.id,
                     organizationId
                 );
-                const sanitizedUser: UserDTO = {
-                    id: user.id,
+                const sanitizedUser: InsertUserDTO = {
+                    externalId: user.id,
                     labs: [{ organizationId, slug, role }],
                     email: user.email,
                     firstName: user.firstName || undefined,
                     lastName: user.lastName || undefined,
                     profilePictureUrl: user.profilePictureUrl || undefined,
+                    createdAt: new Date(user.createdAt),
+                    updatedAt: new Date(user.updatedAt),
                 };
                 return sanitizedUser;
             })
@@ -41,7 +43,7 @@ export async function sanitizeOrganizationMembers(
 export async function sanitizeSingleUser(
     organizationId: string,
     user: User
-): Promise<UserDTO | null> {
+): Promise<InsertUserDTO | null> {
     try {
         const role = await getUserRoleFromOrganizationId(
             user.id,
@@ -53,13 +55,15 @@ export async function sanitizeSingleUser(
                 `Could not find slug for organization ID: ${organizationId}`
             );
         }
-        const sanitizedUser: UserDTO = {
-            id: user.id,
+        const sanitizedUser: InsertUserDTO = {
+            externalId: user.id,
             labs: [{ organizationId, slug, role }],
             email: user.email,
             firstName: user.firstName || undefined,
             lastName: user.lastName || undefined,
             profilePictureUrl: user.profilePictureUrl || undefined,
+            createdAt: new Date(user.createdAt),
+            updatedAt: new Date(user.updatedAt),
         };
         return sanitizedUser;
     } catch (err) {
@@ -69,13 +73,14 @@ export async function sanitizeSingleUser(
 }
 
 export async function mergeMultipleOrganizationsUsers(
-    users: UserDTO[]
-): Promise<UserDTO[]> {
-    const userMap: Map<string, UserDTO> = new Map();
+    users: InsertUserDTO[]
+): Promise<InsertUserDTO[]> {
+    const userMap: Map<string, InsertUserDTO> = new Map();
 
     users.forEach((user) => {
-        if (userMap.has(user.id)) {
-            const existingUser = userMap.get(user.id);
+        if (!user.externalId) return;
+        if (userMap.has(user.externalId)) {
+            const existingUser = userMap.get(user.externalId);
             if (existingUser) {
                 if (!existingUser.labs) {
                     existingUser.labs = [];
@@ -87,7 +92,7 @@ export async function mergeMultipleOrganizationsUsers(
                 existingUser.labs = [...existingUser.labs, ...user.labs];
             }
         } else {
-            userMap.set(user.id, { ...user });
+            userMap.set(user.externalId, { ...user });
         }
     });
 

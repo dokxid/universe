@@ -1,12 +1,12 @@
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export function ExperienceCard({ experience }: { experience: Experience }) {
+export function ExperienceCard({ experience }: { experience: ExperienceDTO }) {
     const url = `/${experience.slug}/map`;
 
     return (

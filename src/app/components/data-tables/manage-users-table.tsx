@@ -174,7 +174,7 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
     const table = useReactTable({
         data: dataFetched,
         columns,
-        getRowId: (row) => row.id,
+        getRowId: (row) => row._id,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

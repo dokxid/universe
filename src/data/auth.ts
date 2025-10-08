@@ -121,7 +121,7 @@ async function getUserExperienceRelationBySlug(
         if (!user) throw new Error("User is not authenticated");
         dbConnect();
         const experience = await getExperienceDTO(experienceSlug);
-        const organizationId = experience.organization_id;
+        const organizationId = experience.organizationId;
         const membership =
             await workos.userManagement.listOrganizationMemberships({
                 userId: user.id,

@@ -8,14 +8,18 @@ import { SuperAdminItemGroup } from "@/app/components/sidebar/sidebar-content/su
 import { UserItemGroup } from "@/app/components/sidebar/sidebar-content/user-item-group";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useParams } from "next/navigation";
 
-export function AppSidebarContent({ experience }: { experience: Experience }) {
+export function AppSidebarContent({
+    experience,
+}: {
+    experience: ExperienceDTO;
+}) {
     const { slug } = useParams<{ slug: string }>();
     const { roles, loading, organizationId, user } = useAuth();
-    const currentExperienceOrganizationId = experience.organization_id;
+    const currentExperienceOrganizationId = experience.organizationId;
     const isUniverseView = slug === "universe";
 
     if (loading) return <Skeleton className={"h-10 w-full"} />;

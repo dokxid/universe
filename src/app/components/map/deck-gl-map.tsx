@@ -14,7 +14,7 @@ import {
     addSelectedTagParam,
     setSelectedStoryIdParams,
 } from "@/lib/utils/param-setter";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,
@@ -55,7 +55,7 @@ function MapController({
     currentExperience,
     selectedStory,
 }: {
-    currentExperience: Experience;
+    currentExperience: ExperienceDTO;
     selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
@@ -139,7 +139,7 @@ export function DeckGLMap({
 }: {
     tags: UnescoTagDTO[];
     stories: StoryDTO[];
-    experiences: Experience[];
+    experiences: ExperienceDTO[];
     experienceSlug: string;
 }) {
     // global state management stuff
@@ -166,14 +166,14 @@ export function DeckGLMap({
         if (experienceSlug !== "universe") {
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
-            ) as Experience;
+            ) as ExperienceDTO;
         }
         const experienceToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
         return experiences.find(
             (exp) => exp.slug === experienceToShow
-        ) as Experience;
+        ) as ExperienceDTO;
     }, [experienceSlug, experiences, searchParams]);
 
     const storiesFiltered = useMemo(() => {

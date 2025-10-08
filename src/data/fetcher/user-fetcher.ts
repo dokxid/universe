@@ -7,7 +7,8 @@ import {
 } from "@/data/transformers/user-transformer";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
-import { UserDTO, UserModel } from "@/lib/data/mongodb/models/user-model";
+import { InsertUserDTO, UserModel } from "@/lib/data/mongodb/models/user-model";
+import { faker } from "@faker-js/faker";
 
 export type UserUpdateDTO = {
     firstName?: string;
@@ -18,12 +19,17 @@ export type UserUpdateDTO = {
     profilePictureUrl?: string;
 };
 
-export async function getAllUsers() {
+export async function getAllWorkOSUsers() {
     try {
-        let sanitizedUsers: UserDTO[] = [];
+        let sanitizedUsers: InsertUserDTO[] = [];
         const orgs = await getAllOrganizations();
 
-        const userPromises = orgs.map(async (org) => {
+        // Exclude the auto generated "Test Organization" to avoid test users
+        const sanitizedOrgs = orgs.filter(
+            (org) => org.name !== "Test Organization"
+        );
+
+        const userPromises = sanitizedOrgs.map(async (org) => {
             const users = await getUsersByOrganizationId(org.id);
             const sanitizedOrganizationMembers =
                 await sanitizeOrganizationMembers(org.id, users);
@@ -45,11 +51,17 @@ export async function getAllUsers() {
 export async function syncUsersWithDatabase() {
     try {
         await dbConnect();
-        const users = await getAllUsers();
+        const users = await getAllWorkOSUsers();
         // console.log("users: ", JSON.stringify(users, null, 2));
-        await UserModel.insertMany(users, {
-            ordered: true,
-        }).catch((err) => {
+        await UserModel.insertMany(
+            users.map((user) => ({
+                ...user,
+                _id: faker.database.mongodbObjectId(),
+            })),
+            {
+                ordered: true,
+            }
+        ).catch((err) => {
             throw new Error(`Error syncing users with database: ${err}`);
         });
     } catch (err) {

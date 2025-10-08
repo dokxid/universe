@@ -7,6 +7,7 @@ export const MAP_TILES = {
     "Stamen Toner": "https://tiles.stadiamaps.com/styles/stamen_toner.json",
     "Stamen Watercolor":
         "https://tiles.stadiamaps.com/styles/stamen_watercolor.json",
+    "Stamen Terrain": "https://tiles.stadiamaps.com/styles/stamen_terrain.json",
 };
 
 export interface SettingsState {
