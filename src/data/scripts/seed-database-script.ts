@@ -23,4 +23,4 @@ export async function seedDatabaseScript(
     }
 }
 
-seedDatabaseScript(5, 50);
+seedDatabaseScript(5, 20);

@@ -61,7 +61,11 @@ function MapController({
     const { mainMap: map } = useMap();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
-    const experience = useMemo(() => searchParams.get("exp"), [searchParams]);
+    const experience = useMemo(
+        () => searchParams.get("exp"),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [searchParams.get("exp")]
+    );
     const mapState = useAppSelector((state) => state.map);
     const navigationState = useAppSelector((state) => state.navigation);
     const prevStoryCenter = usePrevious(selectedStory?.location.coordinates);
