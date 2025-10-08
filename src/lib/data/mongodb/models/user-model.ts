@@ -22,13 +22,18 @@ const userSchema = new Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
+export type InsertLabRole = Omit<LabRole, "_id">;
+
 export type LabRole = {
+    _id: string;
     organizationId: string;
     slug: string;
     role: string;
 };
 
-export type InsertUserDTO = Omit<UserDTO, "_id">;
+export type InsertUserDTO = Omit<UserDTO, "_id" | "labs"> & {
+    labs: Omit<LabRole, "_id">[];
+};
 
 export type UserDTO = {
     _id: string;

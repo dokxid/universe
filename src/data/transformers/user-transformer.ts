@@ -99,9 +99,15 @@ export async function mergeMultipleOrganizationsUsers(
     return Array.from(userMap.values());
 }
 
-export async function sanitizeUserDTO(user: UserDTO): Promise<UserDTO> {
+export async function sanitizeUserDTO(
+    userToSanitize: UserDTO
+): Promise<UserDTO> {
     return {
-        ...user,
-        _id: String(user._id),
+        ...userToSanitize,
+        _id: String(userToSanitize._id),
+        labs: userToSanitize.labs?.map((lab) => ({
+            ...lab,
+            _id: String(lab._id),
+        })),
     };
 }

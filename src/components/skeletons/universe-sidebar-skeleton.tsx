@@ -1,3 +1,4 @@
+import { UserWidgetAuthorizedSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -45,15 +46,6 @@ export function UniverseSidebarSkeleton() {
 
                 <div className="grow"></div>
 
-                {/* Second Group - SUPER ADMIN FEATURES */}
-                <div className="py-2 gap-0.5">
-                    <Skeleton className="w-32 h-[14px] my-[5px]" />
-                    <div className="flex flex-col gap-0.5">
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                    </div>
-                </div>
                 <div className="py-2 gap-0.5">
                     <Skeleton className="w-32 h-[14px] my-[5px]" />
                     <div className="flex flex-col gap-0.5">
@@ -61,10 +53,10 @@ export function UniverseSidebarSkeleton() {
                         <Skeleton className="w-3/4 h-[20px] my-[6px]" />
                     </div>
                 </div>
+
+                {/* user widget */}
             </div>
-            <div className="py-3">
-                <Skeleton className="w-full h-[40px]" />
-            </div>
+            <UserWidgetAuthorizedSkeleton />
         </div>
     );
 }

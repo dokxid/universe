@@ -35,7 +35,7 @@ export function UserWidgetHolder() {
     ) {
         return (
             <UserWidgetAuthorized
-                user={cachedAuthData.user}
+                userWorkOS={cachedAuthData.user}
                 slug={slug}
                 role={"Super Admin"}
             />
@@ -48,7 +48,7 @@ export function UserWidgetHolder() {
 
     return (
         <UserWidgetAuthorized
-            user={cachedAuthData.user}
+            userWorkOS={cachedAuthData.user}
             slug={slug}
             role={cachedAuthData.roles.includes("admin") ? "Admin" : "Editor"}
         />

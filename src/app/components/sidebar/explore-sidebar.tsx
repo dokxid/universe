@@ -63,7 +63,6 @@ function ExploreSidebarContent({
                     <ExploreExperienceCard
                         key={experience.slug}
                         experience={experience}
-                        queryStringURL={true}
                     />
                 ))}
             </div>

@@ -1,7 +1,9 @@
 import { SignOutButton } from "@/app/components/sidebar/sign-out-button";
 import { ThemeSwitchButton } from "@/app/components/sidebar/theme-switch-button";
+import { UserWidgetSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useUserFromWorkOSId } from "@/lib/data_hooks/user-hook";
 import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";
@@ -54,14 +56,36 @@ export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
 }
 
 export function UserWidgetAuthorized({
-    user,
+    userWorkOS,
     slug,
     role,
 }: {
-    user: User;
+    userWorkOS: User;
     slug: string;
     role: string;
 }) {
+    const {
+        user: initialUser,
+        isLoading,
+        isError,
+    } = useUserFromWorkOSId(userWorkOS.id);
+    let user = initialUser;
+    if (isLoading) {
+        return <UserWidgetSkeleton />;
+    }
+    if (isError) {
+        return <UserWidgetNoAuth slug={slug} />;
+    }
+    if (!user) {
+        user = {
+            firstName: userWorkOS.firstName || "",
+            lastName: userWorkOS.lastName || "",
+            _id: "",
+            email: userWorkOS.email || "",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+    }
     return (
         <div
             className={

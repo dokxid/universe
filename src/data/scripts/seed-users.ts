@@ -17,9 +17,13 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
         // clear existing users
         await UserModel.deleteMany({});
 
-        // seed test users for each lab
+        // seed test users for each lab (except for "universe" lab)
         await Promise.all(
             labs.map(async (lab) => {
+                if (lab === "universe") {
+                    console.log("Skipping seeding users for 'universe' lab");
+                    return;
+                }
                 const organizationId = await ExperienceModel.findOne({
                     slug: lab,
                 }).then((exp) => exp?.organizationId);
@@ -52,6 +56,9 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                 );
             })
         );
+
+        console.log("Existing users synced successfully");
+
         console.log("Users seeded successfully");
     } catch (error) {
         console.error("Error seeding users:", error);

@@ -36,6 +36,21 @@ export async function getUserDTO(userId: string): Promise<UserDTO | null> {
     }
 }
 
+export async function getUserFromWorkOSIdDTO(
+    workOSId: string
+): Promise<UserDTO | null> {
+    try {
+        const user = await getUser(workOSId, true);
+        if (!user) return null;
+        return await sanitizeUserDTO(user);
+    } catch (error) {
+        console.error("Error fetching user by WorkOS ID:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
 async function setStoriesForUsers(users: UserDTO[]) {
     try {
         if (!users) return [] as UserDTO[];

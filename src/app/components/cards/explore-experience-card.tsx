@@ -9,25 +9,11 @@ import { Suspense } from "react";
 
 export function ExploreExperienceCard({
     experience,
-    queryStringURL = false,
 }: {
     experience: ExperienceDTO;
-    queryStringURL?: boolean;
 }) {
     const searchParams = useSearchParams();
     const selectedExperience = searchParams.get("exp");
-    function createExperienceParam(slug: string) {
-        const search = new URLSearchParams(searchParams.toString());
-        search.delete("story");
-        search.set("exp", slug);
-        return "?" + search.toString();
-    }
-    let url;
-    if (queryStringURL) {
-        url = `/universe/map${createExperienceParam(experience.slug)}`;
-    } else {
-        url = `/${experience.slug}/map`;
-    }
 
     return (
         <Card

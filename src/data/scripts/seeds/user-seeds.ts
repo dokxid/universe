@@ -1,14 +1,22 @@
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { InsertUserDTO } from "@/lib/data/mongodb/models/user-model";
 import { faker } from "@faker-js/faker";
 
-export const testMemberDoc = (organizationId: string, lab: string): UserDTO => {
+export const testMemberDoc = (
+    organizationId: string,
+    lab: string
+): InsertUserDTO => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const displayName = `${firstName} ${lastName}`;
     const email = faker.internet.email({ firstName, lastName });
     return {
-        _id: faker.database.mongodbObjectId(),
-        labs: [{ organizationId, slug: lab, role: "member" }],
+        labs: [
+            {
+                organizationId,
+                slug: lab,
+                role: "member",
+            },
+        ],
         email,
         firstName,
         lastName,

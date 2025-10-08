@@ -165,12 +165,19 @@ export async function getUsersFromLab(slug: string) {
     }
 }
 
-export async function getUser(userId: string) {
+export async function getUser(userId: string, fromExternalId = false) {
     try {
+        let user;
         await dbConnect();
-        const user = (await UserModel.findOne({
-            _id: userId,
-        }).lean()) as unknown as UserDTO | null;
+        if (fromExternalId) {
+            user = (await UserModel.findOne({
+                externalId: userId,
+            }).lean()) as unknown as UserDTO | null;
+        } else {
+            user = (await UserModel.findOne({
+                _id: userId,
+            }).lean()) as unknown as UserDTO | null;
+        }
         return user;
     } catch (err) {
         console.error("Error fetching user from database:", err);
