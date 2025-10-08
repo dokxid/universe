@@ -11,9 +11,17 @@ import {
     ContactSocialsGroup,
     ContactStoriesLink,
 } from "@/app/components/cards/contact-card";
+import { StoryCard } from "@/app/components/cards/story-card";
 import { ImageElement } from "@/app/components/embeds/s3-image";
 import { RowButtonGroup } from "@/app/components/layout/button-group-layout";
-import { ContentLayout } from "@/app/components/layout/content-layout";
+import {
+    ContentLayout,
+    SettingsBoxContent,
+    SettingsFormBox,
+    SettingsFormDescription,
+    SettingsFormTitle,
+    SettingsLayout,
+} from "@/app/components/layout/content-layout";
 import {
     Header,
     HeaderContent,
@@ -23,7 +31,7 @@ import {
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { getUsersByLabDTO } from "@/data/dto/user-dto";
+import { getUserDTO } from "@/data/dto/user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
@@ -37,12 +45,12 @@ export async function generateStaticParams() {
 export default async function AboutPage({
     params,
 }: {
-    params: { slug: string };
+    params: { slug: string; userId: string };
 }) {
-    const { slug } = await params;
-    const users = await getUsersByLabDTO(slug);
-    if (users === null) {
-        return <div>Error loading users.</div>;
+    const { slug, userId } = await params;
+    const user = await getUserDTO(userId);
+    if (!user) {
+        return <div>User not found.</div>;
     }
     return (
         <>
@@ -52,18 +60,17 @@ export default async function AboutPage({
                         <Contact size={80} />
                     </HeaderIcon>
                     <HeaderContent>
-                        <HeaderTitle>Contact us</HeaderTitle>
+                        <HeaderTitle>User Profile</HeaderTitle>
                         <HeaderDescription>
-                            Reach out to us for any inquiries, support, or
-                            feedback. We&apos;re here to help and would love to
-                            hear from you!
+                            Learn more about our team members and how to get in
+                            touch with them.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <div className={"flex flex-col gap-8 w-full"}>
-                    <div className={"form-box w-full"}>
-                        {users.map((user, index) => (
-                            <ContactCard key={index}>
+                <SettingsLayout>
+                    <div className={"flex flex-col gap-8 w-full"}>
+                        <div className={"form-box w-full"}>
+                            <ContactCard>
                                 <ContactImage
                                     href={`/${slug}/user/view/${user._id}`}
                                 >
@@ -89,9 +96,7 @@ export default async function AboutPage({
                                 </ContactImage>
                                 <ContactCardContent>
                                     <ContactNameRole>
-                                        <ContactName
-                                            href={`/${slug}/user/view/${user._id}`}
-                                        >
+                                        <ContactName>
                                             {user.displayName
                                                 ? user.displayName
                                                 : user.firstName &&
@@ -161,9 +166,24 @@ export default async function AboutPage({
                                     </RowButtonGroup>
                                 </ContactCardContent>
                             </ContactCard>
-                        ))}
+                        </div>
                     </div>
-                </div>
+                    <SettingsFormBox>
+                        <SettingsFormTitle>Stories</SettingsFormTitle>
+                        <SettingsFormDescription>
+                            Stories by this user.
+                        </SettingsFormDescription>
+                        <SettingsBoxContent>
+                            <div
+                                className={`absolute grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
+                            >
+                                {user.stories?.map((story) => (
+                                    <StoryCard key={story._id} story={story} />
+                                ))}
+                            </div>
+                        </SettingsBoxContent>
+                    </SettingsFormBox>
+                </SettingsLayout>
             </ContentLayout>
         </>
     );

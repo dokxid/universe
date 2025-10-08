@@ -59,6 +59,7 @@ export async function queryStory(
 
         return storyWithAuthor[0];
     } catch (err) {
+        console.error("Error querying story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
@@ -76,5 +77,19 @@ export async function insertStory(
         ).exec();
     } catch (err) {
         console.error("Error inserting story:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
+export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
+    try {
+        await dbConnect();
+        const userStories: StoryDTO[] = await ExperienceModel.find({
+            "stories.author": userId,
+        }).exec();
+        return userStories;
+    } catch (err) {
+        console.error("Error getting stories by user:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }

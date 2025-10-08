@@ -109,23 +109,6 @@ export const stock_experiences_doc = [
         connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
         visibility: "public",
     },
-    {
-        center: {
-            type: "Point",
-            coordinates: [0, 0],
-        },
-        initial_zoom: "1",
-        slug: "superadmin",
-        title: "superadmin",
-        description: "superadmin",
-        subtitle: "superadmin",
-        featured_image_url:
-            "https://heritagelab.center/wp-content/uploads/2024/02/dd31a775-e3be-4b35-aa45-561b34bc4d03-870x570.jpg",
-        organizationId: "org_01K665S1EHENYXCWB6E5DSK7ZJ",
-        stories: [],
-        connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",
-        visibility: "private",
-    },
 ];
 
 export const universe_experience_doc = () => ({
@@ -139,7 +122,7 @@ export const universe_experience_doc = () => ({
     slug: "universe",
     featured_image_url:
         "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
-    organizationId: "org_01K54BP4P0SK51TERJHPV4GPA1",
+    organizationId: process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID || "",
     stories: [],
     description: "Universe Map",
     connection_id: "conn_01K5SEZDTNWYA20J82FSMFKZ3B",

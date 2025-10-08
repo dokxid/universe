@@ -9,6 +9,7 @@ import {
 } from "@/data/auth";
 import {
     getAllStories,
+    getStoriesByUser,
     insertStory,
     queryStory,
 } from "@/data/fetcher/story-fetcher";
@@ -135,6 +136,17 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
 
         return queryResult;
     } catch (err) {
+        console.error("Error getting story:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
+export async function getStoriesByUserDTO(userId: string): Promise<StoryDTO[]> {
+    try {
+        const stories = await getStoriesByUser(userId);
+        return stories;
+    } catch (err) {
+        console.error("Error getting stories by user:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }

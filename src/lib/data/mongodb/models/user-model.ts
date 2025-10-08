@@ -1,3 +1,4 @@
+import { StoryDTO } from "@/types/dtos";
 import mongoose, { Schema } from "mongoose";
 
 const labSchema = new Schema({
@@ -33,7 +34,9 @@ export type UserDTO = {
     _id: string;
     externalId?: string;
     labs?: LabRole[];
+    publicEmail?: string;
     email: string;
+    stories?: StoryDTO[];
     firstName?: string;
     lastName?: string;
     displayName?: string;

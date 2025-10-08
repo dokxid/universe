@@ -1,13 +1,16 @@
 import "server-only";
 
-import { getExperienceSignInDTO } from "@/data/dto/experience-dto";
 import {
     mergeMultipleOrganizationsUsers,
     sanitizeOrganizationMembers,
 } from "@/data/transformers/user-transformer";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
-import { InsertUserDTO, UserModel } from "@/lib/data/mongodb/models/user-model";
+import {
+    InsertUserDTO,
+    UserDTO,
+    UserModel,
+} from "@/lib/data/mongodb/models/user-model";
 import { faker } from "@faker-js/faker";
 
 export type UserUpdateDTO = {
@@ -149,20 +152,28 @@ export async function getUserRoleFromOrganizationId(
         throw err;
     }
 }
-export async function getUsersFromOrganizationInDatabase(slug: string) {
+export async function getUsersFromLab(slug: string) {
     try {
         await dbConnect();
-        const organizationId = (await getExperienceSignInDTO(slug))
-            .organization_id;
-        const users = await UserModel.find({
-            "labs.organizationId": organizationId,
-        }).exec();
+        const users = (await UserModel.find({
+            "labs.slug": slug,
+        }).lean()) as unknown as UserDTO[];
         return users;
     } catch (err) {
-        console.error(
-            "Error fetching user from organization in database:",
-            err
-        );
+        console.error("Error fetching user from lab in database:", err);
+        return null;
+    }
+}
+
+export async function getUser(userId: string) {
+    try {
+        await dbConnect();
+        const user = (await UserModel.findOne({
+            _id: userId,
+        }).lean()) as unknown as UserDTO | null;
+        return user;
+    } catch (err) {
+        console.error("Error fetching user from database:", err);
         return null;
     }
 }

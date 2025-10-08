@@ -13,17 +13,19 @@ export function ImageElement({
     className,
     src,
     internal = true,
+    alt,
 }: {
     className?: string;
     src: string;
     internal?: boolean;
+    alt?: string;
 }) {
     const unoptimized = USE_UNOPTIMIZED_IMAGES || internal;
     return (
         <div className={"relative w-full h-full aspect-video"}>
             <Image
                 src={src}
-                alt="s3url"
+                alt={alt || "Image"}
                 fill
                 sizes="(min-width: 808px) 50vw, 100vw"
                 className={cn("object-cover", className)}

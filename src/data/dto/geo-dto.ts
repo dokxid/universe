@@ -64,6 +64,5 @@ export function getTaggedConnectionDTO(
             return [];
         }
     );
-    console.log("sanitizedConnections", connections);
     return connections;
 }

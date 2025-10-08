@@ -1,6 +1,6 @@
 import { getSlugFromOrganizationIdDTO } from "@/data/dto/experience-dto";
 import { getUserRoleFromOrganizationId } from "@/data/fetcher/user-fetcher";
-import { InsertUserDTO } from "@/lib/data/mongodb/models/user-model";
+import { InsertUserDTO, UserDTO } from "@/lib/data/mongodb/models/user-model";
 import { User } from "@workos-inc/node";
 
 export async function sanitizeOrganizationMembers(
@@ -97,4 +97,11 @@ export async function mergeMultipleOrganizationsUsers(
     });
 
     return Array.from(userMap.values());
+}
+
+export async function sanitizeUserDTO(user: UserDTO): Promise<UserDTO> {
+    return {
+        ...user,
+        _id: String(user._id),
+    };
 }

@@ -230,10 +230,8 @@ export function StoryCollection({
                         }}
                     >
                         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                            // console.log("Virtual Row:", virtualRow);
                             const startStoryIndex = virtualRow.index * columns;
                             const endStoryIndex = startStoryIndex + columns;
-                            console.log("row: " + JSON.stringify(virtualRow));
                             const rowStories = filteredStories.slice(
                                 startStoryIndex,
                                 endStoryIndex

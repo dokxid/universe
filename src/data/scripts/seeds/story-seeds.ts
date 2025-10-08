@@ -51,7 +51,7 @@ export const test_story_doc = async (
 ) => {
     const date = faker.date.past({ years: 3 });
     const doc = {
-        author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
+        author: "eeaf03c09f59ef4b5054befd",
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
         title: faker.lorem.sentence({ min: 3, max: 5 }),

@@ -217,7 +217,6 @@ export function DeckGLMap({
             storiesToUse,
             tagFilters
         );
-        console.log("connectionsSanitized", connectionsSanitized);
         setTimeout(() => {
             setArcHeight(connectionsSanitized.length > 0 ? 1.5 : 0.6);
         }, 100);
