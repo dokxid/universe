@@ -6,6 +6,9 @@ import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
 import Link from "next/link";
 
+// maybe this should go in .env, but this is only temporary till i figure out image optimization limits
+const USE_UNOPTIMIZED_IMAGES = true;
+
 export function ImageElement({
     className,
     src,
@@ -15,6 +18,7 @@ export function ImageElement({
     src: string;
     internal?: boolean;
 }) {
+    const unoptimized = USE_UNOPTIMIZED_IMAGES || internal;
     return (
         <div className={"relative w-full h-full aspect-video"}>
             <Image
@@ -24,7 +28,7 @@ export function ImageElement({
                 sizes="(min-width: 808px) 50vw, 100vw"
                 className={cn("object-cover", className)}
                 placeholder={shimmerDataUrl(400, 225)}
-                unoptimized={!internal}
+                unoptimized={unoptimized}
                 loading={"lazy"}
             />
         </div>
