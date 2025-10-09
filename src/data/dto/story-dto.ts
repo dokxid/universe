@@ -13,10 +13,15 @@ import {
     insertStory,
     queryStory,
 } from "@/data/fetcher/story-fetcher";
+import dbConnect from "@/lib/data/mongodb/connections";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
 import { NewStoryData, Story, StoryDTO } from "@/types/dtos";
-import { submitStoryFormSchema } from "@/types/form-schemas";
+import {
+    editProfilePictureFormSchema,
+    submitStoryFormSchema,
+} from "@/types/form-schemas";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
@@ -58,6 +63,16 @@ export async function canUserEditStory(user: User | null, story: StoryDTO) {
     if (await isUserSuperAdmin(user)) return true;
     if (isStoryOwner(user, story)) return true;
     return false;
+}
+
+export async function canUserEditStoryId(user: User | null, storyId: string) {
+    try {
+        const story = await getStoryDTO(storyId);
+        return canUserEditStory(user, story);
+    } catch (err) {
+        console.error("Error checking if user can edit story:", err);
+        return false;
+    }
 }
 
 export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
@@ -231,5 +246,65 @@ export async function submitStoryDTO(formData: FormData) {
         revalidateTag(`stories`);
     } catch (e) {
         console.error("Error submitting story:", e);
+    }
+}
+
+export async function editStoryFeaturedPictureDTO(formData: FormData) {
+    try {
+        const user = await getCurrentUser();
+        if (!user) {
+            throw new Error("User must be logged in to edit a story.");
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const result = editProfilePictureFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(z.prettifyError(result.error));
+        }
+        const { featuredPicture: file } = result.data;
+        if (!file) {
+            throw new Error("File is required and must be a valid file.");
+        }
+
+        // check if the user has permission to edit the story
+        if (!(await canUserEditStoryId(user, result.data.storyId))) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
+
+        // prepare the data for insertion
+        const data = result.data;
+        const uploadedFileName = `${data.lab}_${nanoid()}_${file.name}`;
+        const sanitizedFileName = uploadedFileName.replace(
+            /[^a-zA-Z0-9.\-_]/g,
+            ""
+        );
+
+        // upload the file and insert the story
+        let path: string;
+        if (process.env.LOCAL_UPLOADER === "true") {
+            path = await uploadFileToLabFolder(
+                file,
+                sanitizedFileName,
+                data.lab
+            );
+        } else {
+            await uploadFile(file, sanitizedFileName, data.lab);
+            path = sanitizedFileName;
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { "stories._id": data.storyId },
+            { $set: { "stories.$.featured_image_url": path } }
+        );
+
+        // revalidate caches
+        revalidateTag(`stories`);
+    } catch (error) {
+        throw new Error(JSON.stringify(error));
     }
 }

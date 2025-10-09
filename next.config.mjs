@@ -42,6 +42,9 @@ const config = {
     experimental: {
         ppr: "incremental",
         globalNotFound: true,
+        serverActions: {
+            bodySizeLimit: "2mb",
+        },
     },
 
     async redirects() {

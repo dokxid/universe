@@ -15,6 +15,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Toggle } from "@/components/ui/toggle";
+import { useAppSelector } from "@/lib/hooks";
 import { groupByKey } from "@/lib/utils/group-by-key";
 import { UnescoTagDTO, UnescoTagDTOWithCount } from "@/types/dtos";
 import { Check, PlusIcon, Tag, X } from "lucide-react";
@@ -48,6 +49,7 @@ export function TagPickerForm({
 }: TagPickerFormProps) {
     const [inputTags, setInputTags] = useState<UnescoTagDTO[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
+    const debug = useAppSelector((state) => state.settings.debug);
 
     // sync inputTags with selected tags
     useEffect(() => {
@@ -87,91 +89,102 @@ export function TagPickerForm({
     const groupedTags = groupByKey(sanitizedTags, (tag) => tag.category);
 
     return (
-        <div
-            className={`col-span-12 col-start-auto space-y-0 items-start ${
-                className || ""
-            }`}
-        >
-            {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
-            <Popover
-                open={tagPickerOpen}
-                onOpenChange={setTagPickerOpen}
-                modal={true}
-            >
-                <div className={"flex flex-wrap gap-2 my-3"}>
-                    {inputTags.map((tag) => (
-                        <Badge
-                            style={{
-                                backgroundColor: tag.color,
-                            }}
-                            key={tag._id}
-                            variant={"tag"}
-                            onClick={() => {
-                                handleTagRemove(tag);
-                            }}
-                            className={"group"}
-                        >
-                            <p>{tag.name}</p>
-                            <X
-                                className={
-                                    "stroke-3 group-hover:text-destructive"
-                                }
-                            />
-                        </Badge>
-                    ))}
-                    <PopoverTrigger asChild>
-                        <Badge
-                            onClick={handleMouseEnter}
-                            variant={"tag"}
-                            className={
-                                (tagPickerOpen
-                                    ? "bg-primary-foreground text-primary"
-                                    : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
-                                " cursor-pointer transition-all duration-300"
-                            }
-                        >
-                            Add Tag
-                            <PlusIcon />
-                        </Badge>
-                    </PopoverTrigger>
+        <>
+            {debug && (
+                <div className={"mb-2"}>
+                    <pre className={"text-xs text-muted-foreground"}>
+                        {JSON.stringify(inputTags, null, 2)}
+                    </pre>
                 </div>
-                <PopoverContent className="p-2">
-                    <Command>
-                        <CommandInput placeholder="Search UNESCO tags..." />
-                        <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            {Object.entries(groupedTags).map(
-                                ([category, tagsInCategory]) => (
-                                    <CommandGroup
-                                        key={category}
-                                        heading={category}
-                                    >
-                                        {tagsInCategory.map((tag) => (
-                                            <CommandItem
-                                                key={tag.name}
-                                                onSelect={() => {
-                                                    handleTagAdd(tag);
-                                                }}
-                                            >
-                                                <Tag
-                                                    className={"stroke-primary"}
-                                                    style={{
-                                                        fill: tag.color,
-                                                        strokeWidth: 1.5,
-                                                        stroke: "#333",
+            )}
+            <div
+                className={`col-span-12 col-start-auto space-y-0 items-start ${
+                    className || ""
+                }`}
+            >
+                {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
+                <Popover
+                    open={tagPickerOpen}
+                    onOpenChange={setTagPickerOpen}
+                    modal={true}
+                >
+                    <div className={"flex flex-wrap gap-2 my-3"}>
+                        {inputTags.map((tag) => (
+                            <Badge
+                                style={{
+                                    backgroundColor: tag.color,
+                                }}
+                                key={tag._id}
+                                variant={"tag"}
+                                onClick={() => {
+                                    handleTagRemove(tag);
+                                }}
+                                className={"group"}
+                            >
+                                <p>{tag.name}</p>
+                                <X
+                                    className={
+                                        "stroke-3 group-hover:text-destructive"
+                                    }
+                                />
+                            </Badge>
+                        ))}
+                        <PopoverTrigger asChild>
+                            <Badge
+                                onClick={handleMouseEnter}
+                                variant={"tag"}
+                                className={
+                                    (tagPickerOpen
+                                        ? "bg-primary-foreground text-primary"
+                                        : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
+                                    " cursor-pointer transition-all duration-300"
+                                }
+                            >
+                                Add Tag
+                                <PlusIcon />
+                            </Badge>
+                        </PopoverTrigger>
+                    </div>
+                    <PopoverContent className="p-2">
+                        <Command>
+                            <CommandInput placeholder="Search UNESCO tags..." />
+                            <CommandList>
+                                <CommandEmpty>No results found.</CommandEmpty>
+                                {Object.entries(groupedTags).map(
+                                    ([category, tagsInCategory]) => (
+                                        <CommandGroup
+                                            key={category}
+                                            heading={category}
+                                        >
+                                            {tagsInCategory.map((tag) => (
+                                                <CommandItem
+                                                    key={tag.name}
+                                                    onSelect={() => {
+                                                        handleTagAdd(tag);
                                                     }}
-                                                ></Tag>
-                                                {tag.name}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                )
-                            )}
-                        </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
-        </div>
+                                                >
+                                                    <Tag
+                                                        className={
+                                                            "stroke-primary"
+                                                        }
+                                                        style={{
+                                                            fill: tag.color,
+                                                            strokeWidth: 1.5,
+                                                            stroke: "#333",
+                                                        }}
+                                                    ></Tag>
+                                                    {tag.name}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    )
+                                )}
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+            </div>
+        </>
     );
 }
 

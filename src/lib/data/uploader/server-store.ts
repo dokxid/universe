@@ -31,17 +31,21 @@ export async function uploadFileToLabFolder(
     slug: string
 ): Promise<string> {
     try {
-        if (!fs.existsSync(`UPLOAD_DIRECTORY/${slug}`)) {
-            fs.mkdir(`UPLOAD_DIRECTORY/${slug}`, { recursive: true }, (err) => {
-                if (err) {
-                    console.error("Error creating upload directory:", err);
+        if (!fs.existsSync(`${UPLOAD_DIRECTORY}/${slug}`)) {
+            fs.mkdir(
+                `${UPLOAD_DIRECTORY}/${slug}`,
+                { recursive: true },
+                (err) => {
+                    if (err) {
+                        console.error("Error creating upload directory:", err);
+                    }
                 }
-            });
+            );
         }
-        const filePath = `${UPLOAD_DIRECTORY}/${slug}/${fileName}`;
+        const filePath = `${UPLOAD_DIRECTORY}/${slug}/story-img/${fileName}`;
         const buffer = Buffer.from(await file.arrayBuffer());
         await fs.promises.writeFile(filePath, buffer);
-        return `/story-uploads/${slug}/${fileName}`;
+        return `/uploads/${slug}/story-img/${fileName}`;
     } catch (error) {
         console.error("Error uploading file:", error);
         throw new Error("File upload failed");

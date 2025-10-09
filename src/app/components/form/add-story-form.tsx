@@ -1,6 +1,6 @@
 "use client";
 
-import { submitStoryAction } from "@/actions/submit-story";
+import { submitStoryAction } from "@/actions/stories";
 import { TagPickerField } from "@/app/components/form/tag-picker-field";
 import { TiptapEditor } from "@/app/components/form/tiptap-editor";
 import { Button } from "@/components/ui/button";
@@ -206,8 +206,8 @@ export default function AddStoryForm({
                             <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormControl>
                                     <TagPickerField
-                                        {...field}
                                         availableTagsPromise={tagsPromise}
+                                        {...field}
                                     />
                                 </FormControl>
                             </FormItem>

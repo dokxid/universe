@@ -91,3 +91,18 @@ export const userPreferencesProfilePictureFormSchema = z.object({
             "Only .jpg, .png, and .webp files are accepted."
         ),
 });
+
+export const inviteMemberSchema = z.object({
+    email: z.email("Please enter a valid email address"),
+    slug: z.string().min(1),
+});
+
+export const editProfilePictureFormSchema = z.object({
+    featuredPicture: z
+        .file()
+        .min(1, "Please upload a file.")
+        .max(5 * 1024 * 1024, "Max file size is 5MB.")
+        .mime(["image/jpeg", "image/png", "image/webp"]),
+    storyId: z.string().min(1, "Story ID is required"),
+    lab: z.string().min(1, "Lab is required"),
+});

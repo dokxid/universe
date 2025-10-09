@@ -104,17 +104,11 @@ export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
             const sanitizedStories = await sanitizeLabStories(lab);
             allSanitizedStories.push(...sanitizedStories);
         }
-        console.log(
-            "All story authorIds:",
-            allSanitizedStories.map((s) => s.author)
-        );
-        console.log("Looking for userId:", userId);
 
         const storiesByUser = allSanitizedStories.filter(
             (story) => story.author === String(userId)
         );
 
-        console.log(`Found ${storiesByUser.length} stories for user ${userId}`);
         return storiesByUser;
     } catch (err) {
         console.error("Error getting stories by user:", err);
