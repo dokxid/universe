@@ -168,18 +168,22 @@ export default async function AboutPage({
                             </ContactCard>
                         </div>
                     </div>
-                    <SettingsFormBox>
+                    <SettingsFormBox className={"max-w-full"}>
                         <SettingsFormTitle>Stories</SettingsFormTitle>
                         <SettingsFormDescription>
                             Stories by this user.
                         </SettingsFormDescription>
                         <SettingsBoxContent>
                             <div
-                                className={`absolute grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
+                                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full`}
                             >
-                                {user.stories?.map((story) => (
-                                    <StoryCard key={story._id} story={story} />
-                                ))}
+                                {user.stories &&
+                                    user.stories.map((story) => (
+                                        <StoryCard
+                                            key={story._id}
+                                            story={story}
+                                        />
+                                    ))}
                             </div>
                         </SettingsBoxContent>
                     </SettingsFormBox>

@@ -27,7 +27,7 @@ export function StoryAuthorDetails({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.experience}/user/view/${story.authorId}`}
+                        href={`/${story.experience}/user/view/${story.author}`}
                     >
                         <Avatar className={"size-9"}>
                             <AvatarImage
@@ -46,7 +46,7 @@ export function StoryAuthorDetails({
                         {"by "}
                         <Link
                             className={"hover:underline cursor-pointer"}
-                            href={`/${story.experience}/user/view/${story.authorId}`}
+                            href={`/${story.experience}/user/view/${story.author}`}
                         >
                             <b>{`${story.author_name}`}</b>
                         </Link>
@@ -89,7 +89,7 @@ export function StoryAuthorHeaderMapView({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.experience}/user/view/${story.authorId}`}
+                        href={`/${story.experience}/user/view/${story.author}`}
                     >
                         <Avatar>
                             <AvatarImage
@@ -126,7 +126,7 @@ export function StoryAuthorHeaderMapView({
                                     ? "arrow-external"
                                     : "link-external"
                             }`}
-                            href={`/${story.experience}/user/view/${story.authorId}`}
+                            href={`/${story.experience}/user/view/${story.author}`}
                         >
                             {story.author_name}
                         </Link>

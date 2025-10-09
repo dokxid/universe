@@ -26,8 +26,10 @@ export async function getUsersByLabDTO(labSlug: string): Promise<UserDTO[]> {
 export async function getUserDTO(userId: string): Promise<UserDTO | null> {
     try {
         const user = await getUser(userId);
-        if (!user) return null;
-        return await sanitizeUserDTO(user);
+        if (!user) throw new Error("User not found");
+        const userWithStories = await setStoryForUser(user);
+        if (!userWithStories) throw new Error("User not found");
+        return await sanitizeUserDTO(userWithStories);
     } catch (error) {
         console.error("Error fetching user by ID:", error);
         throw new Error(
@@ -51,16 +53,29 @@ export async function getUserFromWorkOSIdDTO(
     }
 }
 
+async function setStoryForUser(user: UserDTO) {
+    try {
+        if (!user) throw new Error("User not found");
+        const stories = await getStoriesByUserDTO(user._id);
+        return {
+            ...user,
+            stories: stories || [],
+        };
+    } catch (error) {
+        console.error("Error setting story for user:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
 async function setStoriesForUsers(users: UserDTO[]) {
     try {
         if (!users) return [] as UserDTO[];
         return await Promise.all(
             users.map(async (user) => {
-                const stories = await getStoriesByUserDTO(user._id);
-                return {
-                    ...user,
-                    stories: stories || [],
-                };
+                const userWithStories = await setStoryForUser(user);
+                return userWithStories;
             })
         );
     } catch (error) {

@@ -55,7 +55,6 @@ export async function syncUsersWithDatabase() {
     try {
         await dbConnect();
         const users = await getAllWorkOSUsers();
-        // console.log("users: ", JSON.stringify(users, null, 2));
         await UserModel.insertMany(
             users.map((user) => ({
                 ...user,

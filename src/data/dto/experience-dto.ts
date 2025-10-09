@@ -116,7 +116,6 @@ export async function getSlugFromOrganizationIdDTO(
                 `Could not find experience for organization ID: ${organizationId}`
             );
         }
-        console.log("experience slug: ", experience.slug);
         return experience.slug;
     } catch (err) {
         console.error("Error fetching slug from organization ID:", err);

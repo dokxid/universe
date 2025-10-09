@@ -27,14 +27,12 @@ export async function fetchAndMapAuthorsForStoryDTO(
         }
         // map author ids to user data
         const authorMap: { [key: string]: string } = {};
-        const authorIdMap: { [key: string]: string } = {};
         const authorProfilePictureMap: { [key: string]: string } = {};
         users.forEach((user) => {
             authorMap[user._id] =
                 user.displayName ||
                 `${user.firstName} ${user.lastName}`.trim() ||
                 "Anonymous";
-            authorIdMap[user._id] = String(user._id);
             authorProfilePictureMap[user._id] = user.profilePictureUrl || "";
         });
 
@@ -42,7 +40,6 @@ export async function fetchAndMapAuthorsForStoryDTO(
         stories.forEach((story) => {
             if (authorMap[story.author]) {
                 story.author_name = authorMap[story.author];
-                story.authorId = authorIdMap[story.author];
                 story.authorProfilePictureUrl =
                     authorProfilePictureMap[story.author];
             } else {

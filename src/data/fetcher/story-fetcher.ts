@@ -5,8 +5,27 @@ import { sanitizeExperience } from "@/data/transformers/experience-transformer";
 import { fetchAndMapAuthorsForStoryDTO } from "@/data/transformers/story-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
-import { NewStoryData, StoryDTO } from "@/types/dtos";
+import { Experience, NewStoryData, StoryDTO } from "@/types/dtos";
 import mongoose from "mongoose";
+
+export async function sanitizeLabStories(lab: Experience): Promise<StoryDTO[]> {
+    try {
+        if (!lab.stories || lab.stories.length === 0) {
+            return [];
+        }
+        const stories = lab.stories.flatMap((story) => ({
+            ...story,
+            experience: lab.slug,
+        })) as StoryDTO[];
+        const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(stories);
+        return sanitizedStories;
+    } catch (error) {
+        console.error("Error sanitizing lab stories:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
 
 export async function getAllStories(): Promise<StoryDTO[]> {
     try {
@@ -14,16 +33,7 @@ export async function getAllStories(): Promise<StoryDTO[]> {
         const allSanitizedStories: StoryDTO[] = [];
 
         for (const experience of experiences) {
-            if (!experience.stories || experience.stories.length === 0) {
-                continue; // Skip to the next experience if no stories found
-            }
-            const stories = experience.stories.flatMap((story) => ({
-                ...story,
-                experience: experience.slug,
-            })) as StoryDTO[];
-            const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
-                stories
-            );
+            const sanitizedStories = await sanitizeLabStories(experience);
             allSanitizedStories.push(...sanitizedStories);
         }
 
@@ -87,10 +97,25 @@ export async function insertStory(
 export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
     try {
         await dbConnect();
-        const userStories: StoryDTO[] = await ExperienceModel.find({
-            "stories.author": userId,
-        }).exec();
-        return userStories;
+        const labs = await getExperiences();
+        const allSanitizedStories: StoryDTO[] = [];
+
+        for (const lab of labs) {
+            const sanitizedStories = await sanitizeLabStories(lab);
+            allSanitizedStories.push(...sanitizedStories);
+        }
+        console.log(
+            "All story authorIds:",
+            allSanitizedStories.map((s) => s.author)
+        );
+        console.log("Looking for userId:", userId);
+
+        const storiesByUser = allSanitizedStories.filter(
+            (story) => story.author === String(userId)
+        );
+
+        console.log(`Found ${storiesByUser.length} stories for user ${userId}`);
+        return storiesByUser;
     } catch (err) {
         console.error("Error getting stories by user:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");

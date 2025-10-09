@@ -69,7 +69,6 @@ export type NewStoryData = Omit<Story, "_id" | "elevation_requests"> & {
 
 export interface StoryDTO extends Story {
     author_name: string;
-    authorId: string;
     authorProfilePictureUrl?: string;
     experience: string;
 }
