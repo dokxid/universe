@@ -4,7 +4,7 @@ import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
 } from "@/data/dto/story-dto";
-import { getTagsDTO } from "@/data/dto/tag-dto";
+import { getTagsForLabDTO } from "@/data/dto/tag-dto";
 
 export const experimental_ppr = true;
 
@@ -21,7 +21,7 @@ export default async function StoriesPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const tagsPromise = getTagsDTO();
+    const tagsPromise = getTagsForLabDTO(slug);
 
     // fetch stories based on slug
     let storiesPromise;

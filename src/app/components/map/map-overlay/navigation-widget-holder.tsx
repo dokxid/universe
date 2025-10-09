@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTagsDTO } from "@/data/dto/tag-dto";
+import { getTagsForLabDTO } from "@/data/dto/tag-dto";
 import { Suspense } from "react";
 
 // const Geocoder = dynamic(
@@ -16,8 +16,8 @@ import { Suspense } from "react";
 //     { ssr: false }
 // );
 
-export async function NavigationWidgetHolder() {
-    const tagsPromise = getTagsDTO();
+export async function NavigationWidgetHolder({ slug }: { slug: string }) {
+    const tagsPromise = getTagsForLabDTO(slug);
 
     return (
         <div className={"flex flex-col gap-3"}>

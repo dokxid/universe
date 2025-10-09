@@ -1,12 +1,17 @@
 import "server-only";
 
+import { getLabPublicStoriesDTO } from "@/data/dto/story-dto";
 import {
     flattenedTags,
     sanitizeUNESCOTag,
 } from "@/data/transformers/tag-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
 import unescoTags from "@/lib/data/mongodb/models/unesco-tag-model";
-import { UnescoTagDTO, UnescoTagTheme } from "@/types/dtos";
+import {
+    UnescoTagDTO,
+    UnescoTagDTOWithCount,
+    UnescoTagTheme,
+} from "@/types/dtos";
 import { cache } from "react";
 
 const getTags = cache(async (): Promise<UnescoTagTheme[]> => {
@@ -29,6 +34,20 @@ export const getTagsDTO = cache(async (): Promise<UnescoTagDTO[]> => {
     const tags = flattenedTags(tagThemes);
     return tags;
 });
+
+export const getTagsForLabDTO = cache(
+    async (labSlug: string): Promise<UnescoTagDTOWithCount[]> => {
+        const tagThemes = await getTags();
+        const stories = await getLabPublicStoriesDTO(labSlug);
+        const storyTagNames = stories.flatMap((story) => story.tags || []);
+        const tags = flattenedTags(tagThemes);
+        const labTags = tags.filter((tag) => storyTagNames.includes(tag.name));
+        return labTags.map((tag) => ({
+            ...tag,
+            count: storyTagNames.filter((name) => name === tag.name).length,
+        }));
+    }
+);
 
 export async function getTagsByNameDTO(
     tagNames: string[]

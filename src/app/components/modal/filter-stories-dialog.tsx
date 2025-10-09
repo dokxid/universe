@@ -1,6 +1,6 @@
 "use client";
 
-import { TagPicker } from "@/app/components/form/tag-picker";
+import { TagPickerFilter } from "@/app/components/form/tag-picker";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
 import { setSelectedTagsParams } from "@/lib/utils/param-setter";
-import { UnescoTagDTO } from "@/types/dtos";
+import { UnescoTagDTOWithCount } from "@/types/dtos";
 import { Funnel } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
@@ -21,7 +21,7 @@ export function FilterStoriesDialog({
     tagsPromise,
     size = "icon",
 }: {
-    tagsPromise: Promise<UnescoTagDTO[]>;
+    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
     size?: "icon" | "icon-lg";
 }) {
     const tags = React.use(tagsPromise);
@@ -52,7 +52,7 @@ export function FilterStoriesDialog({
                         Use the form below to filter stories by tags.
                     </DialogDescription>
                 </DialogHeader>
-                <TagPicker
+                <TagPickerFilter
                     availableTags={tags}
                     selectedTags={tagState}
                     onTagsChange={handleTagsChange}

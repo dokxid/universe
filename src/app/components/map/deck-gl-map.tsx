@@ -202,10 +202,8 @@ export function DeckGLMap({
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
-            setArcHeight(0.2);
             return;
         }
-        setArcHeight(0.2);
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );

@@ -112,3 +112,7 @@ export type UnescoTagDTO = {
     _id: string;
     color: string;
 };
+
+export type UnescoTagDTOWithCount = UnescoTagDTO & {
+    count: number;
+};

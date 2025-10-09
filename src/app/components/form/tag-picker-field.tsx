@@ -1,4 +1,4 @@
-import { TagPicker } from "@/app/components/form/tag-picker";
+import { TagPickerForm } from "@/app/components/form/tag-picker";
 import { UnescoTagDTO } from "@/types/dtos";
 import { use } from "react";
 import { ControllerRenderProps } from "react-hook-form";
@@ -16,7 +16,7 @@ export function TagPickerField(props: TagPickerProps) {
     const availableTags = use(availableTagsPromise);
 
     return (
-        <TagPicker
+        <TagPickerForm
             selectedTags={value}
             onTagsChange={onChangeAction}
             availableTags={availableTags}

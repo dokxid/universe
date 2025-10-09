@@ -20,7 +20,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { StoryDTO, UnescoTagDTOWithCount } from "@/types/dtos";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -56,7 +56,7 @@ export function StoryCollection({
     tagsPromise,
 }: {
     storiesPromise: Promise<StoryDTO[]>;
-    tagsPromise: Promise<UnescoTagDTO[]>;
+    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
 }) {
     const [titleFilter, setTitleFilter] = useState("");
     const [sorting, setSorting] = useState<"asc" | "desc">("desc");
