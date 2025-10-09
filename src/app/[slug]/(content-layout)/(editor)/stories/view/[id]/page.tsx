@@ -1,13 +1,13 @@
 import StoryView from "@/app/components/views/story-view";
-import { getAllPublicStoriesDTO, getStoryDTO } from "@/data/dto/story-dto";
+import { getStoryDTO } from "@/data/dto/story-dto";
 
-export async function generateStaticParams() {
-    const stories = await getAllPublicStoriesDTO();
+// export async function generateStaticParams() {
+//     const stories = await getAllPublicStoriesDTO();
 
-    return stories.map((story) => ({
-        storyId: story._id,
-    }));
-}
+//     return stories.map((story) => ({
+//         storyId: story._id,
+//     }));
+// }
 
 export default async function StoryDetails({
     params,
