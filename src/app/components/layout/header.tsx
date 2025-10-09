@@ -1,7 +1,11 @@
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-export function Header({ className, ...props }: React.ComponentProps<"div">) {
+export function Header({
+    className,
+    separatorVisible = true,
+    ...props
+}: React.ComponentProps<"div"> & { separatorVisible?: boolean }) {
     return (
         <>
             <div
@@ -11,7 +15,7 @@ export function Header({ className, ...props }: React.ComponentProps<"div">) {
                 )}
                 {...props}
             />
-            <Separator className={"my-8"}></Separator>
+            {separatorVisible && <Separator className={"my-8"}></Separator>}
         </>
     );
 }

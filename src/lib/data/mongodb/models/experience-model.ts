@@ -1,4 +1,4 @@
-import { Experience, Story } from "@/types/dtos";
+import { CC_LICENSES, Experience, Story } from "@/types/dtos";
 import mongoose, { Schema } from "mongoose";
 
 export interface StoryData extends Omit<Story, "_id">, mongoose.Document {}
@@ -39,6 +39,11 @@ const storySchema = new Schema({
     visible_universe: { type: Boolean, required: true },
     featured_image_url: { type: String, required: true },
     elevation_requests: { type: [elevationRequestSchema], required: true },
+    license: {
+        type: String,
+        enum: Object.values(CC_LICENSES).map((license) => license.code),
+        required: true,
+    },
     createdAt: { type: Date, required: true },
     updatedAt: { type: Date, required: true },
 });

@@ -1,3 +1,4 @@
+import { CC_LICENSES } from "@/types/dtos";
 import { z } from "zod";
 
 export const submitStoryFormSchema = z.object({
@@ -12,6 +13,30 @@ export const submitStoryFormSchema = z.object({
     draft: z.boolean(),
     universe: z.boolean(),
     slug: z.string().min(1, { message: "This field is required" }),
+    license: z.string().min(1, { message: "This field is required" }),
+});
+
+export const editLicenseFormSchema = z.object({
+    license: z.enum(Object.values(CC_LICENSES).map((license) => license.code)),
+});
+
+export const editCoordinatesFormSchema = z.object({
+    longitude: z.number().refine((value) => value >= -180 && value <= 180, {}),
+    latitude: z.number().refine((value) => value >= -90 && value <= 90, {}),
+});
+
+export const editStoryFormSchema = z.object({
+    title: z.string().min(1, { message: "This field is required" }),
+    featured_image_url: z.url().optional().nullable(),
+    year: z.coerce
+        .number<number>()
+        .refine((value) => value >= 0 && value <= 2100, {}),
+    tags: z.array(z.string()),
+    draft: z.boolean(),
+});
+
+export const editContentFormSchema = z.object({
+    content: z.string().min(1, { message: "This field is required" }),
 });
 
 export const teamSettingsFormSchema = z.object({

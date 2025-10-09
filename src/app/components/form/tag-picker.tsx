@@ -70,6 +70,9 @@ export function TagPickerForm({
     };
 
     const handleTagAdd = (tagToAdd: UnescoTagDTO) => {
+        if (inputTags.find((t) => t.name === tagToAdd.name)) {
+            return;
+        }
         const newTags = [...inputTags, tagToAdd];
         setInputTags(newTags);
         setTagPickerOpen(false);
@@ -95,7 +98,7 @@ export function TagPickerForm({
                 onOpenChange={setTagPickerOpen}
                 modal={true}
             >
-                <div className={"flex flex-wrap gap-2 mt-1"}>
+                <div className={"flex flex-wrap gap-2 my-3"}>
                     {inputTags.map((tag) => (
                         <Badge
                             style={{
@@ -124,7 +127,7 @@ export function TagPickerForm({
                                 (tagPickerOpen
                                     ? "bg-primary-foreground text-primary"
                                     : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
-                                " h-7 cursor-pointer transition-all duration-300"
+                                " cursor-pointer transition-all duration-300"
                             }
                         >
                             Add Tag
@@ -211,13 +214,6 @@ export function TagPickerFilter({
 
     const handleMouseEnter = () => {
         setTagPickerOpen(true);
-    };
-
-    const handleTagRemove = (tagToRemove: UnescoTagDTOWithCount) => {
-        const newTags = inputTags.filter((t) => t !== tagToRemove);
-        setInputTags(newTags);
-        setInputTagStrings(newTags.map((tag) => tag.name));
-        onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
     const handleTagAdd = (tagToAdd: UnescoTagDTOWithCount) => {

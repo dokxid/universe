@@ -1,5 +1,6 @@
 import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
 import { ALL_UNESCO_TAGS } from "@/data/scripts/seeds/unesco-tags-seeds";
+import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
 function getRandomH1(): string {
@@ -78,6 +79,9 @@ export const test_story_doc = async (
                   faker.string.alphanumeric(10) +
                   "/800/600",
         elevation_requests: [],
+        license: faker.helpers.arrayElement(
+            Object.values(CC_LICENSES).map((license) => license.code)
+        ),
         createdAt: date,
         updatedAt: faker.date.between({ from: date, to: new Date() }),
     };
