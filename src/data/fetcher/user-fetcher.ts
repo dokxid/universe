@@ -83,7 +83,7 @@ export async function getAllOrganizations() {
     }
 }
 
-export async function getUserById(userId: string) {
+export async function getUserByWorkOSId(userId: string) {
     try {
         return await workos.userManagement.getUser(userId);
     } catch (err) {

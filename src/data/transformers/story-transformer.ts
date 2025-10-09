@@ -1,4 +1,4 @@
-import { workos } from "@/lib/auth/workos/callback";
+import { getUser } from "@/data/fetcher/user-fetcher";
 import { StoryDTO } from "@/types/dtos";
 
 export async function fetchAndMapAuthorsForStoryDTO(
@@ -15,7 +15,7 @@ export async function fetchAndMapAuthorsForStoryDTO(
             throw new Error("No authors found in the provided stories");
         }
         for (const author of uniqueAuthors) {
-            const user = await workos.userManagement.getUser(author);
+            const user = await getUser(author);
             if (!user) {
                 continue;
             }
@@ -27,14 +27,24 @@ export async function fetchAndMapAuthorsForStoryDTO(
         }
         // map author ids to user data
         const authorMap: { [key: string]: string } = {};
+        const authorIdMap: { [key: string]: string } = {};
+        const authorProfilePictureMap: { [key: string]: string } = {};
         users.forEach((user) => {
-            authorMap[user.id] = user.firstName + " " + user.lastName;
+            authorMap[user._id] =
+                user.displayName ||
+                `${user.firstName} ${user.lastName}`.trim() ||
+                "Anonymous";
+            authorIdMap[user._id] = String(user._id);
+            authorProfilePictureMap[user._id] = user.profilePictureUrl || "";
         });
 
         // replace author ids with user data in stories
         stories.forEach((story) => {
             if (authorMap[story.author]) {
                 story.author_name = authorMap[story.author];
+                story.authorId = authorIdMap[story.author];
+                story.authorProfilePictureUrl =
+                    authorProfilePictureMap[story.author];
             } else {
                 story.author_name = "Unknown Author";
             }

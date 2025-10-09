@@ -1,7 +1,7 @@
 "use client";
 
 import { TagSpan, tagVariants } from "@/app/components/cards/tag-span";
-import { useTags } from "@/lib/data_hooks/tag-hook";
+import { useTags } from "@/lib/swr/tag-hook";
 import { cn } from "@/lib/utils";
 import { UnescoTagDTO } from "@/types/dtos";
 import { VariantProps } from "class-variance-authority";

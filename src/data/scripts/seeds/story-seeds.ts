@@ -47,11 +47,12 @@ function getContent() {
 
 export const test_story_doc = async (
     experience_center: number[],
-    experienceSlug: string
+    experienceSlug: string,
+    userId: string
 ) => {
     const date = faker.date.past({ years: 3 });
     const doc = {
-        author: "eeaf03c09f59ef4b5054befd",
+        author: userId,
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
         title: faker.lorem.sentence({ min: 3, max: 5 }),

@@ -2,7 +2,7 @@
 
 import { TagList } from "@/app/components/cards/tag-list";
 import { StoryImage } from "@/app/components/embeds/s3-image";
-import { StoryDetailsHeader } from "@/app/components/map/map-overlay/story-details";
+import { StoryAuthorHeaderMapView } from "@/app/components/layout/story-author-details";
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
 import { StoryDTO } from "@/types/dtos";
@@ -37,7 +37,7 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                         link={false}
                         imageUrl={story.featured_image_url}
                     />
-                    <StoryDetailsHeader
+                    <StoryAuthorHeaderMapView
                         story={story}
                         className={
                             "absolute top-2 left-4 right-4 bg-transparent [&_h3]:text-md [&_h3]:group-hover/card:font-black [&_h3]:group-hover/card:after:content-['_→'] [&_p]:text-xs [&_p]:font-medium **:text-white"

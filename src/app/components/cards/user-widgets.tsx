@@ -3,7 +3,7 @@ import { ThemeSwitchButton } from "@/app/components/sidebar/theme-switch-button"
 import { UserWidgetSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useUserFromWorkOSId } from "@/lib/data_hooks/user-hook";
+import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
 import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";

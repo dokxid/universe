@@ -22,7 +22,7 @@ export const testMemberDoc = (
         lastName,
         displayName: faker.datatype.boolean(0.75) ? displayName : undefined,
         profilePictureUrl: faker.datatype.boolean()
-            ? faker.image.personPortrait()
+            ? faker.image.urlPicsumPhotos({ width: 800, height: 800, blur: 0 })
             : undefined,
         position: faker.datatype.boolean(0.75)
             ? faker.person.jobTitle()

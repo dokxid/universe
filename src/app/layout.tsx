@@ -39,9 +39,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                 >
                                     <SidebarLayout>
                                         <Impersonation />
-                                        <div className="flex grow">
-                                            {children}
-                                        </div>
+                                        {children}
                                         <Toaster />
                                         <SpeedInsights />
                                     </SidebarLayout>

@@ -25,9 +25,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
-import { useUserFromWorkOSId } from "@/lib/data_hooks/user-hook";
 import { useAppSelector } from "@/lib/hooks";
 import { setDebug } from "@/lib/redux/settings/settings-slice";
+import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
 import {
     userPreferencesDetailsFormSchema,
     userPreferencesDisplayNameFormSchema,

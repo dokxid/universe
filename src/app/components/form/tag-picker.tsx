@@ -16,6 +16,7 @@ import {
 import { groupByKey } from "@/lib/utils/group-by-key";
 import { UnescoTagDTO } from "@/types/dtos";
 import { PlusIcon, Tag, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";
 
@@ -37,6 +38,9 @@ export function TagPicker({
 }: TagPickerProps) {
     const [inputTags, setInputTags] = useState<UnescoTagDTO[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
+    const searchParams = useSearchParams();
+
+    const tagParams = searchParams.get("tags")?.split(",") || [];
 
     // sync inputTags with selected tags
     useEffect(() => {
@@ -47,6 +51,17 @@ export function TagPicker({
             setInputTags(tagObjects);
         }
     }, [availableTags, selectedTags]);
+
+    useEffect(() => {
+        if (tagParams.length > 0 && availableTags) {
+            const tagObjects = availableTags.filter((tag) =>
+                tagParams.includes(tag.name)
+            );
+            setInputTags(tagObjects);
+            onTagsChange?.(tagObjects.map((tag) => tag.name));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, availableTags]);
 
     const handleMouseEnter = () => {
         setTagPickerOpen(true);

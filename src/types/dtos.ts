@@ -69,6 +69,8 @@ export type NewStoryData = Omit<Story, "_id" | "elevation_requests"> & {
 
 export interface StoryDTO extends Story {
     author_name: string;
+    authorId: string;
+    authorProfilePictureUrl?: string;
     experience: string;
 }
 
@@ -109,15 +111,4 @@ export type UnescoTagDTO = {
     name: string;
     _id: string;
     color: string;
-};
-
-export type ContactUserDTO = {
-    titles: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    email: string;
-    phone: string;
-    website: string;
-    description: string;
 };

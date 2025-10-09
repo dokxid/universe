@@ -6,7 +6,7 @@ import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
 import { LabSidebarSkeleton } from "@/components/skeletons/lab-sidebar-skeleton";
 import { UniverseSidebarSkeleton } from "@/components/skeletons/universe-sidebar-skeleton";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
-import { useExperience } from "@/lib/data_hooks/experiences-hook";
+import { useExperience } from "@/lib/swr/experiences-hook";
 import { usePathname } from "next/navigation";
 
 export function AppSidebar() {

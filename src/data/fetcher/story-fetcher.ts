@@ -1,10 +1,11 @@
 import "server-only";
 
 import { getExperiences } from "@/data/fetcher/experience-fetcher";
+import { sanitizeExperience } from "@/data/transformers/experience-transformer";
 import { fetchAndMapAuthorsForStoryDTO } from "@/data/transformers/story-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
-import { Experience, NewStoryData, StoryDTO } from "@/types/dtos";
+import { NewStoryData, StoryDTO } from "@/types/dtos";
 import mongoose from "mongoose";
 
 export async function getAllStories(): Promise<StoryDTO[]> {
@@ -37,22 +38,24 @@ export async function queryStory(
     storyId: mongoose.Types.ObjectId
 ): Promise<StoryDTO> {
     try {
+        // get lab with found stories, and detect if no story was found
         await dbConnect();
-
-        const queryResult = (await ExperienceModel.aggregate([
-            { $unwind: "$stories" },
-            { $match: { "stories._id": storyId } },
-        ]).exec()) as Experience[];
-
-        // detect if no story was found
-        if (!queryResult || queryResult.length === 0) {
+        const labWithFoundStories = await ExperienceModel.findOne({
+            "stories._id": storyId,
+        }).exec();
+        if (!labWithFoundStories) {
+            throw new Error("Story not found");
+        }
+        const sanitizedLabWithFoundStories =
+            sanitizeExperience(labWithFoundStories);
+        if (!sanitizedLabWithFoundStories) {
             throw new Error("Story not found");
         }
 
         // add experience slug and author name to story dto
-        const queriedStory: StoryDTO = queryResult[0]
-            .stories as unknown as StoryDTO;
-        queriedStory.experience = queryResult[0].slug;
+        const queriedStory: StoryDTO = sanitizedLabWithFoundStories
+            .stories[0] as unknown as StoryDTO;
+        queriedStory.experience = sanitizedLabWithFoundStories.slug;
         const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([
             queriedStory,
         ]);
