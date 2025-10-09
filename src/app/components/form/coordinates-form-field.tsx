@@ -6,6 +6,7 @@ import {
     SettingsFormDescription,
     SettingsFormTitle,
 } from "@/app/components/layout/content-layout";
+import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -123,6 +124,9 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                     </SettingsFormButtonGroup>
                                 </SettingsBoxFormElement>
                             </SettingsBoxContent>
+                            <DebugListObject
+                                data={editCoordinatesForm.watch()}
+                            />
                         </CollapsibleContent>
                     </Collapsible>
                 </form>

@@ -122,3 +122,24 @@ export async function getSlugFromOrganizationIdDTO(
         return null;
     }
 }
+
+export async function getOrganizationFromSlugDTO(
+    slug: string
+): Promise<{ organizationId: string }> {
+    try {
+        const experience = await experienceModel.findOne({ slug: slug });
+        if (!experience) {
+            throw new Error(`No experiences found for slug: ${slug}`);
+        }
+        if (!experience?.organizationId) {
+            throw new Error(`Could not find organization for slug: ${slug}`);
+        }
+        return { organizationId: experience.organizationId };
+    } catch (err) {
+        throw new Error(
+            `Error fetching organization from slug ${slug}: ${
+                err instanceof Error ? err.message : "Unknown error"
+            }`
+        );
+    }
+}

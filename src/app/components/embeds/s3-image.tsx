@@ -43,12 +43,14 @@ export function S3Image({
     className,
     link = true,
     internal = true,
+    alt,
 }: {
     experience: string;
     fileName: string;
     className?: string;
     link?: boolean;
     internal?: boolean;
+    alt?: string;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
@@ -59,7 +61,12 @@ export function S3Image({
 
     if (!link)
         return (
-            <ImageElement className={className} src={src} internal={internal} />
+            <ImageElement
+                className={className}
+                src={src}
+                internal={internal}
+                alt={alt}
+            />
         );
 
     return (
@@ -67,7 +74,12 @@ export function S3Image({
             href={`/${experience}/images/${fileName}`}
             className={"relative block w-full h-full"}
         >
-            <ImageElement className={className} src={src} internal={internal} />
+            <ImageElement
+                className={className}
+                src={src}
+                internal={internal}
+                alt={alt}
+            />
         </Link>
     );
 }

@@ -2,7 +2,8 @@
 
 import { CCLicensesFormField } from "@/app/components/form/cc-licenses-form-field";
 import { CoordinatesFormField } from "@/app/components/form/coordinates-form-field";
-import { TagPickerForm } from "@/app/components/form/tag-picker";
+import { FeaturedPictureFormField } from "@/app/components/form/featured-picture-form-field";
+import { TagPickerField } from "@/app/components/form/tag-picker-field";
 import {
     ContentLayout,
     ContentLayoutInner,
@@ -75,10 +76,15 @@ export default function StoryEdit({
                             className="w-full"
                         >
                             <div className={"max-w-lg"}>
-                                <TagPickerForm
-                                    showLabel={false}
-                                    availableTags={allTags}
-                                    selectedTags={story.tags}
+                                <FormField
+                                    control={editStoryForm.control}
+                                    name="tags"
+                                    render={({ field }) => (
+                                        <TagPickerField
+                                            availableTags={allTags}
+                                            {...field}
+                                        />
+                                    )}
                                 />
                             </div>
                             <div
@@ -145,6 +151,9 @@ export default function StoryEdit({
                                             sticky={false}
                                         />
                                     </HeaderDescription>
+                                    <DebugListObject
+                                        data={editStoryForm.watch()}
+                                    />
                                 </HeaderContent>
                                 <SettingsFormButtonGroup
                                     className={"h-full self-start"}
@@ -178,10 +187,9 @@ export default function StoryEdit({
                 <SettingsLayout className={"snap-center"}>
                     <CCLicensesFormField story={story} />
                     <CoordinatesFormField story={story} />
+                    <FeaturedPictureFormField story={story} />
                 </SettingsLayout>
-                <SettingsLayout className={""}>
-                    <DebugListObject data={story} />
-                </SettingsLayout>
+                <SettingsLayout className={""}></SettingsLayout>
             </ContentLayoutInner>
         </ContentLayout>
     );

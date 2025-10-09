@@ -37,6 +37,7 @@ import { UserDTO } from "@/lib/data/mongodb/models/user-model";
 import { ChevronDown, Columns3, MoreHorizontal, UserPlus } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import { InviteMemberDialog } from "@/app/components/modal/invite-member-dialog";
 
 const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
     return (
@@ -276,10 +277,7 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant={"secondary_custom"} className={""}>
-                            <UserPlus />
-                            Invite member
-                        </Button>
+                        <InviteMemberDialog slug={slug} />
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
