@@ -202,8 +202,10 @@ export function DeckGLMap({
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
+            setArcHeight(1.2);
             return;
         }
+        setArcHeight(1.2);
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );
@@ -216,7 +218,7 @@ export function DeckGLMap({
             tagFilters
         );
         setTimeout(() => {
-            setArcHeight(connectionsSanitized.length > 0 ? 1.5 : 0.6);
+            setArcHeight(connectionsSanitized.length > 0 ? 1.2 : 0.6);
         }, 100);
         setConnections(connectionsSanitized);
     }, [activeStory, selectedFilterTags, storiesFiltered]);

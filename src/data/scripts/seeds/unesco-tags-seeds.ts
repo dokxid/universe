@@ -203,7 +203,7 @@ const trade_and_economic_activity_doc = {
         {
             name: "Commercial Activities and Institutions",
             tags: [
-                { name: "Slavery (Commercial Activities and Institutions)" },
+                { name: "Slavery (Commercial Activities)" },
                 { name: "Colonialism" },
                 { name: "Companies (e.g. VOC)" },
             ],

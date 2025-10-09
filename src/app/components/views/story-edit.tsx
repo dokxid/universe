@@ -68,24 +68,26 @@ export default function StoryEdit({
             </div> */}
             <Header separatorVisible={false} className={"mb-6"}>
                 <div className={"flex flex-col gap-3 w-full"}>
-                    <div className={"max-w-lg"}>
-                        <TagPickerForm
-                            showLabel={false}
-                            availableTags={allTags}
-                            selectedTags={story.tags}
-                        />
-                    </div>
-                    <div className={"flex flex-row justify-between w-full"}>
-                        <HeaderContent
-                            className={"flex flex-col items-stretch"}
+                    <Form {...editStoryForm}>
+                        <form
+                            onSubmit={editStoryForm.handleSubmit(onSubmit)}
+                            onReset={onReset}
+                            className="w-full"
                         >
-                            <Form {...editStoryForm}>
-                                <form
-                                    onSubmit={editStoryForm.handleSubmit(
-                                        onSubmit
-                                    )}
-                                    onReset={onReset}
-                                    className="w-full"
+                            <div className={"max-w-lg"}>
+                                <TagPickerForm
+                                    showLabel={false}
+                                    availableTags={allTags}
+                                    selectedTags={story.tags}
+                                />
+                            </div>
+                            <div
+                                className={
+                                    "flex flex-row justify-between w-full"
+                                }
+                            >
+                                <HeaderContent
+                                    className={"flex flex-col items-stretch"}
                                 >
                                     <HeaderTitle>
                                         <FormField
@@ -143,28 +145,30 @@ export default function StoryEdit({
                                             sticky={false}
                                         />
                                     </HeaderDescription>
-                                </form>
-                            </Form>
-                        </HeaderContent>
-                        <SettingsFormButtonGroup
-                            className={"h-full self-start"}
-                        >
-                            <Link
-                                href={`/${story.experience}/stories/view/${story._id}`}
-                            >
-                                <Button variant={"secondary_custom"}>
-                                    Back to view
-                                </Button>
-                            </Link>
-                            <Toggle
-                                pressed={isPreviewMode}
-                                onPressedChange={setIsPreviewMode}
-                                variant={"primary_custom"}
-                            >
-                                {isPreviewMode ? "Preview: On" : "Preview: Off"}
-                            </Toggle>
-                        </SettingsFormButtonGroup>
-                    </div>
+                                </HeaderContent>
+                                <SettingsFormButtonGroup
+                                    className={"h-full self-start"}
+                                >
+                                    <Link
+                                        href={`/${story.experience}/stories/view/${story._id}`}
+                                    >
+                                        <Button variant={"secondary_custom"}>
+                                            Back to view
+                                        </Button>
+                                    </Link>
+                                    <Toggle
+                                        pressed={isPreviewMode}
+                                        onPressedChange={setIsPreviewMode}
+                                        variant={"primary_custom"}
+                                    >
+                                        {isPreviewMode
+                                            ? "Preview: On"
+                                            : "Preview: Off"}
+                                    </Toggle>
+                                </SettingsFormButtonGroup>
+                            </div>
+                        </form>
+                    </Form>
                 </div>
             </Header>
             <ContentLayoutInner>
