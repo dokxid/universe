@@ -15,12 +15,11 @@ import {
 import { StoryAuthorDetails } from "@/app/components/layout/story-author-details";
 import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
-import { getStoryDTO } from "@/data/dto/story-dto";
+import { StoryDTO } from "@/types/dtos";
 import parse from "html-react-parser";
 import Link from "next/link";
 
-export default async function StoryView({ storyId }: { storyId: string }) {
-    const story = await getStoryDTO(storyId);
+export default async function StoryView({ story }: { story: StoryDTO }) {
     return (
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
