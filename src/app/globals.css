@@ -141,11 +141,23 @@
 }
 
 @utility link-external {
-    @apply hover:text-accent-blue-foreground hover:after:content-['_↗︎'] transition-all duration-100;
+    @apply link-color arrow-external;
 }
 
 @utility link-internal {
-    @apply hover:text-accent-blue-foreground hover:after:content-['_→'] transition-all duration-100;
+    @apply link-color arrow-internal;
+}
+
+@utility link-color {
+    @apply hover:text-accent-blue-foreground transition-all duration-100;
+}
+
+@utility arrow-external {
+    @apply hover:after:content-['_↗︎'];
+}
+
+@utility arrow-internal {
+    @apply hover:after:content-['_→'];
 }
 
 @utility form-box-title {

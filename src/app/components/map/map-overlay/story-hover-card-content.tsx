@@ -44,6 +44,7 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                         }
                         profilePictureVisible={false}
                         lines={2}
+                        forceWhiteText={true}
                     />
                 </div>
                 <div className={"absolute bottom-2 left-4 right-4"}>

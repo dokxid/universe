@@ -67,12 +67,14 @@ export function StoryAuthorHeaderMapView({
     className,
     profilePictureVisible = true,
     lines = 2,
+    forceWhiteText = false,
 }: {
     slug?: string;
     story: StoryDTO;
     className?: string;
     profilePictureVisible?: boolean;
     lines?: number;
+    forceWhiteText?: boolean;
 }) {
     return (
         <div
@@ -109,7 +111,9 @@ export function StoryAuthorHeaderMapView({
                         }
                     >
                         <h3
-                            className={`font-semibold line-clamp-${lines} leading-none overflow-hidden link-external`}
+                            className={`font-semibold line-clamp-${lines} leading-none overflow-hidden ${
+                                forceWhiteText ? "" : "link-external"
+                            }`}
                         >
                             {story.title}
                         </h3>
@@ -117,9 +121,11 @@ export function StoryAuthorHeaderMapView({
                     <p className={"text-sm text-muted-foreground"}>
                         {"by "}
                         <Link
-                            className={
-                                "hover:underline cursor-pointer link-external"
-                            }
+                            className={`hover:underline cursor-pointer ${
+                                forceWhiteText
+                                    ? "arrow-external"
+                                    : "link-external"
+                            }`}
                             href={`/${story.experience}/user/view/${story.authorId}`}
                         >
                             {story.author_name}
