@@ -22,17 +22,17 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getUsersByLabDTO } from "@/data/dto/user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
-export async function generateStaticParams() {
-    const experiences = await getExperiencesDTO();
-    return experiences.map((experience) => ({
-        slug: experience.slug,
-    }));
-}
+// this runs slow as heck on vercel so im deactivating this for now
+// export async function generateStaticParams() {
+//     const experiences = await getExperiencesDTO();
+//     return experiences.map((experience) => ({
+//         slug: experience.slug,
+//     }));
+// }
 
 export default async function AboutPage({
     params,
