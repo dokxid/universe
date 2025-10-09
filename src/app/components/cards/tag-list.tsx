@@ -11,11 +11,13 @@ export function TagList({
     className,
     variant = "default",
     size = "default",
+    children,
 }: {
     tags: string[];
     className?: string;
     variant?: VariantProps<typeof tagVariants>["variant"];
     size?: VariantProps<typeof tagVariants>["size"];
+    children?: React.ReactNode;
 }) {
     const { tags: tagsSanitized, isLoading, isError } = useTags();
     if (isLoading || isError) {
@@ -33,6 +35,7 @@ export function TagList({
                         size={size}
                     />
                 ))}
+                {children}
             </div>
         );
     }

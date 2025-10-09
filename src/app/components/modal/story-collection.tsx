@@ -199,7 +199,18 @@ export function StoryCollection({
                         {selectedFilterTags && (
                             <div className="flex flex-wrap items-center">
                                 <p className="text-sm text-muted-foreground mr-2">
-                                    showing tags:{" "}
+                                    showing tags (
+                                    <Link
+                                        href={`/${slug}/map?tags=${selectedFilterTags.join(
+                                            ","
+                                        )}`}
+                                        className={
+                                            "text-blue-500 dark:text-blue-300 font-semibold hover:underline after:content-['_↗']"
+                                        }
+                                    >
+                                        apply on map
+                                    </Link>
+                                    ):
                                 </p>
                                 <TagList
                                     tags={selectedFilterTags}

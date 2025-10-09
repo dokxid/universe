@@ -46,18 +46,20 @@ export function FilterStoriesDialog({
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Filter stories</DialogTitle>
-                    <DialogDescription>
-                        Use the form below to filter stories by tags.
-                    </DialogDescription>
-                </DialogHeader>
-                <TagPickerFilter
-                    availableTags={tags}
-                    selectedTags={tagState}
-                    onTagsChange={handleTagsChange}
-                    showLabel={open}
-                />
+                <div className="flex flex-col gap-2">
+                    <DialogHeader>
+                        <DialogTitle>Filter stories</DialogTitle>
+                        <DialogDescription>
+                            Use the form below to filter stories by tags.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <TagPickerFilter
+                        availableTags={tags}
+                        selectedTags={tagState}
+                        onTagsChange={handleTagsChange}
+                        showLabel={open}
+                    />
+                </div>
             </DialogContent>
         </Dialog>
     );

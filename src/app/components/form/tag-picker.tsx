@@ -1,5 +1,6 @@
 "use client";
 
+import { TagList } from "@/app/components/cards/tag-list";
 import {
     Command,
     CommandEmpty,
@@ -13,9 +14,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { Toggle } from "@/components/ui/toggle";
 import { groupByKey } from "@/lib/utils/group-by-key";
 import { UnescoTagDTO, UnescoTagDTOWithCount } from "@/types/dtos";
-import { PlusIcon, Tag, X } from "lucide-react";
+import { Check, PlusIcon, Tag, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "../../../components/ui/badge";
@@ -143,7 +145,7 @@ export function TagPickerForm({
                                     >
                                         {tagsInCategory.map((tag) => (
                                             <CommandItem
-                                                key={tag._id}
+                                                key={tag.name}
                                                 onSelect={() => {
                                                     handleTagAdd(tag);
                                                 }}
@@ -178,6 +180,7 @@ export function TagPickerFilter({
     showLabel = true,
 }: TagPickerFilterProps) {
     const [inputTags, setInputTags] = useState<UnescoTagDTOWithCount[]>([]);
+    const [inputTagStrings, setInputTagStrings] = useState<string[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
     const searchParams = useSearchParams();
 
@@ -190,6 +193,7 @@ export function TagPickerFilter({
                 selectedTags.includes(tag.name)
             );
             setInputTags(tagObjects);
+            setInputTagStrings(tagObjects.map((tag) => tag.name));
         }
     }, [availableTags, selectedTags]);
 
@@ -200,6 +204,7 @@ export function TagPickerFilter({
             );
             setInputTags(tagObjects);
             onTagsChange?.(tagObjects.map((tag) => tag.name));
+            setInputTagStrings(tagObjects.map((tag) => tag.name));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams, availableTags]);
@@ -211,12 +216,17 @@ export function TagPickerFilter({
     const handleTagRemove = (tagToRemove: UnescoTagDTOWithCount) => {
         const newTags = inputTags.filter((t) => t !== tagToRemove);
         setInputTags(newTags);
+        setInputTagStrings(newTags.map((tag) => tag.name));
         onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
     const handleTagAdd = (tagToAdd: UnescoTagDTOWithCount) => {
+        if (inputTags.find((t) => t.name === tagToAdd.name)) {
+            return;
+        }
         const newTags = [...inputTags, tagToAdd];
         setInputTags(newTags);
+        setInputTagStrings(newTags.map((tag) => tag.name));
         setTagPickerOpen(false);
         onTagsChange?.(newTags.map((tag) => tag.name));
     };
@@ -241,41 +251,18 @@ export function TagPickerFilter({
                 modal={true}
             >
                 <div className={"flex flex-wrap gap-2 mt-1"}>
-                    {inputTags.map((tag) => (
-                        <Badge
-                            style={{
-                                backgroundColor: tag.color,
-                            }}
-                            key={tag._id}
-                            variant={"tag"}
-                            onClick={() => {
-                                handleTagRemove(tag);
-                            }}
-                            className={"group"}
-                        >
-                            <p>{tag.name}</p>
-                            <X
-                                className={
-                                    "stroke-3 group-hover:text-destructive"
-                                }
-                            />
-                        </Badge>
-                    ))}
                     <PopoverTrigger asChild>
-                        <Badge
+                        <Toggle
+                            variant={"primary_custom"}
+                            onPressedChange={setTagPickerOpen}
+                            pressed={tagPickerOpen}
                             onClick={handleMouseEnter}
-                            variant={"tag"}
-                            className={
-                                (tagPickerOpen
-                                    ? "bg-primary-foreground text-primary"
-                                    : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground") +
-                                " h-7 cursor-pointer transition-all duration-300"
-                            }
                         >
                             Add Tag
                             <PlusIcon />
-                        </Badge>
+                        </Toggle>
                     </PopoverTrigger>
+                    <TagList tags={inputTagStrings} variant={"remove"} />
                 </div>
                 <PopoverContent className="p-2">
                     <Command>
@@ -303,16 +290,26 @@ export function TagPickerFilter({
                                                         stroke: "#333",
                                                     }}
                                                 ></Tag>
-                                                <p>
-                                                    {tag.name}{" "}
-                                                    <b
-                                                        className={
-                                                            "text-xs text-muted-foreground inline"
-                                                        }
-                                                    >
-                                                        {tag.count}
-                                                    </b>
-                                                </p>
+                                                <div
+                                                    className={
+                                                        "flex justify-between w-full"
+                                                    }
+                                                >
+                                                    <p>
+                                                        {tag.name}{" "}
+                                                        <b
+                                                            className={
+                                                                "text-xs text-muted-foreground inline"
+                                                            }
+                                                        >
+                                                            {tag.count}
+                                                        </b>
+                                                    </p>
+                                                    {inputTags.find(
+                                                        (t) =>
+                                                            t.name === tag.name
+                                                    ) && <Check></Check>}
+                                                </div>
                                             </CommandItem>
                                         ))}
                                     </CommandGroup>
