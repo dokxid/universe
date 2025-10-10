@@ -64,11 +64,7 @@ export function UserWidgetAuthorized({
     slug: string;
     role: string;
 }) {
-    const {
-        user: initialUser,
-        isLoading,
-        isError,
-    } = useUserFromWorkOSId(userWorkOS.id);
+    const { user: initialUser, isLoading, isError } = useUserFromWorkOSId();
     let user = initialUser;
     if (isLoading) {
         return <UserWidgetSkeleton />;
@@ -95,15 +91,22 @@ export function UserWidgetAuthorized({
             <Avatar>
                 <AvatarImage></AvatarImage>
                 <AvatarFallback>
-                    {user.firstName && user.lastName
-                        ? (user.firstName[0] + user.lastName[0]).toUpperCase()
-                        : ""}
+                    {(user.displayName
+                        ? user.displayName
+                        : user.firstName || user.lastName
+                        ? `${user.firstName || ""} ${user.lastName || ""}`
+                        : "Anonymous"
+                    ).charAt(0)}
                 </AvatarFallback>
             </Avatar>
             <div className={"text-sm flex flex-col grow"}>
-                <p
-                    className={"font-semibold"}
-                >{`${user?.firstName} ${user?.lastName}`}</p>
+                <p className={"font-semibold"}>
+                    {user.displayName
+                        ? user.displayName
+                        : user.firstName || user.lastName
+                        ? `${user.firstName || ""} ${user.lastName || ""}`
+                        : "Anonymous"}
+                </p>
                 <div className="overflow-hidden w-full">
                     <div
                         className={

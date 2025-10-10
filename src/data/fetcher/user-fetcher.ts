@@ -12,6 +12,7 @@ import {
     UserModel,
 } from "@/lib/data/mongodb/models/user-model";
 import { faker } from "@faker-js/faker";
+import { User } from "@workos-inc/node";
 
 export type UserUpdateDTO = {
     firstName?: string;
@@ -82,9 +83,26 @@ export async function getAllOrganizations() {
     }
 }
 
-export async function getUserByWorkOSId(userId: string) {
+export async function getWorkOSUserByWorkOSId(
+    userId: string
+): Promise<User | null> {
     try {
         return await workos.userManagement.getUser(userId);
+    } catch (err) {
+        console.error("Error fetching user by ID:", err);
+        return null;
+    }
+}
+
+export async function getUserByWorkOSId(userId: string) {
+    try {
+        const user = (await UserModel.findOne({
+            externalId: userId,
+        }).lean()) as unknown as UserDTO | null;
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return user;
     } catch (err) {
         console.error("Error fetching user by ID:", err);
         return null;
@@ -103,7 +121,7 @@ export async function getUsersByOrganizationId(organizationId: string) {
     }
 }
 
-export async function updateUser(
+export async function updateWorkOSUser(
     userId: string,
     dataToBeUpdated: UserUpdateDTO
 ) {
@@ -118,7 +136,7 @@ export async function updateUser(
     }
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteWorkOSUser(userId: string) {
     try {
         await workos.userManagement.deleteUser(userId);
         return true;

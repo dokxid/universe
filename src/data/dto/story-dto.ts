@@ -13,6 +13,7 @@ import {
     insertStory,
     queryStory,
 } from "@/data/fetcher/story-fetcher";
+import { getUserByWorkOSId } from "@/data/fetcher/user-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
@@ -32,9 +33,15 @@ function isPublicStory(story: Story) {
     return !story.draft;
 }
 
-function isStoryOwner(viewer: User | null, story: StoryDTO) {
-    if (!viewer) return false;
-    return viewer.id === story.author;
+async function isStoryOwner(viewer: User | null, story: StoryDTO) {
+    try {
+        if (!viewer) return false;
+        const viewerId = (await getUserByWorkOSId(viewer.id))?._id;
+        return viewerId === story.author;
+    } catch (err) {
+        console.error("Error checking story ownership:", err);
+        return false;
+    }
 }
 
 async function canUserViewStory(user: User | null, story: StoryDTO) {
@@ -44,7 +51,7 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     if (!user) {
         return false;
     }
-    if (isStoryOwner(user, story)) {
+    if (await isStoryOwner(user, story)) {
         return true;
     }
     if (!story.draft && (await isUserMember(user, story.experience))) {
@@ -61,7 +68,7 @@ export function canUserCreateStory(user: User | null, experienceSlug: string) {
 
 export async function canUserEditStory(user: User | null, story: StoryDTO) {
     if (await isUserSuperAdmin(user)) return true;
-    if (isStoryOwner(user, story)) return true;
+    if (await isStoryOwner(user, story)) return true;
     return false;
 }
 

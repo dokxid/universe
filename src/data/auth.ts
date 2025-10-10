@@ -1,5 +1,6 @@
 import "server-only";
 
+import { canUserEditStoryId } from "@/data/dto/story-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
@@ -15,6 +16,45 @@ type MembershipResult = {
     isActive: boolean;
     error?: string;
 };
+
+export type Permissions =
+    | "add_story"
+    | "edit_story"
+    | "superadmin"
+    | "manage_users";
+
+export const getPermissionsByUser = cache(
+    async (
+        userWorkOS: User | null,
+        experienceSlug: string,
+        storyId?: string
+    ): Promise<Permissions[]> => {
+        const permissions: Permissions[] = [];
+
+        // case when user not logged in, no permissions
+        if (!userWorkOS) return permissions;
+
+        if (await isUserSuperAdmin(userWorkOS)) {
+            permissions.push(
+                "superadmin",
+                "manage_users",
+                "add_story",
+                "edit_story"
+            );
+            return permissions;
+        } else if (await isUserAdmin(userWorkOS, experienceSlug)) {
+            permissions.push("manage_users", "add_story", "edit_story");
+        } else if (await isUserMember(userWorkOS, experienceSlug)) {
+            if (storyId) {
+                if (await canUserEditStoryId(userWorkOS, storyId)) {
+                    permissions.push("edit_story");
+                }
+            }
+            permissions.push("add_story");
+        }
+        return permissions;
+    }
+);
 
 export const getCurrentUser = cache(async () => {
     const { user } = await withAuth({ ensureSignedIn: true });

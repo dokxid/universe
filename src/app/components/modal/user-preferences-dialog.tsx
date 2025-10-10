@@ -35,7 +35,6 @@ import {
 } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useEffect } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -45,8 +44,7 @@ const displayNameFormSchema = userPreferencesDisplayNameFormSchema;
 const profilePictureFormSchema = userPreferencesProfilePictureFormSchema;
 
 export function UserPreferencesDialog() {
-    const { user: workOSUser, loading } = useAuth();
-    const user = useUserFromWorkOSId(workOSUser?.id || "").user;
+    const { user, isLoading, isError } = useUserFromWorkOSId();
     const debug = useAppSelector((state) => state.settings.debug);
     const dispatch = useDispatch();
 
@@ -101,16 +99,16 @@ export function UserPreferencesDialog() {
         console.log(data);
     };
 
-    if (loading) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
 
-    if (!workOSUser) {
+    if (isError) {
         return <div>User not found</div>;
     }
 
     if (!user) {
-        return <div>Loading user data...</div>;
+        return <div>Cannot find user</div>;
     }
 
     return (

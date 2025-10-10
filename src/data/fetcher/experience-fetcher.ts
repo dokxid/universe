@@ -10,11 +10,12 @@ export async function getExperience(
     experienceSlug: string
 ): Promise<Experience> {
     try {
+        console.log("Fetching experience for slug:", experienceSlug);
         await dbConnect();
         const experience = await ExperienceModel.findOne({
             slug: experienceSlug,
         }).exec();
-        if (!experience) throw new Error("experience not found");
+        if (!experience) throw new Error();
         const sanitizedExperience = sanitizeExperience(experience);
         return sanitizedExperience;
     } catch (err) {
