@@ -30,6 +30,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { Organization } from "@/types/workos-errors";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -41,23 +42,22 @@ type Inputs = {
     organizationId: string;
 };
 
-export function LoginForm({
-    labs,
-}: {
-    labs: { label: string; value: string }[];
-}) {
+export function LoginForm() {
     const [pendingAuthToken, setPendingAuthToken] = useState<string | null>(
         null
     );
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const router = useRouter();
+    const [organizations, setOrganizations] = useState<Organization[]>([
+        { id: "slug", name: slug },
+    ]);
 
     const form = useForm<Inputs>({
         defaultValues: {
             email: "",
             password: "",
-            organizationId: labs.find((lab) => lab.label === slug)?.value || "",
+            organizationId: organizations[0].id,
         },
     });
 
@@ -75,8 +75,13 @@ export function LoginForm({
                 router.push(res.redirectUrl);
                 return;
             }
-            if (res.pendingAuthToken !== undefined) {
+            if (res.pendingAuthToken && res.organizations) {
                 setPendingAuthToken(res.pendingAuthToken);
+                setOrganizations(res.organizations || []);
+                form.setValue(
+                    "organizationId",
+                    res.organizations.find((org) => org.name === slug)?.id || ""
+                );
                 form.clearErrors("organizationId");
                 return;
             }
@@ -164,11 +169,11 @@ export function LoginForm({
                                                     )}
                                                 >
                                                     {field.value
-                                                        ? labs.find(
-                                                              (lab) =>
-                                                                  lab.value ===
+                                                        ? organizations.find(
+                                                              (org) =>
+                                                                  org.id ===
                                                                   field.value
-                                                          )?.label
+                                                          )?.name
                                                         : "Select lab"}
                                                     <ChevronsUpDown className="opacity-50" />
                                                 </Button>
@@ -185,37 +190,45 @@ export function LoginForm({
                                                         No framework found.
                                                     </CommandEmpty>
                                                     <CommandGroup>
-                                                        {labs.map((lab) => (
-                                                            <CommandItem
-                                                                value={
-                                                                    lab.label
-                                                                }
-                                                                key={lab.label}
-                                                                onSelect={() => {
-                                                                    form.setValue(
-                                                                        "organizationId",
-                                                                        lab.value
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {lab.label}
-                                                                <Check
-                                                                    className={cn(
-                                                                        "ml-auto",
-                                                                        lab.value ===
-                                                                            field.value
-                                                                            ? "opacity-100"
-                                                                            : "opacity-0"
-                                                                    )}
-                                                                />
-                                                            </CommandItem>
-                                                        ))}
+                                                        {organizations.map(
+                                                            (org) => (
+                                                                <CommandItem
+                                                                    value={
+                                                                        org.id
+                                                                    }
+                                                                    key={org.id}
+                                                                    onSelect={() => {
+                                                                        form.setValue(
+                                                                            "organizationId",
+                                                                            org.id
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    {org.name}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "ml-auto",
+                                                                            org.id ===
+                                                                                field.value
+                                                                                ? "opacity-100"
+                                                                                : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            )
+                                                        )}
                                                     </CommandGroup>
                                                 </CommandList>
                                             </Command>
                                         </PopoverContent>
                                     </Popover>
                                 </FormControl>
+                                {pendingAuthToken && (
+                                    <div className="text-sm text-red-500 mt-1">
+                                        Multiple organizations detected. Please
+                                        select a lab to continue.
+                                    </div>
+                                )}
                                 <FormMessage />
                             </SettingsBoxFormElement>
                         )}

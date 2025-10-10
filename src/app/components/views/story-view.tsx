@@ -1,9 +1,8 @@
 import { TagList } from "@/app/components/cards/tag-list";
-import { S3Image } from "@/app/components/embeds/s3-image";
+import { HostedImage } from "@/app/components/embeds/s3-image";
 import {
     ContentLayout,
     ContentLayoutInner,
-    SettingsFormButtonGroup,
     SettingsLayout,
 } from "@/app/components/layout/content-layout";
 import {
@@ -14,16 +13,15 @@ import {
 } from "@/app/components/layout/header";
 import { StoryAuthorDetails } from "@/app/components/layout/story-author-details";
 import { DebugListObject } from "@/app/components/views/debug-list-object";
-import { Button } from "@/components/ui/button";
+import { EditStoryButtons } from "@/app/components/views/edit-story-buttons";
 import { StoryDTO } from "@/types/dtos";
 import parse from "html-react-parser";
-import Link from "next/link";
 
 export default async function StoryView({ story }: { story: StoryDTO }) {
     return (
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
-                <S3Image
+                <HostedImage
                     experience={story.experience}
                     fileName={story.featured_image_url}
                 />
@@ -44,24 +42,7 @@ export default async function StoryView({ story }: { story: StoryDTO }) {
                                 {new Date(story.createdAt).toLocaleDateString()} */}
                             </HeaderDescription>
                         </HeaderContent>
-                        <SettingsFormButtonGroup
-                            className={"h-full self-start"}
-                        >
-                            <Link
-                                href={`/${story.experience}/stories/edit/${story._id}`}
-                            >
-                                <Button variant={"secondary_custom"}>
-                                    Edit
-                                </Button>
-                            </Link>
-                            <Link
-                                href={`/${story.experience}/map?story=${story._id}`}
-                            >
-                                <Button variant={"primary_custom"}>
-                                    View on map
-                                </Button>
-                            </Link>
-                        </SettingsFormButtonGroup>
+                        <EditStoryButtons story={story} />
                     </div>
                 </div>
             </Header>

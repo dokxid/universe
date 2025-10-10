@@ -1,7 +1,7 @@
 "use client";
 
 import { editStoryFeaturedPictureAction } from "@/actions/stories";
-import { S3Image } from "@/app/components/embeds/s3-image";
+import { HostedImage } from "@/app/components/embeds/s3-image";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -81,7 +81,7 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                         ratio={16 / 9}
                                         className={"w-full"}
                                     >
-                                        <S3Image
+                                        <HostedImage
                                             experience={story.experience}
                                             fileName={story.featured_image_url}
                                             alt={story.title}

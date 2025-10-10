@@ -32,4 +32,4 @@ type AuthException = {
     message: string;
 };
 
-export type { AuthException, ExceptionReasons };
+export type { AuthException, ExceptionReasons, Organization };

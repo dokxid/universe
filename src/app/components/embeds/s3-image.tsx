@@ -4,7 +4,6 @@ import { useImageURL } from "@/lib/swr/image-hook";
 import { cn } from "@/lib/utils";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
-import Link from "next/link";
 
 // maybe this should go in .env, but this is only temporary till i figure out image optimization limits
 const USE_UNOPTIMIZED_IMAGES = true;
@@ -41,7 +40,6 @@ export function S3Image({
     experience,
     fileName,
     className,
-    link = true,
     internal = true,
     alt,
 }: {
@@ -56,55 +54,49 @@ export function S3Image({
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
     if (isError) return <p>Error loading image</p>;
     if (!imageUrl) return <p>No image available</p>;
-
     const src = imageUrl;
-
-    if (!link)
-        return (
-            <ImageElement
-                className={className}
-                src={src}
-                internal={internal}
-                alt={alt}
-            />
-        );
-
     return (
-        <Link
-            href={`/${experience}/images/${fileName}`}
-            className={"relative block w-full h-full"}
-        >
-            <ImageElement
-                className={className}
-                src={src}
-                internal={internal}
-                alt={alt}
-            />
-        </Link>
+        <ImageElement
+            className={className}
+            src={src}
+            internal={internal}
+            alt={alt}
+        />
     );
 }
 
-export function StoryImage({
-    imageUrl,
+export function HostedImage({
+    experience,
+    fileName,
     className,
-    link = true,
     internal = true,
+    alt,
 }: {
-    imageUrl: string;
-    link?: boolean;
+    experience: string;
+    fileName: string;
     className?: string;
+    link?: boolean;
     internal?: boolean;
+    alt?: string;
 }) {
-    const src = imageUrl;
-
-    if (!link)
+    if (!fileName.startsWith("http")) {
         return (
-            <ImageElement className={className} src={src} internal={internal} />
+            <S3Image
+                experience={experience}
+                fileName={fileName}
+                className={className}
+                internal={internal}
+                alt={alt}
+            />
         );
-
+    }
+    const src = fileName;
     return (
-        <Link href={imageUrl} className={"relative block w-full h-full"}>
-            <ImageElement className={className} src={src} internal={internal} />
-        </Link>
+        <ImageElement
+            className={className}
+            src={src}
+            internal={internal}
+            alt={alt}
+        />
     );
 }

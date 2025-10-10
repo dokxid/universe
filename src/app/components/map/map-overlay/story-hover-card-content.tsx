@@ -1,7 +1,7 @@
 "use client";
 
 import { TagList } from "@/app/components/cards/tag-list";
-import { StoryImage } from "@/app/components/embeds/s3-image";
+import { HostedImage } from "@/app/components/embeds/s3-image";
 import { StoryAuthorHeaderMapView } from "@/app/components/layout/story-author-details";
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
@@ -30,12 +30,13 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                         );
                     }}
                 >
-                    <StoryImage
+                    <HostedImage
                         className={
                             "group-hover/card:scale-105 transition-all duration-200 brightness-40 cursor-pointer"
                         }
                         link={false}
-                        imageUrl={story.featured_image_url}
+                        experience={story.experience}
+                        fileName={story.featured_image_url}
                     />
                     <StoryAuthorHeaderMapView
                         story={story}

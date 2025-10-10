@@ -51,10 +51,10 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     if (!user) {
         return false;
     }
-    if (await isStoryOwner(user, story)) {
+    if (await isUserSuperAdmin(user)) {
         return true;
     }
-    if (!story.draft && (await isUserMember(user, story.experience))) {
+    if (await isStoryOwner(user, story)) {
         return true;
     }
     return false;
@@ -70,6 +70,16 @@ export async function canUserEditStory(user: User | null, story: StoryDTO) {
     if (await isUserSuperAdmin(user)) return true;
     if (await isStoryOwner(user, story)) return true;
     return false;
+}
+
+export async function canUserViewStoryId(user: User | null, storyId: string) {
+    try {
+        const story = await getStoryDTO(storyId);
+        return canUserViewStory(user, story);
+    } catch (err) {
+        console.error("Error checking if user can view story:", err);
+        return false;
+    }
 }
 
 export async function canUserEditStoryId(user: User | null, storyId: string) {

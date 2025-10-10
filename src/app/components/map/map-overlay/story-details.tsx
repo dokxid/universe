@@ -1,7 +1,7 @@
 "use client";
 
 import { TagList } from "@/app/components/cards/tag-list";
-import { StoryImage } from "@/app/components/embeds/s3-image";
+import { HostedImage } from "@/app/components/embeds/s3-image";
 import { StoryAuthorHeaderMapView } from "@/app/components/layout/story-author-details";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -92,12 +92,13 @@ export function StoryDetails({
                                 "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
                             }
                         >
-                            <StoryImage
+                            <HostedImage
                                 className={
                                     "hover:scale-105 transition-all duration-200"
                                 }
                                 link={false}
-                                imageUrl={activeStory.featured_image_url}
+                                fileName={activeStory.featured_image_url}
+                                experience={activeStory.experience}
                             />
                         </Link>
                         <Separator className={"my-4"} />
@@ -155,10 +156,11 @@ export function StoryDetails({
                     "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden relative"
                 }
             >
-                <StoryImage
+                <HostedImage
                     className={"hover:scale-105 transition-all duration-200"}
                     link={false}
-                    imageUrl={activeStory.featured_image_url}
+                    fileName={activeStory.featured_image_url}
+                    experience={activeStory.experience}
                 />
             </Link>
             <div className={"px-6 pb-6 flex flex-col"}>
