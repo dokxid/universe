@@ -84,7 +84,7 @@ export default function EditorView({ story }: { story: StoryDTO }) {
                                     <MinimalTiptapEditor
                                         output="html"
                                         editorContentClassName={
-                                            " prose p-5 dark:prose-invert max-w-full overflow-y-auto self-center my-10"
+                                            "prose p-5 dark:prose-invert max-w-full overflow-y-auto self-start my-10"
                                         }
                                         className={
                                             "prose-content w-full max-h-[80svh]"

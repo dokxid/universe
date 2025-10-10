@@ -64,9 +64,11 @@ async function canUserViewStory(user: User | null, story: StoryDTO) {
     return false;
 }
 
-export function canUserCreateStory(user: User | null, experienceSlug: string) {
+export async function canUserCreateStory(experienceSlug: string) {
+    const user = await getCurrentUser();
     if (!user) return false;
     if (experienceSlug === "universe") return false;
+    if (await isUserSuperAdmin(user)) return true;
     return isUserPartOfOrganization(user, experienceSlug);
 }
 
@@ -191,40 +193,39 @@ export async function getStoriesByUserDTO(userId: string): Promise<StoryDTO[]> {
 export async function submitStoryDTO(formData: FormData) {
     try {
         // check if the user has permission to create a story for the given experience
-        const experienceSlug = formData.get("slug") as string;
         const user = await getCurrentUser();
-        if (!user) {
-            throw new Error("User must be logged in to submit a story.");
+        const userId = (await getUserByWorkOSId(user.id))?._id;
+        if (!userId) {
+            throw new Error("User must be logged in to create a story.");
         }
-        if (!(await canUserCreateStory(user, experienceSlug))) {
+        if (
+            !(await canUserCreateStory(
+                formData.get("experienceSlug") as string
+            ))
+        ) {
             throw new Error(
-                "You do not have permission to create a story for this experience."
+                "User does not have permission to create a story for this experience."
             );
         }
 
-        // Preprocess the FormData into the correct types
+        // Validate the data
         const rawData = Object.fromEntries(formData);
         const processedData = {
-            title: rawData.title as string,
-            content: rawData.content as string,
+            ...rawData,
             year: parseInt(rawData.year as string, 10),
             longitude: parseFloat(rawData.longitude as string),
             latitude: parseFloat(rawData.latitude as string),
             tags: JSON.parse(rawData.tags as string),
-            author: rawData.author as string,
-            slug: rawData.slug as string,
             universe: rawData.universe === "true",
             draft: rawData.draft === "true",
         };
-        const file = formData.get("file") as File;
-        if (!file) {
-            throw new Error("File is required and must be a valid file.");
-        }
-
-        // Validate the processed data
         const validationResult = submitStoryFormSchema.safeParse(processedData);
         if (!validationResult.success) {
             throw new Error(z.prettifyError(validationResult.error));
+        }
+        const { featuredPicture: file } = validationResult.data;
+        if (!file) {
+            throw new Error("File is required and must be a valid file.");
         }
 
         // prepare the data for insertion
@@ -235,7 +236,7 @@ export async function submitStoryDTO(formData: FormData) {
             ""
         );
         const storyToInsert = {
-            author: user.id,
+            author: userId,
             content: data.content,
             title: data.title,
             location: {
@@ -244,6 +245,7 @@ export async function submitStoryDTO(formData: FormData) {
             },
             tags: data.tags,
             year: data.year,
+            license: data.license,
             featured_image_url: sanitizedFileName,
             draft: data.draft,
             visible_universe: data.universe,
@@ -266,8 +268,10 @@ export async function submitStoryDTO(formData: FormData) {
         }
         await insertStory(storyToInsert, data.slug);
         revalidateTag(`stories`);
-    } catch (e) {
-        console.error("Error submitting story:", e);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }
 
@@ -333,7 +337,9 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
         // revalidate caches
         revalidateTag(`stories`);
     } catch (error) {
-        throw new Error(JSON.stringify(error));
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }
 
@@ -370,7 +376,9 @@ export async function editContentFormSchemaDTO(formData: FormData) {
         // revalidate caches
         revalidateTag(`stories`);
     } catch (error) {
-        throw new Error(JSON.stringify(error));
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }
 

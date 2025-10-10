@@ -37,7 +37,7 @@ export function CCLicensesFormField({ story }: { story: StoryDTO }) {
         resolver: zodResolver(editVisibilityAndLicensingFormSchema),
         defaultValues: {
             draft: story.draft,
-            license: story.license,
+            license: story.license || "CC0",
         },
     });
     const onSubmit = async (
