@@ -112,7 +112,6 @@ export async function signOutAction() {
         const cookieStorage = await cookies();
         const sessionId = cookieStorage.get("wos-session")?.value || "";
         returnTo = process.env.WORKOS_LOGOUT_URI || `http://localhost:3000/`;
-        console.log("Return to URL:", returnTo);
         const session = await workos.userManagement.loadSealedSession({
             sessionData: sessionId,
             cookiePassword: process.env.WORKOS_COOKIE_PASSWORD!,

@@ -10,7 +10,6 @@ export async function getExperience(
     experienceSlug: string
 ): Promise<Experience> {
     try {
-        console.log("Fetching experience for slug:", experienceSlug);
         await dbConnect();
         const experience = await ExperienceModel.findOne({
             slug: experienceSlug,

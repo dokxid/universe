@@ -11,6 +11,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Heritage Universe",
             href: `/universe/map`,
+            prefetch: false,
             icon: Orbit,
         },
         {
@@ -43,6 +44,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Interactive Map",
             href: `/${slug}/map`,
+            prefetch: false,
             icon: Map,
         },
         {

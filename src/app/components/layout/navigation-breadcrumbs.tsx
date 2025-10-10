@@ -22,6 +22,7 @@ export const pathFeatures = new Map<string, string>([
     ["elevation-requests", "Elevation requests"],
     ["contact", "Contact"],
     ["labs", "Heritage Labs"],
+    ["login", "Login"],
 ]);
 
 export function NavigationBreadcrumbs() {

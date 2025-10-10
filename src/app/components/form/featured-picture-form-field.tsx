@@ -48,7 +48,6 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
             formData.append("storyId", data.storyId);
             formData.append("lab", data.lab);
             formData.append("featuredPicture", data.featuredPicture as File);
-            console.log("Submitting form data:", formData);
             editStoryFeaturedPictureAction(formData);
         } catch (error) {
             console.error("Error uploading image:", error);

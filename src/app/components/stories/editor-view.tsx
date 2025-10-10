@@ -42,7 +42,6 @@ export default function EditorView({ story }: { story: StoryDTO }) {
     };
 
     const onReset = () => {
-        console.log("reset");
         editContentForm.reset();
         if (editorRef.current) {
             editorRef.current.commands.setContent(

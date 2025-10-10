@@ -17,6 +17,7 @@ export type SidebarItemGroup = {
     title: string;
     href: string;
     icon: React.ElementType;
+    prefetch?: boolean;
     dropdownItems?: { title: string; href: string }[];
 }[];
 
@@ -67,7 +68,7 @@ export function ItemGroup({
                                     }`}
                                     aria-label={item.title}
                                     onClick={() => setOpenMobile(false)}
-                                    prefetch={true}
+                                    prefetch={item.prefetch || true}
                                 >
                                     <item.icon
                                         className={`transition-all duration-100 group-hover/menu-item:rotate-3 ${

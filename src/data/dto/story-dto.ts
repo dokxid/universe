@@ -18,7 +18,7 @@ import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
-import { NewStoryData, Story, StoryDTO } from "@/types/dtos";
+import { NewStoryData, StoryDTO } from "@/types/dtos";
 import {
     editProfilePictureFormSchema,
     submitStoryFormSchema,
@@ -29,7 +29,7 @@ import { nanoid } from "nanoid";
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
-function isPublicStory(story: Story) {
+function isPublicStory(story: StoryDTO) {
     return !story.draft;
 }
 

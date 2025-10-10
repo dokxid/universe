@@ -62,13 +62,22 @@ export async function queryStory(
             throw new Error("Story not found");
         }
 
+        // Find the specific story by ID instead of taking the first one
+        const queriedStory = sanitizedLabWithFoundStories.stories.find(
+            (story) => story._id === storyId.toString()
+        );
+
+        if (!queriedStory) {
+            throw new Error("Story not found in sanitized stories");
+        }
+
         // add experience slug and author name to story dto
-        const queriedStory: StoryDTO = sanitizedLabWithFoundStories
-            .stories[0] as unknown as StoryDTO;
-        queriedStory.experience = sanitizedLabWithFoundStories.slug;
-        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([
-            queriedStory,
-        ]);
+        const storyDTO: StoryDTO = {
+            ...queriedStory,
+            experience: sanitizedLabWithFoundStories.slug,
+        } as StoryDTO;
+
+        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([storyDTO]);
 
         return storyWithAuthor[0];
     } catch (err) {
