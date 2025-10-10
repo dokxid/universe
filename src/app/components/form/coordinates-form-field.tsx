@@ -1,3 +1,4 @@
+import { editStoryCoordinatesFormAction } from "@/actions/stories";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -20,25 +21,69 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StoryDTO } from "@/types/dtos";
-import { editCoordinatesFormSchema } from "@/types/form-schemas";
+import { editStoryCoordinatesFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
 
 export function CoordinatesFormField({ story }: { story: StoryDTO }) {
-    const editCoordinatesForm = useForm({
-        resolver: zodResolver(editCoordinatesFormSchema),
+    const editStoryCoordinatesForm = useForm({
+        resolver: zodResolver(editStoryCoordinatesFormSchema),
         defaultValues: {
             longitude: story.location.coordinates[0],
             latitude: story.location.coordinates[1],
         },
     });
+    const onSubmit = async (
+        data: z.output<typeof editStoryCoordinatesFormSchema>
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("storyId", data.storyId);
+            formData.append("longitude", data.longitude.toFixed(6).toString());
+            formData.append("latitude", data.latitude.toFixed(6).toString());
+            const result = await editStoryCoordinatesFormAction(formData);
+            if (result?.success) {
+                toast.success("Story updated successfully!");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    editStoryCoordinatesForm.setError(
+                        fieldName as keyof z.input<
+                            typeof editStoryCoordinatesFormSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating story content:", error);
+            toast.error("Failed to update story content.");
+        }
+    };
     return (
         <SettingsFormBox className={"p-0"}>
-            <Form {...editCoordinatesForm}>
-                <form onSubmit={editCoordinatesForm.handleSubmit(() => {})}>
+            <Form {...editStoryCoordinatesForm}>
+                <form
+                    onSubmit={editStoryCoordinatesForm.handleSubmit(onSubmit)}
+                >
+                    <input
+                        type={"hidden"}
+                        {...editStoryCoordinatesForm.register("storyId")}
+                        defaultValue={story._id}
+                    />
                     <Collapsible>
                         <CollapsibleTrigger asChild>
                             <SettingsFormTitle className={"pb-0 mb-0"}>
@@ -71,7 +116,9 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                 </SettingsBoxFormElement>
                                 <SettingsBoxFormElement>
                                     <FormField
-                                        control={editCoordinatesForm.control}
+                                        control={
+                                            editStoryCoordinatesForm.control
+                                        }
                                         name="longitude"
                                         render={({ field }) => (
                                             <FormItem className={"mt-2"}>
@@ -79,8 +126,15 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                                 <FormControl>
                                                     <Input
                                                         type="number"
-                                                        step="any"
                                                         {...field}
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                parseFloat(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -88,7 +142,9 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                         )}
                                     />
                                     <FormField
-                                        control={editCoordinatesForm.control}
+                                        control={
+                                            editStoryCoordinatesForm.control
+                                        }
                                         name="latitude"
                                         render={({ field }) => (
                                             <FormItem className={"mt-2"}>
@@ -96,8 +152,15 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                                 <FormControl>
                                                     <Input
                                                         type="number"
-                                                        step="any"
                                                         {...field}
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                parseFloat(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            )
+                                                        }
                                                     />
                                                 </FormControl>
                                                 <FormMessage />
@@ -125,7 +188,7 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                                 </SettingsBoxFormElement>
                             </SettingsBoxContent>
                             <DebugListObject
-                                data={editCoordinatesForm.watch()}
+                                data={editStoryCoordinatesForm.watch()}
                             />
                         </CollapsibleContent>
                     </Collapsible>

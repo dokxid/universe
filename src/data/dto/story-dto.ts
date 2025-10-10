@@ -20,7 +20,11 @@ import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
 import { NewStoryData, StoryDTO } from "@/types/dtos";
 import {
+    editContentFormSchema,
     editProfilePictureFormSchema,
+    editStoryCoordinatesFormSchema,
+    editStoryFormSchema,
+    editVisibilityAndLicensingFormSchema,
     submitStoryFormSchema,
 } from "@/types/form-schemas";
 import { User } from "@workos-inc/node";
@@ -82,8 +86,9 @@ export async function canUserViewStoryId(user: User | null, storyId: string) {
     }
 }
 
-export async function canUserEditStoryId(user: User | null, storyId: string) {
+export async function canUserEditStoryId(storyId: string) {
     try {
+        const user = await getCurrentUser();
         const story = await getStoryDTO(storyId);
         return canUserEditStory(user, story);
     } catch (err) {
@@ -272,6 +277,14 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
         if (!user) {
             throw new Error("User must be logged in to edit a story.");
         }
+        const isAllowedToEdit = await canUserEditStoryId(
+            formData.get("storyId") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
 
         // Preprocess the FormData into the correct types
         const rawData = Object.fromEntries(formData);
@@ -282,13 +295,6 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
         const { featuredPicture: file } = result.data;
         if (!file) {
             throw new Error("File is required and must be a valid file.");
-        }
-
-        // check if the user has permission to edit the story
-        if (!(await canUserEditStoryId(user, result.data.storyId))) {
-            throw new Error(
-                "User does not have permission to edit this story."
-            );
         }
 
         // prepare the data for insertion
@@ -316,12 +322,196 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
         await dbConnect();
         await ExperienceModel.updateOne(
             { "stories._id": data.storyId },
-            { $set: { "stories.$.featured_image_url": path } }
+            {
+                $set: {
+                    "stories.$.featured_image_url": path,
+                    "stories.$.updatedAt": new Date(),
+                },
+            }
         );
 
         // revalidate caches
         revalidateTag(`stories`);
     } catch (error) {
         throw new Error(JSON.stringify(error));
+    }
+}
+
+export async function editContentFormSchemaDTO(formData: FormData) {
+    try {
+        const isAllowedToEdit = await canUserEditStoryId(
+            formData.get("storyId") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const result = editContentFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(z.prettifyError(result.error));
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { "stories._id": result.data.storyId },
+            {
+                $set: {
+                    "stories.$.content": result.data.content,
+                    "stories.$.updatedAt": new Date(),
+                },
+            }
+        );
+
+        // revalidate caches
+        revalidateTag(`stories`);
+    } catch (error) {
+        throw new Error(JSON.stringify(error));
+    }
+}
+
+export async function editStoryFormSchemaDTO(formData: FormData) {
+    try {
+        const isAllowedToEdit = await canUserEditStoryId(
+            formData.get("storyId") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const processedData = {
+            ...rawData,
+            tags: JSON.parse(rawData.tags as string),
+        };
+        const result = editStoryFormSchema.safeParse(processedData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { "stories._id": result.data.storyId },
+            {
+                $set: {
+                    "stories.$.tags": result.data.tags,
+                    "stories.$.year": result.data.year,
+                    "stories.$.title": result.data.title,
+                    "stories.$.updatedAt": new Date(),
+                },
+            }
+        );
+
+        // revalidate caches
+        revalidateTag(`stories`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function editVisibilityAndLicensingFormSchemaDTO(
+    formData: FormData
+) {
+    try {
+        const isAllowedToEdit = await canUserEditStoryId(
+            formData.get("storyId") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const processedData = {
+            ...rawData,
+            draft: Boolean(rawData.draft),
+        };
+        const result =
+            editVisibilityAndLicensingFormSchema.safeParse(processedData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { "stories._id": result.data.storyId },
+            {
+                $set: {
+                    "stories.$.license": result.data.license,
+                    "stories.$.draft": result.data.draft,
+                    "stories.$.updatedAt": new Date(),
+                },
+            }
+        );
+
+        // revalidate caches
+        revalidateTag(`stories`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
+    try {
+        const isAllowedToEdit = await canUserEditStoryId(
+            formData.get("storyId") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story."
+            );
+        }
+
+        // Preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const processedData = {
+            ...rawData,
+            longitude: parseFloat(rawData.longitude as string),
+            latitude: parseFloat(rawData.latitude as string),
+        };
+        const result = editStoryCoordinatesFormSchema.safeParse(processedData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { "stories._id": result.data.storyId },
+            {
+                $set: {
+                    "stories.$.location": {
+                        type: "Point",
+                        coordinates: [
+                            result.data.longitude,
+                            result.data.latitude,
+                        ],
+                    },
+                    "stories.$.updatedAt": new Date(),
+                },
+            }
+        );
+
+        // revalidate caches
+        revalidateTag(`stories`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }

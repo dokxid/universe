@@ -24,9 +24,7 @@ const userPermissionFetcher = async (
 };
 
 const userRoleFetcher = async (labSlug: string): Promise<Role> => {
-    console.log("userRoleFetcher called with labSlug:", labSlug);
     const role = await getUserRoleAction(labSlug);
-    console.log("Fetched role:", role);
     return role;
 };
 
@@ -101,12 +99,10 @@ export function useAllowedToSuperAdmin(labSlug: string) {
 }
 
 export function useGetRoleInLab(labSlug: string) {
-    console.log("useGetRoleInLab called with labSlug:", labSlug);
     const { data, error, isLoading } = useSWR(
         ["userRoles", labSlug],
         async () => {
             const role = await userRoleFetcher(labSlug);
-            console.log("userRoleFetcher returned:", role);
             return role;
         }
     );

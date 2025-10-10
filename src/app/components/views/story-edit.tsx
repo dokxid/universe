@@ -1,5 +1,7 @@
 "use client";
 
+import { editStoryFormAction } from "@/actions/stories";
+import { HostedImage } from "@/app/components/embeds/s3-image";
 import { CCLicensesFormField } from "@/app/components/form/cc-licenses-form-field";
 import { CoordinatesFormField } from "@/app/components/form/coordinates-form-field";
 import { FeaturedPictureFormField } from "@/app/components/form/featured-picture-form-field";
@@ -34,6 +36,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 export default function StoryEdit({
@@ -49,24 +52,58 @@ export default function StoryEdit({
         resolver: zodResolver(editStoryFormSchema),
         defaultValues: {
             title: story.title,
-            featured_image_url: story.featured_image_url,
             tags: story.tags,
-            draft: story.draft,
             year: story.year,
         },
     });
 
-    const onSubmit = (data: z.output<typeof editStoryFormSchema>) => {
-        console.log(data);
+    const onSubmit = async (data: z.output<typeof editStoryFormSchema>) => {
+        try {
+            const formData = new FormData();
+            formData.append("storyId", data.storyId);
+            formData.append("title", data.title);
+            formData.append("year", data.year.toString());
+            formData.append("tags", JSON.stringify(data.tags));
+            const result = await editStoryFormAction(formData);
+            if (result?.success) {
+                toast.success("Story updated successfully!");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.entries(
+                    (zodErrors.fieldErrors + zodErrors.formErrors) as Record<
+                        string,
+                        string[]
+                    >
+                ).forEach(([field, messages]) => {
+                    if (field in editStoryForm.getValues()) {
+                        editStoryForm.setError(
+                            field as keyof z.infer<typeof editStoryFormSchema>,
+                            {
+                                type: "server",
+                                message: messages.join(", "),
+                            }
+                        );
+                    }
+                    toast.error(field + ": " + JSON.stringify(messages));
+                });
+            }
+        } catch (error) {
+            console.error("Error updating story content:", error);
+            toast.error("Failed to update story content.");
+        }
     };
     const onReset = () => {
         editStoryForm.reset();
     };
     return (
         <ContentLayout>
-            {/* <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
-                <StoryImage imageUrl={story.featured_image_url} />
-            </div> */}
+            <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
+                <HostedImage
+                    experience={story.experience}
+                    fileName={story.featured_image_url}
+                />
+            </div>
             <Header separatorVisible={false} className={"mb-6"}>
                 <div className={"flex flex-col gap-3 w-full"}>
                     <Form {...editStoryForm}>
@@ -76,14 +113,24 @@ export default function StoryEdit({
                             className="w-full"
                         >
                             <div className={"max-w-lg"}>
+                                <input
+                                    type={"hidden"}
+                                    {...editStoryForm.register("storyId")}
+                                    defaultValue={story._id}
+                                />
                                 <FormField
                                     control={editStoryForm.control}
                                     name="tags"
                                     render={({ field }) => (
-                                        <TagPickerField
-                                            availableTags={allTags}
-                                            {...field}
-                                        />
+                                        <>
+                                            <FormControl>
+                                                <TagPickerField
+                                                    availableTags={allTags}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage className={"w-full"} />
+                                        </>
                                     )}
                                 />
                             </div>
@@ -161,11 +208,16 @@ export default function StoryEdit({
                                     <Link
                                         href={`/${story.experience}/stories/view/${story._id}`}
                                     >
-                                        <Button variant={"secondary_custom"}>
+                                        <Button
+                                            type={"button"}
+                                            variant={"secondary_custom"}
+                                        >
                                             Back to view
                                         </Button>
                                     </Link>
                                     <Toggle
+                                        disabled={true}
+                                        type={"button"}
                                         pressed={isPreviewMode}
                                         onPressedChange={setIsPreviewMode}
                                         variant={"primary_custom"}

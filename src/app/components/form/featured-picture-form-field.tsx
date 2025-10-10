@@ -52,7 +52,6 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
         } catch (error) {
             console.error("Error uploading image:", error);
             toast.error("Failed to upload image. Please try again.");
-            return;
         }
     };
 

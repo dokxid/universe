@@ -1,3 +1,7 @@
+"use client";
+
+import { useAppSelector } from "@/lib/hooks";
+
 export function DebugListObject({
     data,
     className,
@@ -5,6 +9,8 @@ export function DebugListObject({
     data: object;
     className?: string;
 }) {
+    const debug = useAppSelector((state) => state.settings.debug);
+    if (!debug) return null;
     return (
         <div
             className={`flex flex-col overflow-x-auto w-full mt-10 bg-primary text-primary-foreground p-4 ${className}`}

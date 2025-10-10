@@ -1,3 +1,4 @@
+import { editVisibilityAndLicensingFormAction } from "@/actions/stories";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -15,50 +16,135 @@ import {
     FormDescription,
     FormField,
     FormItem,
+    FormLabel,
     FormMessage,
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
 import { CC_LICENSES, StoryDTO } from "@/types/dtos";
-import { editLicenseFormSchema } from "@/types/form-schemas";
+import { editVisibilityAndLicensingFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
 
 export function CCLicensesFormField({ story }: { story: StoryDTO }) {
-    const editLicenseForm = useForm({
-        resolver: zodResolver(editLicenseFormSchema),
+    const editVisibilityAndLicensingForm = useForm({
+        resolver: zodResolver(editVisibilityAndLicensingFormSchema),
         defaultValues: {
+            draft: story.draft,
             license: story.license,
         },
     });
+    const onSubmit = async (
+        data: z.output<typeof editVisibilityAndLicensingFormSchema>
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("storyId", data.storyId);
+            formData.append("license", data.license);
+            formData.append("draft", String(data.draft));
+            const result = await editVisibilityAndLicensingFormAction(formData);
+            if (result?.success) {
+                toast.success("Story updated successfully!");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    editVisibilityAndLicensingForm.setError(
+                        fieldName as keyof z.input<
+                            typeof editVisibilityAndLicensingFormSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating story content:", error);
+            toast.error("Failed to update story content.");
+        }
+    };
     return (
         <SettingsFormBox className={"p-0"}>
-            <Form {...editLicenseForm}>
-                <form onSubmit={editLicenseForm.handleSubmit(() => {})}>
+            <Form {...editVisibilityAndLicensingForm}>
+                <form
+                    onSubmit={editVisibilityAndLicensingForm.handleSubmit(
+                        onSubmit
+                    )}
+                >
+                    <input
+                        type={"hidden"}
+                        {...editVisibilityAndLicensingForm.register("storyId")}
+                        defaultValue={story._id}
+                    />
                     <Collapsible>
                         <CollapsibleTrigger asChild>
                             <SettingsFormTitle className={"pb-0 mb-0"}>
                                 <div className="flex flex-row cursor-pointer items-center gap-2">
                                     <ChevronDown className="inline size-5" />
-                                    Licensing
+                                    Visibility & Licensing
                                 </div>
                             </SettingsFormTitle>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                             <SettingsFormDescription className={"mt-3"}>
-                                Edit the licensing of your story here.
+                                Edit the visibility and licensing of your story
+                                here.
                             </SettingsFormDescription>
                             <SettingsBoxContent>
                                 <SettingsBoxFormElement>
+                                    <Label>Visibility</Label>
                                     <FormField
-                                        control={editLicenseForm.control}
+                                        control={
+                                            editVisibilityAndLicensingForm.control
+                                        }
+                                        name="draft"
+                                        render={({ field }) => (
+                                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                                <div className="space-y-0.5">
+                                                    <FormLabel>
+                                                        Draft Mode
+                                                    </FormLabel>
+                                                    <FormDescription>
+                                                        This will make the story
+                                                        invisible to the public.
+                                                        Only you will be able to
+                                                        see it.
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </div>
+                                                <FormControl>
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={
+                                                            field.onChange
+                                                        }
+                                                    />
+                                                </FormControl>
+                                            </FormItem>
+                                        )}
+                                    />
+                                </SettingsBoxFormElement>
+                                <SettingsBoxFormElement>
+                                    <Label>License</Label>
+                                    <FormField
+                                        control={
+                                            editVisibilityAndLicensingForm.control
+                                        }
                                         name="license"
                                         render={({ field }) => (
                                             <FormItem className={"mt-2"}>
-                                                {/* <Label>License</Label> */}
                                                 <FormControl>
                                                     <RadioGroup
                                                         value={field.value}
@@ -90,9 +176,7 @@ export function CCLicensesFormField({ story }: { story: StoryDTO }) {
                                                                             value
                                                                         }
                                                                     >
-                                                                        {
-                                                                            label.code
-                                                                        }
+                                                                        {`${label.code} - ${label.name}`}
                                                                     </Label>
                                                                 </div>
                                                             )
@@ -143,7 +227,9 @@ export function CCLicensesFormField({ story }: { story: StoryDTO }) {
                                     </SettingsFormButtonGroup>
                                 </SettingsBoxFormElement>
                             </SettingsBoxContent>
-                            <DebugListObject data={editLicenseForm.watch()} />
+                            <DebugListObject
+                                data={editVisibilityAndLicensingForm.watch()}
+                            />
                         </CollapsibleContent>
                     </Collapsible>
                 </form>

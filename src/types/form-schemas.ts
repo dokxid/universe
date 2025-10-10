@@ -16,26 +16,29 @@ export const submitStoryFormSchema = z.object({
     license: z.string().min(1, { message: "This field is required" }),
 });
 
-export const editLicenseFormSchema = z.object({
+export const editVisibilityAndLicensingFormSchema = z.object({
+    storyId: z.string().min(1, { message: "This field is required" }),
     license: z.enum(Object.values(CC_LICENSES).map((license) => license.code)),
+    draft: z.boolean(),
 });
 
-export const editCoordinatesFormSchema = z.object({
+export const editStoryCoordinatesFormSchema = z.object({
+    storyId: z.string().min(1, { message: "This field is required" }),
     longitude: z.number().refine((value) => value >= -180 && value <= 180, {}),
     latitude: z.number().refine((value) => value >= -90 && value <= 90, {}),
 });
 
 export const editStoryFormSchema = z.object({
+    storyId: z.string().min(1, { message: "This field is required" }),
     title: z.string().min(1, { message: "This field is required" }),
-    featured_image_url: z.url().optional().nullable(),
     year: z.coerce
         .number<number>()
         .refine((value) => value >= 0 && value <= 2100, {}),
     tags: z.array(z.string()),
-    draft: z.boolean(),
 });
 
 export const editContentFormSchema = z.object({
+    storyId: z.string().min(1, { message: "This field is required" }),
     content: z.string().min(1, { message: "This field is required" }),
 });
 

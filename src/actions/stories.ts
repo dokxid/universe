@@ -3,7 +3,11 @@
 import { getCurrentUser } from "@/data/auth";
 import {
     canUserCreateStory,
+    editContentFormSchemaDTO,
+    editStoryCoordinatesFormSchemaDTO,
     editStoryFeaturedPictureDTO,
+    editStoryFormSchemaDTO,
+    editVisibilityAndLicensingFormSchemaDTO,
     submitStoryDTO,
 } from "@/data/dto/story-dto";
 
@@ -24,8 +28,12 @@ export async function submitStoryAction(formData: FormData) {
             .catch((error) => {
                 throw new Error(JSON.stringify(error));
             });
+        return { success: true };
     } catch (error) {
-        throw new Error(JSON.stringify(error));
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
     }
 }
 
@@ -40,7 +48,64 @@ export async function editStoryFeaturedPictureAction(formData: FormData) {
             .catch((error) => {
                 throw new Error(JSON.stringify(error));
             });
+        return { success: true };
     } catch (error) {
-        throw new Error(JSON.stringify(error));
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
+    }
+}
+
+export async function editStoryContentAction(formData: FormData) {
+    try {
+        await editContentFormSchemaDTO(formData)
+            .then(() => {
+                return;
+            })
+            .catch((error) => {
+                throw new Error(JSON.stringify(error));
+            });
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
+    }
+}
+
+export async function editStoryFormAction(formData: FormData) {
+    try {
+        await editStoryFormSchemaDTO(formData);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
+    }
+}
+
+export async function editVisibilityAndLicensingFormAction(formData: FormData) {
+    try {
+        await editVisibilityAndLicensingFormSchemaDTO(formData);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
+    }
+}
+
+export async function editStoryCoordinatesFormAction(formData: FormData) {
+    try {
+        await editStoryCoordinatesFormSchemaDTO(formData);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
+        };
     }
 }

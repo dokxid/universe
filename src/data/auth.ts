@@ -53,7 +53,7 @@ export const getPermissionsByUser = cache(
             permissions.push("manage_users", "add_story", "edit_story");
         } else if (await isUserMember(userWorkOS, experienceSlug)) {
             if (storyId) {
-                if (await canUserEditStoryId(userWorkOS, storyId)) {
+                if (await canUserEditStoryId(storyId)) {
                     permissions.push("edit_story");
                 }
             }
