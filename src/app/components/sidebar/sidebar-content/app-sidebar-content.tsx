@@ -6,30 +6,25 @@ import { EditorItemGroup } from "@/app/components/sidebar/sidebar-content/editor
 import { LinksItemGroup } from "@/app/components/sidebar/sidebar-content/links-item-group";
 import { SuperAdminItemGroup } from "@/app/components/sidebar/sidebar-content/super-admin-item-group";
 import { UserItemGroup } from "@/app/components/sidebar/sidebar-content/user-item-group";
+import { SidebarContentSkeleton } from "@/components/skeletons/sidebar-content-skeleton";
 import { SidebarContent } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Experience } from "@/types/dtos";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useGetRoleInLab } from "@/lib/swr/user-hook";
 import { useParams } from "next/navigation";
-import { use } from "react";
 
-export function AppSidebarContent({
-    experiencesPromise,
-}: {
-    experiencesPromise: Promise<Experience[]>;
-}) {
+export function AppSidebarContent() {
     const { slug } = useParams<{ slug: string }>();
-    const { roles, loading, organizationId, user } = useAuth();
-    const experiences = use(experiencesPromise);
-    const currentExperienceOrganizationId = experiences.find(
-        (exp) => exp.slug === slug
-    )?.organization_id;
     const isUniverseView = slug === "universe";
+    const { roleInLab, isLoading: isLoadingRoleInLab } = useGetRoleInLab(slug);
 
-    if (loading) return <Skeleton className={"h-10 w-full"} />;
+    if (isLoadingRoleInLab)
+        return (
+            <div className="px-4 grow">
+                <SidebarContentSkeleton />{" "}
+            </div>
+        );
 
     // case super admin
-    if (organizationId === process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+    if (roleInLab === "superadmin") {
         return (
             <SidebarContent className={"px-1 flex flex-col gap-1"}>
                 <UserItemGroup isUniverseView={isUniverseView} />
@@ -43,15 +38,13 @@ export function AppSidebarContent({
         );
     }
 
-    // case not logged in or not part of current heritage lab org
-    if (
-        !user ||
-        roles === undefined ||
-        currentExperienceOrganizationId !== organizationId
-    ) {
+    // case part of current heritage lab org
+    if (roleInLab === "admin" || roleInLab === "editor") {
         return (
             <SidebarContent className={"px-1 flex flex-col gap-1"}>
                 <UserItemGroup isUniverseView={isUniverseView} />
+                <EditorItemGroup visible={true} />
+                <AdminItemGroup visible={roleInLab === "admin"} />
                 <div className={"flex-grow"}></div>
                 <LinksItemGroup isUniverseView={isUniverseView} />
                 <AboutItemGroup />
@@ -59,14 +52,10 @@ export function AppSidebarContent({
         );
     }
 
-    // case part of current heritage lab org
+    // case not logged in or not part of current heritage lab org
     return (
         <SidebarContent className={"px-1 flex flex-col gap-1"}>
             <UserItemGroup isUniverseView={isUniverseView} />
-            <EditorItemGroup
-                visible={roles.includes("editor") || roles.includes("admin")}
-            />
-            <AdminItemGroup visible={roles.includes("admin")} />
             <div className={"flex-grow"}></div>
             <LinksItemGroup isUniverseView={isUniverseView} />
             <AboutItemGroup />

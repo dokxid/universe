@@ -1,5 +1,6 @@
-import { getImagesInFolder } from "@/data/scripts/seeds/image-url-seeds";
+import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
 import { ALL_UNESCO_TAGS } from "@/data/scripts/seeds/unesco-tags-seeds";
+import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
 function getRandomH1(): string {
@@ -45,13 +46,16 @@ function getContent() {
     return getRandomH1();
 }
 
-export const test_story_doc = async (experience_center: number[]) => {
+export const test_story_doc = async (
+    experience_center: number[],
+    experienceSlug: string,
+    userId: string
+) => {
     const date = faker.date.past({ years: 3 });
     const doc = {
-        author: "user_01K54BMAV7KVJZ8W5YWCPB4Q8D",
+        author: userId,
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
-        published: faker.datatype.boolean(0.8),
         title: faker.lorem.sentence({ min: 3, max: 5 }),
         location: {
             type: "Point",
@@ -68,10 +72,16 @@ export const test_story_doc = async (experience_center: number[]) => {
         ),
         year: faker.number.int({ min: 1800, max: 2024 }),
         visible_universe: faker.datatype.boolean(),
-        featured_image_url: faker.helpers.arrayElement(
-            await getImagesInFolder()
-        ),
+        featured_image_url:
+            process.env.LOCAL_UPLOADER === "true"
+                ? await getStoryImageUrl(experienceSlug)
+                : "https://picsum.photos/seed/" +
+                  faker.string.alphanumeric(10) +
+                  "/800/600",
         elevation_requests: [],
+        license: faker.helpers.arrayElement(
+            Object.values(CC_LICENSES).map((license) => license.code)
+        ),
         createdAt: date,
         updatedAt: faker.date.between({ from: date, to: new Date() }),
     };

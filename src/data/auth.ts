@@ -1,5 +1,6 @@
 import "server-only";
 
+import { canUserEditStoryId } from "@/data/dto/story-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
@@ -16,6 +17,52 @@ type MembershipResult = {
     error?: string;
 };
 
+export type Permissions =
+    | "add_story"
+    | "edit_story"
+    | "superadmin"
+    | "manage_users";
+
+export type Role =
+    | "admin"
+    | "editor"
+    | "superadmin"
+    | "not_authorized"
+    | "guest";
+
+export const getPermissionsByUser = cache(
+    async (
+        userWorkOS: User | null,
+        experienceSlug: string,
+        storyId?: string
+    ): Promise<Permissions[]> => {
+        const permissions: Permissions[] = [];
+
+        // case when user not logged in, no permissions
+        if (!userWorkOS) return permissions;
+
+        if (await isUserSuperAdmin(userWorkOS)) {
+            permissions.push(
+                "superadmin",
+                "manage_users",
+                "add_story",
+                "edit_story"
+            );
+            return permissions;
+        } else if (await isUserAdmin(userWorkOS, experienceSlug)) {
+            permissions.push("manage_users", "add_story", "edit_story");
+        } else if (await isUserMember(userWorkOS, experienceSlug)) {
+            if (storyId) {
+                if (await canUserEditStoryId(storyId)) {
+                    permissions.push("edit_story");
+                }
+            }
+            permissions.push("add_story");
+        }
+        return permissions;
+    }
+);
+
 export const getCurrentUser = cache(async () => {
     const { user } = await withAuth({ ensureSignedIn: true });
     return user;
@@ -31,7 +78,7 @@ export async function isUserActive(
     experienceSlug: string
 ): Promise<boolean> {
     try {
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -48,7 +95,7 @@ export async function isUserMember(
     try {
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -65,7 +112,7 @@ export async function isUserAdmin(
     try {
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelation(
+        const userRelation = await getUserExperienceRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -113,7 +160,7 @@ export async function isUserPartOfOrganization(
     }
 }
 
-async function getUserExperienceRelation(
+async function getUserExperienceRelationBySlug(
     user: User | null,
     experienceSlug: string
 ): Promise<MembershipResult> {
@@ -121,7 +168,7 @@ async function getUserExperienceRelation(
         if (!user) throw new Error("User is not authenticated");
         dbConnect();
         const experience = await getExperienceDTO(experienceSlug);
-        const organizationId = experience.organization_id;
+        const organizationId = experience.organizationId;
         const membership =
             await workos.userManagement.listOrganizationMemberships({
                 userId: user.id,

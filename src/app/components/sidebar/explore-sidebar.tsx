@@ -8,13 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
-import { setRightSideBarOpen } from "@/lib/redux/navigation/navigationSlice";
-import { Experience } from "@/types/dtos";
+import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
+import { ExperienceDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";
 import { useDispatch } from "react-redux";
 
-function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
+function ExploreSidebarContent({
+    experiences,
+}: {
+    experiences: ExperienceDTO[];
+}) {
     const [experiencesSearchTerm, setExperiencesSearchTerm] = useState("");
     const filteredExperiences = experiences.filter((experiences) =>
         experiences.title
@@ -23,7 +27,11 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
     );
 
     return (
-        <div className={"flex flex-col w-full items-start gap-5 p-2 md:p-5"}>
+        <div
+            className={
+                "flex flex-col w-full items-start gap-5 p-2 md:p-5 overflow-y-auto"
+            }
+        >
             <article className="prose dark:prose-invert prose-sm">
                 <h1>Heritage Labs</h1>
                 <p className="text-muted-foreground">
@@ -37,10 +45,6 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
                     matter of ethics and practice.
                 </p>
             </article>
-            {/* <CurrentExperienceSelector
-            experiences={experiences}
-            className={"p-2 md:p-5"}
-        /> */}
             <Separator className="w-full my-2" />
             <div className={"w-full flex flex-col gap-3"}>
                 <Label htmlFor="Search experiences">
@@ -55,11 +59,10 @@ function ExploreSidebarContent({ experiences }: { experiences: Experience[] }) {
                 />
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
-                {filteredExperiences.map((experience: Experience) => (
+                {filteredExperiences.map((experience: ExperienceDTO) => (
                     <ExploreExperienceCard
                         key={experience.slug}
                         experience={experience}
-                        queryStringURL={true}
                     />
                 ))}
             </div>
@@ -72,16 +75,18 @@ export function ExploreSidebar({
     experiencesPromise,
 }: {
     slug: string;
-    experiencesPromise: Promise<Experience[]>;
+    experiencesPromise: Promise<ExperienceDTO[]>;
 }) {
     const isMobile = useIsMobile();
-    const experiences = use(experiencesPromise);
+    const experiences = use(experiencesPromise).filter(
+        (exp) => exp.slug !== "universe"
+    );
     const navigationState = useAppSelector((state) => state.navigation);
     const dispatch = useDispatch();
+    const state = navigationState.rightSideBarOpen ? "open" : "closed";
 
     if (slug !== "universe") return null;
     if (!experiences) return <div>No experiences found.</div>;
-    if (!navigationState.rightSideBarOpen) return null;
     if (isMobile) {
         return (
             <Drawer
@@ -102,7 +107,8 @@ export function ExploreSidebar({
 
     return (
         <div
-            className={`bg-sidebar text-sidebar-foreground max-w-[20rem] flex h-screen flex-col overflow-y-auto`}
+            data-state={state}
+            className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 max-w-70 xl:max-w-80 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
         >
             <ExploreSidebarContent experiences={experiences} />
         </div>

@@ -3,17 +3,9 @@ import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigat
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
 import { getAllPublicStoriesDTO } from "@/data/dto/story-dto";
-import { UnescoTagDTO } from "@/types/dtos";
 import { Suspense } from "react";
 
-export async function MapOverlay({
-    tagsPromise,
-    slug,
-}: {
-    tagsPromise: Promise<UnescoTagDTO[]>;
-    slug: string;
-}) {
-    const experienceSlug = slug;
+export async function MapOverlay({ slug }: { slug: string }) {
     const storiesPromise = getAllPublicStoriesDTO();
 
     return (
@@ -21,7 +13,7 @@ export async function MapOverlay({
             <div className="relative w-full h-full">
                 {/* top left */}
                 <div className={"absolute top-0 left-0 flex flex-col gap-3"}>
-                    <NavigationWidgetHolder slug={experienceSlug} />
+                    <NavigationWidgetHolder slug={slug} />
                 </div>
 
                 {/* top right */}
@@ -37,7 +29,6 @@ export async function MapOverlay({
                         <Suspense>
                             <StoryDetails
                                 slug={slug}
-                                tagsPromise={tagsPromise}
                                 storiesPromise={storiesPromise}
                             />
                         </Suspense>

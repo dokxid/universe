@@ -1,9 +1,15 @@
 import { getLineStringFromLocations } from "@/lib/utils/geo";
 import { StoryDTO } from "@/types/dtos";
 
-export type TaggedConnectionDTO = {
+export type TaggedLineConnectionStringDTO = {
     tag: string;
     lineStrings: GeoJSON.LineString[];
+};
+
+type TaggedConnectionDTO = {
+    from: [longitude: number, latitude: number];
+    to: [longitude: number, latitude: number];
+    tag: string;
 };
 
 export function getTagLines(stories: StoryDTO[]): GeoJSON.LineString[] {
@@ -17,20 +23,46 @@ export function getTagLines(stories: StoryDTO[]): GeoJSON.LineString[] {
     return lineStrings;
 }
 
-export function getTagLineStringsDTO(
+export function getTagLineStrings(
     stories: StoryDTO[],
     tags: string[]
-): TaggedConnectionDTO[] {
-    const dtoToReturn: TaggedConnectionDTO[] = [];
+): TaggedLineConnectionStringDTO[] {
+    const allConnections: TaggedLineConnectionStringDTO[] = [];
     for (const tag of tags) {
         const filteredStories = stories.filter((story) =>
             story.tags.includes(tag)
         );
         const tagLines = getTagLines(filteredStories);
-        dtoToReturn.push({
+        allConnections.push({
             tag: tag,
             lineStrings: tagLines,
         });
     }
-    return dtoToReturn;
+    return allConnections;
+}
+
+export function getTaggedConnectionDTO(
+    stories: StoryDTO[],
+    tags: string[]
+): TaggedConnectionDTO[] {
+    const lineStrings: TaggedLineConnectionStringDTO[] = getTagLineStrings(
+        stories,
+        tags
+    );
+    const connections: TaggedConnectionDTO[] = lineStrings.flatMap(
+        (connection) => {
+            if (tags.includes(connection.tag)) {
+                return connection.lineStrings.map((lineString) => {
+                    const coords = lineString.coordinates;
+                    return {
+                        from: coords[0] as [number, number],
+                        to: coords[1] as [number, number],
+                        tag: connection.tag,
+                    };
+                });
+            }
+            return [];
+        }
+    );
+    return connections;
 }

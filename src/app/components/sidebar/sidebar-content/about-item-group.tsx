@@ -1,19 +1,21 @@
 "use client";
 
-import { CircleQuestionMark } from "lucide-react";
+import { BookKey, CircleQuestionMark } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { ItemGroup, SidebarItemGroup } from "./item-group";
 
 export function AboutItemGroup() {
+    const slug = usePathname()?.split("/")[1] || "universe";
     const aboutItems: SidebarItemGroup = [
         {
             title: "Imprint",
-            href: "/about#imprint",
+            href: `/${slug}/legal/imprint`,
             icon: CircleQuestionMark,
         },
         {
             title: "Privacy Policy",
-            href: "/about#privacy-policy",
-            icon: CircleQuestionMark,
+            href: `/${slug}/legal/privacy`,
+            icon: BookKey,
         },
     ];
 

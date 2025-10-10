@@ -1,32 +1,87 @@
-import { workos } from "@/lib/auth/workos/callback";
+import "server-only";
 
-export async function getUserDTO(userId: string) {
+import { getStoriesByUserDTO } from "@/data/dto/story-dto";
+import { getUser, getUsersFromLab } from "@/data/fetcher/user-fetcher";
+import { sanitizeUserDTO } from "@/data/transformers/user-transformer";
+import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+
+export async function getUsersByLabDTO(labSlug: string): Promise<UserDTO[]> {
     try {
-        return JSON.stringify(await workos.userManagement.getUser(userId));
-    } catch (err) {
-        console.error("Error fetching user:", err);
-        return "<error>";
+        const users = await getUsersFromLab(labSlug);
+        if (!users) return [];
+        const usersWithStory = await setStoriesForUsers(users);
+        const sanitizedUsers = await Promise.all(
+            usersWithStory.map(async (user) => {
+                return await sanitizeUserDTO(user);
+            })
+        );
+        return sanitizedUsers;
+    } catch (error) {
+        console.error("Error fetching users by lab:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+export async function getUserDTO(userId: string): Promise<UserDTO | null> {
+    try {
+        const user = await getUser(userId);
+        if (!user) throw new Error("User not found");
+        const userWithStories = await setStoryForUser(user);
+        if (!userWithStories) throw new Error("User not found");
+        return await sanitizeUserDTO(userWithStories);
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }
 
-export async function getUsersBySlug(slug: string) {
+export async function getUserFromWorkOSIdDTO(
+    workOSId: string
+): Promise<UserDTO | null> {
     try {
-        const usersToReturn = await workos.userManagement.listUsers({
-            organizationId: slug,
-        });
-        return JSON.stringify(usersToReturn.data);
-    } catch (err) {
-        console.error("Error fetching users by slug:", err);
-        return "<error>";
+        const user = await getUser(workOSId, true);
+        if (!user) return null;
+        return await sanitizeUserDTO(user);
+    } catch (error) {
+        console.error("Error fetching user by WorkOS ID:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }
 
-export async function getUsersDTO() {
+async function setStoryForUser(user: UserDTO) {
     try {
-        const usersToReturn = await workos.userManagement.listUsers();
-        return JSON.stringify(usersToReturn.data);
-    } catch (err) {
-        console.error("Error fetching users:", err);
-        return "<error>";
+        if (!user) throw new Error("User not found");
+        const stories = await getStoriesByUserDTO(user._id);
+        return {
+            ...user,
+            stories: stories || [],
+        };
+    } catch (error) {
+        console.error("Error setting story for user:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+async function setStoriesForUsers(users: UserDTO[]) {
+    try {
+        if (!users) return [] as UserDTO[];
+        return await Promise.all(
+            users.map(async (user) => {
+                const userWithStories = await setStoryForUser(user);
+                return userWithStories;
+            })
+        );
+    } catch (error) {
+        console.error("Error setting stories for users:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
     }
 }

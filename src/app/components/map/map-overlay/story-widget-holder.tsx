@@ -1,9 +1,9 @@
 "use client";
 
-import { Toggle } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setRightSideBarOpen } from "@/lib/redux/navigation/navigationSlice";
-import { PanelRightOpen } from "lucide-react";
+import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
+import { Compass } from "lucide-react";
 
 export function StoryWidgetHolder({ slug }: { slug: string }) {
     const navigationState = useAppSelector((state) => state.navigation);
@@ -29,16 +29,25 @@ export function StoryWidgetHolder({ slug }: { slug: string }) {
                 </Button>
             )} */}
             {slug === "universe" && (
-                <Toggle
-                    onPressedChange={(pressed) =>
-                        dispatch(setRightSideBarOpen(pressed))
+                <Button
+                    data-state={
+                        navigationState.rightSideBarOpen ? "open" : "closed"
                     }
-                    pressed={navigationState.rightSideBarOpen}
+                    onClick={() =>
+                        dispatch(
+                            setRightSideBarOpen(
+                                !navigationState.rightSideBarOpen
+                            )
+                        )
+                    }
                     variant={"secondary_custom"}
+                    className={
+                        "group/button flex flex-row gap-2 items-center h-10 hover:ring-2"
+                    }
                 >
-                    <div className="hidden lg:inline-block">Explore</div>
-                    <PanelRightOpen />
-                </Toggle>
+                    <p className={"text-xs hidden lg:inline-block"}>Explore</p>
+                    <Compass />
+                </Button>
             )}
         </div>
     );

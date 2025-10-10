@@ -1,12 +1,20 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
-import { getTagLines, TaggedConnectionDTO } from "@/data/dto/geo-dto";
+import { getTaggedConnectionDTO } from "@/data/dto/geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePrevious } from "@/hooks/use-previous";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setDescriptorOpen } from "@/lib/redux/settings/settingsSlice";
+import { triggerZoomOut } from "@/lib/redux/map/map-slice";
+import {
+    MAP_TILES,
+    setDescriptorOpen,
+} from "@/lib/redux/settings/settings-slice";
 import { getTagColor } from "@/lib/utils/color-string";
-import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
-import { Experience, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import {
+    addSelectedTagParam,
+    setSelectedStoryIdParams,
+} from "@/lib/utils/param-setter";
+import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,
@@ -15,7 +23,7 @@ import {
 } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { ArcLayer } from "deck.gl";
-import { EdgeInsets } from "maplibre-gl";
+import { EdgeInsets, FlyToOptions } from "maplibre-gl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -26,8 +34,6 @@ import {
     useControl,
     useMap,
 } from "react-map-gl/maplibre";
-
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
 
 type TagConnection = {
     from: [longitude: number, latitude: number];
@@ -41,44 +47,91 @@ function DeckGLOverlay(props: DeckProps) {
     return null;
 }
 
+/*
+    react-hooks/exhaustive-deps will cry around here, but we don't want to add maps to
+    the dependency array, as it would cause infinite loops and break functionality.
+*/
 function MapController({
     currentExperience,
     selectedStory,
 }: {
-    currentExperience: Experience;
+    currentExperience: ExperienceDTO;
     selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
-    const flyBackState = useAppSelector((state) => state.map.flyBack);
     const isMobile = useIsMobile();
+    const searchParams = useSearchParams();
+    const experience = useMemo(
+        () => searchParams.get("exp"),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [searchParams.get("exp")]
+    );
+    const mapState = useAppSelector((state) => state.map);
+    const navigationState = useAppSelector((state) => state.navigation);
+    const prevStoryCenter = usePrevious(selectedStory?.location.coordinates);
 
     useEffect(() => {
+        if (!map) return;
         let center: [number, number], zoom: number, edgeInsets: EdgeInsets;
+        let options: FlyToOptions = {};
+
         if (selectedStory) {
+            // case: story_old || !story -> story_new selected
             center = selectedStory.location.coordinates;
-            zoom = 12;
+            zoom = map.getZoom() < 8 ? 8 : map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : new EdgeInsets(0, 0, 0, 450);
         } else {
-            center = currentExperience.center.coordinates;
-            zoom = currentExperience.initial_zoom;
-            edgeInsets = new EdgeInsets(0, 0, 0, 0);
+            // case: story -> !story
+            center = prevStoryCenter || currentExperience.center.coordinates;
+            zoom = map.getZoom() < 8 ? 8 : map.getZoom();
+            edgeInsets = isMobile
+                ? new EdgeInsets(0, 0, 0, 0)
+                : navigationState.rightSideBarOpen
+                ? new EdgeInsets(0, 0, 0, 0)
+                : new EdgeInsets(0, 0, 0, 0);
+            options = { maxDuration: 0 };
         }
-        map?.flyTo({
+        map.flyTo({
+            center,
+            zoom,
+            padding: edgeInsets,
+            ...options,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedStory]);
+
+    useEffect(() => {
+        if (!map) return;
+        const center = currentExperience.center.coordinates;
+        const zoom = currentExperience.initial_zoom;
+        const edgeInsets = new EdgeInsets(0, 0, 0, 0);
+        map.flyTo({
             center,
             zoom,
             padding: edgeInsets,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentExperience, selectedStory]);
+    }, [experience]);
+
     useEffect(() => {
-        map?.flyTo({
-            center: currentExperience.center.coordinates,
-            zoom: currentExperience.initial_zoom,
-        });
+        if (!map) return;
+        if (map.getZoom() > 8) {
+            map.zoomOut();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flyBackState]);
+    }, [mapState.zoomOut]);
+
+    useEffect(() => {
+        if (!map) return;
+        if (mapState.resetView) {
+            map.setPitch(0);
+            map.setBearing(0);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mapState.resetView]);
+
     return null;
 }
 
@@ -90,12 +143,11 @@ export function DeckGLMap({
 }: {
     tags: UnescoTagDTO[];
     stories: StoryDTO[];
-    experiences: Experience[];
+    experiences: ExperienceDTO[];
     experienceSlug: string;
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
-    const mapState = useAppSelector((state) => state.map);
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags");
@@ -118,14 +170,14 @@ export function DeckGLMap({
         if (experienceSlug !== "universe") {
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
-            ) as Experience;
+            ) as ExperienceDTO;
         }
         const experienceToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
         return experiences.find(
             (exp) => exp.slug === experienceToShow
-        ) as Experience;
+        ) as ExperienceDTO;
     }, [experienceSlug, experiences, searchParams]);
 
     const storiesFiltered = useMemo(() => {
@@ -150,39 +202,80 @@ export function DeckGLMap({
     useEffect(() => {
         if (!activeStory) {
             setConnections([]);
-            setArcHeight(0.6);
+            setArcHeight(1.2);
             return;
         }
-        setArcHeight(0.6);
+        setArcHeight(1.2);
         const storiesExceptActive = storiesFiltered.filter(
             (story) => story._id !== activeStory?._id
         );
+        const tagFilters = selectedFilterTags
+            ? selectedFilterTags.split(",")
+            : activeStory.tags;
         const storiesToUse = [activeStory, ...storiesExceptActive];
-        const newConnections = getTaggedConnections(
+        const connectionsSanitized = getTaggedConnectionDTO(
             storiesToUse,
-            activeStory.tags
-        );
-        const connectionsSanitized: TagConnection[] = newConnections.flatMap(
-            (conn) =>
-                conn.lineStrings.map((lineString) => {
-                    const coords = lineString.coordinates;
-                    return {
-                        from: coords[0] as [number, number],
-                        to: coords[coords.length - 1] as [number, number],
-                        tag: conn.tag, // Include the tag
-                    };
-                })
+            tagFilters
         );
         setTimeout(() => {
-            setArcHeight(connectionsSanitized.length > 0 ? 1 : 0.6);
+            setArcHeight(connectionsSanitized.length > 0 ? 1.2 : 0.6);
         }, 100);
         setConnections(connectionsSanitized);
     }, [activeStory, selectedFilterTags, storiesFiltered]);
 
-    const INITIAL_VIEW_STATE: MapViewState = {
-        longitude: experience.center.coordinates[0],
-        latitude: experience.center.coordinates[1],
-        zoom: mapState.zoomLevel,
+    const INITIAL_VIEW_STATE: MapViewState = activeStory
+        ? {
+              longitude: activeStory.location.coordinates[0],
+              latitude: activeStory.location.coordinates[1],
+              zoom: 8,
+          }
+        : {
+              longitude: experience.center.coordinates[0],
+              latitude: experience.center.coordinates[1],
+              zoom: experience.initial_zoom,
+          };
+
+    const getSameRouteConnections = (
+        connections: TagConnection[],
+        connection: TagConnection
+    ) => {
+        const sameRouteConnections = connections.filter(
+            (conn) =>
+                (conn.from[0] === connection.from[0] &&
+                    conn.from[1] === connection.from[1] &&
+                    conn.to[0] === connection.to[0] &&
+                    conn.to[1] === connection.to[1]) ||
+                (conn.from[0] === connection.to[0] &&
+                    conn.from[1] === connection.to[1] &&
+                    conn.to[0] === connection.from[0] &&
+                    conn.to[1] === connection.from[1])
+        );
+        return sameRouteConnections;
+    };
+
+    const getArcHeight = (
+        connection: TagConnection,
+        index: number,
+        connections: TagConnection[]
+    ) => {
+        // Find all connections between the same two points
+        const sameRouteConnections = getSameRouteConnections(
+            connections,
+            connection
+        );
+
+        if (sameRouteConnections.length === 1) {
+            return arcHeight; // Single arc, use base height
+        }
+
+        // Multiple arcs between same points - create different heights
+        const arcIndex = sameRouteConnections.indexOf(connection);
+        const totalArcs = sameRouteConnections.length;
+        const heightVariation = 0.3; // Adjust this to control how much arcs spread
+
+        // Create alternating heights above and below the base
+        const offset = (arcIndex - (totalArcs - 1) / 2) * heightVariation;
+        return Math.max(0.1, arcHeight + offset);
     };
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
@@ -196,24 +289,6 @@ export function DeckGLMap({
         setActiveStory(story);
         setSelectedStoryIdParams(pathname, searchParams, story._id);
     };
-
-    function getTaggedConnections(
-        stories: StoryDTO[],
-        tags: string[]
-    ): TaggedConnectionDTO[] {
-        const dtoToReturn: TaggedConnectionDTO[] = [];
-        for (const tag of tags) {
-            const filteredStories = stories.filter((story) =>
-                story.tags.includes(tag)
-            );
-            const tagLines = getTagLines(filteredStories);
-            dtoToReturn.push({
-                tag: tag,
-                lineStrings: tagLines,
-            });
-        }
-        return dtoToReturn;
-    }
 
     const layers: LayersList = useMemo(
         () => [
@@ -264,9 +339,19 @@ export function DeckGLMap({
                 getSourceColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getTargetColor: (d: TagConnection) => getTagColor(tags, d.tag),
                 getWidth: 3,
+                widthMinPixels: 3,
                 pickable: true,
                 onHover: (info) => setHoverInfo(info),
-                getHeight: arcHeight,
+                onClick: (info) => {
+                    addSelectedTagParam(
+                        pathname,
+                        searchParams,
+                        info.object?.tag
+                    );
+                    return true;
+                },
+                getHeight: (d: TagConnection & { index: number }) =>
+                    getArcHeight(d, d.index, connections),
                 transitions: {
                     getHeight: {
                         duration: 1000,
@@ -292,15 +377,13 @@ export function DeckGLMap({
             <div className={"h-full w-full"}>
                 <Map
                     reuseMaps={true}
-                    onClick={() => {
-                        setActiveStory(null);
-                        setSelectedStoryIdParams(pathname, searchParams, "");
-                        dispatch(setDescriptorOpen(false));
-                    }}
                     id="mainMap"
                     initialViewState={INITIAL_VIEW_STATE}
                     onRender={() => {}}
-                    mapStyle={settingsState.mapTiles}
+                    mapStyle={
+                        MAP_TILES[settingsState.mapTiles] ||
+                        settingsState.mapTiles
+                    }
                     attributionControl={false}
                     onContextMenu={(e) => {
                         handleContextMenu(e);
@@ -310,18 +393,19 @@ export function DeckGLMap({
                     }}
                     projection={settingsState.globeView ? "globe" : "mercator"}
                 >
-                    <AttributionControl
-                        compact={true}
-                        position={"bottom-right"}
-                    />
                     <MapController
                         currentExperience={experience}
                         selectedStory={activeStory}
+                    />
+                    <AttributionControl
+                        compact={true}
+                        position={"bottom-right"}
                     />
                     {storiesFiltered.map((story, index) => (
                         <Marker
                             longitude={story.location.coordinates[0]}
                             latitude={story.location.coordinates[1]}
+                            rotationAlignment={settingsState.markerProjection}
                             key={index}
                             onClick={(e) => {
                                 e.originalEvent.stopPropagation();
@@ -329,24 +413,60 @@ export function DeckGLMap({
                             }}
                         >
                             <CustomMarker
-                                tags={tags}
                                 story={story}
                                 isActive={activeStory?._id === story._id}
                             />
                         </Marker>
                     ))}
-                    <DeckGLOverlay pickingRadius={15} layers={layers} />
+                    <DeckGLOverlay
+                        pickingRadius={15}
+                        layers={layers}
+                        onClick={() => {
+                            if (activeStory) {
+                                setActiveStory(null);
+                                setSelectedStoryIdParams(
+                                    pathname,
+                                    searchParams,
+                                    ""
+                                );
+                                dispatch(triggerZoomOut());
+                            }
+                            dispatch(setDescriptorOpen(false));
+                        }}
+                    />
                     {hoverInfo?.object && !isMobile && (
                         <div
                             className={
-                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-base"
+                                "absolute z-50 pointer-events-none bg-card p-2 rounded-md shadow-md text-sm"
                             }
                             style={{
                                 left: hoverInfo.x,
                                 top: hoverInfo.y,
                             }}
                         >
-                            {`matching tags: ${hoverInfo.object.tag}`}
+                            <p>{`click to filter for:`}</p>
+                            <p>{`${hoverInfo.object.tag}`}</p>
+                            {settingsState.debug && (
+                                <div className={"pt-2"}>
+                                    <p className={"text-xs font-mono"}>
+                                        {`from: [${hoverInfo.object.from[0].toFixed(
+                                            2
+                                        )}, ${hoverInfo.object.from[1].toFixed(
+                                            2
+                                        )}]`}
+                                    </p>
+                                    <p className={"text-xs font-mono"}>
+                                        {`to: [${hoverInfo.object.to[0].toFixed(
+                                            2
+                                        )}, ${hoverInfo.object.to[1].toFixed(
+                                            2
+                                        )}]`}
+                                    </p>
+                                    <p className={"text-xs font-mono"}>
+                                        {`tag: ${hoverInfo.object.tag}`}{" "}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     )}
                 </Map>

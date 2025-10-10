@@ -1,12 +1,12 @@
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
-import { Experience } from "@/types/dtos";
+import { ExperienceDTO } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export function ExperienceCard({ experience }: { experience: Experience }) {
+export function ExperienceCard({ experience }: { experience: ExperienceDTO }) {
     const url = `/${experience.slug}/map`;
 
     return (
@@ -22,10 +22,10 @@ export function ExperienceCard({ experience }: { experience: Experience }) {
             >
                 <div className="overflow-hidden rounded-t-md group-hover:h-6 shrink">
                     <AspectRatio ratio={16 / 9}>
-                        {experience.featured_image ? (
+                        {experience.featured_image_url ? (
                             <Suspense fallback={<ListExperiencesSkeleton />}>
                                 <Image
-                                    src={experience.featured_image}
+                                    src={experience.featured_image_url}
                                     alt={experience.title}
                                     fill={true}
                                     sizes="(min-width: 768px) 50vw, 100vw"

@@ -1,55 +1,66 @@
-import S3Image from "@/app/components/embeds/s3-image";
-import { StoryDetailsHeader } from "@/app/components/map/map-overlay/story-details";
-import { Badge } from "@/components/ui/badge";
-import { useAppDispatch } from "@/lib/hooks";
-import { setSelectedStoryId } from "@/lib/redux/map/mapSlice";
-import { getTagColorHex } from "@/lib/utils/color-string";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
-import Link from "next/link";
+"use client";
 
-export function StoryHoverCardContent({
-    tags,
-    story,
-}: {
-    tags: UnescoTagDTO[];
-    story: StoryDTO;
-}) {
-    const dispatch = useAppDispatch();
+import { TagList } from "@/app/components/cards/tag-list";
+import { HostedImage } from "@/app/components/embeds/s3-image";
+import { StoryAuthorHeaderMapView } from "@/app/components/layout/story-author-details";
+import { HoverCardContent } from "@/components/ui/hover-card";
+import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
+import { StoryDTO } from "@/types/dtos";
+import { usePathname, useSearchParams } from "next/navigation";
+
+export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     return (
-        <div className={"max-h-[400px] flex flex-col gap-1 overflow-y-auto"}>
+        <HoverCardContent className={"p-0 border-none bg-transparent"}>
             <div
-                onClick={() => dispatch(setSelectedStoryId(story._id))}
                 className={
-                    "relative h-[150px] w-full flex justify-center items-center shrink-0 rounded-md hover:brightness-75 hover:cursor-pointer transition-all duration-200 overflow-hidden"
+                    "relative h-[400px] flex flex-col gap-1 overflow-y-auto hover:outline-2 outline-white dark:outline-accent-blue-foreground rounded-2xl shadow-lg"
                 }
             >
-                <S3Image
-                    className={"hover:scale-105 transition-all duration-200"}
-                    link={false}
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
-            </div>
-            <StoryDetailsHeader
-                story={story}
-                className={"bg-card"}
-                profilePictureVisible={false}
-            />
-            {story.tags && story.tags.length > 0 && (
-                <div className={"flex flex-row flex-wrap gap-x-1 gap-y-2 mb-3"}>
-                    {story.tags.map((tag) => (
-                        <Badge
-                            style={{
-                                backgroundColor: getTagColorHex(tags, tag),
-                            }}
-                            variant={"tag"}
-                            key={tag}
-                        >
-                            <Link href={`/tags/${tag}`}>{tag}</Link>
-                        </Badge>
-                    ))}
+                <div
+                    className={
+                        "relative h-full w-full overflow-hidden group/card"
+                    }
+                    onClick={() => {
+                        setSelectedStoryIdParams(
+                            pathname,
+                            searchParams,
+                            story._id
+                        );
+                    }}
+                >
+                    <HostedImage
+                        className={
+                            "group-hover/card:scale-105 transition-all duration-200 brightness-40 cursor-pointer"
+                        }
+                        link={false}
+                        experience={story.experience}
+                        fileName={story.featured_image_url}
+                    />
+                    <StoryAuthorHeaderMapView
+                        story={story}
+                        className={
+                            "absolute top-2 left-4 right-4 bg-transparent [&_h3]:text-md [&_h3]:group-hover/card:font-black [&_h3]:group-hover/card:after:content-['_→'] [&_p]:text-xs [&_p]:font-medium **:text-white"
+                        }
+                        profilePictureVisible={false}
+                        lines={2}
+                        forceWhiteText={true}
+                    />
                 </div>
-            )}
-        </div>
+                <div className={"absolute bottom-2 left-4 right-4"}>
+                    <p className={"prose-group-label -mb-2 text-white"}>
+                        Tags:
+                    </p>
+                    {story.tags && story.tags.length > 0 && (
+                        <TagList
+                            tags={story.tags}
+                            variant={"add"}
+                            size={"sm"}
+                        />
+                    )}
+                </div>
+            </div>
+        </HoverCardContent>
     );
 }

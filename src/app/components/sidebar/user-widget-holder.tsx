@@ -3,44 +3,44 @@
 import {
     UserWidgetAuthorized,
     UserWidgetNoAuth,
-    UserWidgetNotAuthorized,
 } from "@/app/components/cards/user-widgets";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
-import { useParams } from "next/navigation";
+import { UserWidgetAuthorizedSkeleton } from "@/components/skeletons/user-widget-skeleton";
+import { Role } from "@/data/auth";
+import { useGetRoleInLab } from "@/lib/swr/user-hook";
+import { usePathname } from "next/navigation";
 
 export function UserWidgetHolder() {
-    const { slug } = useParams<{ slug: string }>();
-    const { roles, loading, organizationId, user } = useAuth();
+    const pathname = usePathname();
+    const slug = pathname.split("/")[1];
+    const { roleInLab, isLoading, isError } = useGetRoleInLab(slug);
 
-    if (loading) return <UserWidgetNoAuth />;
+    if (isLoading || isError) return <UserWidgetAuthorizedSkeleton />;
 
-    if (!user) {
-        return <UserWidgetNoAuth />;
-    }
+    if (!roleInLab || roleInLab === "guest")
+        return <UserWidgetNoAuth slug={slug} />;
 
-    if (organizationId === process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
-        return (
-            <UserWidgetAuthorized
-                user={user}
-                slug={slug}
-                role={"Super Admin"}
-            />
-        );
-    }
+    const roleMap: Record<Role, string> = {
+        guest: "Guest",
+        admin: "Admin",
+        editor: "Editor",
+        not_authorized: "Not Authorized",
+        superadmin: "Super Admin",
+    };
 
-    if (slug === "universe") {
-        return null;
-    }
-
-    if (roles === undefined) {
-        return <UserWidgetNotAuthorized slug={slug} />;
+    if (roleInLab === "superadmin") {
+        return <UserWidgetAuthorized slug={slug} role={roleMap[roleInLab]} />;
     }
 
     return (
-        <UserWidgetAuthorized
-            user={user}
-            slug={slug}
-            role={roles.includes("admin") ? "Admin" : "Editor"}
-        />
+        <>
+            <UserWidgetAuthorized slug={slug} role={roleMap[roleInLab]} />
+            {/* <Button
+                onClick={() =>
+                    mutate(["user", slug], undefined, { revalidate: true })
+                }
+            >
+                revalidate
+            </Button> */}
+        </>
     );
 }

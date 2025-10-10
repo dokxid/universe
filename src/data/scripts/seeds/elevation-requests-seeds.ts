@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 
 export function generateElevationRequests(): ElevationRequest[] {
     const requests: ElevationRequest[] = [];
-    const amountOfRejectedRequests = faker.number.int({ min: 0, max: 5 });
+    const amountOfRejectedRequests = faker.number.int({ min: 0, max: 2 });
     const dates = faker.date.betweens({
         from: "2023-01-01T00:00:00.000Z",
         to: new Date().toISOString(),

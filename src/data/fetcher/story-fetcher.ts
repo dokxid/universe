@@ -1,11 +1,31 @@
 import "server-only";
 
 import { getExperiences } from "@/data/fetcher/experience-fetcher";
+import { sanitizeExperience } from "@/data/transformers/experience-transformer";
 import { fetchAndMapAuthorsForStoryDTO } from "@/data/transformers/story-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { Experience, NewStoryData, StoryDTO } from "@/types/dtos";
 import mongoose from "mongoose";
+
+export async function sanitizeLabStories(lab: Experience): Promise<StoryDTO[]> {
+    try {
+        if (!lab.stories || lab.stories.length === 0) {
+            return [];
+        }
+        const stories = lab.stories.flatMap((story) => ({
+            ...story,
+            experience: lab.slug,
+        })) as StoryDTO[];
+        const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(stories);
+        return sanitizedStories;
+    } catch (error) {
+        console.error("Error sanitizing lab stories:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
 
 export async function getAllStories(): Promise<StoryDTO[]> {
     try {
@@ -13,22 +33,13 @@ export async function getAllStories(): Promise<StoryDTO[]> {
         const allSanitizedStories: StoryDTO[] = [];
 
         for (const experience of experiences) {
-            if (!experience.stories || experience.stories.length === 0) {
-                continue; // Skip to the next experience if no stories found
-            }
-            const stories = experience.stories.flatMap((story) => ({
-                ...story,
-                experience: experience.slug,
-            })) as StoryDTO[];
-            const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(
-                stories
-            );
+            const sanitizedStories = await sanitizeLabStories(experience);
             allSanitizedStories.push(...sanitizedStories);
         }
 
         return allSanitizedStories;
     } catch (err) {
-        console.log("Error getting all stories:", err);
+        console.error("Error getting all stories:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
@@ -37,28 +48,40 @@ export async function queryStory(
     storyId: mongoose.Types.ObjectId
 ): Promise<StoryDTO> {
     try {
+        // get lab with found stories, and detect if no story was found
         await dbConnect();
-
-        const queryResult = (await ExperienceModel.aggregate([
-            { $unwind: "$stories" },
-            { $match: { "stories._id": storyId } },
-        ]).exec()) as Experience[];
-
-        // detect if no story was found
-        if (!queryResult || queryResult.length === 0) {
+        const labWithFoundStories = await ExperienceModel.findOne({
+            "stories._id": storyId,
+        }).exec();
+        if (!labWithFoundStories) {
+            throw new Error("Story not found");
+        }
+        const sanitizedLabWithFoundStories =
+            sanitizeExperience(labWithFoundStories);
+        if (!sanitizedLabWithFoundStories) {
             throw new Error("Story not found");
         }
 
+        // Find the specific story by ID instead of taking the first one
+        const queriedStory = sanitizedLabWithFoundStories.stories.find(
+            (story) => story._id === storyId.toString()
+        );
+
+        if (!queriedStory) {
+            throw new Error("Story not found in sanitized stories");
+        }
+
         // add experience slug and author name to story dto
-        const queriedStory: StoryDTO = queryResult[0]
-            .stories as unknown as StoryDTO;
-        queriedStory.experience = queryResult[0].slug;
-        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([
-            queriedStory,
-        ]);
+        const storyDTO: StoryDTO = {
+            ...queriedStory,
+            experience: sanitizedLabWithFoundStories.slug,
+        } as StoryDTO;
+
+        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([storyDTO]);
 
         return storyWithAuthor[0];
     } catch (err) {
+        console.error("Error querying story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
@@ -76,5 +99,28 @@ export async function insertStory(
         ).exec();
     } catch (err) {
         console.error("Error inserting story:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
+export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
+    try {
+        await dbConnect();
+        const labs = await getExperiences();
+        const allSanitizedStories: StoryDTO[] = [];
+
+        for (const lab of labs) {
+            const sanitizedStories = await sanitizeLabStories(lab);
+            allSanitizedStories.push(...sanitizedStories);
+        }
+
+        const storiesByUser = allSanitizedStories.filter(
+            (story) => story.author === String(userId)
+        );
+
+        return storiesByUser;
+    } catch (err) {
+        console.error("Error getting stories by user:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }

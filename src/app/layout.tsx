@@ -3,7 +3,10 @@ import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
 import StoreProvider from "@/app/store-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
+import {
+    AuthKitProvider,
+    Impersonation,
+} from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
 import React from "react";
 import { Toaster } from "sonner";
@@ -11,7 +14,6 @@ import "./globals.css";
 
 type RootLayoutProps = {
     children: React.ReactNode;
-    modal?: React.ReactNode;
 };
 
 export const metadata: Metadata = {
@@ -36,9 +38,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                     disableTransitionOnChange
                                 >
                                     <SidebarLayout>
-                                        <div className="flex grow">
-                                            {children}
-                                        </div>
+                                        <Impersonation />
+                                        {children}
                                         <Toaster />
                                         <SpeedInsights />
                                     </SidebarLayout>

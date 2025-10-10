@@ -1,12 +1,15 @@
 "use server";
 
-import { seedDatabase } from "@/data/scripts/seed-database";
+import { startSeedingDatabase } from "@/data/scripts/seed-database-server";
 import { seedOneExperience } from "@/data/scripts/seed-experiences";
 import { revalidateTag } from "next/cache";
 
-export async function seedDatabaseAction(numStories: number) {
+export async function seedDatabaseAction(
+    numRandomCityCenters: number,
+    numStories: number
+) {
     try {
-        await seedDatabase(numStories);
+        await startSeedingDatabase(numRandomCityCenters, numStories);
     } catch (error) {
         console.error("Error during database seeding:", error);
         throw error;

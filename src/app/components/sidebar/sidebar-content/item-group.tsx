@@ -1,26 +1,23 @@
 "use client";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
     SidebarGroup,
     SidebarGroupLabel,
-    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { MoreHorizontal } from "lucide-react";
+import { CollapsibleContent } from "@radix-ui/react-collapsible";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export type SidebarItemGroup = {
     title: string;
     href: string;
     icon: React.ElementType;
+    prefetch?: boolean;
     dropdownItems?: { title: string; href: string }[];
 }[];
 
@@ -34,59 +31,62 @@ export function ItemGroup({
     groupLabel: string;
 }) {
     const { setOpenMobile } = useSidebar();
+    const pathname = usePathname();
+
     return (
-        <SidebarGroup className={"py-2"}>
-            <SidebarGroupLabel className={"font-semibold"}>
-                {groupLabel}
-            </SidebarGroupLabel>
-            {children}
-            {items.map((item) => (
-                <SidebarMenuItem
-                    key={item.title}
-                    className={"flex flex-row justify-between items-center"}
+        <Collapsible defaultOpen={true} className={"group/collapsible"}>
+            <SidebarGroup className={"py-2 gap-0.5"}>
+                <SidebarGroupLabel
+                    asChild
+                    className={"font-[650] font-stretch-90%"}
                 >
-                    <SidebarMenuButton asChild>
-                        <Link
-                            href={item.href}
-                            className={"flex items-center w-full"}
-                            aria-label={item.title}
-                            onClick={() => setOpenMobile(false)}
+                    <CollapsibleTrigger
+                        className={
+                            "hover:font-[750] hover:*:stroke-2.5 transition-all duration-100 hover:text-accent-blue-foreground hover:cursor-pointer"
+                        }
+                    >
+                        <ChevronDown className="mr-1 -ml-0.25 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                        {groupLabel}
+                    </CollapsibleTrigger>
+                </SidebarGroupLabel>
+                {children}
+                <CollapsibleContent>
+                    {items.map((item) => (
+                        <SidebarMenuItem
+                            key={item.title}
+                            className={
+                                "flex flex-row justify-between items-center"
+                            }
                         >
-                            <item.icon className={"stroke-muted-foreground"} />
-                            <span>{item.title}</span>
-                            {/* <ChevronRight
+                            <SidebarMenuButton asChild>
+                                <Link
+                                    href={item.href}
+                                    className={`flex items-center w-full transition-all duration-100 ${
+                                        pathname === item.href
+                                            ? "bg-accent-blue/50 group-hover/menu-item:bg-accent-blue! text-accent-blue-foreground group-hover/menu-item:text-accent-blue-foreground/90! font-semibold rounded-md"
+                                            : "group-hover/menu-item:bg-accent-blue/30! group-hover/menu-item:font-semibold group-hover/menu-item:text-primary"
+                                    }`}
+                                    aria-label={item.title}
+                                    onClick={() => setOpenMobile(false)}
+                                    prefetch={item.prefetch || true}
+                                >
+                                    <item.icon
+                                        className={`transition-all duration-100 group-hover/menu-item:rotate-3 ${
+                                            pathname === item.href
+                                                ? "stroke-accent-blue-foreground group-hover/menu-item:stroke-accent-blue-foreground/90!"
+                                                : "stroke-muted-foreground group-hover/menu-item:stroke-primary"
+                                        }`}
+                                    />
+                                    <span>{item.title}</span>
+                                    {/* <ChevronRight
                                 className={"ml-auto stroke-muted-foreground"}
-                            /> */}
-                        </Link>
-                    </SidebarMenuButton>
-                    {item.dropdownItems && (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuAction>
-                                    <MoreHorizontal />
-                                </SidebarMenuAction>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                side="right"
-                                align="start"
-                                aria-label={"Dropdown area for " + item.title}
-                            >
-                                {item.dropdownItems.map((dropdownItem) => (
-                                    <DropdownMenuItem
-                                        key={dropdownItem.title}
-                                        aria-label={dropdownItem.title}
-                                        asChild
-                                    >
-                                        <a href={dropdownItem.href}>
-                                            <span>{dropdownItem.title}</span>
-                                        </a>
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    )}
-                </SidebarMenuItem>
-            ))}
-        </SidebarGroup>
+                                /> */}
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    ))}
+                </CollapsibleContent>
+            </SidebarGroup>
+        </Collapsible>
     );
 }

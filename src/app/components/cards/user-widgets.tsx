@@ -1,19 +1,22 @@
 import { SignOutButton } from "@/app/components/sidebar/sign-out-button";
 import { ThemeSwitchButton } from "@/app/components/sidebar/theme-switch-button";
+import { UserWidgetSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { User } from "@workos-inc/node";
+import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
-export function UserWidgetNoAuth() {
+const USER_PREFERENCES_URL = `account/user-preferences`;
+
+export function UserWidgetNoAuth({ slug }: { slug: string }) {
     return (
         <div
             className={
                 "flex flex-row items-center justify-between gap-2 rounded-md"
             }
         >
-            <Link href={`/auth/login`} prefetch={false} className={"grow"}>
+            <Link href={`/${slug}/login`} prefetch={false} className={"grow"}>
                 <Button variant={"primary_custom"} className={"grow w-full"}>
                     Sign in
                 </Button>
@@ -25,41 +28,21 @@ export function UserWidgetNoAuth() {
     );
 }
 
-export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
-    return (
-        <div
-            className={
-                "flex flex-row items-center justify-between gap-2 bg-primary-foreground text-primary rounded-md"
-            }
-        >
-            <p className={"text-xs"}>
-                You are not a member of this organization.
-            </p>
-            <SignOutButton slug={slug} />
-            <div className={"flex flex-row items-center gap-2 flex-none"}>
-                <ThemeSwitchButton />
-                <Link href={`/${slug}/user-preferences`}>
-                    <Button variant={"ghost"} size={"icon"}>
-                        <Settings
-                            strokeWidth={1.5}
-                            className={"size-[1.2rem]"}
-                        />
-                    </Button>
-                </Link>
-            </div>
-        </div>
-    );
-}
-
 export function UserWidgetAuthorized({
-    user,
     slug,
     role,
 }: {
-    user: User;
     slug: string;
     role: string;
 }) {
+    const { user: initialUser, isLoading, isError } = useUserFromWorkOSId();
+    const user = initialUser;
+    if (isLoading) {
+        return <UserWidgetSkeleton />;
+    }
+    if (isError || !user) {
+        return <UserWidgetNoAuth slug={slug} />;
+    }
     return (
         <div
             className={
@@ -69,15 +52,22 @@ export function UserWidgetAuthorized({
             <Avatar>
                 <AvatarImage></AvatarImage>
                 <AvatarFallback>
-                    {user.firstName && user.lastName
-                        ? (user.firstName[0] + user.lastName[0]).toUpperCase()
-                        : ""}
+                    {(user.displayName
+                        ? user.displayName
+                        : user.firstName || user.lastName
+                        ? `${user.firstName || ""} ${user.lastName || ""}`
+                        : "Anonymous"
+                    ).charAt(0)}
                 </AvatarFallback>
             </Avatar>
             <div className={"text-sm flex flex-col grow"}>
-                <p
-                    className={"font-semibold"}
-                >{`${user?.firstName} ${user?.lastName}`}</p>
+                <p className={"font-semibold"}>
+                    {user.displayName
+                        ? user.displayName
+                        : user.firstName || user.lastName
+                        ? `${user.firstName || ""} ${user.lastName || ""}`
+                        : "Anonymous"}
+                </p>
                 <div className="overflow-hidden w-full">
                     <div
                         className={
@@ -85,13 +75,13 @@ export function UserWidgetAuthorized({
                         }
                     >
                         <p className={"text-xs"}>{role}</p>
-                        <SignOutButton slug={slug} className={""} />
+                        <SignOutButton className={""} />
                     </div>
                 </div>
             </div>
             <div className={"flex flex-row items-center gap-2 flex-none"}>
                 <ThemeSwitchButton />
-                <Link href={`/${slug}/user-preferences`}>
+                <Link href={`/${slug}/${USER_PREFERENCES_URL}`}>
                     <Button variant={"ghost"} size={"icon"}>
                         <Settings
                             strokeWidth={1.5}

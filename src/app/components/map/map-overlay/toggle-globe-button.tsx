@@ -2,7 +2,7 @@
 
 import { Toggle } from "@/components/ui/toggle";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setGlobeView } from "@/lib/redux/settings/settingsSlice";
+import { setGlobeView } from "@/lib/redux/settings/settings-slice";
 import { Globe } from "lucide-react";
 
 export default function ToggleGlobeButton() {

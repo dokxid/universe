@@ -31,11 +31,3 @@ export const getTagColor = (
     const foundTag = allTags.find((t) => t.name === tag);
     return foundTag ? stringToArrayColor(foundTag.color) : [128, 128, 128]; // Default to gray if not found
 };
-
-export const getTagColorHex = (
-    allTags: UnescoTagDTO[],
-    tag: string
-): string => {
-    const foundTag = allTags.find((t) => t.name === tag);
-    return foundTag ? foundTag.color : "#808080"; // Default to gray if not found
-};

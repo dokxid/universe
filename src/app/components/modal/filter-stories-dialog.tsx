@@ -1,6 +1,6 @@
 "use client";
 
-import { TagPicker } from "@/app/components/form/tag-picker";
+import { TagPickerFilter } from "@/app/components/form/tag-picker";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -12,15 +12,17 @@ import {
 } from "@/components/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
 import { setSelectedTagsParams } from "@/lib/utils/param-setter";
-import { UnescoTagDTO } from "@/types/dtos";
+import { UnescoTagDTOWithCount } from "@/types/dtos";
 import { Funnel } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 
 export function FilterStoriesDialog({
     tagsPromise,
+    size = "icon",
 }: {
-    tagsPromise: Promise<UnescoTagDTO[]>;
+    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
+    size?: "icon" | "icon-lg";
 }) {
     const tags = React.use(tagsPromise);
     const [open] = React.useState(false);
@@ -38,24 +40,26 @@ export function FilterStoriesDialog({
                 <Button
                     variant={"secondary_custom"}
                     className="hover:ring-2"
-                    size={"icon-lg"}
+                    size={size}
                 >
                     <Funnel />
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Filter stories</DialogTitle>
-                    <DialogDescription>
-                        Use the form below to filter stories by tags.
-                    </DialogDescription>
-                </DialogHeader>
-                <TagPicker
-                    availableTags={tags}
-                    selectedTags={tagState}
-                    onTagsChange={handleTagsChange}
-                    showLabel={open}
-                />
+                <div className="flex flex-col gap-2">
+                    <DialogHeader>
+                        <DialogTitle>Filter stories</DialogTitle>
+                        <DialogDescription>
+                            Use the form below to filter stories by tags.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <TagPickerFilter
+                        availableTags={tags}
+                        selectedTags={tagState}
+                        onTagsChange={handleTagsChange}
+                        showLabel={open}
+                    />
+                </div>
             </DialogContent>
         </Dialog>
     );

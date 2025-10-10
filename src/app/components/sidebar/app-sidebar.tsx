@@ -1,27 +1,41 @@
+"use client";
+
 import { AppSidebarHeader } from "@/app/components/sidebar/app-sidebar-header";
 import { AppSidebarContent } from "@/app/components/sidebar/sidebar-content/app-sidebar-content";
 import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
+import { LabSidebarSkeleton } from "@/components/skeletons/lab-sidebar-skeleton";
+import { UniverseSidebarSkeleton } from "@/components/skeletons/universe-sidebar-skeleton";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Suspense } from "react";
+import { useExperience } from "@/lib/swr/experiences-hook";
+import { usePathname } from "next/navigation";
 
-export async function AppSidebar() {
-    const experiencesPromise = getExperiencesDTO();
+export function AppSidebar() {
+    const pathname = usePathname();
+    const slug = pathname.split("/")[1];
+    const { experience, isLoading, isError } = useExperience(slug);
+    if (!slug) {
+        return null;
+    }
+    if (isLoading) {
+        return slug === "universe" ? (
+            <UniverseSidebarSkeleton />
+        ) : (
+            <LabSidebarSkeleton />
+        );
+    }
+    if (isError) {
+        return <div>Could not fetch experiences</div>;
+    }
+    if (!experience) {
+        return <div>No lab found</div>;
+    }
+
     return (
         <Sidebar variant={"sidebar"} sidebarBorder={false} className={"p-0"}>
-            <Suspense fallback={<Skeleton className="w-full h-16"></Skeleton>}>
-                <AppSidebarHeader experiencesPromise={experiencesPromise} />
-            </Suspense>
-            <Suspense
-                fallback={<Skeleton className="w-full h-full"></Skeleton>}
-            >
-                <AppSidebarContent experiencesPromise={experiencesPromise} />
-            </Suspense>
+            <AppSidebarHeader experience={experience} />
+            <AppSidebarContent />
             <SidebarFooter className={"px-4 py-3"}>
-                <Suspense fallback={<Skeleton className="w-full"></Skeleton>}>
-                    <UserWidgetHolder />
-                </Suspense>
+                <UserWidgetHolder />
             </SidebarFooter>
         </Sidebar>
     );

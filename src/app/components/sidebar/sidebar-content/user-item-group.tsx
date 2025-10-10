@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    BookText,
-    Contact,
-    Earth,
-    LibraryBig,
-    Map,
-    Orbit,
-    Users,
-} from "lucide-react";
+import { BookText, Contact, Earth, LibraryBig, Map, Orbit } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ItemGroup, SidebarItemGroup } from "./item-group";
 
@@ -19,21 +11,22 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Heritage Universe",
             href: `/universe/map`,
+            prefetch: false,
             icon: Orbit,
         },
         {
             title: "Heritage Labs",
-            href: `/${slug}/experiences`,
+            href: `/universe/labs`,
             icon: Earth,
         },
         {
             title: "Featured Stories",
-            href: `/${slug}/stories`,
+            href: `/universe/stories`,
             icon: LibraryBig,
         },
         {
-            title: "Contact",
-            href: `/universe/map`,
+            title: "Contact Our Team",
+            href: `/universe/contact`,
             icon: Contact,
         },
     ];
@@ -44,11 +37,6 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
             icon: BookText,
         },
         {
-            title: "Lab Members",
-            href: `/${slug}/stories`,
-            icon: Users,
-        },
-        {
             title: "Story Collection",
             href: `/${slug}/stories`,
             icon: LibraryBig,
@@ -56,10 +44,11 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
         {
             title: "Interactive Map",
             href: `/${slug}/map`,
+            prefetch: false,
             icon: Map,
         },
         {
-            title: "Contact",
+            title: "Contact Our Team",
             href: `/${slug}/contact`,
             icon: Contact,
         },

@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch } from "@/lib/hooks";
-import { setLngLat } from "@/lib/redux/dialogue/addStoryDialogSlice";
-import { setFlyPosition } from "@/lib/redux/map/mapSlice";
+import { setLngLat } from "@/lib/redux/dialogue/add-story-slice";
+import { setFlyPosition } from "@/lib/redux/map/map-slice";
+import { useAllowedToAddStory } from "@/lib/swr/user-hook";
 import { ClipboardCopy, FilePlus2, Plane } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface MapContextMenuProps {
     open?: boolean;
@@ -41,9 +43,17 @@ export function MapContextMenu({
     onOpenChange,
     ptrLngLat,
 }: MapContextMenuProps) {
+    const isMobile = useIsMobile();
     const dispatch = useAppDispatch();
+    const pathname = usePathname();
+    const slug = pathname.split("/")[1];
+    const isUniverse = slug === "universe";
+    const { allowedToAddStory, isLoading: isLoadingAllowedToAddStory } =
+        useAllowedToAddStory(slug);
 
-    if (useIsMobile())
+    if (isLoadingAllowedToAddStory) return null;
+
+    if (isMobile)
         return (
             <Drawer open={open} onOpenChange={onOpenChange}>
                 <DrawerContent>
@@ -62,32 +72,34 @@ export function MapContextMenu({
                             "flex flex-row gap-2 p-4 text-xs text-wrap w-full *:basis-0 *:grow"
                         }
                     >
-                        <Button
-                            className={"flex flex-col h-fit gap-3 p-4"}
-                            variant={"default"}
-                        >
-                            <Link
-                                className={"font-semibold"}
-                                href={
-                                    "stories/create?lnglat=" +
-                                    (ptrLngLat
-                                        ? ptrLngLat[0] + "," + ptrLngLat[1]
-                                        : "0,0")
-                                }
-                                scroll={false}
-                                prefetch={true}
-                                onClick={() =>
-                                    dispatch(
-                                        setLngLat(
-                                            ptrLngLat ? ptrLngLat : [0, 0]
-                                        )
-                                    )
-                                }
+                        {!isUniverse && allowedToAddStory && (
+                            <Button
+                                className={"flex flex-col h-fit gap-3 p-4"}
+                                variant={"default"}
                             >
-                                Create
-                            </Link>
-                            <FilePlus2 className={"size-8"} />
-                        </Button>
+                                <Link
+                                    className={"font-semibold"}
+                                    href={
+                                        "stories/create?lnglat=" +
+                                        (ptrLngLat
+                                            ? ptrLngLat[0] + "," + ptrLngLat[1]
+                                            : "0,0")
+                                    }
+                                    scroll={false}
+                                    prefetch={true}
+                                    onClick={() =>
+                                        dispatch(
+                                            setLngLat(
+                                                ptrLngLat ? ptrLngLat : [0, 0]
+                                            )
+                                        )
+                                    }
+                                >
+                                    Create
+                                </Link>
+                                <FilePlus2 className={"size-8"} />
+                            </Button>
+                        )}
                         <Button
                             className={"flex flex-col h-fit gap-3 p-4"}
                             variant={"default"}
@@ -146,20 +158,24 @@ export function MapContextMenu({
                             : "null"}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                        <Link
-                            href={"stories/create"}
-                            scroll={false}
-                            prefetch={true}
-                            onClick={() =>
-                                dispatch(
-                                    setLngLat(ptrLngLat ? ptrLngLat : [0, 0])
-                                )
-                            }
-                        >
-                            Create story here
-                        </Link>
-                    </DropdownMenuItem>
+                    {!isUniverse && allowedToAddStory && (
+                        <DropdownMenuItem asChild>
+                            <Link
+                                href={"stories/create"}
+                                scroll={false}
+                                prefetch={true}
+                                onClick={() =>
+                                    dispatch(
+                                        setLngLat(
+                                            ptrLngLat ? ptrLngLat : [0, 0]
+                                        )
+                                    )
+                                }
+                            >
+                                Create story here
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem
                         onClick={() =>
                             copyToClipboard(

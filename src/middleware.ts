@@ -1,4 +1,3 @@
-import { fetchUserFromWorkOS } from "@/lib/auth/workos/user";
 import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
 
@@ -25,10 +24,13 @@ const UNAUTHENTICATED_PATHS = [
     "/map",
     "/stories",
     "/stories/view/:id",
-    "/experiences",
+    "/labs",
     "/map-settings",
     "/images/:filename",
     "/about",
+    "/contact",
+    "/login",
+    "/user/view/:userId",
 ];
 const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path
@@ -66,7 +68,6 @@ function addCSPHeaders(response: Response): Response {
     return response;
 }
 
-
 export default async function middleware(
     req: NextRequest,
     event: NextFetchEvent
@@ -86,18 +87,6 @@ export default async function middleware(
         response = NextResponse.next(); // Fallback to a default response
     }
 
-    // Sync user data if authenticated
-    const token = req.headers.get("Authorization")?.split("Bearer ")[1];
-    if (token) {
-        try {
-            const userData = await fetchUserFromWorkOS(token);
-            // Update local state or attach user data to the response
-            response.headers.set("X-User-Data", JSON.stringify(userData));
-        } catch (error) {
-            console.error("Error syncing user data:", error);
-        }
-    }
-
     // add CSP if needed
     if (CSP_ENABLED) {
         return addCSPHeaders(response);
@@ -109,26 +98,38 @@ export default async function middleware(
 // Match against pages that require authentication
 export const config = {
     matcher: [
+        // public paths
         "/:slug/",
         "/:slug/images/:filename",
+        "/:slug/labs",
         "/:slug/map",
         "/:slug/map/:page*",
-        "/:slug/experiences",
         "/:slug/map-settings",
-        "/:slug/account/:page*",
-        "/:slug/lab/:page*",
+        "/:slug/about",
+        "/:slug/contact",
         "/:slug/stories",
+        "/:slug/stories/view/:id",
+        "/:slug/login",
+        "/:slug/user/view/:userId",
+        // editor+ paths
+        "/:slug/account/user-preferences",
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
-        "/:slug/stories/view/:id",
-        "/:slug/team/:page*",
-        "/:slug/stories",
-        "/:slug/user-preferences",
-        "/:slug/stories/elevation-requests",
-        "/:slug/about",
+        "/:slug/elevation-requests",
+        // admin paths
+        "/:slug/lab/settings",
+        "/:slug/lab/manage",
+        // super admin paths
         "/:slug/debug-settings",
-        "/universe/elevation-requests",
+        "/universe/labs/manage",
+        "/universe/labs/view/:id",
+        // account and related paths
+        "/:slug/user-preferences",
+        // static pages
+        "/:slug/legal/privacy",
+        "/:slug/legal/terms",
+        "/:slug/legal/security",
     ],
 };

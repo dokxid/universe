@@ -4,8 +4,11 @@ import { NextRequest } from "next/server";
 export const GET = generateAuthCallback();
 
 function generateAuthCallback() {
-    return (req: NextRequest) => {
+    return async (req: NextRequest) => {
         const state = req.nextUrl.searchParams.get("state") || "/";
-        return handleAuth({ returnPathname: `${state}` })(req);
+        const handler = handleAuth({ returnPathname: `${state}` });
+        const res = await handler(req);
+
+        return res;
     };
 }

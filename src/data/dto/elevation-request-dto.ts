@@ -1,3 +1,5 @@
+import "server-only";
+
 import { isUserAdmin } from "@/data/auth";
 import { insertElevationRequest } from "@/data/fetcher/elevation-request-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
@@ -24,7 +26,6 @@ export async function submitElevationRequestDTO(
         await dbConnect();
 
         // validate id before creating ObjectId
-        console.log("Submitting elevation request for story id:", storyID);
         if (!mongoose.Types.ObjectId.isValid(storyID)) {
             throw new Error("Invalid story id format.");
         }

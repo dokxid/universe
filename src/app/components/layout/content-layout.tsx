@@ -1,46 +1,108 @@
-import { NavigationBreadcrumbs } from "@/app/components/layout/navigation-breadcrumbs";
-import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
-export default function ContentLayout({
-    children,
+export function ContentLayout({
     className,
-}: {
-    children: React.ReactNode;
-    className?: string;
-}) {
+    ...props
+}: React.ComponentProps<"div">) {
     return (
-        <div className="w-full h-full flex">
-            <AppSidebar />
-            <SidebarInset>
-                <header className="flex h-16 shrink-0 gap-2 w-full">
-                    <div className="relative flex items-center gap-3 px-4 w-full">
-                        <SidebarTrigger
-                            variant={"sidebar_trigger_custom"}
-                            className={
-                                "size-10 rounded-md static 2xl:absolute left-3"
-                            }
-                        />
-                        <Breadcrumb
-                            className={
-                                "max-w-6xl w-full mx-0 2xl:mx-auto px-0 2xl:px-6"
-                            }
-                        >
-                            <NavigationBreadcrumbs />
-                        </Breadcrumb>
-                    </div>
-                </header>
-                <div
-                    className={cn(
-                        "flex flex-1 flex-col gap-4 p-4 overflow-y-auto items-center",
-                        className
-                    )}
-                >
-                    {children}
-                </div>
-            </SidebarInset>
+        <div
+            className={
+                "flex flex-col gap-10 my-10 items-start w-full max-w-full md:max-w-6xl px-4 lg:px-6 h-full"
+            }
+        >
+            <div
+                className={cn(
+                    "flex flex-col w-full items-center h-full",
+                    className
+                )}
+                {...props}
+            />
         </div>
     );
+}
+
+export function ContentLayoutInner({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return (
+        <div
+            className={cn("w-full max-w-full md:max-w-6xl", className)}
+            {...props}
+        />
+    );
+}
+
+export function SettingsLayout({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return (
+        <div
+            className={cn(
+                "flex flex-col my-10 gap-10 items-start w-full",
+                className
+            )}
+            {...props}
+        />
+    );
+}
+
+export function SettingsFormBox({
+    className,
+    children,
+    ...props
+}: React.ComponentProps<"div">) {
+    return (
+        <div className={"form-box"}>
+            <div className={cn("form-bounding-box", className)} {...props}>
+                {children}
+            </div>
+        </div>
+    );
+}
+
+export function SettingsFormTitle({
+    className,
+    ...props
+}: React.ComponentProps<"h2">) {
+    return <h2 className={cn("form-box-title", className)} {...props} />;
+}
+
+export function SettingsFormDescription({
+    className,
+    ...props
+}: React.ComponentProps<"p">) {
+    return <p className={cn("form-box-description", className)} {...props} />;
+}
+
+export function SettingsBoxContent({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return (
+        <div className={cn("flex flex-col gap-6 pt-6", className)} {...props} />
+    );
+}
+
+export function SettingsBoxForm({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return <div className={cn("flex flex-col gap-5", className)} {...props} />;
+}
+
+// expected to include label and input
+export function SettingsBoxFormElement({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return <div className={cn("flex flex-col gap-2", className)} {...props} />;
+}
+
+export function SettingsFormButtonGroup({
+    className,
+    ...props
+}: React.ComponentProps<"div">) {
+    return <div className={cn("form-button-group", className)} {...props} />;
 }

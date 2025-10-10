@@ -1,7 +1,7 @@
 "use server";
 
 import { generateElevationRequests } from "@/data/scripts/seeds/elevation-requests-seeds";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 export async function seedAllElevationRequests() {
     try {
         const experiences = await ExperienceModel.find({}).exec();
@@ -18,7 +18,15 @@ export async function seedAllElevationRequests() {
                     },
                     { safe: true, upsert: false }
                 ).exec();
+                console.log(
+                    `Seeding elevation requests for story ${i + 1}/${
+                        stories.length
+                    }`
+                );
             }
+            console.log(
+                `Seeded elevation requests for experience: ${experience.slug}`
+            );
         }
         console.log("Elevation requests seeding completed");
     } catch (err) {

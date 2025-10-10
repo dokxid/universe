@@ -1,7 +1,7 @@
 "use server";
 
 import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
-import { seedLabImages } from "@/data/scripts/seed-images";
+import { seedLabStoryImages } from "@/data/scripts/seed-images";
 import { seedStories } from "@/data/scripts/seed-stories";
 import {
     stock_experiences_doc,
@@ -9,9 +9,10 @@ import {
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experiences";
+import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { faker } from "@faker-js/faker";
 
-export async function seedExperiences(center: number[]) {
+export async function seedExperiences(cityCenters: number[][]) {
     await dbConnect();
     await ExperienceModel.deleteMany({});
 
@@ -21,13 +22,27 @@ export async function seedExperiences(center: number[]) {
     );
     console.log(`Inserted ${result_stock_experiences.length} experiences`);
 
-    // seed test experience
-    const test_experience = test_experiences_doc(center);
-    const result_test_experience = await ExperienceModel.insertOne(
-        test_experience
+    // create unique slugs
+    const uniqueSlugArray = faker.helpers.uniqueArray(
+        faker.word.adverb,
+        cityCenters.length - 1
     );
-    console.log(
-        `Inserted test experience with id ${result_test_experience.insertedId}`
+    uniqueSlugArray.push("test");
+
+    // create experiences for each city center
+    await Promise.all(
+        cityCenters.map(async (center, index) => {
+            const test_experience = await test_experiences_doc(
+                uniqueSlugArray[index],
+                center
+            );
+            const result_test_experience = await ExperienceModel.insertOne(
+                test_experience
+            );
+            console.log(
+                `Inserted test experience with id ${result_test_experience._id}`
+            );
+        })
     );
 
     // seed universe experience
@@ -36,7 +51,7 @@ export async function seedExperiences(center: number[]) {
         universe_experience
     );
     console.log(
-        `Inserted universe experience with id ${result_universe_experience.insertedId}`
+        `Inserted universe experience with id ${result_universe_experience._id}`
     );
 
     console.log("Experiences seeded successfully");
@@ -57,7 +72,7 @@ export async function seedOneExperience(
         // if ((await isUserSuperAdmin(user)) === false) {
         //     throw new Error("Only super admins can seed the database");
         // }
-        const testExperience = test_experiences_doc(center);
+        const testExperience = test_experiences_doc(slug, center);
         const generatedExperience = {
             ...testExperience,
             title: title,
@@ -69,12 +84,12 @@ export async function seedOneExperience(
         };
         await dbConnect();
         const result = await ExperienceModel.insertOne(generatedExperience);
-        console.log(`Inserted experience with id ${result.insertedId}`);
+        console.log(`Inserted experience with id ${result._id}`);
         await seedStories(slug, center, experienceStories);
         console.log("Stories seeding completed");
         await seedElevationRequests(slug);
         console.log("Elevation requests seeding completed");
-        await seedLabImages(slug);
+        await seedLabStoryImages(slug);
         console.log("Lab images seeding completed");
         console.log("Single experience seeding completed");
         return result.insertedId;
