@@ -23,6 +23,13 @@ export type Permissions =
     | "superadmin"
     | "manage_users";
 
+export type Role =
+    | "admin"
+    | "editor"
+    | "superadmin"
+    | "not_authorized"
+    | "guest";
+
 export const getPermissionsByUser = cache(
     async (
         userWorkOS: User | null,

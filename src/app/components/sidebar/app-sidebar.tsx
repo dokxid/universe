@@ -33,7 +33,7 @@ export function AppSidebar() {
     return (
         <Sidebar variant={"sidebar"} sidebarBorder={false} className={"p-0"}>
             <AppSidebarHeader experience={experience} />
-            <AppSidebarContent experience={experience} />
+            <AppSidebarContent />
             <SidebarFooter className={"px-4 py-3"}>
                 <UserWidgetHolder />
             </SidebarFooter>

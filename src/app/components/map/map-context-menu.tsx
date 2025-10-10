@@ -20,7 +20,6 @@ import { useAppDispatch } from "@/lib/hooks";
 import { setLngLat } from "@/lib/redux/dialogue/add-story-slice";
 import { setFlyPosition } from "@/lib/redux/map/map-slice";
 import { useAllowedToAddStory } from "@/lib/swr/user-hook";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { ClipboardCopy, FilePlus2, Plane } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,11 +48,10 @@ export function MapContextMenu({
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const isUniverse = slug === "universe";
-    const { user, loading: isLoadingUser } = useAuth();
     const { allowedToAddStory, isLoading: isLoadingAllowedToAddStory } =
-        useAllowedToAddStory(user, slug);
+        useAllowedToAddStory(slug);
 
-    if (isLoadingUser || isLoadingAllowedToAddStory) return null;
+    if (isLoadingAllowedToAddStory) return null;
 
     if (isMobile)
         return (

@@ -4,7 +4,6 @@ import { UserWidgetSkeleton } from "@/components/skeletons/user-widget-skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
-import { User } from "@workos-inc/node";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
@@ -29,58 +28,20 @@ export function UserWidgetNoAuth({ slug }: { slug: string }) {
     );
 }
 
-export function UserWidgetNotAuthorized({ slug }: { slug: string }) {
-    return (
-        <div
-            className={
-                "flex flex-row items-center justify-between gap-2 bg-primary-foreground text-primary rounded-md"
-            }
-        >
-            <p className={"text-xs"}>
-                You are not a member of this organization.
-            </p>
-            <SignOutButton />
-            <div className={"flex flex-row items-center gap-2 flex-none"}>
-                <ThemeSwitchButton />
-                <Link href={`/${slug}/${USER_PREFERENCES_URL}`}>
-                    <Button variant={"ghost"} size={"icon"}>
-                        <Settings
-                            strokeWidth={1.5}
-                            className={"size-[1.2rem]"}
-                        />
-                    </Button>
-                </Link>
-            </div>
-        </div>
-    );
-}
-
 export function UserWidgetAuthorized({
-    userWorkOS,
     slug,
     role,
 }: {
-    userWorkOS: User;
     slug: string;
     role: string;
 }) {
     const { user: initialUser, isLoading, isError } = useUserFromWorkOSId();
-    let user = initialUser;
+    const user = initialUser;
     if (isLoading) {
         return <UserWidgetSkeleton />;
     }
-    if (isError) {
+    if (isError || !user) {
         return <UserWidgetNoAuth slug={slug} />;
-    }
-    if (!user) {
-        user = {
-            firstName: userWorkOS.firstName || "",
-            lastName: userWorkOS.lastName || "",
-            _id: "",
-            email: userWorkOS.email || "",
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
     }
     return (
         <div

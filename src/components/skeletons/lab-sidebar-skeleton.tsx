@@ -1,3 +1,5 @@
+import { SidebarContentSkeleton } from "@/components/skeletons/sidebar-content-skeleton";
+import { UserWidgetAuthorizedSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,47 +38,8 @@ export function LabSidebarSkeleton() {
                     <Skeleton className="w-20 h-3 mt-1" />
                 </div>
             </SidebarHeader>
-
-            <div className="h-full flex flex-col px-5 pt-4">
-                {/* First Group - EXPLORE UNIVERSE */}
-                <div className="py-2 gap-0.5">
-                    <Skeleton className="w-32 h-[14px] my-[5px]" />
-                    <div className="flex flex-col gap-0.5">
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-1/2 h-[20px] my-[6px]" />
-                    </div>
-                </div>
-                <div className="py-2 gap-0.5">
-                    <Skeleton className="w-32 h-[14px] my-[5px]" />
-                    <div className="flex flex-col gap-0.5">
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-1/2 h-[20px] my-[6px]" />
-                    </div>
-                </div>
-                <div className="grow"></div>
-                {/* Second Group - SUPER ADMIN FEATURES */}
-                <div className="py-2 gap-0.5">
-                    <Skeleton className="w-32 h-[14px] my-[5px]" />
-                    <div className="flex flex-col gap-0.5">
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                    </div>
-                </div>
-                <div className="py-2 gap-0.5">
-                    <Skeleton className="w-32 h-[14px] my-[5px]" />
-                    <div className="flex flex-col gap-0.5">
-                        <Skeleton className="w-1/2 h-[20px] my-[6px]" />
-                        <Skeleton className="w-3/4 h-[20px] my-[6px]" />
-                    </div>
-                </div>
-            </div>
-            <div className="py-3 px-4">
-                <Skeleton className="w-full h-[40px]" />
-            </div>
+            <SidebarContentSkeleton />
+            <UserWidgetAuthorizedSkeleton />
         </div>
     );
 }

@@ -2,8 +2,9 @@ import {
     getCurrentUserAction,
     getUserAction,
     getUserPermissionAction,
+    getUserRoleAction,
 } from "@/actions/get-user";
-import { Permissions } from "@/data/auth";
+import { Permissions, Role } from "@/data/auth";
 import useSWR from "swr";
 
 const userFetcher = async (slug: string) => {
@@ -22,8 +23,15 @@ const userPermissionFetcher = async (
     return await getUserPermissionAction(labSlug, permission, storyId);
 };
 
+const userRoleFetcher = async (labSlug: string): Promise<Role> => {
+    console.log("userRoleFetcher called with labSlug:", labSlug);
+    const role = await getUserRoleAction(labSlug);
+    console.log("Fetched role:", role);
+    return role;
+};
+
 export function useUser(userId: string) {
-    const { data, error, isLoading } = useSWR(["users", userId], () =>
+    const { data, error, isLoading } = useSWR(["user", userId], () =>
         userFetcher(userId)
     );
     return {
@@ -34,7 +42,7 @@ export function useUser(userId: string) {
 }
 
 export function useUserFromWorkOSId() {
-    const { data, error, isLoading } = useSWR(["user"], () =>
+    const { data, error, isLoading } = useSWR(["userFromWorkOSId"], () =>
         getCurrentUserFetcher()
     );
     return {
@@ -45,8 +53,9 @@ export function useUserFromWorkOSId() {
 }
 
 export function useAllowedToAddStory(labSlug: string) {
-    const { data, error, isLoading } = useSWR(["user", labSlug], () =>
-        userPermissionFetcher(labSlug, "add_story")
+    const { data, error, isLoading } = useSWR(
+        ["userCanAddStory", labSlug],
+        () => userPermissionFetcher(labSlug, "add_story")
     );
     return {
         allowedToAddStory: data,
@@ -56,8 +65,9 @@ export function useAllowedToAddStory(labSlug: string) {
 }
 
 export function useAllowedToEditStory(labSlug: string, storyId: string) {
-    const { data, error, isLoading } = useSWR(["user", labSlug, storyId], () =>
-        userPermissionFetcher(labSlug, "edit_story", storyId)
+    const { data, error, isLoading } = useSWR(
+        ["userCanEditStory", labSlug, storyId],
+        () => userPermissionFetcher(labSlug, "edit_story", storyId)
     );
     return {
         allowedToEditStory: data,
@@ -67,8 +77,9 @@ export function useAllowedToEditStory(labSlug: string, storyId: string) {
 }
 
 export function useAllowedToManageUsers(labSlug: string) {
-    const { data, error, isLoading } = useSWR(["user", labSlug], () =>
-        userPermissionFetcher(labSlug, "manage_users")
+    const { data, error, isLoading } = useSWR(
+        ["userCanManageUsers", labSlug],
+        () => userPermissionFetcher(labSlug, "manage_users")
     );
     return {
         allowedToManageUsers: data,
@@ -78,11 +89,29 @@ export function useAllowedToManageUsers(labSlug: string) {
 }
 
 export function useAllowedToSuperAdmin(labSlug: string) {
-    const { data, error, isLoading } = useSWR(["user", labSlug], () =>
-        userPermissionFetcher(labSlug, "superadmin")
+    const { data, error, isLoading } = useSWR(
+        ["userIsSuperAdmin", labSlug],
+        () => userPermissionFetcher(labSlug, "superadmin")
     );
     return {
         allowedToSuperAdmin: data,
+        isLoading,
+        isError: error,
+    };
+}
+
+export function useGetRoleInLab(labSlug: string) {
+    console.log("useGetRoleInLab called with labSlug:", labSlug);
+    const { data, error, isLoading } = useSWR(
+        ["userRoles", labSlug],
+        async () => {
+            const role = await userRoleFetcher(labSlug);
+            console.log("userRoleFetcher returned:", role);
+            return role;
+        }
+    );
+    return {
+        roleInLab: data,
         isLoading,
         isError: error,
     };
