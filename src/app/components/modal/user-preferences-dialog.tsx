@@ -1,6 +1,11 @@
 "use client";
 
 import {
+    editDisplayNameFormAction,
+    editUserDetailsFormAction,
+    editUserProfilePictureAction,
+} from "@/actions/user";
+import {
     SettingsBoxContent,
     SettingsBoxForm,
     SettingsBoxFormElement,
@@ -27,30 +32,34 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useAppSelector } from "@/lib/hooks";
 import { setDebug } from "@/lib/redux/settings/settings-slice";
-import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
+import { useCurrentUser } from "@/lib/swr/user-hook";
 import {
-    userPreferencesDetailsFormSchema,
-    userPreferencesDisplayNameFormSchema,
-    userPreferencesProfilePictureFormSchema,
+    editUserDetailsFormSchema,
+    editUserDisplayNameFormSchema,
+    editUserProfilePictureFormSchema,
 } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { mutate } from "swr";
+import { z } from "zod";
 
-const detailsFormSchema = userPreferencesDetailsFormSchema;
-const displayNameFormSchema = userPreferencesDisplayNameFormSchema;
-const profilePictureFormSchema = userPreferencesProfilePictureFormSchema;
+const detailsFormSchema = editUserDetailsFormSchema;
+const displayNameFormSchema = editUserDisplayNameFormSchema;
+const profilePictureFormSchema = editUserProfilePictureFormSchema;
 
 export function UserPreferencesDialog() {
-    const { user, isLoading, isError } = useUserFromWorkOSId();
+    const { user, isLoading, isError } = useCurrentUser();
     const debug = useAppSelector((state) => state.settings.debug);
     const dispatch = useDispatch();
 
     const displayNameForm = useForm({
         resolver: zodResolver(displayNameFormSchema),
         defaultValues: {
+            userId: "",
             displayName: "",
             firstName: "",
             lastName: "",
@@ -60,6 +69,7 @@ export function UserPreferencesDialog() {
     const detailsForm = useForm({
         resolver: zodResolver(detailsFormSchema),
         defaultValues: {
+            userId: "",
             publicEmail: "",
             description: "",
             position: "",
@@ -71,34 +81,158 @@ export function UserPreferencesDialog() {
     const profilePictureForm = useForm({
         resolver: zodResolver(profilePictureFormSchema),
         defaultValues: {
-            profilePictureUrl: "",
+            userId: "",
+            profilePicture: undefined,
         },
     });
 
     // initialize form values when user data is loaded
     useEffect(() => {
+        if (!user) return; // Don't reset if user is not loaded
+
         displayNameForm.reset({
-            firstName: user?.firstName || "",
-            lastName: user?.lastName || "",
-            displayName: user?.displayName || "",
+            userId: user._id || "",
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            displayName: user.displayName || "",
         });
         profilePictureForm.reset({
-            profilePictureUrl: user?.profilePictureUrl || "",
+            userId: user._id || "",
         });
         detailsForm.reset({
-            publicEmail: user?.publicEmail || "",
-            description: user?.description || "",
-            position: user?.position || "",
-            phoneNumber: user?.phoneNumber || "",
-            website: user?.website || "",
+            userId: user._id || "",
+            publicEmail: user.publicEmail || "",
+            description: user.description || "",
+            position: user.position || "",
+            phoneNumber: user.phoneNumber || "",
+            website: user.website || "",
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
-    const onSubmit = (data: FieldValues) => {
-        console.log(data);
+    const onDisplayNameReset = () => {
+        displayNameForm.reset();
     };
 
+    const onDisplayNameSubmit = async (
+        data: z.output<typeof displayNameFormSchema>
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("userId", data.userId);
+            formData.append("displayName", data.displayName);
+            formData.append("firstName", data.firstName);
+            formData.append("lastName", data.lastName);
+            const result = await editDisplayNameFormAction(formData);
+            if (result?.success) {
+                toast.success("Display name updated successfully!");
+                mutate("currentUser");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    displayNameForm.setError(
+                        fieldName as keyof z.infer<
+                            typeof displayNameFormSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating display name:", error);
+            toast.error("Failed to update display name.");
+        }
+    };
+
+    const onDetailsReset = () => {
+        detailsForm.reset();
+    };
+
+    const onDetailsSubmit = async (
+        data: z.output<typeof detailsFormSchema>
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("userId", data.userId);
+            formData.append("publicEmail", data.publicEmail || "");
+            formData.append("description", data.description || "");
+            formData.append("position", data.position || "");
+            formData.append("phoneNumber", data.phoneNumber || "");
+            formData.append("website", data.website || "");
+            const result = await editUserDetailsFormAction(formData);
+            if (result?.success) {
+                toast.success("User details updated successfully!");
+                mutate("currentUser");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    detailsForm.setError(
+                        fieldName as keyof z.infer<typeof detailsFormSchema>,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating user details:", error);
+            toast.error("Failed to update user details.");
+        }
+    };
+
+    const onProfilePictureReset = () => {
+        profilePictureForm.reset();
+    };
+
+    const onProfilePictureSubmit = async (
+        data: z.output<typeof profilePictureFormSchema>
+    ) => {
+        try {
+            const formData = new FormData();
+            formData.append("userId", data.userId);
+            formData.append("profilePicture", data.profilePicture as File);
+            const result = await editUserProfilePictureAction(formData);
+            if (result?.success) {
+                toast.success("Profile picture updated successfully!");
+                mutate("currentUser");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    profilePictureForm.setError(
+                        fieldName as keyof z.infer<
+                            typeof profilePictureFormSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            toast.error("Failed to upload image. Please try again.");
+        }
+    };
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -122,7 +256,10 @@ export function UserPreferencesDialog() {
                 <SettingsBoxContent>
                     <Form {...displayNameForm}>
                         <form
-                            onSubmit={displayNameForm.handleSubmit(onSubmit)}
+                            onSubmit={displayNameForm.handleSubmit(
+                                onDisplayNameSubmit
+                            )}
+                            onReset={onDisplayNameReset}
                             className="w-full"
                         >
                             <SettingsBoxForm>
@@ -180,16 +317,16 @@ export function UserPreferencesDialog() {
                                 />
                                 <div>
                                     <Button
+                                        type="submit"
                                         variant={"default"}
                                         className={"w-fit"}
-                                        disabled
                                     >
                                         Apply
                                     </Button>
                                     <Button
+                                        type="reset"
                                         variant={"ghost"}
                                         className={"w-fit"}
-                                        disabled
                                     >
                                         Reset
                                     </Button>
@@ -213,7 +350,8 @@ export function UserPreferencesDialog() {
                 <SettingsBoxContent>
                     <Form {...detailsForm}>
                         <form
-                            onSubmit={detailsForm.handleSubmit(onSubmit)}
+                            onSubmit={detailsForm.handleSubmit(onDetailsSubmit)}
+                            onReset={onDetailsReset}
                             className="w-full"
                         >
                             <SettingsBoxForm>
@@ -239,7 +377,7 @@ export function UserPreferencesDialog() {
                                 />
                                 <FormField
                                     control={detailsForm.control}
-                                    name="position"
+                                    name="description"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Description</FormLabel>
@@ -317,16 +455,16 @@ export function UserPreferencesDialog() {
                                 />
                                 <div>
                                     <Button
+                                        type="submit"
                                         variant={"default"}
                                         className={"w-fit"}
-                                        disabled
                                     >
                                         Apply
                                     </Button>
                                     <Button
+                                        type="reset"
                                         variant={"ghost"}
                                         className={"w-fit"}
-                                        disabled
                                     >
                                         Reset
                                     </Button>
@@ -345,7 +483,10 @@ export function UserPreferencesDialog() {
                 <SettingsBoxContent>
                     <Form {...profilePictureForm}>
                         <form
-                            onSubmit={profilePictureForm.handleSubmit(onSubmit)}
+                            onSubmit={profilePictureForm.handleSubmit(
+                                onProfilePictureSubmit
+                            )}
+                            onReset={onProfilePictureReset}
                         >
                             <SettingsBoxForm>
                                 <SettingsBoxFormElement>
@@ -364,6 +505,9 @@ export function UserPreferencesDialog() {
                                                 >
                                                     {user.profilePictureUrl ? (
                                                         <AvatarImage
+                                                            className={
+                                                                "object-cover"
+                                                            }
                                                             src={
                                                                 user.profilePictureUrl
                                                             }
@@ -396,29 +540,32 @@ export function UserPreferencesDialog() {
                                                         </AvatarFallback>
                                                     )}
                                                 </Avatar>
-                                                <div
-                                                    className={
-                                                        "flex flex-row gap-2"
-                                                    }
-                                                >
-                                                    <FormControl>
-                                                        <Input
-                                                            type="file"
-                                                            className={
-                                                                "w-fit shrink-0"
-                                                            }
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
+                                                <FormControl>
                                                     <Input
-                                                        type="text"
-                                                        className={"w-full"}
-                                                        placeholder={
-                                                            "Alternatively a link to your picture"
-                                                        }
-                                                        {...field}
+                                                        type="file"
+                                                        onChange={(e) => {
+                                                            const file =
+                                                                e.target
+                                                                    .files?.[0] ||
+                                                                null;
+                                                            if (!file) {
+                                                                return;
+                                                            }
+                                                            // update RHF with the actual File object
+                                                            field.onChange(
+                                                                file
+                                                            );
+                                                            profilePictureForm.setValue(
+                                                                "profilePicture",
+                                                                file
+                                                            );
+                                                            // run validation right away
+                                                            profilePictureForm.trigger(
+                                                                "profilePicture"
+                                                            );
+                                                        }}
                                                     />
-                                                </div>
+                                                </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -427,9 +574,9 @@ export function UserPreferencesDialog() {
                                 <SettingsBoxFormElement>
                                     <SettingsFormButtonGroup>
                                         <Button
+                                            type="submit"
                                             variant={"default"}
                                             className={"w-fit"}
-                                            disabled
                                         >
                                             Apply
                                         </Button>

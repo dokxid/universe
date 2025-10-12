@@ -46,6 +46,7 @@ export function StoryAuthorDetails({
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage
+                                className={"object-cover"}
                                 src={story.authorProfilePictureUrl || ""}
                             />
                             <AvatarFallback>
@@ -112,6 +113,7 @@ export function StoryAuthorEditDetails({
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage
+                                className={"object-cover"}
                                 src={story.authorProfilePictureUrl || ""}
                             />
                             <AvatarFallback>
@@ -216,6 +218,7 @@ export function StoryAuthorHeaderMapView({
                     >
                         <Avatar>
                             <AvatarImage
+                                className={"object-cover"}
                                 src={story.authorProfilePictureUrl || ""}
                             />
                             <AvatarFallback>

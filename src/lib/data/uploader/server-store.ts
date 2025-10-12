@@ -1,11 +1,17 @@
 "use server";
 
+import {
+    generateUniqueFileName,
+    sanitizeFileName,
+} from "@/lib/utils/file-sanitizer";
 import fs from "fs";
-import { nanoid } from "nanoid";
 
 const UPLOAD_DIRECTORY = "./public/uploads";
 
-export async function uploadFileToPublicFolder(file: File): Promise<string> {
+export async function uploadFileToPublicFolder(
+    file: File,
+    prefix?: string
+): Promise<string> {
     try {
         if (!fs.existsSync(UPLOAD_DIRECTORY)) {
             fs.mkdir(UPLOAD_DIRECTORY, { recursive: true }, (err) => {
@@ -14,11 +20,12 @@ export async function uploadFileToPublicFolder(file: File): Promise<string> {
                 }
             });
         }
-        const key = nanoid() + "-" + file.name;
+        const sanitizedFileName = sanitizeFileName(file.name);
+        const key = generateUniqueFileName(sanitizedFileName, prefix);
         const filePath = `${UPLOAD_DIRECTORY}/${key}`;
         const buffer = Buffer.from(await file.arrayBuffer());
         await fs.promises.writeFile(filePath, buffer);
-        return `/story-uploads/${key}`;
+        return `/uploads/${key}`;
     } catch (error) {
         console.error("Error uploading file:", error);
         throw new Error("File upload failed");
@@ -27,7 +34,6 @@ export async function uploadFileToPublicFolder(file: File): Promise<string> {
 
 export async function uploadFileToLabFolder(
     file: File,
-    fileName: string,
     slug: string
 ): Promise<string> {
     try {
@@ -42,10 +48,12 @@ export async function uploadFileToLabFolder(
                 }
             );
         }
-        const filePath = `${UPLOAD_DIRECTORY}/${slug}/story-img/${fileName}`;
+        const sanitizedFileName = sanitizeFileName(file.name);
+        const key = generateUniqueFileName(sanitizedFileName, slug);
+        const filePath = `${UPLOAD_DIRECTORY}/${key}`;
         const buffer = Buffer.from(await file.arrayBuffer());
         await fs.promises.writeFile(filePath, buffer);
-        return `/uploads/${slug}/story-img/${fileName}`;
+        return `/uploads/${key}`;
     } catch (error) {
         console.error("Error uploading file:", error);
         throw new Error("File upload failed");

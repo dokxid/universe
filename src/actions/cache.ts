@@ -27,7 +27,7 @@ export async function triggerRevalidatePathAction(path: string) {
             throw new Error("Unauthorized");
         }
 
-        revalidatePath(path);
+        revalidatePath(path, "page");
     } catch (error) {
         return JSON.stringify(error);
     }

@@ -66,7 +66,6 @@ export function S3Image({
 }
 
 export function HostedImage({
-    experience,
     fileName,
     className,
     internal = true,
@@ -79,17 +78,6 @@ export function HostedImage({
     internal?: boolean;
     alt?: string;
 }) {
-    if (!fileName.startsWith("http")) {
-        return (
-            <S3Image
-                experience={experience}
-                fileName={fileName}
-                className={className}
-                internal={internal}
-                alt={alt}
-            />
-        );
-    }
     const src = fileName;
     return (
         <ImageElement

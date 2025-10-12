@@ -1,12 +1,14 @@
 import { CC_LICENSES } from "@/types/dtos";
 import { z } from "zod";
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+
 export const submitStoryFormSchema = z.object({
     title: z.string().min(1, { message: "This field is required" }),
     content: z.string().min(1, { message: "This field is required" }),
     year: z.coerce
         .number<number>()
-        .refine((value) => value >= 0 && value <= 2100, {}),
+        .refine((value) => value >= -2000 && value <= 2100, {}),
     longitude: z.coerce
         .number()
         .refine((value) => value >= -180 && value <= 180, {}),
@@ -22,7 +24,7 @@ export const submitStoryFormSchema = z.object({
         .file()
         .min(1, "Please upload a file.")
         .max(5 * 1024 * 1024, "Max file size is 5MB.")
-        .mime(["image/jpeg", "image/png", "image/webp"]),
+        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg and .png files are accepted."),
 });
 
 export const editVisibilityAndLicensingFormSchema = z.object({
@@ -42,7 +44,7 @@ export const editStoryFormSchema = z.object({
     title: z.string().min(1, { message: "This field is required" }),
     year: z.coerce
         .number<number>()
-        .refine((value) => value >= 0 && value <= 2100, {}),
+        .refine((value) => value >= -2000 && value <= 2100, {}),
     tags: z.array(z.string()),
 });
 
@@ -69,13 +71,13 @@ export const teamSettingsFormSchema = z.object({
         .refine((files) => files?.length === 1, "Please upload a file.")
         .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
         .refine(
-            (files) =>
-                files.type === "image/jpeg" || files.type === "image/png",
-            "Only .jpg, .png, and .webp files are accepted."
+            (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+            "Only .jpg and .png files are accepted."
         ),
 });
 
-export const userPreferencesDisplayNameFormSchema = z.object({
+export const editUserDisplayNameFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
     displayName: z
         .string()
         .min(2, "Display name must be at least 2 characters."),
@@ -83,24 +85,34 @@ export const userPreferencesDisplayNameFormSchema = z.object({
     lastName: z.string().min(2, "Last name must be at least 2 characters."),
 });
 
-export const userPreferencesDetailsFormSchema = z.object({
-    publicEmail: z.email().optional().nullable(),
+export const editUserDetailsFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
+    publicEmail: z
+        .union([z.email(), z.literal("")])
+        .optional()
+        .nullable(),
     position: z.string().optional().nullable(),
     phoneNumber: z.string().optional().nullable(),
-    website: z.url().optional().nullable(),
+    website: z
+        .union([z.url(), z.literal("")])
+        .optional()
+        .nullable(),
     description: z.string().optional().nullable(),
 });
 
-export const userPreferencesProfilePictureFormSchema = z.object({
-    profilePictureUrl: z.url().optional().nullable(),
+export const editUserProfilePictureFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
     profilePicture: z
         .any()
-        .refine((files) => files?.length === 1, "Please upload a file.")
-        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
+        .optional()
+        .refine((file) => file instanceof File, "Please upload a file.")
         .refine(
-            (files) =>
-                files.type === "image/jpeg" || files.type === "image/png",
-            "Only .jpg, .png, and .webp files are accepted."
+            (file) => file?.size <= 5 * 1024 * 1024,
+            "Max file size is 5MB."
+        )
+        .refine(
+            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+            "Only .jpg and .png files are accepted."
         ),
 });
 
@@ -114,7 +126,7 @@ export const editProfilePictureFormSchema = z.object({
         .file()
         .min(1, "Please upload a file.")
         .max(5 * 1024 * 1024, "Max file size is 5MB.")
-        .mime(["image/jpeg", "image/png", "image/webp"]),
+        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg and .png files are accepted."),
     storyId: z.string().min(1, "Story ID is required"),
     lab: z.string().min(1, "Lab is required"),
 });

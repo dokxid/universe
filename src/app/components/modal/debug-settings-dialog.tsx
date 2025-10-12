@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
 import { toast } from "sonner";
+import { mutate } from "swr";
 
 export function DebugSettingsDialog() {
     const location = faker.location.city();
@@ -63,6 +64,12 @@ export function DebugSettingsDialog() {
                                     );
                                     triggerRevalidatePathAction(
                                         "/[slug]/experiences"
+                                    );
+                                    triggerRevalidatePathAction(
+                                        "/[slug]/users"
+                                    );
+                                    triggerRevalidatePathAction(
+                                        "/[slug]/account/user-preferences"
                                     );
                                     toast.success(
                                         "Path revalidation successful"
@@ -132,6 +139,7 @@ export function DebugSettingsDialog() {
                                     syncUsersWithDatabaseAction().then(() => {
                                         toast.success("User sync successful");
                                     });
+                                    mutate("currentUser");
                                 } catch (error) {
                                     toast.error("User sync failed");
                                     console.error(error);

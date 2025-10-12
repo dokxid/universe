@@ -17,7 +17,7 @@ import { getUserByWorkOSId } from "@/data/fetcher/user-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
 import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
-import { uploadFileToLabFolder } from "@/lib/data/uploader/server-store";
+import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { NewStoryData, StoryDTO } from "@/types/dtos";
 import {
     editContentFormSchema,
@@ -29,7 +29,6 @@ import {
 } from "@/types/form-schemas";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
-import { nanoid } from "nanoid";
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
@@ -228,13 +227,16 @@ export async function submitStoryDTO(formData: FormData) {
             throw new Error("File is required and must be a valid file.");
         }
 
+        // Upload the file and insert the story
+        let path: string;
+        if (process.env.LOCAL_UPLOADER === "true") {
+            path = await uploadFileToPublicFolder(file);
+        } else {
+            path = await uploadFile(file);
+        }
+
         // prepare the data for insertion
         const data = validationResult.data;
-        const uploadedFileName = `${data.slug}_${nanoid()}_${file.name}`;
-        const sanitizedFileName = uploadedFileName.replace(
-            /[^a-zA-Z0-9.\-_]/g,
-            ""
-        );
         const storyToInsert = {
             author: userId,
             content: data.content,
@@ -246,7 +248,7 @@ export async function submitStoryDTO(formData: FormData) {
             tags: data.tags,
             year: data.year,
             license: data.license,
-            featured_image_url: sanitizedFileName,
+            featured_image_url: path,
             draft: data.draft,
             visible_universe: data.universe,
             elevation_requests: [
@@ -260,12 +262,6 @@ export async function submitStoryDTO(formData: FormData) {
             updatedAt: new Date(),
         } as NewStoryData;
 
-        // Upload the file and insert the story
-        if (process.env.LOCAL_UPLOADER === "true") {
-            uploadFileToLabFolder(file, sanitizedFileName, data.slug);
-        } else {
-            await uploadFile(file, sanitizedFileName);
-        }
         await insertStory(storyToInsert, data.slug);
         revalidateTag(`stories`);
     } catch (error) {
@@ -303,23 +299,13 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
 
         // prepare the data for insertion
         const data = result.data;
-        const uploadedFileName = `${data.lab}_${nanoid()}_${file.name}`;
-        const sanitizedFileName = uploadedFileName.replace(
-            /[^a-zA-Z0-9.\-_]/g,
-            ""
-        );
 
         // upload the file and insert the story
         let path: string;
         if (process.env.LOCAL_UPLOADER === "true") {
-            path = await uploadFileToLabFolder(
-                file,
-                sanitizedFileName,
-                data.lab
-            );
+            path = await uploadFileToPublicFolder(file, data.lab);
         } else {
-            await uploadFile(file, sanitizedFileName);
-            path = sanitizedFileName;
+            path = await uploadFile(file, data.lab);
         }
 
         // update the story's featured image URL in the database
