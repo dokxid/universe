@@ -264,7 +264,7 @@ export async function submitStoryDTO(formData: FormData) {
         if (process.env.LOCAL_UPLOADER === "true") {
             uploadFileToLabFolder(file, sanitizedFileName, data.slug);
         } else {
-            await uploadFile(file, sanitizedFileName, data.slug);
+            await uploadFile(file, sanitizedFileName);
         }
         await insertStory(storyToInsert, data.slug);
         revalidateTag(`stories`);
@@ -318,7 +318,7 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
                 data.lab
             );
         } else {
-            await uploadFile(file, sanitizedFileName, data.lab);
+            await uploadFile(file, sanitizedFileName);
             path = sanitizedFileName;
         }
 

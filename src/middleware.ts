@@ -19,7 +19,7 @@ const REDIRECT_URI = process.env.WORKOS_REDIRECT_URL
 
 // prefix for labs (to avoid subdomain routing complexity)
 const SLUG_PATH_PREFIX = "/:slug";
-const UNAUTHENTICATED_PATHS = [
+const UNAUTHENTICATED_SLUG_PATHS = [
     "",
     "/map",
     "/stories",
@@ -32,9 +32,10 @@ const UNAUTHENTICATED_PATHS = [
     "/login",
     "/user/view/:userId",
 ];
-const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_PATHS.map(
+const UNAUTHENTICATED_SLUGLESS_PATHS = ["/api/files/:key"];
+const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_SLUG_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path
-);
+).concat(UNAUTHENTICATED_SLUGLESS_PATHS);
 
 function addCSPHeaders(response: Response): Response {
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -111,6 +112,7 @@ export const config = {
         "/:slug/stories/view/:id",
         "/:slug/login",
         "/:slug/user/view/:userId",
+        "/api/files/:key",
         // editor+ paths
         "/:slug/account/user-preferences",
         "/:slug/stories/create",

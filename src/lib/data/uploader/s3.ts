@@ -30,32 +30,38 @@ const getS3Client = () => {
     if (!s3Client) {
         const { region } = getS3Config();
         s3Client = new S3Client({
+            endpoint: process.env.AWS_S3_ENDPOINT || undefined,
             region,
             credentials: fromEnv(),
+            forcePathStyle: true, // Needed for Garage and some S3-compatible services
         });
     }
     return s3Client;
 };
 
 async function fileToBuffer(file: File): Promise<Buffer> {
-    const bytes = await file.stream();
-    const chunks = [];
+    try {
+        const bytes = await file.stream();
+        const chunks = [];
 
-    const reader = bytes.getReader();
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
+        const reader = bytes.getReader();
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+        }
+
+        return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
+    } catch (error) {
+        console.error(
+            "Error converting file to buffer:",
+            error instanceof Error ? error.message : error
+        );
+        throw new Error("Failed to convert file to buffer");
     }
-
-    return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
 }
 
-export async function uploadFile(
-    file: File,
-    key: string,
-    slug: string
-): Promise<void> {
+export async function uploadFile(file: File, key: string): Promise<void> {
     try {
         const { bucket } = getS3Config();
         const client = getS3Client();
@@ -65,14 +71,17 @@ export async function uploadFile(
             new PutObjectCommand({
                 Bucket: bucket,
                 Body: buffer,
-                Key: `${slug}/${key}`,
+                Key: `${key}`,
                 ContentType: file.type,
                 ContentLength: file.size,
             })
         );
-    } catch (err) {
-        console.error(`Failed to upload ${key}:`, err);
-        throw err;
+    } catch (error) {
+        console.error(
+            `Failed to upload ${key}:`,
+            error instanceof Error ? error.message : error
+        );
+        throw error;
     }
 }
 
@@ -82,40 +91,50 @@ export async function uploadFileToPublicS3(file: File): Promise<string> {
         const { region, bucket } = getS3Config();
         const client = getS3Client();
         const buffer = await fileToBuffer(file);
+        console.log(
+            `Uploading file to S3: ${key}, size: ${file.size}, type: ${file.type}, bucket: ${bucket}, region: ${region}`
+        );
 
         await client.send(
             new PutObjectCommand({
                 Bucket: bucket,
                 Body: buffer,
-                Key: `public/${key}`,
+                Key: `${key}`,
                 ContentType: file.type,
                 ContentLength: file.size,
             })
         );
-
-        const url = `https://${bucket}.s3.${region}.amazonaws.com/public/${key}`;
+        const url = `${
+            process.env.VERCEL_URL || "http://localhost:3000"
+        }/api/files/${key}`;
+        // const url = `https://${bucket}.s3.${region}.amazonaws.com/public/${key}`;
         console.log("File uploaded to:", url);
         return url;
-    } catch (err) {
-        console.error(`Failed to upload ${key}:`, err);
-        throw err;
+    } catch (error) {
+        console.error(
+            `Failed to upload ${key}:`,
+            error instanceof Error ? error.message : error
+        );
+        throw error;
     }
 }
 
-export async function getSignedS3URL(
-    slug: string,
-    name: string
-): Promise<string> {
+export async function getSignedS3URL(name: string): Promise<string> {
     try {
         const { bucket } = getS3Config();
         const client = getS3Client();
         const command = new GetObjectCommand({
             Bucket: bucket,
-            Key: slug + "/" + name,
+            Key: name,
         });
-        return await getSignedUrl(client, command);
+        const signedUrl = await getSignedUrl(client, command);
+        console.log("Generating signed URL for:", name);
+        return signedUrl;
     } catch (error) {
-        console.error("Error fetching image from S3:", error);
+        console.error(
+            "Error fetching image from S3:",
+            error instanceof Error ? error.message : error
+        );
         throw new Error("Error fetching image from S3");
     }
 }
