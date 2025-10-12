@@ -11,6 +11,7 @@ const userSchema = new Schema({
     externalId: { type: String },
     labs: { type: [labSchema], default: [] },
     email: { type: String, required: true },
+    displayName: { type: String },
     firstName: { type: String },
     lastName: { type: String },
     profilePictureUrl: { type: String },

@@ -113,8 +113,9 @@ export const config = {
         "/:slug/login",
         "/:slug/user/view/:userId",
         "/api/files/:key",
-        // editor+ paths
+        // account and related paths
         "/:slug/account/user-preferences",
+        // editor+ paths
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
@@ -127,8 +128,6 @@ export const config = {
         "/:slug/debug-settings",
         "/universe/labs/manage",
         "/universe/labs/view/:id",
-        // account and related paths
-        "/:slug/user-preferences",
         // static pages
         "/:slug/legal/privacy",
         "/:slug/legal/terms",

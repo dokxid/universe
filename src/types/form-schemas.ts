@@ -75,7 +75,8 @@ export const teamSettingsFormSchema = z.object({
         ),
 });
 
-export const userPreferencesDisplayNameFormSchema = z.object({
+export const editUserDisplayNameFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
     displayName: z
         .string()
         .min(2, "Display name must be at least 2 characters."),
@@ -83,23 +84,35 @@ export const userPreferencesDisplayNameFormSchema = z.object({
     lastName: z.string().min(2, "Last name must be at least 2 characters."),
 });
 
-export const userPreferencesDetailsFormSchema = z.object({
-    publicEmail: z.email().optional().nullable(),
+export const editUserDetailsFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
+    publicEmail: z
+        .union([z.email(), z.literal("")])
+        .optional()
+        .nullable(),
     position: z.string().optional().nullable(),
     phoneNumber: z.string().optional().nullable(),
-    website: z.url().optional().nullable(),
+    website: z
+        .union([z.email(), z.literal("")])
+        .optional()
+        .nullable(),
     description: z.string().optional().nullable(),
 });
 
-export const userPreferencesProfilePictureFormSchema = z.object({
-    profilePictureUrl: z.url().optional().nullable(),
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+
+export const editUserProfilePictureFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
     profilePicture: z
         .any()
-        .refine((files) => files?.length === 1, "Please upload a file.")
-        .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
+        .optional()
+        .refine((file) => file instanceof File, "Please upload a file.")
         .refine(
-            (files) =>
-                files.type === "image/jpeg" || files.type === "image/png",
+            (file) => file?.size <= 5 * 1024 * 1024,
+            "Max file size is 5MB."
+        )
+        .refine(
+            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg, .png, and .webp files are accepted."
         ),
 });

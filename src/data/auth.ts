@@ -94,6 +94,7 @@ export async function isUserMember(
 ): Promise<boolean> {
     try {
         if (!viewer) return false;
+        if (await isUserSuperAdmin(viewer)) return true;
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelationBySlug(
             viewer,

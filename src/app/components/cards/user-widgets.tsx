@@ -3,7 +3,7 @@ import { ThemeSwitchButton } from "@/app/components/sidebar/theme-switch-button"
 import { UserWidgetSkeleton } from "@/components/skeletons/user-widget-skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useUserFromWorkOSId } from "@/lib/swr/user-hook";
+import { useCurrentUser } from "@/lib/swr/user-hook";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
@@ -35,7 +35,7 @@ export function UserWidgetAuthorized({
     slug: string;
     role: string;
 }) {
-    const { user: initialUser, isLoading, isError } = useUserFromWorkOSId();
+    const { user: initialUser, isLoading, isError } = useCurrentUser();
     const user = initialUser;
     if (isLoading) {
         return <UserWidgetSkeleton />;
@@ -49,25 +49,38 @@ export function UserWidgetAuthorized({
                 "flex flex-row items-center justify-between gap-2 bg-primary-foreground text-primary rounded-md group/user"
             }
         >
-            <Avatar>
-                <AvatarImage></AvatarImage>
-                <AvatarFallback>
-                    {(user.displayName
-                        ? user.displayName
-                        : user.firstName || user.lastName
-                        ? `${user.firstName || ""} ${user.lastName || ""}`
-                        : "Anonymous"
-                    ).charAt(0)}
-                </AvatarFallback>
-            </Avatar>
+            <Link
+                href={`/${user.labs?.[0].slug}/profile`}
+                className={
+                    "cursor-pointer hover:brightness-80 transition-all duration-100"
+                }
+            >
+                <Avatar>
+                    <AvatarImage
+                        className={"object-cover"}
+                        src={user.profilePictureUrl}
+                    ></AvatarImage>
+                    <AvatarFallback>
+                        {(user.displayName
+                            ? user.displayName
+                            : user.firstName || user.lastName
+                            ? `${user.firstName || ""} ${user.lastName || ""}`
+                            : "Anonymous"
+                        ).charAt(0)}
+                    </AvatarFallback>
+                </Avatar>
+            </Link>
             <div className={"text-sm flex flex-col grow"}>
-                <p className={"font-semibold"}>
+                <Link
+                    href={`/${user.labs?.[0].slug}/profile`}
+                    className={"font-semibold hover:underline"}
+                >
                     {user.displayName
                         ? user.displayName
                         : user.firstName || user.lastName
                         ? `${user.firstName || ""} ${user.lastName || ""}`
                         : "Anonymous"}
-                </p>
+                </Link>
                 <div className="overflow-hidden w-full">
                     <div
                         className={

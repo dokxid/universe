@@ -64,6 +64,12 @@ export function DebugSettingsDialog() {
                                     triggerRevalidatePathAction(
                                         "/[slug]/experiences"
                                     );
+                                    triggerRevalidatePathAction(
+                                        "/[slug]/users"
+                                    );
+                                    triggerRevalidatePathAction(
+                                        "/[slug]/account/user-preferences"
+                                    );
                                     toast.success(
                                         "Path revalidation successful"
                                     );

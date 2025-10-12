@@ -1,6 +1,10 @@
 "use server";
 
 import {
+    generateUniqueFileName,
+    sanitizeFileName,
+} from "@/lib/utils/file-sanitizer";
+import {
     GetObjectCommand,
     PutObjectCommand,
     S3Client,
@@ -61,11 +65,13 @@ async function fileToBuffer(file: File): Promise<Buffer> {
     }
 }
 
-export async function uploadFile(file: File, key: string): Promise<void> {
+export async function uploadFile(file: File, prefix?: string): Promise<string> {
     try {
         const { bucket } = getS3Config();
         const client = getS3Client();
         const buffer = await fileToBuffer(file);
+        const sanitizedKey = sanitizeFileName(file.name);
+        const key = generateUniqueFileName(sanitizedKey, prefix);
 
         await client.send(
             new PutObjectCommand({
@@ -76,9 +82,15 @@ export async function uploadFile(file: File, key: string): Promise<void> {
                 ContentLength: file.size,
             })
         );
+        const url = `${
+            process.env.BASE_URL ||
+            process.env.VERCEL_URL ||
+            "http://localhost:3000"
+        }/api/files/${key}`;
+        return url;
     } catch (error) {
         console.error(
-            `Failed to upload ${key}:`,
+            `Failed to upload ${file.name}:`,
             error instanceof Error ? error.message : error
         );
         throw error;
@@ -88,7 +100,7 @@ export async function uploadFile(file: File, key: string): Promise<void> {
 export async function uploadFileToPublicS3(file: File): Promise<string> {
     const key = nanoid() + "-" + file.name;
     try {
-        const { region, bucket } = getS3Config();
+        const { bucket } = getS3Config();
         const client = getS3Client();
         const buffer = await fileToBuffer(file);
 

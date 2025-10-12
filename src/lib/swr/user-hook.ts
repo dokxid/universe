@@ -39,8 +39,8 @@ export function useUser(userId: string) {
     };
 }
 
-export function useUserFromWorkOSId() {
-    const { data, error, isLoading } = useSWR(["userFromWorkOSId"], () =>
+export function useCurrentUser() {
+    const { data, error, isLoading } = useSWR("currentUser", () =>
         getCurrentUserFetcher()
     );
     return {
