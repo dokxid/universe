@@ -189,8 +189,8 @@ export function UserPreferencesDialog() {
                 });
             }
         } catch (error) {
-            console.error("Error updating display name:", error);
-            toast.error("Failed to update display name.");
+            console.error("Error updating user details:", error);
+            toast.error("Failed to update user details.");
         }
     };
 

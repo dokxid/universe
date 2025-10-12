@@ -142,7 +142,7 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
         const isAllowedToEdit = await canEditUser(userDTO);
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this user profile."
             );
         }
 
@@ -187,7 +187,7 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
         const isAllowedToEdit = await canEditUser(userDTO);
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this user profile."
             );
         }
 
@@ -234,7 +234,7 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         const isAllowedToEdit = await canEditUser(userDTO);
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this user profile."
             );
         }
 
@@ -242,7 +242,7 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         const rawData = Object.fromEntries(formData);
         const result = editUserProfilePictureFormSchema.safeParse(rawData);
         if (!result.success) {
-            throw new Error(z.prettifyError(result.error));
+            throw new Error(JSON.stringify(result.error.flatten()));
         }
         const { profilePicture: file } = result.data;
         if (!file) {
@@ -273,7 +273,7 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         );
 
         // revalidate caches
-        revalidateTag(`stories`);
+        revalidateTag(`users/${userDTO._id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
