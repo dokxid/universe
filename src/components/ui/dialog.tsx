@@ -6,7 +6,6 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 
 function Dialog({
     ...props
@@ -78,11 +77,10 @@ function DialogContent({
                 {children}
                 <div className="absolute top-4 right-4 flex flex-row gap-1">
                     {showOpenButton && (
-                        <Link
+                        <a
                             href={openHref}
                             target="_blank"
-                            rel="noreferrer"
-                            prefetch={false}
+                            rel="noopener noreferrer"
                         >
                             <DialogOpen
                                 data-slot="dialog-open"
@@ -91,7 +89,7 @@ function DialogContent({
                                 <OpenInNewWindowIcon />
                                 <span className="sr-only">Open</span>
                             </DialogOpen>
-                        </Link>
+                        </a>
                     )}
                     {showCloseButton && (
                         <DialogPrimitive.Close

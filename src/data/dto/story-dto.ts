@@ -262,8 +262,9 @@ export async function submitStoryDTO(formData: FormData) {
             updatedAt: new Date(),
         } as NewStoryData;
 
-        await insertStory(storyToInsert, data.slug);
+        const newStoryId = await insertStory(storyToInsert, data.slug);
         revalidateTag(`stories`);
+        return newStoryId;
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"

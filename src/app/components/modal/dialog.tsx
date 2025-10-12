@@ -17,7 +17,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 export function Dialog({
@@ -30,6 +30,7 @@ export function Dialog({
     description: string;
 }) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const router = useRouter();
     const isMobile = useIsMobile();
 
@@ -45,7 +46,7 @@ export function Dialog({
                 <DialogOverlay />
                 <DialogContent
                     showOpenButton={true}
-                    openHref={pathname}
+                    openHref={pathname + "?" + searchParams.toString()}
                     className={"overflow-y"}
                 >
                     <div className={"max-h-[80vh] flex flex-col gap-4"}>

@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export const setSelectedStoryIdParams = (
     pathname: string,
     searchParams: URLSearchParams,
@@ -54,4 +56,20 @@ export const setSelectedLabParams = (
         search.set("exp", newLabSlug);
     }
     history.pushState(null, "", pathname + "?" + search.toString());
+};
+
+export const setLngLatParams = (
+    pathname: string,
+    searchParams: URLSearchParams,
+    newLngLat: [number, number] | null
+) => {
+    const search = new URLSearchParams(searchParams);
+    if (newLngLat) {
+        search.set("lng", newLngLat[0].toString());
+        search.set("lat", newLngLat[1].toString());
+    } else {
+        search.delete("lng");
+        search.delete("lat");
+    }
+    redirect(pathname + "?" + search.toString());
 };

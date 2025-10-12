@@ -11,8 +11,8 @@ import {
 
 export async function submitStoryAction(formData: FormData) {
     try {
-        await submitStoryDTO(formData);
-        return { success: true };
+        const newStoryId = await submitStoryDTO(formData);
+        return { success: true, storyId: newStoryId };
     } catch (error) {
         return {
             success: false,

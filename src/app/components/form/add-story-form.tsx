@@ -19,12 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAppSelector } from "@/lib/hooks";
 import { CC_LICENSES, UnescoTagDTO } from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -37,7 +37,10 @@ export default function AddStoryForm({
     tagsPromise: Promise<UnescoTagDTO[]>;
 }) {
     useAuth({ ensureSignedIn: true });
-    const addStoryDialogue = useAppSelector((state) => state.addStoryDialog);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const lng = searchParams.get("lng");
+    const lat = searchParams.get("lat");
 
     const form = useForm({
         resolver: zodResolver(submitStoryFormSchema),
@@ -45,8 +48,8 @@ export default function AddStoryForm({
             title: "",
             content: "",
             year: new Date().getFullYear(),
-            longitude: addStoryDialogue.longitude,
-            latitude: addStoryDialogue.latitude,
+            longitude: lng,
+            latitude: lat,
             tags: [],
             universe: false,
             draft: true,
@@ -76,6 +79,7 @@ export default function AddStoryForm({
             const result = await submitStoryAction(formData);
             if (result?.success) {
                 toast.success("Story updated successfully!");
+                router.push(`/${slug}/stories/view/${result.storyId}`);
             }
             if (result?.error) {
                 const zodErrors = JSON.parse(result.error);
