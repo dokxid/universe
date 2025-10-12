@@ -24,7 +24,7 @@ export const submitStoryFormSchema = z.object({
         .file()
         .min(1, "Please upload a file.")
         .max(5 * 1024 * 1024, "Max file size is 5MB.")
-        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg, and .png, files are accepted."),
+        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg and .png files are accepted."),
 });
 
 export const editVisibilityAndLicensingFormSchema = z.object({
@@ -72,7 +72,7 @@ export const teamSettingsFormSchema = z.object({
         .refine((files) => files?.[0]?.size <= 5000000, "Max file size is 5MB.")
         .refine(
             (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-            "Only .jpg, and .png, files are accepted."
+            "Only .jpg and .png files are accepted."
         ),
 });
 
@@ -112,7 +112,7 @@ export const editUserProfilePictureFormSchema = z.object({
         )
         .refine(
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, and .png, files are accepted."
+            "Only .jpg and .png files are accepted."
         ),
 });
 
@@ -126,7 +126,7 @@ export const editProfilePictureFormSchema = z.object({
         .file()
         .min(1, "Please upload a file.")
         .max(5 * 1024 * 1024, "Max file size is 5MB.")
-        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg, and .png, files are accepted."),
+        .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg and .png files are accepted."),
     storyId: z.string().min(1, "Story ID is required"),
     lab: z.string().min(1, "Lab is required"),
 });

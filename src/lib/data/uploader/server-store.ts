@@ -1,6 +1,9 @@
 "use server";
 
-import { generateUniqueFileName } from "@/lib/utils/file-sanitizer";
+import {
+    generateUniqueFileName,
+    sanitizeFileName,
+} from "@/lib/utils/file-sanitizer";
 import fs from "fs";
 
 const UPLOAD_DIRECTORY = "./public/uploads";
@@ -17,7 +20,7 @@ export async function uploadFileToPublicFolder(
                 }
             });
         }
-        const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "");
+        const sanitizedFileName = sanitizeFileName(file.name);
         const key = generateUniqueFileName(sanitizedFileName, prefix);
         const filePath = `${UPLOAD_DIRECTORY}/${key}`;
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -45,7 +48,7 @@ export async function uploadFileToLabFolder(
                 }
             );
         }
-        const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "");
+        const sanitizedFileName = sanitizeFileName(file.name);
         const key = generateUniqueFileName(sanitizedFileName, slug);
         const filePath = `${UPLOAD_DIRECTORY}/${key}`;
         const buffer = Buffer.from(await file.arrayBuffer());
