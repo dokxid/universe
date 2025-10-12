@@ -77,7 +77,11 @@ function DialogContent({
                 {children}
                 <div className="absolute top-4 right-4 flex flex-row gap-1">
                     {showOpenButton && (
-                        <a href={openHref}>
+                        <a
+                            href={openHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             <DialogOpen
                                 data-slot="dialog-open"
                                 className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
