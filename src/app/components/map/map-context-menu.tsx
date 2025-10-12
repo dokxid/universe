@@ -17,11 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppDispatch } from "@/lib/hooks";
-import { setLngLat } from "@/lib/redux/dialogue/add-story-slice";
 import { setFlyPosition } from "@/lib/redux/map/map-slice";
 import { useAllowedToAddStory } from "@/lib/swr/user-hook";
+import { setLngLatParams } from "@/lib/utils/param-setter";
 import { ClipboardCopy, FilePlus2, Plane } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface MapContextMenuProps {
@@ -74,29 +73,19 @@ export function MapContextMenu({
                     >
                         {!isUniverse && allowedToAddStory && (
                             <Button
-                                className={"flex flex-col h-fit gap-3 p-4"}
+                                className={
+                                    "flex flex-col h-fit gap-3 p-4 font-semibold"
+                                }
                                 variant={"default"}
+                                onClick={() =>
+                                    setLngLatParams(
+                                        pathname,
+                                        new URLSearchParams(),
+                                        ptrLngLat ? ptrLngLat : [0, 0]
+                                    )
+                                }
                             >
-                                <Link
-                                    className={"font-semibold"}
-                                    href={
-                                        "stories/create?lnglat=" +
-                                        (ptrLngLat
-                                            ? ptrLngLat[0] + "," + ptrLngLat[1]
-                                            : "0,0")
-                                    }
-                                    scroll={false}
-                                    prefetch={true}
-                                    onClick={() =>
-                                        dispatch(
-                                            setLngLat(
-                                                ptrLngLat ? ptrLngLat : [0, 0]
-                                            )
-                                        )
-                                    }
-                                >
-                                    Create
-                                </Link>
+                                Create
                                 <FilePlus2 className={"size-8"} />
                             </Button>
                         )}
@@ -160,20 +149,17 @@ export function MapContextMenu({
                     <DropdownMenuSeparator />
                     {!isUniverse && allowedToAddStory && (
                         <DropdownMenuItem asChild>
-                            <Link
-                                href={"stories/create"}
-                                scroll={false}
-                                prefetch={true}
+                            <div
                                 onClick={() =>
-                                    dispatch(
-                                        setLngLat(
-                                            ptrLngLat ? ptrLngLat : [0, 0]
-                                        )
+                                    setLngLatParams(
+                                        "stories/create",
+                                        new URLSearchParams(),
+                                        ptrLngLat ? ptrLngLat : [0, 0]
                                     )
                                 }
                             >
                                 Create story here
-                            </Link>
+                            </div>
                         </DropdownMenuItem>
                     )}
                     <DropdownMenuItem

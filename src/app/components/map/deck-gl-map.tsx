@@ -85,7 +85,7 @@ function MapController({
         } else {
             // case: story -> !story
             center = prevStoryCenter || currentExperience.center.coordinates;
-            zoom = map.getZoom() < 8 ? 8 : map.getZoom();
+            zoom = map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
                 : navigationState.rightSideBarOpen

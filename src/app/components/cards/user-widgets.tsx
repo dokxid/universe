@@ -58,7 +58,7 @@ export function UserWidgetAuthorized({
                 <Avatar>
                     <AvatarImage
                         className={"object-cover"}
-                        src={user.profilePictureUrl}
+                        src={user.profilePictureUrl || undefined}
                     ></AvatarImage>
                     <AvatarFallback>
                         {(user.displayName

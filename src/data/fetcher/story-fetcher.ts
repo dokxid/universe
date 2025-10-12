@@ -89,14 +89,30 @@ export async function queryStory(
 export async function insertStory(
     storyToInsert: NewStoryData,
     experienceSlug: string
-) {
+): Promise<string> {
     try {
-        dbConnect();
-        await ExperienceModel.findOneAndUpdate(
+        await dbConnect();
+        const result = await ExperienceModel.findOneAndUpdate(
             { slug: experienceSlug },
             { $push: { stories: storyToInsert } },
-            { safe: true, upsert: false }
+            { new: true, upsert: false } // Return the updated document
         ).exec();
+
+        if (!result) {
+            throw new Error("Inserted lab not found");
+        }
+
+        // Get the last story (the one we just pushed)
+        const insertedStory = result.stories[result.stories.length - 1];
+
+        if (!insertedStory || !insertedStory._id) {
+            throw new Error("Failed to insert story");
+        }
+
+        const storyId = insertedStory._id.toString();
+        console.log("Inserted story ID:", storyId);
+
+        return storyId;
     } catch (err) {
         console.error("Error inserting story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");

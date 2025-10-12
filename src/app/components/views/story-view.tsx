@@ -14,6 +14,7 @@ import {
 import { StoryAuthorDetails } from "@/app/components/layout/story-author-details";
 import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { EditStoryButtons } from "@/app/components/views/edit-story-buttons";
+import { Badge } from "@/components/ui/badge";
 import { StoryDTO } from "@/types/dtos";
 import parse from "html-react-parser";
 
@@ -35,7 +36,17 @@ export default async function StoryView({ story }: { story: StoryDTO }) {
                     />
                     <div className={"flex flex-row justify-between w-full"}>
                         <HeaderContent className={"flex flex-col"}>
-                            <HeaderTitle>{story.title}</HeaderTitle>
+                            <HeaderTitle className={"flex items-center gap-2"}>
+                                {story.title}{" "}
+                                {story.draft && (
+                                    <Badge
+                                        variant={"secondary"}
+                                        className="text-sm"
+                                    >
+                                        Draft
+                                    </Badge>
+                                )}
+                            </HeaderTitle>
                             <HeaderDescription>
                                 <StoryAuthorDetails story={story} />
                                 {/* {story.author_name} - Published on{" "}
