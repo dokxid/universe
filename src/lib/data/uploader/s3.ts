@@ -91,9 +91,6 @@ export async function uploadFileToPublicS3(file: File): Promise<string> {
         const { region, bucket } = getS3Config();
         const client = getS3Client();
         const buffer = await fileToBuffer(file);
-        console.log(
-            `Uploading file to S3: ${key}, size: ${file.size}, type: ${file.type}, bucket: ${bucket}, region: ${region}`
-        );
 
         await client.send(
             new PutObjectCommand({
@@ -105,9 +102,10 @@ export async function uploadFileToPublicS3(file: File): Promise<string> {
             })
         );
         const url = `${
-            process.env.VERCEL_URL || "http://localhost:3000"
+            process.env.BASE_URL ||
+            process.env.VERCEL_URL ||
+            "http://localhost:3000"
         }/api/files/${key}`;
-        // const url = `https://${bucket}.s3.${region}.amazonaws.com/public/${key}`;
         console.log("File uploaded to:", url);
         return url;
     } catch (error) {
@@ -128,7 +126,6 @@ export async function getSignedS3URL(name: string): Promise<string> {
             Key: name,
         });
         const signedUrl = await getSignedUrl(client, command);
-        console.log("Generating signed URL for:", name);
         return signedUrl;
     } catch (error) {
         console.error(
