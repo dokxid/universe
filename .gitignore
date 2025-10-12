@@ -26,8 +26,9 @@ certificates
 *.pem
 /.swc
 
-# jetbrains
+# ide project-wide configs
 /.idea
+*.code-workspace
 
 # debug
 npm-debug.log*

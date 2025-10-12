@@ -73,7 +73,7 @@ const createExtensions = ({
         // hardBreak
         heading: { HTMLAttributes: { class: "heading-node" } },
         // undoRedo
-        horizontalRule: false,
+        horizontalRule: { HTMLAttributes: { class: "horizontal-rule" } },
         // italic
         // listItem
         // listKeymap

@@ -13,7 +13,7 @@ export async function getImageURLAction(
             if (fileName.startsWith("http")) {
                 return fileName;
             } else {
-                return await getSignedS3URL(slug, fileName);
+                return await getSignedS3URL(fileName);
             }
         }
     } catch (error) {
