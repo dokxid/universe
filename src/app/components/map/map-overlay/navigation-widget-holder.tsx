@@ -8,14 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getTagsForLabDTO } from "@/data/dto/tag-dto";
 import { Suspense } from "react";
 
-// const Geocoder = dynamic(
-//     () =>
-//         import("@mapbox/search-js-react").then((mod) => ({
-//             default: mod.Geocoder,
-//         })),
-//     { ssr: false }
-// );
-
 export async function NavigationWidgetHolder({ slug }: { slug: string }) {
     const tagsPromise = getTagsForLabDTO(slug);
 
@@ -38,16 +30,6 @@ export async function NavigationWidgetHolder({ slug }: { slug: string }) {
                         size={"icon-lg"}
                     />
                 </Suspense>
-                {/* {isUniverseView && (
-                    <Geocoder
-                        accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
-                        options={{
-                            language: "en",
-                            country: "US",
-                        }}
-                        theme={geocoderTheme}
-                    />
-                )} */}
                 <Suspense fallback={<Skeleton className="w-10 h-10" />}>
                     <FlyBackButton />
                 </Suspense>

@@ -12,10 +12,9 @@ one day i will:
 -   [WorkOS](https://workos.com/) for auth
     -   used rn for just authkit and their hosted login interfaces
 -   [MongoDB](https://www.mongodb.com/) for database (self hostable)
--   [Mapbox](https://www.mapbox.com/) for reverse geocoding (optional)
-    -   this feature is disabled by default at the moment (it takes up too much ui space)
--   [AWS S3](https://aws.amazon.com/) for storage (optional)
-    -   in the .env file u will see a `LOCAL_UPLOADER=` line, that will circumvent the s3 thing for now. but its still useful for testing production
+-   [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
+    -   how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
+    -   in the .env file u will see a `LOCAL_UPLOADER=` line, that will circumvent the garage s3 bucket setup for now. but its still useful for testing production
 
 ## installing dependencies
 
