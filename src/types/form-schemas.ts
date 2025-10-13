@@ -2,6 +2,8 @@ import { CC_LICENSES } from "@/types/dtos";
 import { z } from "zod";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+const LAB_VISIBILITY_OPTIONS = ["public", "unlisted", "private"] as const;
+export type LAB_VISIBILITY_OPTIONS = "public" | "unlisted" | "private";
 
 export const submitStoryFormSchema = z.object({
     title: z.string().min(1, { message: "This field is required" }),
@@ -54,6 +56,7 @@ export const editContentFormSchema = z.object({
 });
 
 export const teamSettingsFormSchema = z.object({
+    slug: z.string().min(1, "Slug is required."),
     title: z.string().min(2, "Title must be at least 2 characters."),
     subtitle: z.string().min(2, "Subtitle must be at least 2 characters."),
     description: z
@@ -129,4 +132,9 @@ export const editProfilePictureFormSchema = z.object({
         .mime(ACCEPTED_IMAGE_TYPES, "Only .jpg and .png files are accepted."),
     storyId: z.string().min(1, "Story ID is required"),
     lab: z.string().min(1, "Lab is required"),
+});
+
+export const editVisibilityFormSchema = z.object({
+    slug: z.string().min(1, "Slug is required"),
+    visibility: z.enum(LAB_VISIBILITY_OPTIONS),
 });

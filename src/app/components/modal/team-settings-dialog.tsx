@@ -1,5 +1,6 @@
 "use client";
 
+import { editLabVisibilityFormAction } from "@/actions/labs";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -25,10 +26,16 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Experience } from "@/types/dtos";
-import { teamSettingsFormSchema } from "@/types/form-schemas";
+import {
+    editVisibilityFormSchema,
+    LAB_VISIBILITY_OPTIONS,
+    teamSettingsFormSchema,
+} from "@/types/form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { FieldValues, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = teamSettingsFormSchema;
 export function TeamSettingsDialog({
@@ -39,18 +46,58 @@ export function TeamSettingsDialog({
     experienceSerialized: string;
 }) {
     const experience = JSON.parse(experienceSerialized) as Experience;
-    const form = useForm({
+    const displayForm = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            slug: slug,
             title: experience.title || "",
             subtitle: experience.subtitle || "",
             description: experience.description || "",
             subdomain: slug,
         },
     });
+    const visibilityForm = useForm({
+        resolver: zodResolver(editVisibilityFormSchema),
+        defaultValues: {
+            slug: slug,
+            visibility: experience.visibility as LAB_VISIBILITY_OPTIONS,
+        },
+    });
 
     const onSubmit = (data: FieldValues) => {
         console.log(data);
+    };
+    const onVisibilitySubmit = async (data: FieldValues) => {
+        try {
+            const formData = new FormData();
+            formData.append("slug", slug);
+            formData.append("visibility", data.visibility);
+            const result = await editLabVisibilityFormAction(formData);
+            if (result?.success) {
+                toast.success("Story updated successfully!");
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    visibilityForm.setError(
+                        fieldName as keyof z.infer<
+                            typeof editVisibilityFormSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating story content:", error);
+            toast.error("Failed to update story content.");
+        }
     };
 
     return (
@@ -64,15 +111,15 @@ export function TeamSettingsDialog({
                         Changing your public appearance will update how it is
                         displayed to others.
                     </SettingsFormDescription>
-                    <Form {...form}>
+                    <Form {...displayForm}>
                         <form
-                            onSubmit={form.handleSubmit(onSubmit)}
+                            onSubmit={displayForm.handleSubmit(onSubmit)}
                             className="w-full"
                         >
                             <SettingsBoxContent>
                                 <SettingsBoxForm>
                                     <FormField
-                                        control={form.control}
+                                        control={displayForm.control}
                                         name="title"
                                         render={({ field }) => (
                                             <FormItem>
@@ -90,7 +137,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={displayForm.control}
                                         name="subtitle"
                                         render={({ field }) => (
                                             <FormItem>
@@ -108,7 +155,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={displayForm.control}
                                         name="description"
                                         render={({ field }) => (
                                             <FormItem>
@@ -127,7 +174,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={displayForm.control}
                                         name="subdomain"
                                         render={({ field }) => (
                                             <FormItem>
@@ -154,7 +201,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={displayForm.control}
                                         name="featured-picture"
                                         render={({ field }) => (
                                             <FormItem>
@@ -197,16 +244,18 @@ export function TeamSettingsDialog({
                                     <Button
                                         variant={"default"}
                                         className={"w-fit"}
-                                        disabled
+                                        type={"submit"}
+                                        disabled={true}
                                     >
                                         Apply
                                     </Button>
                                     <Button
                                         variant={"ghost"}
                                         className={"w-fit"}
-                                        disabled
+                                        type={"reset"}
+                                        disabled={true}
                                     >
-                                        Revert
+                                        Reset
                                     </Button>
                                 </SettingsFormButtonGroup>
                             </SettingsBoxContent>
@@ -220,67 +269,108 @@ export function TeamSettingsDialog({
                         it to private, or make it only viewable through an URL.
                     </SettingsFormDescription>
                     <SettingsBoxContent>
-                        <SettingsBoxForm>
-                            <RadioGroup defaultValue={experience.visibility}>
-                                <div className="flex items-center gap-3">
-                                    <RadioGroupItem
-                                        id="public"
-                                        value={"public"}
-                                    />
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="terms">
-                                            Should this experience be listed
-                                            publicly?
-                                        </Label>
-                                        <p className="text-muted-foreground text-sm">
-                                            This will make your experience be
-                                            listed on our experiences page.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <RadioGroupItem
-                                        id="unlisted"
-                                        value={"unlisted"}
-                                    />
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="terms">
-                                            Should this experience only be
-                                            available through a link?
-                                        </Label>
-                                        <p className="text-muted-foreground text-sm">
-                                            This will make your experience be{" "}
-                                            <b>not</b> listed on our experiences
-                                            page.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <RadioGroupItem
-                                        id="private"
-                                        value={"private"}
-                                    />
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="terms-2">
-                                            Should this experience be private?
-                                        </Label>
-                                        <p className="text-muted-foreground text-sm">
-                                            This will make your experience only
-                                            visible to team members.
-                                        </p>
-                                    </div>
-                                </div>
-                            </RadioGroup>
-                        </SettingsBoxForm>
-                        <SettingsFormButtonGroup>
-                            <Button
-                                variant={"default"}
-                                className={"w-fit"}
-                                disabled
+                        <Form {...visibilityForm}>
+                            <form
+                                onSubmit={visibilityForm.handleSubmit(
+                                    onVisibilitySubmit
+                                )}
                             >
-                                Apply
-                            </Button>
-                        </SettingsFormButtonGroup>
+                                <SettingsBoxForm>
+                                    <SettingsFormButtonGroup>
+                                        <FormField
+                                            control={visibilityForm.control}
+                                            name="visibility"
+                                            render={({ field }) => (
+                                                <RadioGroup
+                                                    value={field.value}
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <RadioGroupItem
+                                                            id="public"
+                                                            value={"public"}
+                                                        />
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="terms">
+                                                                Should this
+                                                                experience be
+                                                                listed publicly?
+                                                            </Label>
+                                                            <p className="text-muted-foreground text-sm">
+                                                                This will make
+                                                                your experience
+                                                                be listed on our
+                                                                experiences
+                                                                page.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <RadioGroupItem
+                                                            id="unlisted"
+                                                            value={"unlisted"}
+                                                        />
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="terms">
+                                                                Should this
+                                                                experience only
+                                                                be available
+                                                                through a link?
+                                                            </Label>
+                                                            <p className="text-muted-foreground text-sm">
+                                                                This will make
+                                                                your experience
+                                                                be <b>not</b>{" "}
+                                                                listed on our
+                                                                experiences
+                                                                page.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-start gap-3">
+                                                        <RadioGroupItem
+                                                            id="private"
+                                                            value={"private"}
+                                                        />
+                                                        <div className="grid gap-2">
+                                                            <Label htmlFor="terms-2">
+                                                                Should this
+                                                                experience be
+                                                                private?
+                                                            </Label>
+                                                            <p className="text-muted-foreground text-sm">
+                                                                This will make
+                                                                your experience
+                                                                only visible to
+                                                                team members.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </RadioGroup>
+                                            )}
+                                        />
+                                    </SettingsFormButtonGroup>
+                                    <SettingsFormButtonGroup>
+                                        <Button
+                                            type={"submit"}
+                                            variant={"default"}
+                                            className={"w-fit"}
+                                        >
+                                            Apply
+                                        </Button>
+                                        <Button
+                                            type={"reset"}
+                                            variant={"ghost"}
+                                            className={"w-fit"}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </SettingsFormButtonGroup>
+                                </SettingsBoxForm>
+                            </form>
+                        </Form>
                     </SettingsBoxContent>
                 </SettingsFormBox>
 

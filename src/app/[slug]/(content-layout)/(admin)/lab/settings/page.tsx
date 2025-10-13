@@ -1,4 +1,7 @@
-import { ContentLayout } from "@/app/components/layout/content-layout";
+import {
+    ContentLayout,
+    ContentLayoutInner,
+} from "@/app/components/layout/content-layout";
 import {
     Header,
     HeaderContent,
@@ -8,7 +11,7 @@ import {
 } from "@/app/components/layout/header";
 import { TeamSettingsDialog } from "@/app/components/modal/team-settings-dialog";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Newspaper } from "lucide-react";
+import { Settings } from "lucide-react";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();
@@ -29,20 +32,21 @@ export default async function Page({
             <ContentLayout>
                 <Header>
                     <HeaderIcon>
-                        <Newspaper size={80} />
+                        <Settings size={80} />
                     </HeaderIcon>
                     <HeaderContent>
-                        <HeaderTitle>Elevation Requests</HeaderTitle>
+                        <HeaderTitle>Lab Settings</HeaderTitle>
                         <HeaderDescription>
-                            Manage the elevation requests in all labs. Reject or
-                            approve them as needed.
+                            Manage your lab and its public appearance.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <TeamSettingsDialog
-                    slug={slug}
-                    experienceSerialized={experience}
-                />
+                <ContentLayoutInner>
+                    <TeamSettingsDialog
+                        slug={slug}
+                        experienceSerialized={experience}
+                    />
+                </ContentLayoutInner>
             </ContentLayout>
         </>
     );

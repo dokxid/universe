@@ -1,5 +1,6 @@
 import "server-only";
 
+import { isUserAdmin } from "@/data/auth";
 import {
     getExperience,
     getExperiences,
@@ -7,7 +8,19 @@ import {
 } from "@/data/fetcher/experience-fetcher";
 import experienceModel from "@/lib/data/mongodb/models/experience-model";
 import { ExperienceDTO } from "@/types/dtos";
+import { editVisibilityFormSchema } from "@/types/form-schemas";
+import { revalidateTag } from "next/cache";
 import { cache } from "react";
+import z from "zod";
+
+async function canUserManageLab(slug: string): Promise<boolean> {
+    try {
+        return isUserAdmin(slug);
+    } catch (error) {
+        console.error("Error checking if user can manage lab:", error);
+        return false;
+    }
+}
 
 export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
     try {
@@ -140,6 +153,56 @@ export async function getOrganizationFromSlugDTO(
             `Error fetching organization from slug ${slug}: ${
                 err instanceof Error ? err.message : "Unknown error"
             }`
+        );
+    }
+}
+
+export async function editLabVisibilityDTO(formData: FormData) {
+    try {
+        // check permissions of user
+        const slug = formData.get("slug") as string;
+        const labDTO = await getExperienceDTO(slug);
+        if (!labDTO) {
+            throw new Error(`Lab not found for slug: ${slug}`);
+        }
+        const isAllowedToEdit = await canUserManageLab(labDTO.slug);
+        if (!isAllowedToEdit) {
+            throw new Error("You do not have permission to edit this lab.");
+        }
+
+        // validate form data
+        const rawData = Object.fromEntries(formData.entries());
+        const result = editVisibilityFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+
+        // update database
+        console.log("Updating lab visibility:", result.data);
+        const mutate = await experienceModel.updateOne(
+            { slug: result.data.slug },
+            {
+                $set: {
+                    visibility: result.data.visibility,
+                },
+            }
+        );
+        if (mutate.modifiedCount === 0) {
+            return {
+                success: false,
+                error: JSON.stringify({
+                    formErrors: ["No changes made."],
+                    fieldErrors: {},
+                }),
+            };
+        }
+
+        // revalidate cache
+        revalidateTag(slug);
+        return { success: true };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
         );
     }
 }

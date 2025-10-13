@@ -15,7 +15,7 @@ export async function submitElevationRequestDTO(
     status: "created" | "approved" | "rejected" | "pending"
 ) {
     try {
-        if (!isUserAdmin(user, slug)) {
+        if (!isUserAdmin(slug)) {
             throw new Error("You must be an admin to request elevation.");
         }
         const requestToInsert: NewElevationRequestData = {
