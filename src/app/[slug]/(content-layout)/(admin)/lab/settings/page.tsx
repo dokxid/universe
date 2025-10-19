@@ -9,7 +9,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { TeamSettings } from "@/app/components/views/team-settings";
+import { TeamSettings } from "@/app/components/views/lab-settings";
 import {
     getExperienceDTO,
     getExperiencesDTO,

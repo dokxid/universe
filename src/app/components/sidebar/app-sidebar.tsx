@@ -11,7 +11,8 @@ import { getLabSlugFromPathname } from "@/lib/utils/pathname";
 import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
-    const slug = getLabSlugFromPathname(usePathname());
+    const pathname = usePathname();
+    const slug = getLabSlugFromPathname(pathname);
     const { experience, isLoading, isError } = useExperience(slug);
     if (!slug) {
         return null;

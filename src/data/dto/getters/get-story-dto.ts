@@ -81,7 +81,7 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
         const objectId = new mongoose.Types.ObjectId(id);
         const queryResult = await queryStory(objectId);
 
-        if (!canUserViewStory(queryResult)) {
+        if (!(await canUserViewStory(queryResult))) {
             throw new Error("You do not have permission to view this story.");
         }
 

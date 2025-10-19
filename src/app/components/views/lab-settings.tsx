@@ -103,8 +103,8 @@ export function TeamSettings({
                 });
             }
         } catch (error) {
-            console.error("Error updating story content:", error);
-            toast.error("Failed to update story content.");
+            console.error("Error updating lab appearance:", error);
+            toast.error("Failed to update lab appearance.");
         }
     };
 
@@ -137,8 +137,8 @@ export function TeamSettings({
                 });
             }
         } catch (error) {
-            console.error("Error updating story content:", error);
-            toast.error("Failed to update story content.");
+            console.error("Error updating lab visibility:", error);
+            toast.error("Failed to update lab visibility.");
         }
     };
 
