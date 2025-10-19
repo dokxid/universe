@@ -12,6 +12,7 @@ import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { ExperienceDTO } from "@/types/dtos";
 import {
+    editLabAppearanceSchema,
     editLabImageFormSchema,
     editVisibilityFormSchema,
 } from "@/types/form-schemas/lab-form-schemas";
@@ -193,7 +194,8 @@ export async function editLabPictureDTO(formData: FormData) {
         );
 
         // revalidate caches
-        revalidateTag(`labs`);
+        revalidateTag(`labs/${data.lab}`);
+        return { success: true };
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -201,14 +203,11 @@ export async function editLabPictureDTO(formData: FormData) {
     }
 }
 
-export async function editLabVisibilityDTO(formData: FormData) {
+export async function editLabVisibilityDTO(
+    formData: FormData
+): Promise<{ success: boolean; error?: string }> {
     try {
         // check permissions of user
-        const slug = formData.get("slug") as string;
-        const labDTO = await getExperienceDTO(slug);
-        if (!labDTO) {
-            throw new Error(`Lab not found for slug: ${slug}`);
-        }
         const isAllowedToEdit = await canUserEditLab(
             formData.get("lab") as string
         );
@@ -222,30 +221,71 @@ export async function editLabVisibilityDTO(formData: FormData) {
         if (!result.success) {
             throw new Error(JSON.stringify(z.flattenError(result.error)));
         }
+        const data = result.data;
 
         // update database
-        console.log("Updating lab visibility:", result.data);
         const mutate = await ExperienceModel.updateOne(
-            { slug: result.data.slug },
+            { slug: data.lab },
             {
                 $set: {
-                    visibility: result.data.visibility,
+                    visibility: data.visibility,
                 },
             }
         );
         if (mutate.modifiedCount === 0) {
-            return {
-                success: false,
-                error: JSON.stringify({
-                    formErrors: ["No changes made."],
-                    fieldErrors: {},
-                }),
-            };
+            throw new Error("No changes made.");
         }
 
         // revalidate cache
-        revalidateTag(slug);
+        revalidateTag(`labs/${data.lab}`);
         return { success: true };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function editLabAppearanceDTO(formData: FormData) {
+    try {
+        // check permissions of user
+        const isAllowedToEdit = await canUserEditLab(
+            formData.get("lab") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error("User is not allowed to edit this lab");
+        }
+
+        // validate form data
+        const rawData = Object.fromEntries(formData.entries());
+        const result = editLabAppearanceSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+        const data = result.data;
+
+        // update database
+        const mutate = await ExperienceModel.updateOne(
+            { slug: data.lab },
+            {
+                $set: {
+                    title: data.title,
+                    subtitle: data.subtitle,
+                    description: data.description,
+                    subdomain: data.subdomain,
+                },
+            }
+        );
+        if (mutate.modifiedCount === 0) {
+            throw new Error("No changes made.");
+        }
+
+        // revalidate cache
+        revalidateTag(`labs/${data.lab}`);
+        return {
+            result: { success: true },
+            redirect: `/${data.subdomain}/lab/settings`,
+        };
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"

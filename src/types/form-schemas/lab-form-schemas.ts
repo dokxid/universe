@@ -5,7 +5,7 @@ import {
 import z from "zod";
 
 export const editLabAppearanceSchema = z.object({
-    slug: z.string().min(1, "Lab slug is required."),
+    lab: z.string().min(1, "Lab slug is required."),
     title: z.string().min(2, "Title must be at least 2 characters."),
     subtitle: z.string().min(2, "Subtitle must be at least 2 characters."),
     description: z
@@ -37,6 +37,6 @@ export const editLabImageFormSchema = z.object({
 });
 
 export const editVisibilityFormSchema = z.object({
-    slug: z.string().min(1, "Slug is required"),
+    lab: z.string().min(1, "Slug is required"),
     visibility: z.enum(LAB_VISIBILITY_OPTIONS),
 });

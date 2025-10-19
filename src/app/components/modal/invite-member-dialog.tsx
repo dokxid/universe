@@ -1,6 +1,6 @@
 "use client";
 
-import { inviteMemberAction } from "@/actions/invite-member";
+import { inviteMemberAction } from "@/actions/form/invite-member";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,

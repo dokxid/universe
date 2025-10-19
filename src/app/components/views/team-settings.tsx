@@ -1,6 +1,9 @@
 "use client";
 
-import { editLabVisibilityFormAction } from "@/actions/labs";
+import {
+    editLabAppearanceAction,
+    editLabVisibilityAction,
+} from "@/actions/form/labs";
 import { LabPictureForm } from "@/app/components/form/lab-forms/lab-picture-form";
 import {
     SettingsBoxContent,
@@ -32,8 +35,10 @@ import {
     editVisibilityFormSchema,
 } from "@/types/form-schemas/lab-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { mutate } from "swr";
 import { z } from "zod";
 
 export function TeamSettings({
@@ -44,10 +49,11 @@ export function TeamSettings({
     experienceSerialized: string;
 }) {
     const experience = JSON.parse(experienceSerialized) as ExperienceDTO;
+    const router = useRouter();
     const labAppearanceForm = useForm({
         resolver: zodResolver(editLabAppearanceSchema),
         defaultValues: {
-            slug: slug,
+            lab: slug,
             title: experience.title || "",
             subtitle: experience.subtitle || "",
             description: experience.description || "",
@@ -57,22 +63,60 @@ export function TeamSettings({
     const visibilityForm = useForm({
         resolver: zodResolver(editVisibilityFormSchema),
         defaultValues: {
-            slug: slug,
+            lab: slug,
             visibility: experience.visibility as LAB_VISIBILITY_OPTIONS,
         },
     });
 
-    const onSubmit = (data: FieldValues) => {
-        console.log(data);
+    const onAppearanceSubmit = async (data: FieldValues) => {
+        try {
+            const formData = new FormData();
+            formData.append("lab", slug);
+            formData.append("title", data.title);
+            formData.append("subtitle", data.subtitle);
+            formData.append("description", data.description);
+            formData.append("subdomain", data.subdomain);
+            const { result, redirect } = await editLabAppearanceAction(
+                formData
+            );
+            if (result?.success) {
+                toast.success("Experience updated successfully!");
+                mutate(["labs", slug]);
+                if (redirect) router.push(redirect);
+            }
+            if (result?.error) {
+                const zodErrors = JSON.parse(result.error);
+                Object.keys(zodErrors.fieldErrors).forEach((fieldName) => {
+                    labAppearanceForm.setError(
+                        fieldName as keyof z.infer<
+                            typeof editLabAppearanceSchema
+                        >,
+                        {
+                            type: "server",
+                            message:
+                                zodErrors.fieldErrors[fieldName].join(", "),
+                        }
+                    );
+                });
+                zodErrors.formErrors.forEach((error: string) => {
+                    toast.error(error);
+                });
+            }
+        } catch (error) {
+            console.error("Error updating story content:", error);
+            toast.error("Failed to update story content.");
+        }
     };
+
     const onVisibilitySubmit = async (data: FieldValues) => {
         try {
             const formData = new FormData();
-            formData.append("slug", slug);
+            formData.append("lab", slug);
             formData.append("visibility", data.visibility);
-            const result = await editLabVisibilityFormAction(formData);
+            const result = await editLabVisibilityAction(formData);
             if (result?.success) {
                 toast.success("Story updated successfully!");
+                mutate(["labs", slug]);
             }
             if (result?.error) {
                 const zodErrors = JSON.parse(result.error);
@@ -111,7 +155,9 @@ export function TeamSettings({
                     </SettingsFormDescription>
                     <Form {...labAppearanceForm}>
                         <form
-                            onSubmit={labAppearanceForm.handleSubmit(onSubmit)}
+                            onSubmit={labAppearanceForm.handleSubmit(
+                                onAppearanceSubmit
+                            )}
                             className="w-full"
                         >
                             <SettingsBoxContent>
@@ -181,7 +227,6 @@ export function TeamSettings({
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        disabled={true}
                                                         placeholder="Enter your description..."
                                                         {...field}
                                                     />
@@ -204,7 +249,6 @@ export function TeamSettings({
                                         variant={"default"}
                                         className={"w-fit"}
                                         type={"submit"}
-                                        disabled={true}
                                     >
                                         Apply
                                     </Button>
@@ -212,7 +256,6 @@ export function TeamSettings({
                                         variant={"ghost"}
                                         className={"w-fit"}
                                         type={"reset"}
-                                        disabled={true}
                                     >
                                         Reset
                                     </Button>
