@@ -6,7 +6,7 @@ import {
     sanitizeUNESCOTag,
 } from "@/data/transformers/tag-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
-import unescoTags from "@/lib/data/mongodb/models/unesco-tag-model";
+import { UNESCOTagModel } from "@/lib/data/mongodb/models/unesco-tag-model";
 import {
     UnescoTagDTO,
     UnescoTagDTOWithCount,
@@ -17,8 +17,7 @@ import { cache } from "react";
 const getTags = cache(async (): Promise<UnescoTagTheme[]> => {
     try {
         await dbConnect();
-        const fetchedUNESCOTags = (await unescoTags
-            .find({})
+        const fetchedUNESCOTags = (await UNESCOTagModel.find({})
             .lean()
             .exec()) as unknown as UnescoTagTheme[];
         return fetchedUNESCOTags.map(sanitizeUNESCOTag);

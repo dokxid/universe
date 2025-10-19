@@ -3,8 +3,8 @@
 import {
     editContentFormSchemaDTO,
     editStoryCoordinatesFormSchemaDTO,
-    editStoryFeaturedPictureDTO,
     editStoryFormSchemaDTO,
+    editStoryPictureDTO,
     editVisibilityAndLicensingFormSchemaDTO,
     submitStoryDTO,
 } from "@/data/dto/story-dto";
@@ -23,7 +23,7 @@ export async function submitStoryAction(formData: FormData) {
 
 export async function editStoryFeaturedPictureAction(formData: FormData) {
     try {
-        await editStoryFeaturedPictureDTO(formData);
+        await editStoryPictureDTO(formData);
         return { success: true };
     } catch (error) {
         return {

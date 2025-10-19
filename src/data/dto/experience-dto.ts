@@ -1,13 +1,20 @@
 import "server-only";
 
+import { canUserEditLab } from "@/data/auth/lab-permissions";
 import {
     getExperience,
     getExperiences,
     getLabByObjectId,
 } from "@/data/fetcher/experience-fetcher";
-import experienceModel from "@/lib/data/mongodb/models/experience-model";
+import dbConnect from "@/lib/data/mongodb/connections";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
+import { uploadFile } from "@/lib/data/uploader/s3";
+import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { ExperienceDTO } from "@/types/dtos";
+import { editLabImageFormSchema } from "@/types/form-schemas/lab-form-schemas";
+import { revalidateTag } from "next/cache";
 import { cache } from "react";
+import z from "zod";
 
 export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
     try {
@@ -103,7 +110,7 @@ export async function getSlugFromOrganizationIdDTO(
     organizationId: string
 ): Promise<string | null> {
     try {
-        const experience = await experienceModel.findOne({
+        const experience = await ExperienceModel.findOne({
             organizationId: organizationId,
         });
         if (!experience) {
@@ -127,7 +134,7 @@ export async function getOrganizationFromSlugDTO(
     slug: string
 ): Promise<{ organizationId: string }> {
     try {
-        const experience = await experienceModel.findOne({ slug: slug });
+        const experience = await ExperienceModel.findOne({ slug: slug });
         if (!experience) {
             throw new Error(`No experiences found for slug: ${slug}`);
         }
@@ -140,6 +147,53 @@ export async function getOrganizationFromSlugDTO(
             `Error fetching organization from slug ${slug}: ${
                 err instanceof Error ? err.message : "Unknown error"
             }`
+        );
+    }
+}
+
+export async function editLabPictureDTO(formData: FormData) {
+    try {
+        const isAllowedToEdit = await canUserEditLab(
+            formData.get("lab") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error("User is not allowed to edit this lab");
+        }
+        const rawData = Object.fromEntries(formData);
+        const result = editLabImageFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(z.prettifyError(result.error));
+        }
+        const { image } = result.data;
+        if (!image) {
+            throw new Error("No lab picture provided");
+        }
+        const data = result.data;
+
+        let path: string;
+        if (process.env.LOCAL_UPLOADER === "true") {
+            path = await uploadFileToPublicFolder(image, data.lab);
+        } else {
+            path = await uploadFile(image, data.lab);
+        }
+
+        // update the story's featured image URL in the database
+        await dbConnect();
+        await ExperienceModel.updateOne(
+            { slug: data.lab },
+            {
+                $set: {
+                    featured_image_url: path,
+                    updatedAt: new Date(),
+                },
+            }
+        );
+
+        // revalidate caches
+        revalidateTag(`labs`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
         );
     }
 }

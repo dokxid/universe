@@ -1,4 +1,4 @@
-import { StoryCollection } from "@/app/components/modal/story-collection";
+import { StoryCollection } from "@/app/components/views/story-collection";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import {
     getAllPublicStoriesDTO,

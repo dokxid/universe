@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/data/mongodb/connections";
-import experiences from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { Experience } from "@/types/dtos";
 import fs from "fs";
 
@@ -86,7 +86,7 @@ export async function seedAllStoryImages() {
             return;
         }
         await dbConnect();
-        const allExperiences = (await experiences.find({})) as Experience[];
+        const allExperiences = (await ExperienceModel.find({})) as Experience[];
         await Promise.all(
             allExperiences.map(async (experience) => {
                 await initializeLabImageFolders(experience.slug);
@@ -104,7 +104,7 @@ export async function seedAllStoryImages() {
 export async function seedLabStoryImages(slug: string) {
     try {
         await dbConnect();
-        experiences.findOne({ slug }).then((experience) => {
+        ExperienceModel.findOne({ slug }).then((experience) => {
             initializeLabImageFolders(experience.slug);
         });
     } catch (error) {

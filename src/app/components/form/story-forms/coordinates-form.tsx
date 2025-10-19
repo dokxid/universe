@@ -1,4 +1,5 @@
-import { editStoryCoordinatesFormAction } from "@/actions/stories";
+import { editStoryCoordinatesFormAction } from "@/actions/form/stories";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -7,7 +8,6 @@ import {
     SettingsFormDescription,
     SettingsFormTitle,
 } from "@/app/components/layout/content-layout";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StoryDTO } from "@/types/dtos";
-import { editStoryCoordinatesFormSchema } from "@/types/form-schemas";
+import { editStoryCoordinatesFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";

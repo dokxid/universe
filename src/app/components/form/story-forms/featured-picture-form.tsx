@@ -1,6 +1,7 @@
 "use client";
 
-import { editStoryFeaturedPictureAction } from "@/actions/stories";
+import { editStoryFeaturedPictureAction } from "@/actions/form/stories";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import { HostedImage } from "@/app/components/embeds/s3-image";
 import {
     SettingsBoxContent,
@@ -10,7 +11,6 @@ import {
     SettingsFormDescription,
     SettingsFormTitle,
 } from "@/app/components/layout/content-layout";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StoryDTO } from "@/types/dtos";
-import { editProfilePictureFormSchema } from "@/types/form-schemas";
+import { editFeaturedPictureFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { CollapsibleContent } from "@radix-ui/react-collapsible";
@@ -33,8 +33,8 @@ import { toast } from "sonner";
 import z from "zod";
 
 export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
-    const editProfilePictureForm = useForm({
-        resolver: zodResolver(editProfilePictureFormSchema),
+    const editFeaturedPictureForm = useForm({
+        resolver: zodResolver(editFeaturedPictureFormSchema),
         defaultValues: {
             storyId: story._id,
             lab: story.experience,
@@ -42,7 +42,7 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
         },
     });
 
-    const onSubmit = (data: z.output<typeof editProfilePictureFormSchema>) => {
+    const onSubmit = (data: z.output<typeof editFeaturedPictureFormSchema>) => {
         try {
             const formData = new FormData();
             formData.append("storyId", data.storyId);
@@ -57,8 +57,8 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
 
     return (
         <SettingsFormBox className={"p-0"}>
-            <Form {...editProfilePictureForm}>
-                <form onSubmit={editProfilePictureForm.handleSubmit(onSubmit)}>
+            <Form {...editFeaturedPictureForm}>
+                <form onSubmit={editFeaturedPictureForm.handleSubmit(onSubmit)}>
                     <Collapsible>
                         <CollapsibleTrigger asChild>
                             <SettingsFormTitle className={"pb-0 mb-0"}>
@@ -80,7 +80,6 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                         className={"w-full"}
                                     >
                                         <HostedImage
-                                            experience={story.experience}
                                             fileName={story.featured_image_url}
                                             alt={story.title}
                                         />
@@ -89,7 +88,9 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                 <SettingsBoxFormElement>
                                     <FormField
                                         name="featuredPicture"
-                                        control={editProfilePictureForm.control}
+                                        control={
+                                            editFeaturedPictureForm.control
+                                        }
                                         render={({ field }) => (
                                             <FormItem>
                                                 <Label className="flex shrink-0">
@@ -110,12 +111,12 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                                             field.onChange(
                                                                 file
                                                             );
-                                                            editProfilePictureForm.setValue(
+                                                            editFeaturedPictureForm.setValue(
                                                                 "featuredPicture",
                                                                 file
                                                             );
                                                             // run validation right away
-                                                            editProfilePictureForm.trigger(
+                                                            editFeaturedPictureForm.trigger(
                                                                 "featuredPicture"
                                                             );
                                                         }}
@@ -129,7 +130,9 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                 <SettingsBoxFormElement>
                                     <FormField
                                         name="storyId"
-                                        control={editProfilePictureForm.control}
+                                        control={
+                                            editFeaturedPictureForm.control
+                                        }
                                         render={({ field }) => (
                                             <FormItem>
                                                 <Label>Story ID</Label>
@@ -148,7 +151,9 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                 <SettingsBoxFormElement>
                                     <FormField
                                         name="lab"
-                                        control={editProfilePictureForm.control}
+                                        control={
+                                            editFeaturedPictureForm.control
+                                        }
                                         render={({ field }) => (
                                             <FormItem>
                                                 <Label>Lab</Label>
@@ -184,7 +189,7 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                 </SettingsBoxFormElement>
                             </SettingsBoxContent>
                             <DebugListObject
-                                data={editProfilePictureForm.watch()}
+                                data={editFeaturedPictureForm.watch()}
                             />
                         </CollapsibleContent>
                     </Collapsible>

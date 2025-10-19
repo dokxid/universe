@@ -1,16 +1,16 @@
 "use client";
 
-import { editStoryContentAction } from "@/actions/stories";
+import { editStoryContentAction } from "@/actions/form/stories";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import {
     SettingsBoxFormElement,
     SettingsFormButtonGroup,
 } from "@/app/components/layout/content-layout";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { StoryDTO } from "@/types/dtos";
-import { editContentFormSchema } from "@/types/form-schemas";
+import { editContentFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tiptap/core";
 import { useCallback, useRef } from "react";

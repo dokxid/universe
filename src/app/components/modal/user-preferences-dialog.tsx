@@ -4,7 +4,7 @@ import {
     editDisplayNameFormAction,
     editUserDetailsFormAction,
     editUserProfilePictureAction,
-} from "@/actions/user";
+} from "@/actions/form/user";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -37,7 +37,7 @@ import {
     editUserDetailsFormSchema,
     editUserDisplayNameFormSchema,
     editUserProfilePictureFormSchema,
-} from "@/types/form-schemas";
+} from "@/types/form-schemas/user-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect } from "react";

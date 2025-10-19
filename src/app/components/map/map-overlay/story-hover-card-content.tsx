@@ -34,8 +34,6 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                         className={
                             "group-hover/card:scale-105 transition-all duration-200 brightness-40 cursor-pointer"
                         }
-                        link={false}
-                        experience={story.experience}
                         fileName={story.featured_image_url}
                     />
                     <StoryAuthorHeaderMapView

@@ -1,4 +1,4 @@
-import { LoginForm } from "@/app/components/form/login-form";
+import { LoginForm } from "@/app/components/form/auth-forms/login-form";
 import {
     ContentLayout,
     ContentLayoutInner,

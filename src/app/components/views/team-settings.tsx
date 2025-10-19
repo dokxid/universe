@@ -1,5 +1,6 @@
 "use client";
 
+import { LabPictureForm } from "@/app/components/form/lab-forms/lab-picture-form";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -9,7 +10,6 @@ import {
     SettingsFormTitle,
     SettingsLayout,
 } from "@/app/components/layout/content-layout";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -24,23 +24,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Experience } from "@/types/dtos";
-import { teamSettingsFormSchema } from "@/types/form-schemas";
+import { ExperienceDTO } from "@/types/dtos";
+import { editLabAppearanceSchema } from "@/types/form-schemas/lab-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AvatarFallback } from "@radix-ui/react-avatar";
 import { FieldValues, useForm } from "react-hook-form";
 
-const formSchema = teamSettingsFormSchema;
-export function TeamSettingsDialog({
+export function TeamSettings({
     slug,
     experienceSerialized,
 }: {
     slug: string;
     experienceSerialized: string;
 }) {
-    const experience = JSON.parse(experienceSerialized) as Experience;
-    const form = useForm({
-        resolver: zodResolver(formSchema),
+    const experience = JSON.parse(experienceSerialized) as ExperienceDTO;
+    const labAppearanceForm = useForm({
+        resolver: zodResolver(editLabAppearanceSchema),
         defaultValues: {
             title: experience.title || "",
             subtitle: experience.subtitle || "",
@@ -64,15 +62,15 @@ export function TeamSettingsDialog({
                         Changing your public appearance will update how it is
                         displayed to others.
                     </SettingsFormDescription>
-                    <Form {...form}>
+                    <Form {...labAppearanceForm}>
                         <form
-                            onSubmit={form.handleSubmit(onSubmit)}
+                            onSubmit={labAppearanceForm.handleSubmit(onSubmit)}
                             className="w-full"
                         >
                             <SettingsBoxContent>
                                 <SettingsBoxForm>
                                     <FormField
-                                        control={form.control}
+                                        control={labAppearanceForm.control}
                                         name="title"
                                         render={({ field }) => (
                                             <FormItem>
@@ -90,7 +88,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={labAppearanceForm.control}
                                         name="subtitle"
                                         render={({ field }) => (
                                             <FormItem>
@@ -108,7 +106,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={labAppearanceForm.control}
                                         name="description"
                                         render={({ field }) => (
                                             <FormItem>
@@ -127,7 +125,7 @@ export function TeamSettingsDialog({
                                         )}
                                     />
                                     <FormField
-                                        control={form.control}
+                                        control={labAppearanceForm.control}
                                         name="subdomain"
                                         render={({ field }) => (
                                             <FormItem>
@@ -153,45 +151,6 @@ export function TeamSettingsDialog({
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="featured-picture"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    Featured picture
-                                                </FormLabel>
-                                                <Avatar
-                                                    className={
-                                                        "w-32 h-32 my-2 hover:brightness-75 transition-all cursor-pointer"
-                                                    }
-                                                >
-                                                    <AvatarImage
-                                                        src={
-                                                            experience.featured_image_url
-                                                        }
-                                                        alt={
-                                                            "featured image for " +
-                                                            experience.title
-                                                        }
-                                                    />
-                                                    <AvatarFallback>
-                                                        {experience.title.charAt(
-                                                            0
-                                                        )}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <FormControl>
-                                                    <Input
-                                                        type="file"
-                                                        className={"w-fit"}
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
                                 </SettingsBoxForm>
                                 <SettingsFormButtonGroup>
                                     <Button
@@ -213,6 +172,7 @@ export function TeamSettingsDialog({
                         </form>
                     </Form>
                 </SettingsFormBox>
+                <LabPictureForm experience={experience} />
                 <SettingsFormBox>
                     <SettingsFormTitle>Change visibility?</SettingsFormTitle>
                     <SettingsFormDescription>

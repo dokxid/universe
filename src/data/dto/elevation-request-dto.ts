@@ -1,20 +1,19 @@
 import "server-only";
 
-import { isUserAdmin } from "@/data/auth";
+import { getCurrentUser, isUserAdmin } from "@/data/auth";
 import { insertElevationRequest } from "@/data/fetcher/elevation-request-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { NewElevationRequestData } from "@/types/dtos";
-import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
 
 export async function submitElevationRequestDTO(
     storyID: string,
-    user: User | null,
     slug: string,
     status: "created" | "approved" | "rejected" | "pending"
 ) {
     try {
+        const user = await getCurrentUser();
         if (!isUserAdmin(user, slug)) {
             throw new Error("You must be an admin to request elevation.");
         }

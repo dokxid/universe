@@ -1,4 +1,4 @@
-import AddStoryForm from "@/app/components/form/add-story-form";
+import AddStoryForm from "@/app/components/form/story-forms/add-story-form";
 import { getExperiencesDTO } from "@/data/dto/experience-dto";
 import { getTagsDTO } from "@/data/dto/tag-dto";
 

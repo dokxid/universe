@@ -75,5 +75,6 @@ const experienceSchema = new Schema({
     },
 });
 
-export default mongoose.models.ExperienceModel ||
+export const ExperienceModel =
+    mongoose.models.ExperienceModel ||
     mongoose.model("ExperienceModel", experienceSchema, "experiences");

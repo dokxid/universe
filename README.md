@@ -79,3 +79,14 @@ yarn component:headless # we dont have any tests for this
 ```bash
 yarn e2e
 ```
+
+## working with remote development
+
+remember to forward these ports (if not modified):
+
+| port  | service                               |
+| ----- | ------------------------------------- |
+| 3000  | next.js server                        |
+| 3900  | garage s3 api port                    |
+| 9443  | portainer to manage docker containers |
+| 27017 | mongoDB                               |

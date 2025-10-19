@@ -8,11 +8,7 @@ import dbConnect from "@/lib/data/mongodb/connections";
 import { UserDTO, UserModel } from "@/lib/data/mongodb/models/user-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
-import {
-    editUserDetailsFormSchema,
-    editUserDisplayNameFormSchema,
-    editUserProfilePictureFormSchema,
-} from "@/types/form-schemas";
+import { editUserDetailsFormSchema, editUserDisplayNameFormSchema, editUserProfilePictureFormSchema } from "@/types/form-schemas/user-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
 

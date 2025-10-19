@@ -6,7 +6,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { TeamSettingsDialog } from "@/app/components/modal/team-settings-dialog";
+import { TeamSettings } from "@/app/components/views/team-settings";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
 import { Newspaper } from "lucide-react";
 
@@ -32,14 +32,13 @@ export default async function Page({
                         <Newspaper size={80} />
                     </HeaderIcon>
                     <HeaderContent>
-                        <HeaderTitle>Elevation Requests</HeaderTitle>
+                        <HeaderTitle>Lab Settings</HeaderTitle>
                         <HeaderDescription>
-                            Manage the elevation requests in all labs. Reject or
-                            approve them as needed.
+                            Manage the settings for your lab.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <TeamSettingsDialog
+                <TeamSettings
                     slug={slug}
                     experienceSerialized={experience}
                 />

@@ -1,6 +1,6 @@
 import { testMemberDoc } from "@/data/scripts/seeds/user-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { UserModel } from "@/lib/data/mongodb/models/user-model";
 
 export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {

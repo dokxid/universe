@@ -1,6 +1,6 @@
 "use client";
 
-import { TagPickerFilter } from "@/app/components/form/tag-picker";
+import { TagPickerFilter } from "@/app/components/selectors/tag-picker";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,

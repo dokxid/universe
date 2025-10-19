@@ -2,7 +2,6 @@ import "server-only";
 
 import {
     getCurrentUser,
-    getCurrentUserOptional,
     isUserMember,
     isUserPartOfOrganization,
     isUserSuperAdmin,
@@ -15,18 +14,18 @@ import {
 } from "@/data/fetcher/story-fetcher";
 import { getUserByWorkOSId } from "@/data/fetcher/user-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { NewStoryData, StoryDTO } from "@/types/dtos";
 import {
     editContentFormSchema,
-    editProfilePictureFormSchema,
+    editFeaturedPictureFormSchema,
     editStoryCoordinatesFormSchema,
     editStoryFormSchema,
     editVisibilityAndLicensingFormSchema,
     submitStoryFormSchema,
-} from "@/types/form-schemas";
+} from "@/types/form-schemas/story-form-schemas";
 import { User } from "@workos-inc/node";
 import mongoose from "mongoose";
 import { revalidateTag } from "next/cache";
@@ -47,7 +46,8 @@ async function isStoryOwner(viewer: User | null, story: StoryDTO) {
     }
 }
 
-async function canUserViewStory(user: User | null, story: StoryDTO) {
+async function canUserViewStory(story: StoryDTO) {
+    const user = await getCurrentUser();
     if (isPublicStory(story)) {
         return true;
     }
@@ -80,7 +80,7 @@ export async function canUserEditStory(user: User | null, story: StoryDTO) {
 export async function canUserViewStoryId(user: User | null, storyId: string) {
     try {
         const story = await getStoryDTO(storyId);
-        return canUserViewStory(user, story);
+        return canUserViewStory(story);
     } catch (err) {
         console.error("Error checking if user can view story:", err);
         return false;
@@ -140,12 +140,12 @@ export async function getLabPrivateStoriesDTO(
         if (await isUserSuperAdmin(user)) {
             const stories = await getAllStories();
             return stories.filter(
-                async (story) => await canUserViewStory(user, story)
+                async (story) => await canUserViewStory(story)
             );
         } else if (await isUserMember(user, experienceSlug)) {
             const stories = await getAllStories();
             return stories.filter(
-                async (story) => await canUserViewStory(user, story)
+                async (story) => await canUserViewStory(story)
             );
         } else {
             throw new Error("Unauthorized");
@@ -157,8 +157,6 @@ export async function getLabPrivateStoriesDTO(
 
 export async function getStoryDTO(id: string): Promise<StoryDTO> {
     try {
-        const user = await getCurrentUserOptional();
-
         // validate id before creating ObjectId
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new Error("Invalid story id format.");
@@ -168,7 +166,7 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
         const objectId = new mongoose.Types.ObjectId(id);
         const queryResult = await queryStory(objectId);
 
-        if (!canUserViewStory(user, queryResult)) {
+        if (!canUserViewStory(queryResult)) {
             throw new Error("You do not have permission to view this story.");
         }
 
@@ -272,7 +270,7 @@ export async function submitStoryDTO(formData: FormData) {
     }
 }
 
-export async function editStoryFeaturedPictureDTO(formData: FormData) {
+export async function editStoryPictureDTO(formData: FormData) {
     try {
         const user = await getCurrentUser();
         if (!user) {
@@ -289,7 +287,7 @@ export async function editStoryFeaturedPictureDTO(formData: FormData) {
 
         // Preprocess the FormData into the correct types
         const rawData = Object.fromEntries(formData);
-        const result = editProfilePictureFormSchema.safeParse(rawData);
+        const result = editFeaturedPictureFormSchema.safeParse(rawData);
         if (!result.success) {
             throw new Error(z.prettifyError(result.error));
         }

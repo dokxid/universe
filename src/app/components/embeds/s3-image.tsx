@@ -71,10 +71,8 @@ export function HostedImage({
     internal = true,
     alt,
 }: {
-    experience: string;
     fileName: string;
     className?: string;
-    link?: boolean;
     internal?: boolean;
     alt?: string;
 }) {

@@ -2,7 +2,7 @@ import "server-only";
 
 import { sanitizeExperience } from "@/data/transformers/experience-transformer";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { sanitizeObjectId } from "@/lib/data/mongodb/object-id-sanitizer";
 import { Experience } from "@/types/dtos";
 

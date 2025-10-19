@@ -2,8 +2,9 @@
 
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { UserModel } from "@/lib/data/mongodb/models/user-model";
+import { Experience } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 export async function seedStories(
     experienceSlug: string,
@@ -36,7 +37,7 @@ export async function seedStories(
 export async function seedAllStories(numStories: number = 40) {
     try {
         await dbConnect();
-        const allExperiences = await ExperienceModel.find({});
+        const allExperiences = (await ExperienceModel.find({})) as Experience[];
         await Promise.all(
             allExperiences.map(async (experience) => {
                 await seedStories(

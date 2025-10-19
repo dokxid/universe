@@ -1,7 +1,7 @@
 "use server";
 
 import { sendInvitation } from "@/lib/auth/workos/invitation";
-import { inviteMemberSchema } from "@/types/form-schemas";
+import { inviteMemberSchema } from "@/types/form-schemas/invite-member-form-schemas";
 import z from "zod";
 
 export async function inviteMemberAction(formData: FormData) {

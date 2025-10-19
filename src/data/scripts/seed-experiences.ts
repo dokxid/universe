@@ -9,7 +9,7 @@ import {
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { faker } from "@faker-js/faker";
 
 export async function seedExperiences(cityCenters: number[][]) {

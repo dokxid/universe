@@ -1,4 +1,4 @@
-import { TagPickerForm } from "@/app/components/form/tag-picker";
+import { TagPickerForm } from "@/app/components/selectors/tag-picker";
 import { UnescoTagDTO } from "@/types/dtos";
 import { use } from "react";
 import { ControllerRenderProps } from "react-hook-form";

@@ -17,7 +17,7 @@ import {
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { inviteMemberSchema } from "@/types/form-schemas";
+import { inviteMemberSchema } from "@/types/form-schemas/invite-member-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPlus } from "lucide-react";
 import { useForm } from "react-hook-form";

@@ -1,10 +1,10 @@
 "use client";
 
-import { submitStoryAction } from "@/actions/stories";
-import { TagPickerField } from "@/app/components/form/tag-picker-field";
-import { TiptapEditor } from "@/app/components/form/tiptap-editor";
+import { submitStoryAction } from "@/actions/form/stories";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
+import { TagPickerField } from "@/app/components/cards/fields/tag-picker-field";
+import { TiptapEditor } from "@/app/components/cards/fields/tiptap-field";
 import { SettingsBoxFormElement } from "@/app/components/layout/content-layout";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CC_LICENSES, UnescoTagDTO } from "@/types/dtos";
-import { submitStoryFormSchema } from "@/types/form-schemas";
+import { submitStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import Link from "next/link";
