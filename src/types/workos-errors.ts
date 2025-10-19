@@ -11,11 +11,22 @@ enum ExceptionReasons {
     ONE_TIME_CODE_PREVIOUSLY_USED = "one_time_code_previously_used",
     ORGANIZATION_SELECTION_REQUIRED = "organization_selection_required",
     SSO_REQUIRED = "sso_required",
+    INVALID_PENDING_AUTHENTICATION_TOKEN = "invalid_pending_authentication_token",
 }
 
 type Organization = {
     id: string;
     name: string;
+};
+
+export type SSORequiredException = {
+    status: number;
+    error: string;
+    rawData: {
+        email: string;
+        error: string;
+        connection_ids: string[];
+    };
 };
 
 type AuthException = {

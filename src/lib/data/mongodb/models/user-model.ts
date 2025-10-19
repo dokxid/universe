@@ -8,7 +8,7 @@ const labSchema = new Schema({
 });
 
 const userSchema = new Schema({
-    externalId: { type: String },
+    externalId: { type: String, unique: true },
     labs: { type: [labSchema], default: [] },
     email: { type: String, required: true },
     displayName: { type: String },

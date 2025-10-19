@@ -11,6 +11,9 @@ export function DebugListObject({
 }) {
     const debug = useAppSelector((state) => state.settings.debug);
     if (!debug) return null;
+    if (!data || Object.keys(data).length === 0) {
+        return null;
+    }
     return (
         <div
             className={`flex flex-col overflow-x-auto w-full mt-10 bg-primary text-primary-foreground p-4 ${className}`}

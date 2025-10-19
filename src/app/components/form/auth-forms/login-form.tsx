@@ -1,6 +1,7 @@
 "use client";
 
 import { logInAction } from "@/actions/auth";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -42,22 +43,29 @@ type Inputs = {
     organizationId: string;
 };
 
-export function LoginForm() {
+export function LoginForm({
+    authToken,
+    organizationList,
+}: {
+    authToken: string | null;
+    organizationList: Organization[];
+}) {
     const [pendingAuthToken, setPendingAuthToken] = useState<string | null>(
-        null
+        authToken || null
     );
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const router = useRouter();
+
     const [organizations, setOrganizations] = useState<Organization[]>([
-        { id: "slug", name: slug },
+        ...organizationList,
     ]);
 
     const form = useForm<Inputs>({
         defaultValues: {
             email: "",
             password: "",
-            organizationId: organizations[0].id,
+            organizationId: organizations.length > 0 ? organizations[0].id : "",
         },
     });
 
@@ -240,6 +248,12 @@ export function LoginForm() {
                         <Button type="submit">Login</Button>
                     </SettingsBoxFormElement>
                     <SettingsBoxFormElement>
+                        <DebugListObject
+                            data={{
+                                pendingAuthToken,
+                                organizations,
+                            }}
+                        />
                         <SettingsFormDescription>
                             Don&apos;t have an account?{" "}
                             <a
