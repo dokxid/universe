@@ -1,6 +1,6 @@
 "use server";
 
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
+import { getSlugsFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
 import {
     SSORequiredException,
     type AuthException,
@@ -32,6 +32,10 @@ async function logInNormal(formData: FormData) {
                 clientId: process.env.WORKOS_CLIENT_ID!,
                 email: String(formData.get("email")),
                 password: String(formData.get("password")),
+                session: {
+                    sealSession: true,
+                    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD!,
+                },
             });
         return { organizationId, sealedSession };
     } catch (error) {
@@ -81,10 +85,22 @@ export async function logInAction(formData: FormData) {
         if (!organizationId) {
             redirect("/");
         }
-        const slug = await getSlugFromOrganizationIdDTO(organizationId);
+        const slugs = await getSlugsFromOrganizationIdDTO(organizationId);
+        if (!slugs) {
+            throw new Error(
+                `Could not find slugs for organization ID: ${organizationId}`
+            );
+        }
+        const isTest = slugs.includes("test");
         cookieStore.delete("pendingAuthToken");
         cookieStore.delete("organizations");
-        return { redirectUrl: slug ? `/${slug}/map` : "/universe/map" };
+        return {
+            redirectUrl: isTest
+                ? "/test/map"
+                : slugs
+                ? `/${slugs[0]}/map`
+                : "/universe/map",
+        };
     } catch (error) {
         // this looks so ugly jesus christ
         console.error("Login error:", error);

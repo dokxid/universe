@@ -6,7 +6,7 @@ import {
     getLabByObjectId,
 } from "@/data/fetcher/experience-fetcher";
 import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { ExperienceDTO } from "@/types/dtos";
+import { Experience, ExperienceDTO } from "@/types/dtos";
 import { cache } from "react";
 
 export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
@@ -99,6 +99,25 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
     }
 }
 
+export async function getSlugsFromOrganizationIdDTO(
+    organizationId: string
+): Promise<string[] | null> {
+    try {
+        const experience = (await ExperienceModel.find({
+            organizationId: organizationId,
+        })) as Experience[];
+        if (!experience) {
+            throw new Error(
+                `No experiences found for organization ID: ${organizationId}`
+            );
+        }
+        const organizations = experience.map((exp) => exp.slug);
+        return organizations;
+    } catch (err) {
+        console.error("Error fetching slug from organization ID:", err);
+        return null;
+    }
+}
 export async function getSlugFromOrganizationIdDTO(
     organizationId: string
 ): Promise<string | null> {

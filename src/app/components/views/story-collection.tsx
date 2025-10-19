@@ -145,6 +145,7 @@ export function StoryCollection({
                             </Label> */}
                             <div className="flex flex-row gap-2">
                                 <Input
+                                    data-testid="story-title-filter-input"
                                     type="text"
                                     placeholder="Filter by title..."
                                     value={titleFilter}

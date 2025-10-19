@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { CC_LICENSES, UnescoTagDTO } from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,8 +49,8 @@ export default function AddStoryForm({
             title: "",
             content: "",
             year: new Date().getFullYear(),
-            longitude: lng,
-            latitude: lat,
+            longitude: lng || "",
+            latitude: lat || "",
             tags: [],
             universe: false,
             draft: true,
@@ -116,6 +117,7 @@ export default function AddStoryForm({
         <div className={"max-w-xl overflow-auto"}>
             <Form {...form}>
                 <form
+                    data-testid="add-story-form"
                     onSubmit={form.handleSubmit(onSubmit)}
                     onReset={onReset}
                     className="space-y-8 @container"
@@ -133,6 +135,7 @@ export default function AddStoryForm({
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
+                                                data-testid="title-input"
                                                 placeholder="Enter your title..."
                                                 type="text"
                                                 {...field}
@@ -156,6 +159,7 @@ export default function AddStoryForm({
                                 <FormControl>
                                     <div className={"w-full"}>
                                         <TiptapEditor
+                                            data-testid="content-input"
                                             {...field}
                                             onChange={field.onChange}
                                         ></TiptapEditor>
@@ -178,6 +182,7 @@ export default function AddStoryForm({
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
+                                                data-testid="year-input"
                                                 placeholder="Enter the stories year..."
                                                 type="number"
                                                 {...field}
@@ -209,6 +214,7 @@ export default function AddStoryForm({
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
+                                                data-testid="file-input"
                                                 type="file"
                                                 onChange={(e) => {
                                                     const file =
@@ -243,6 +249,7 @@ export default function AddStoryForm({
                             <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                                 <FormControl>
                                     <TagPickerField
+                                        data-testid="tags-input"
                                         availableTagsPromise={tagsPromise}
                                         {...field}
                                     />
@@ -263,6 +270,7 @@ export default function AddStoryForm({
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
+                                                data-testid="longitude-input"
                                                 type="number"
                                                 {...field}
                                                 value={field.value as number}
@@ -295,6 +303,7 @@ export default function AddStoryForm({
                                     <FormControl>
                                         <div className="relative w-full">
                                             <Input
+                                                data-testid="latitude-input"
                                                 type="number"
                                                 {...field}
                                                 value={field.value as number}
@@ -314,31 +323,6 @@ export default function AddStoryForm({
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="slug"
-                        render={({ field }) => (
-                            <FormItem className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
-                                <FormLabel className="flex shrink-0">
-                                    Heritage Lab Slug
-                                </FormLabel>
-
-                                <div className="w-full">
-                                    <FormControl>
-                                        <div className="relative w-full">
-                                            <Input
-                                                type="text"
-                                                disabled={true}
-                                                {...field}
-                                            />
-                                        </div>
-                                    </FormControl>
-
-                                    <FormMessage />
-                                </div>
-                            </FormItem>
-                        )}
-                    />
                     <SettingsBoxFormElement>
                         <Label>License</Label>
                         <FormField
@@ -348,6 +332,7 @@ export default function AddStoryForm({
                                 <FormItem className={"mt-2"}>
                                     <FormControl>
                                         <RadioGroup
+                                            data-testid="license-input"
                                             {...field}
                                             value={field.value}
                                             onValueChange={field.onChange}
@@ -406,12 +391,14 @@ export default function AddStoryForm({
                                         <div className="relative w-full">
                                             <div className="flex items-center gap-3">
                                                 <Checkbox
+                                                    data-testid="draft-input"
+                                                    id="draft-checkbox"
                                                     checked={field.value}
                                                     onCheckedChange={
                                                         field.onChange
                                                     }
                                                 />
-                                                <Label htmlFor="terms">
+                                                <Label htmlFor="draft-checkbox">
                                                     Is this a draft?
                                                 </Label>
                                             </div>
@@ -433,12 +420,14 @@ export default function AddStoryForm({
                                         <div className="relative w-full">
                                             <div className="flex items-center gap-3">
                                                 <Checkbox
+                                                    data-testid="elevate-input"
+                                                    id="elevate-checkbox"
                                                     checked={field.value}
                                                     onCheckedChange={
                                                         field.onChange
                                                     }
                                                 />
-                                                <Label htmlFor="terms">
+                                                <Label htmlFor="elevate-checkbox">
                                                     Immediately request
                                                     elevation for /universe
                                                 </Label>
@@ -453,11 +442,34 @@ export default function AddStoryForm({
                     />
                     <div className="col-span-12 col-start-auto flex self-end flex-col gap-2 space-y-0 items-start">
                         <Button
+                            data-testid="submit-story-button"
+                            disabled={form.formState.isSubmitting}
+                            onClick={
+                                form.formState.errors
+                                    ? () => {
+                                          console.log(
+                                              "Form has errors, cannot submit:",
+                                              form.formState.errors
+                                          );
+                                          console.log(
+                                              "Current form values:",
+                                              form.getValues()
+                                          );
+                                      }
+                                    : undefined
+                            }
                             type="submit"
                             variant="default"
                             className={"w-full cursor-pointer"}
                         >
-                            Submit
+                            {form.formState.isSubmitting ? (
+                                <>
+                                    <Spinner variant={"ellipsis"} />{" "}
+                                    <span>Submitting...</span>
+                                </>
+                            ) : (
+                                "Submit Story"
+                            )}
                         </Button>
                         <DebugListObject data={form.watch()} />
                     </div>

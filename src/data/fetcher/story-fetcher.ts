@@ -88,12 +88,12 @@ export async function queryStory(
 
 export async function insertStory(
     storyToInsert: NewStoryData,
-    experienceSlug: string
+    slug: string
 ): Promise<string> {
     try {
         await dbConnect();
         const result = await ExperienceModel.findOneAndUpdate(
-            { slug: experienceSlug },
+            { slug: slug },
             { $push: { stories: storyToInsert } },
             { new: true, upsert: false } // Return the updated document
         ).exec();

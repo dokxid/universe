@@ -1,5 +1,6 @@
 import {
     getCurrentUser,
+    getCurrentUserOptional,
     isUserPartOfOrganization,
     isUserSuperAdmin,
 } from "@/data/auth";
@@ -15,7 +16,8 @@ export async function isStoryOwner(story: StoryDTO) {
     try {
         const user = await getCurrentUser();
         if (!user) return false;
-        const viewerId = (await getUserByWorkOSId(user.id))?._id;
+        const viewerId = (await getUserByWorkOSId(user.id))?._id.toString();
+        console.log("Viewer ID:", viewerId, "Story Author ID:", story.author);
         return viewerId === story.author;
     } catch (err) {
         console.error("Error checking story ownership:", err);
@@ -23,7 +25,7 @@ export async function isStoryOwner(story: StoryDTO) {
     }
 }
 export async function canUserViewStory(story: StoryDTO) {
-    const user = await getCurrentUser();
+    const user = await getCurrentUserOptional();
     if (isPublicStory(story)) {
         return true;
     }

@@ -29,11 +29,7 @@ export async function submitStoryDTO(formData: FormData) {
         if (!userId) {
             throw new Error("User must be logged in to create a story.");
         }
-        if (
-            !(await canUserCreateStory(
-                formData.get("experienceSlug") as string
-            ))
-        ) {
+        if (!(await canUserCreateStory(formData.get("slug") as string))) {
             throw new Error(
                 "User does not have permission to create a story for this experience."
             );

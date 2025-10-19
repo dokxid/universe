@@ -8,5 +8,5 @@ export default defineConfig({
         },
         baseUrl: "http://localhost:3000",
     },
-    blockHosts: ["*stadiamaps.com", "*amazonaws.com", "/api/images/**"],
+    blockHosts: ["*amazonaws.com", "/api/images/**"],
 });
