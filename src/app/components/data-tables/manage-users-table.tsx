@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/app/components/data-tables/data-table-column-header";
+import { InviteMemberDialog } from "@/app/components/dialog/invite-member-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -37,7 +38,6 @@ import { UserDTO } from "@/lib/data/mongodb/models/user-model";
 import { ChevronDown, Columns3, MoreHorizontal } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { InviteMemberDialog } from "@/app/components/modal/invite-member-dialog";
 
 const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
     return (

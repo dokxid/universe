@@ -1,3 +1,4 @@
+import { MapSettingsDialog } from "@/app/components/dialog/map-settings-dialog";
 import {
     ContentLayout,
     ContentLayoutInner,
@@ -9,7 +10,6 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { MapSettingsDialog } from "@/app/components/modal/map-settings-dialog";
 import { TriangleAlert } from "lucide-react";
 
 export default async function MapSettingsPage() {

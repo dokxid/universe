@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { StoryDTO } from "@/types/dtos";
-import { editStoryFormSchema } from "@/types/form-schemas";
+import { editStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import Link from "next/link";
 import { UseFormReturn } from "react-hook-form";
 import z from "zod";

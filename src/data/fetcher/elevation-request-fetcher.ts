@@ -1,7 +1,7 @@
 import "server-only";
 
 import dbConnect from "@/lib/data/mongodb/connections";
-import ExperienceModel from "@/lib/data/mongodb/models/experience-model";
+import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { NewElevationRequestData } from "@/types/dtos";
 import mongoose from "mongoose";
 

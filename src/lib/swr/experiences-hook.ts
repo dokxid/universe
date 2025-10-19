@@ -25,7 +25,7 @@ export function useExperiences() {
 }
 
 export function useExperience(slug: string) {
-    const { data, error, isLoading } = useSWR(["experiences", slug], () =>
+    const { data, error, isLoading } = useSWR(["labs", slug], () =>
         experienceFetcher(slug)
     );
     return {

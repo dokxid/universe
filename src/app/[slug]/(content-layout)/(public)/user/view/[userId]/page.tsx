@@ -30,8 +30,8 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { getUserDTO } from "@/data/dto/user-dto";
+import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getUserDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 

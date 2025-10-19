@@ -1,5 +1,8 @@
 import LabView from "@/app/components/views/experience-view";
-import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import {
+    getExperienceDTO,
+    getExperiencesDTO,
+} from "@/data/dto/getters/get-experience-dto";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();

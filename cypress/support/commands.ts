@@ -35,3 +35,70 @@
 //     }
 //   }
 // }
+
+function enterCredentials(username: string, password: string) {
+    cy.get('input[name="email"]', { timeout: 10000 }).should("be.visible");
+    cy.get('input[name="email"]').type(username);
+
+    cy.get('input[name="password"]', { timeout: 10000 }).should("be.visible");
+    cy.get('input[name="password"]').type(password, {
+        parseSpecialCharSequences: false,
+    });
+    cy.get('button[type="submit"]').click();
+}
+
+function isLoggedIn() {
+    cy.visit("/universe/map");
+    cy.get("a[href='/universe/login']").should("not.exist");
+}
+
+export function loginAsSuperAdmin() {
+    cy.session(
+        "superadmin",
+        () => {
+            cy.visit("/universe/login");
+            enterCredentials(
+                Cypress.env("superadmin_username"),
+                Cypress.env("superadmin_password")
+            );
+            cy.url({ timeout: 10000 }).should("not.include", "/login");
+        },
+        {
+            validate: isLoggedIn,
+        }
+    );
+}
+
+export function loginAsAdmin() {
+    cy.session(
+        "admin",
+        () => {
+            cy.visit("/test/login");
+            enterCredentials(
+                Cypress.env("admin_username"),
+                Cypress.env("admin_password")
+            );
+            cy.url({ timeout: 10000 }).should("not.include", "/login");
+        },
+        {
+            validate: isLoggedIn,
+        }
+    );
+}
+
+export function loginAsEditor() {
+    cy.session(
+        "editor",
+        () => {
+            cy.visit("/test/login");
+            enterCredentials(
+                Cypress.env("editor_username"),
+                Cypress.env("editor_password")
+            );
+            cy.url({ timeout: 10000 }).should("not.include", "/login");
+        },
+        {
+            validate: isLoggedIn,
+        }
+    );
+}

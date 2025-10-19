@@ -9,5 +9,6 @@ const tagSchema = new Schema({
     unesco_tag: Boolean,
 });
 
-export default mongoose.models.TagModel ||
-    mongoose.model("TagModel", tagSchema, "tags");
+export const TagModel =
+    mongoose.models.TagModel ||
+    mongoose.model<TagModelData>("TagModel", tagSchema, "tags");

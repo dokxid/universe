@@ -1,4 +1,4 @@
-import { ExperiencesGallery } from "@/app/components/modal/experiences-gallery";
+import { ExperiencesGallery } from "@/app/components/views/experiences-gallery";
 
 export const experimental_ppr = true;
 

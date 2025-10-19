@@ -24,5 +24,6 @@ const ThemeTagSchema = new Schema({
     categories: [TagCategorySchema],
 });
 
-export default mongoose.models.UNESCOTagModel ||
+export const UNESCOTagModel =
+    mongoose.models.UNESCOTagModel ||
     mongoose.model("UNESCOTagModel", ThemeTagSchema, "unesco_tags");

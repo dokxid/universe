@@ -1,5 +1,5 @@
-import { Dialog } from "@/app/components/modal/dialog";
-import { MapSettingsDialog } from "@/app/components/modal/map-settings-dialog";
+import { Dialog } from "@/app/components/dialog/dialog";
+import { MapSettingsDialog } from "@/app/components/dialog/map-settings-dialog";
 
 export default function Page() {
     return (

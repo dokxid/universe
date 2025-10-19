@@ -1,3 +1,4 @@
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import { TagList } from "@/app/components/cards/tag-list";
 import { HostedImage } from "@/app/components/embeds/s3-image";
 import {
@@ -12,7 +13,6 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { StoryAuthorDetails } from "@/app/components/layout/story-author-details";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
 import { EditStoryButtons } from "@/app/components/views/edit-story-buttons";
 import { Badge } from "@/components/ui/badge";
 import { StoryDTO } from "@/types/dtos";
@@ -22,10 +22,7 @@ export default async function StoryView({ story }: { story: StoryDTO }) {
     return (
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
-                <HostedImage
-                    experience={story.experience}
-                    fileName={story.featured_image_url}
-                />
+                <HostedImage fileName={story.featured_image_url} />
             </div>
             <Header>
                 <div className={"flex flex-col gap-3 w-full"}>

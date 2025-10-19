@@ -1,7 +1,10 @@
 "use server";
 
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/experience-dto";
-import type { AuthException } from "@/types/workos-errors";
+import { getSlugsFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
+import {
+    SSORequiredException,
+    type AuthException,
+} from "@/types/workos-errors";
 import { WorkOS } from "@workos-inc/node";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -29,6 +32,10 @@ async function logInNormal(formData: FormData) {
                 clientId: process.env.WORKOS_CLIENT_ID!,
                 email: String(formData.get("email")),
                 password: String(formData.get("password")),
+                session: {
+                    sealSession: true,
+                    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD!,
+                },
             });
         return { organizationId, sealedSession };
     } catch (error) {
@@ -78,29 +85,75 @@ export async function logInAction(formData: FormData) {
         if (!organizationId) {
             redirect("/");
         }
-        const slug = await getSlugFromOrganizationIdDTO(organizationId);
-        return { redirectUrl: slug ? `/${slug}/map` : "/universe/map" };
+        const slugs = await getSlugsFromOrganizationIdDTO(organizationId);
+        if (!slugs) {
+            throw new Error(
+                `Could not find slugs for organization ID: ${organizationId}`
+            );
+        }
+        const isTest = slugs.includes("test");
+        cookieStore.delete("pendingAuthToken");
+        cookieStore.delete("organizations");
+        return {
+            redirectUrl: isTest
+                ? "/test/map"
+                : slugs
+                ? `/${slugs[0]}/map`
+                : "/universe/map",
+        };
     } catch (error) {
         // this looks so ugly jesus christ
-        if (
-            error instanceof Error &&
-            "rawData" in error &&
-            "code" in (error as AuthException).rawData
-        ) {
+        console.error("Login error:", error);
+        console.error("Raw data:", (error as AuthException).rawData);
+        if (!(error instanceof Error)) {
+            return {
+                email: "An unexpected error occurred.",
+                password: "Please try again later.",
+            };
+        }
+        if ("rawData" in error && "code" in (error as AuthException).rawData) {
             const authError = error as AuthException;
-            if (authError.rawData.code === "organization_selection_required") {
-                return {
-                    organizationId: "Please select an organization.",
-                    pendingAuthToken:
-                        authError.rawData.pending_authentication_token,
-                    organizations: authError.rawData.organizations,
-                };
-            } else {
-                return {
-                    email: "Invalid email or password.",
-                    password: "Please check your password",
-                };
+            switch (authError.rawData.code) {
+                case "organization_selection_required":
+                    return {
+                        organizationId: "Please select an organization.",
+                        pendingAuthToken:
+                            authError.rawData.pending_authentication_token,
+                        organizations: authError.rawData.organizations,
+                    };
+                case "invalid_pending_authentication_token":
+                    cookieStore.delete("pendingAuthToken");
+                    return {
+                        pendingAuthToken:
+                            "Your session has expired. Please log in again.",
+                    };
+                case "invalid_grant":
+                    return {
+                        email: "Invalid email or password.",
+                        password: "Please check your password",
+                    };
+                default:
+                    return {
+                        email: "unknown error occurred. please contact the admins.",
+                        password:
+                            "unknown error occurred. please contact the admins.",
+                    };
             }
+        }
+        if (
+            (error as unknown as SSORequiredException).error === "sso_required"
+        ) {
+            const url = workos.sso.getAuthorizationUrl({
+                clientId: process.env.WORKOS_CLIENT_ID!,
+                connection: (error as unknown as SSORequiredException).rawData
+                    .connection_ids[0],
+                redirectUri:
+                    process.env.WORKOS_SSO_REDIRECT_URI ||
+                    "http://localhost:3000/auth/callback",
+                loginHint: (error as unknown as SSORequiredException).rawData
+                    .email,
+            });
+            redirect(url);
         }
     }
 }

@@ -26,9 +26,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                     >
                         {story.featured_image_url ? (
                             <HostedImage
-                                experience={story.experience}
                                 fileName={story.featured_image_url}
-                                link={false}
                                 className="object-cover "
                             />
                         ) : (

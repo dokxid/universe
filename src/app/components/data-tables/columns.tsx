@@ -13,6 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCurrentUser } from "@/lib/swr/user-hook";
 import { StoryDTO } from "@/types/dtos";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
@@ -32,9 +33,10 @@ const columnHelper = createColumnHelper<StoryDTO>();
 const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <div>Please log in to request elevation.</div>;
+    const { user: initialUser, isLoading, isError } = useCurrentUser();
+    if (isLoading) return <div>Loading...</div>;
+    if (!initialUser) return <div>Please log in to request elevation.</div>;
+    if (isError) return <div>Error loading user data.</div>;
 
     const handleRejectedElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -43,7 +45,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
         try {
             await submitElevationRequestAction(
                 story._id,
-                user,
                 story.experience,
                 "rejected"
             );
@@ -60,7 +61,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
         try {
             await submitElevationRequestAction(
                 story._id,
-                user,
                 story.experience,
                 "approved"
             );
@@ -138,7 +138,6 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
         try {
             const result = await submitElevationRequestAction(
                 story._id,
-                user,
                 story.experience,
                 "pending"
             );

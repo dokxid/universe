@@ -9,12 +9,12 @@ export function AdminItemGroup({ visible }: { visible: boolean }) {
     const slug = pathname.split("/")[1];
     const adminItems: SidebarItemGroup = [
         {
-            title: "Manage Members",
+            title: "Manage Lab Members",
             href: `/${slug}/lab/manage`,
             icon: Users,
         },
         {
-            title: "Team Settings",
+            title: "Lab Settings",
             href: `/${slug}/lab/settings`,
             icon: Settings,
         },

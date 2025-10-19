@@ -1,11 +1,12 @@
 "use client";
 
-import { editStoryFormAction } from "@/actions/stories";
+import { editStoryFormAction } from "@/actions/form/stories";
+import { DebugListObject } from "@/app/components/cards/debug-list-object";
+import { TagPickerField } from "@/app/components/cards/fields/tag-picker-field";
 import { HostedImage } from "@/app/components/embeds/s3-image";
-import { CCLicensesFormField } from "@/app/components/form/cc-licenses-form-field";
-import { CoordinatesFormField } from "@/app/components/form/coordinates-form-field";
-import { FeaturedPictureFormField } from "@/app/components/form/featured-picture-form-field";
-import { TagPickerField } from "@/app/components/form/tag-picker-field";
+import { CCLicensesFormField } from "@/app/components/form/story-forms/cc-licenses-form";
+import { CoordinatesFormField } from "@/app/components/form/story-forms/coordinates-form";
+import { FeaturedPictureFormField } from "@/app/components/form/story-forms/featured-picture-form";
 import {
     ContentLayout,
     ContentLayoutInner,
@@ -19,8 +20,7 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { StoryAuthorEditDetails } from "@/app/components/layout/story-author-details";
-import EditorView from "@/app/components/stories/editor-view";
-import { DebugListObject } from "@/app/components/views/debug-list-object";
+import EditorView from "@/app/components/views/editor-view";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/form";
 import { Toggle } from "@/components/ui/toggle";
 import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
-import { editStoryFormSchema } from "@/types/form-schemas";
+import { editStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
@@ -100,8 +100,8 @@ export default function StoryEdit({
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
                 <HostedImage
-                    experience={story.experience}
                     fileName={story.featured_image_url}
+                    alt={story.title}
                 />
             </div>
             <Header separatorVisible={false} className={"mb-6"}>

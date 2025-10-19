@@ -1,10 +1,10 @@
-import { StoryCollection } from "@/app/components/modal/story-collection";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { StoryCollection } from "@/app/components/views/story-collection";
+import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
 import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
-} from "@/data/dto/story-dto";
-import { getTagsForLabDTO } from "@/data/dto/tag-dto";
+} from "@/data/dto/getters/get-story-dto";
+import { getTagsForLabDTO } from "@/data/dto/getters/get-tag-dto";
 
 export const experimental_ppr = true;
 

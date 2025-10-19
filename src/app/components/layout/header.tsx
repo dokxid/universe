@@ -43,7 +43,7 @@ export function HeaderTitle({
     className,
     ...props
 }: React.ComponentProps<"div">) {
-    return <div className={cn("prose-h1 mb-1", className)} {...props} />;
+    return <div className={cn("h1 prose-h1 mb-1", className)} {...props} />;
 }
 
 export function HeaderDescription({

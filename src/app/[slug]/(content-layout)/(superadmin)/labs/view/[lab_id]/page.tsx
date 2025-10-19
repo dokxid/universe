@@ -9,7 +9,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabByObjectIdDTO } from "@/data/dto/experience-dto";
+import { getLabByObjectIdDTO } from "@/data/dto/getters/get-experience-dto";
 import { BookKey } from "lucide-react";
 
 export default async function PrivacyPage({

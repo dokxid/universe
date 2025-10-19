@@ -7,11 +7,12 @@ import { LabSidebarSkeleton } from "@/components/skeletons/lab-sidebar-skeleton"
 import { UniverseSidebarSkeleton } from "@/components/skeletons/universe-sidebar-skeleton";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
 import { useExperience } from "@/lib/swr/experiences-hook";
+import { getLabSlugFromPathname } from "@/lib/utils/pathname";
 import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
     const pathname = usePathname();
-    const slug = pathname.split("/")[1];
+    const slug = getLabSlugFromPathname(pathname);
     const { experience, isLoading, isError } = useExperience(slug);
     if (!slug) {
         return null;

@@ -91,7 +91,13 @@ export async function uploadFile(file: File, prefix?: string): Promise<string> {
     } catch (error) {
         console.error(
             `Failed to upload ${file.name}:`,
-            error instanceof Error ? error.message : error
+            error instanceof AggregateError
+                ? error.errors
+                      .map((e) => (e instanceof Error ? e.message : e))
+                      .join(", ")
+                : error instanceof Error
+                ? error.message
+                : error
         );
         throw error;
     }

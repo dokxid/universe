@@ -1,13 +1,13 @@
 import "server-only";
 
-import { canUserEditStoryId } from "@/data/dto/story-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";
 import { cache } from "react";
-import { getExperienceDTO } from "./dto/experience-dto";
+import { canUserEditStoryId } from "./dto/auth/story-permissions";
+import { getExperienceDTO } from "./dto/getters/get-experience-dto";
 
 type MembershipResult = {
     isMember: boolean;
@@ -49,7 +49,7 @@ export const getPermissionsByUser = cache(
                 "edit_story"
             );
             return permissions;
-        } else if (await isUserAdmin(userWorkOS, experienceSlug)) {
+        } else if (await isUserAdmin(experienceSlug)) {
             permissions.push("manage_users", "add_story", "edit_story");
         } else if (await isUserMember(userWorkOS, experienceSlug)) {
             if (storyId) {
@@ -106,11 +106,9 @@ export async function isUserMember(
     }
 }
 
-export async function isUserAdmin(
-    viewer: User | null,
-    experienceSlug: string
-): Promise<boolean> {
+export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
     try {
+        const viewer = await getCurrentUser();
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserExperienceRelationBySlug(

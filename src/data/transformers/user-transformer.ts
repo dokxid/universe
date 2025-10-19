@@ -1,4 +1,5 @@
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/experience-dto";
+import { getSlugFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
+import { getStoriesByUserDTO } from "@/data/dto/getters/get-story-dto";
 import { getUserRoleFromOrganizationId } from "@/data/fetcher/user-fetcher";
 import { InsertUserDTO, UserDTO } from "@/lib/data/mongodb/models/user-model";
 import { User } from "@workos-inc/node";
@@ -110,4 +111,35 @@ export async function sanitizeUserDTO(
             _id: String(lab._id),
         })),
     };
+}
+export async function setStoryForUser(user: UserDTO) {
+    try {
+        if (!user) throw new Error("User not found");
+        const stories = await getStoriesByUserDTO(user._id);
+        return {
+            ...user,
+            stories: stories || [],
+        };
+    } catch (error) {
+        console.error("Error setting story for user:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+export async function setStoriesForUsers(users: UserDTO[]) {
+    try {
+        if (!users) return [] as UserDTO[];
+        return await Promise.all(
+            users.map(async (user) => {
+                const userWithStories = await setStoryForUser(user);
+                return userWithStories;
+            })
+        );
+    } catch (error) {
+        console.error("Error setting stories for users:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
 }

@@ -72,8 +72,8 @@ export function UserWidgetAuthorized({
             </Link>
             <div className={"text-sm flex flex-col grow"}>
                 <Link
-                    href={`/${user.labs?.[0].slug}/profile`}
-                    className={"font-semibold hover:underline"}
+                    href={`/${user.labs?.[0].slug}/user/view/${user._id}`}
+                    className={"font-semibold hover:underline line-clamp-1"}
                 >
                     {user.displayName
                         ? user.displayName
