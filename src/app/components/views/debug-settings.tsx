@@ -25,7 +25,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { mutate } from "swr";
 
-export function DebugSettingsDialog() {
+export function DebugSettings() {
     const location = faker.location.city();
     const [numStories, setNumStories] = useState(40);
     const [numCityCenters, setNumCityCenters] = useState(5);

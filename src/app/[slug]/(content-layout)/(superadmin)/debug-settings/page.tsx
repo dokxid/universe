@@ -9,7 +9,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { DebugSettingsDialog } from "@/app/components/modal/debug-settings-dialog";
+import { DebugSettings } from "@/app/components/views/debug-settings";
 import { TriangleAlert } from "lucide-react";
 
 export default async function Page() {
@@ -29,7 +29,7 @@ export default async function Page() {
                 </HeaderContent>
             </Header>
             <ContentLayoutInner>
-                <DebugSettingsDialog />
+                <DebugSettings />
             </ContentLayoutInner>
         </ContentLayout>
     );

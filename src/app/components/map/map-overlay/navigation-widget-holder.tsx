@@ -1,6 +1,6 @@
+import { FilterStoriesDialog } from "@/app/components/dialog/filter-stories-dialog";
 import { ActiveFilterInformation } from "@/app/components/map/map-overlay/active-filter-information";
 import { FlyBackButton } from "@/app/components/map/map-overlay/fly-back-button";
-import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarTrigger } from "@/components/ui/sidebar";

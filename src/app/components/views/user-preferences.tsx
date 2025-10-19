@@ -51,7 +51,7 @@ const detailsFormSchema = editUserDetailsFormSchema;
 const displayNameFormSchema = editUserDisplayNameFormSchema;
 const profilePictureFormSchema = editUserProfilePictureFormSchema;
 
-export function UserPreferencesDialog() {
+export function UserPreferences() {
     const { user, isLoading, isError } = useCurrentUser();
     const debug = useAppSelector((state) => state.settings.debug);
     const dispatch = useDispatch();

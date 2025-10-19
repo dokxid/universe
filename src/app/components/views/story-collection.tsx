@@ -2,6 +2,7 @@
 
 import { StoryCard } from "@/app/components/cards/story-card";
 import { TagList } from "@/app/components/cards/tag-list";
+import { FilterStoriesDialog } from "@/app/components/dialog/filter-stories-dialog";
 import {
     Header,
     HeaderContent,
@@ -9,7 +10,6 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { FilterStoriesDialog } from "@/app/components/modal/filter-stories-dialog";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,

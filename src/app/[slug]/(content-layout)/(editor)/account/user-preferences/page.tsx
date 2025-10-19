@@ -9,7 +9,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { UserPreferencesDialog } from "@/app/components/modal/user-preferences-dialog";
+import { UserPreferences } from "@/app/components/views/user-preferences";
 import { User } from "lucide-react";
 
 export default async function Page() {
@@ -27,7 +27,7 @@ export default async function Page() {
                 </HeaderContent>
             </Header>
             <ContentLayoutInner>
-                <UserPreferencesDialog />
+                <UserPreferences />
             </ContentLayoutInner>
         </ContentLayout>
     );
