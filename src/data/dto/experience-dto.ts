@@ -11,7 +11,10 @@ import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import { ExperienceDTO } from "@/types/dtos";
-import { editLabImageFormSchema } from "@/types/form-schemas/lab-form-schemas";
+import {
+    editLabImageFormSchema,
+    editVisibilityFormSchema,
+} from "@/types/form-schemas/lab-form-schemas";
 import { revalidateTag } from "next/cache";
 import { cache } from "react";
 import z from "zod";
@@ -191,6 +194,58 @@ export async function editLabPictureDTO(formData: FormData) {
 
         // revalidate caches
         revalidateTag(`labs`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function editLabVisibilityDTO(formData: FormData) {
+    try {
+        // check permissions of user
+        const slug = formData.get("slug") as string;
+        const labDTO = await getExperienceDTO(slug);
+        if (!labDTO) {
+            throw new Error(`Lab not found for slug: ${slug}`);
+        }
+        const isAllowedToEdit = await canUserEditLab(
+            formData.get("lab") as string
+        );
+        if (!isAllowedToEdit) {
+            throw new Error("User is not allowed to edit this lab");
+        }
+
+        // validate form data
+        const rawData = Object.fromEntries(formData.entries());
+        const result = editVisibilityFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+
+        // update database
+        console.log("Updating lab visibility:", result.data);
+        const mutate = await ExperienceModel.updateOne(
+            { slug: result.data.slug },
+            {
+                $set: {
+                    visibility: result.data.visibility,
+                },
+            }
+        );
+        if (mutate.modifiedCount === 0) {
+            return {
+                success: false,
+                error: JSON.stringify({
+                    formErrors: ["No changes made."],
+                    fieldErrors: {},
+                }),
+            };
+        }
+
+        // revalidate cache
+        revalidateTag(slug);
+        return { success: true };
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"

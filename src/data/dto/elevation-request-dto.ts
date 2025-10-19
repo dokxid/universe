@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getCurrentUser, isUserAdmin } from "@/data/auth";
+import { isUserAdmin } from "@/data/auth";
 import { insertElevationRequest } from "@/data/fetcher/elevation-request-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { NewElevationRequestData } from "@/types/dtos";
@@ -13,8 +13,7 @@ export async function submitElevationRequestDTO(
     status: "created" | "approved" | "rejected" | "pending"
 ) {
     try {
-        const user = await getCurrentUser();
-        if (!isUserAdmin(user, slug)) {
+        if (!isUserAdmin(slug)) {
             throw new Error("You must be an admin to request elevation.");
         }
         const requestToInsert: NewElevationRequestData = {

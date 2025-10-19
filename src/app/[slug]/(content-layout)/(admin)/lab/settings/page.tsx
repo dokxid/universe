@@ -1,4 +1,7 @@
-import { ContentLayout } from "@/app/components/layout/content-layout";
+import {
+    ContentLayout,
+    ContentLayoutInner,
+} from "@/app/components/layout/content-layout";
 import {
     Header,
     HeaderContent,
@@ -8,7 +11,7 @@ import {
 } from "@/app/components/layout/header";
 import { TeamSettings } from "@/app/components/views/team-settings";
 import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
-import { Newspaper } from "lucide-react";
+import { Settings } from "lucide-react";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();
@@ -29,19 +32,21 @@ export default async function Page({
             <ContentLayout>
                 <Header>
                     <HeaderIcon>
-                        <Newspaper size={80} />
+                        <Settings size={80} />
                     </HeaderIcon>
                     <HeaderContent>
                         <HeaderTitle>Lab Settings</HeaderTitle>
                         <HeaderDescription>
-                            Manage the settings for your lab.
+                            Manage your lab and its public appearance.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <TeamSettings
-                    slug={slug}
-                    experienceSerialized={experience}
-                />
+                <ContentLayoutInner>
+                    <TeamSettings
+                        slug={slug}
+                        experienceSerialized={experience}
+                    />
+                </ContentLayoutInner>
             </ContentLayout>
         </>
     );

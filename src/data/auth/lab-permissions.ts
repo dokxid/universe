@@ -5,7 +5,7 @@ export const canUserEditLab = async (slug: string): Promise<boolean> => {
         const user = await getCurrentUser();
         if (!user) return false;
         if (await isUserSuperAdmin(user)) return true;
-        return isUserAdmin(user, slug);
+        return isUserAdmin(slug);
     } catch (error) {
         console.error("Error checking user permissions:", error);
         return false;

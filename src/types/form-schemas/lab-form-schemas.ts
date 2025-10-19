@@ -1,4 +1,7 @@
-import { ACCEPTED_IMAGE_TYPES } from "@/types/form-schemas/form-schemas";
+import {
+    ACCEPTED_IMAGE_TYPES,
+    LAB_VISIBILITY_OPTIONS,
+} from "@/types/form-schemas/form-schemas";
 import z from "zod";
 
 export const editLabAppearanceSchema = z.object({
@@ -31,4 +34,9 @@ export const editLabImageFormSchema = z.object({
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg and .png files are accepted."
         ),
+});
+
+export const editVisibilityFormSchema = z.object({
+    slug: z.string().min(1, "Slug is required"),
+    visibility: z.enum(LAB_VISIBILITY_OPTIONS),
 });
