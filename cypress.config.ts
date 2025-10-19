@@ -3,6 +3,7 @@ import { defineConfig } from "cypress";
 export default defineConfig({
     e2e: {
         watchForFileChanges: false,
+        pageLoadTimeout: 10000,
         setupNodeEvents() {
             // implement node event listeners here
         },
