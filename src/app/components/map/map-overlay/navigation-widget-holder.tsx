@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTagsForLabDTO } from "@/data/dto/tag-dto";
+import { getTagsForLabDTO } from "@/data/dto/getters/get-tag-dto";
 import { Suspense } from "react";
 
 export async function NavigationWidgetHolder({ slug }: { slug: string }) {

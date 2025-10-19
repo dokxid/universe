@@ -1,6 +1,6 @@
 "use server";
 
-import { submitElevationRequestDTO } from "@/data/dto/elevation-request-dto";
+import { createElevationRequestDTO } from "@/data/dto/mutators/mutate-elevations-dto";
 
 export async function submitElevationRequestAction(
     storyId: string,
@@ -8,7 +8,7 @@ export async function submitElevationRequestAction(
     status: "created" | "approved" | "rejected" | "pending"
 ) {
     try {
-        return await submitElevationRequestDTO(storyId, slug, status);
+        return await createElevationRequestDTO(storyId, slug, status);
     } catch (error) {
         return JSON.stringify(error);
     }

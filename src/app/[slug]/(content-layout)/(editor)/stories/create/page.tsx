@@ -1,6 +1,6 @@
 import AddStoryForm from "@/app/components/form/story-forms/add-story-form";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
-import { getTagsDTO } from "@/data/dto/tag-dto";
+import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 
 export async function generateStaticParams() {
     const experiences = await getExperiencesDTO();

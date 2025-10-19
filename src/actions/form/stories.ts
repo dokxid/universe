@@ -7,7 +7,7 @@ import {
     editStoryPictureDTO,
     editVisibilityAndLicensingFormSchemaDTO,
     submitStoryDTO,
-} from "@/data/dto/story-dto";
+} from "@/data/dto/mutators/mutate-story-dto";
 
 export async function submitStoryAction(formData: FormData) {
     try {

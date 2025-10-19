@@ -7,7 +7,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getUsersByLabDTO } from "@/data/dto/user-dto";
+import { getUsersByLabDTO } from "@/data/dto/getters/get-user-dto";
 import { Users } from "lucide-react";
 import { Suspense } from "react";
 

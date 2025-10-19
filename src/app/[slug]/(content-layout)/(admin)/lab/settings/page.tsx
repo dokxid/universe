@@ -10,7 +10,10 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { TeamSettings } from "@/app/components/views/team-settings";
-import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import {
+    getExperienceDTO,
+    getExperiencesDTO,
+} from "@/data/dto/getters/get-experience-dto";
 import { Settings } from "lucide-react";
 
 export async function generateStaticParams() {

@@ -1,6 +1,6 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
-import { getTaggedConnectionDTO } from "@/data/dto/geo-dto";
+import { getTaggedConnectionDTO } from "@/data/dto/getters/get-geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrevious } from "@/hooks/use-previous";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";

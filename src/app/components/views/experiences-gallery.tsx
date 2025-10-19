@@ -1,7 +1,7 @@
 import { ExperienceCard } from "@/app/components/cards/experience-card";
 import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Separator } from "@/components/ui/separator";
-import { getPublicLabsDTO } from "@/data/dto/experience-dto";
+import { getPublicLabsDTO } from "@/data/dto/getters/get-experience-dto";
 import { ExperienceDTO } from "@/types/dtos";
 
 export async function ExperiencesGallery() {

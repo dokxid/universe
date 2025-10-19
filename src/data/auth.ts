@@ -1,13 +1,13 @@
 import "server-only";
 
-import { canUserEditStoryId } from "@/data/dto/story-dto";
 import { workos } from "@/lib/auth/workos/callback";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { UserRole } from "@/types/user";
 import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";
 import { cache } from "react";
-import { getExperienceDTO } from "./dto/experience-dto";
+import { canUserEditStoryId } from "./dto/auth/story-permissions";
+import { getExperienceDTO } from "./dto/getters/get-experience-dto";
 
 type MembershipResult = {
     isMember: boolean;

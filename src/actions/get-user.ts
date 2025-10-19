@@ -6,7 +6,10 @@ import {
     Permissions,
     Role,
 } from "@/data/auth";
-import { getUserDTO, getUserFromWorkOSIdDTO } from "@/data/dto/user-dto";
+import {
+    getUserDTO,
+    getUserFromWorkOSIdDTO,
+} from "@/data/dto/getters/get-user-dto";
 import { UserDTO } from "@/lib/data/mongodb/models/user-model";
 
 export async function getUserAction(userId: string): Promise<UserDTO | null> {

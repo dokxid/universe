@@ -1,4 +1,4 @@
-import { getOrganizationFromSlugDTO } from "@/data/dto/experience-dto";
+import { getOrganizationFromSlugDTO } from "@/data/dto/getters/get-experience-dto";
 import { WorkOS } from "@workos-inc/node";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY!);

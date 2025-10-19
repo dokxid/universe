@@ -3,12 +3,15 @@ import { MapPanel } from "@/app/components/map/map-panel";
 import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { ExploreSidebar } from "@/app/components/sidebar/explore-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getExperiencesDTO, getPublicLabsDTO } from "@/data/dto/experience-dto";
+import {
+    getExperiencesDTO,
+    getPublicLabsDTO,
+} from "@/data/dto/getters/get-experience-dto";
 import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
-} from "@/data/dto/story-dto";
-import { getTagsDTO } from "@/data/dto/tag-dto";
+} from "@/data/dto/getters/get-story-dto";
+import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 

@@ -7,7 +7,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getExperiencesDTO } from "@/data/dto/experience-dto";
+import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
 import { Earth } from "lucide-react";
 
 export default async function Page() {

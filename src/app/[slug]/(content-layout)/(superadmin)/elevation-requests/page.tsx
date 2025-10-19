@@ -8,7 +8,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabPrivateStoriesDTO } from "@/data/dto/story-dto";
+import { getLabPrivateStoriesDTO } from "@/data/dto/getters/get-story-dto";
 import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";
 import { Grid2X2Check } from "lucide-react";

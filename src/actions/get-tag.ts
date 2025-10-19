@@ -1,6 +1,6 @@
 "use server";
 
-import { getTagsByNameDTO, getTagsDTO } from "@/data/dto/tag-dto";
+import { getTagsByNameDTO, getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { UnescoTagDTO } from "@/types/dtos";
 
 export async function getTagsByNameAction(

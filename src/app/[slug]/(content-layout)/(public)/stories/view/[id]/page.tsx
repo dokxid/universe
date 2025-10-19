@@ -1,6 +1,6 @@
 import StoryView from "@/app/components/views/story-view";
-import { getCurrentUserOptional } from "@/data/auth";
-import { canUserViewStoryId, getStoryDTO } from "@/data/dto/story-dto";
+import { canUserViewStoryId } from "@/data/dto/auth/story-permissions";
+import { getStoryDTO } from "@/data/dto/getters/get-story-dto";
 import { notFound } from "next/navigation";
 
 // export async function generateStaticParams() {
@@ -17,8 +17,7 @@ export default async function StoryDetails({
     params: Promise<{ id: string }>;
 }) {
     const { id: storyId } = await params;
-    const user = await getCurrentUserOptional();
-    const permissionToView = await canUserViewStoryId(user, storyId);
+    const permissionToView = await canUserViewStoryId(storyId);
     if (!permissionToView) {
         return notFound();
     }

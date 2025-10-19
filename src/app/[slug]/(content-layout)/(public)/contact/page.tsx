@@ -22,7 +22,7 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getUsersByLabDTO } from "@/data/dto/user-dto";
+import { getUsersByLabDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 

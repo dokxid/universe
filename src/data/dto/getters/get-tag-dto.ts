@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getLabPublicStoriesDTO } from "@/data/dto/story-dto";
+import { getLabPublicStoriesDTO } from "@/data/dto/getters/get-story-dto";
 import {
     flattenedTags,
     sanitizeUNESCOTag,

@@ -1,6 +1,6 @@
 "use server";
 
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/experience-dto";
+import { getSlugFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
 import type { AuthException } from "@/types/workos-errors";
 import { WorkOS } from "@workos-inc/node";
 import { cookies } from "next/headers";

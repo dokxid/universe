@@ -1,6 +1,9 @@
 "use server";
 
-import { getExperienceDTO, getExperiencesDTO } from "@/data/dto/experience-dto";
+import {
+    getExperienceDTO,
+    getExperiencesDTO,
+} from "@/data/dto/getters/get-experience-dto";
 import { ExperienceDTO } from "@/types/dtos";
 
 export async function getExperiencesAction(): Promise<ExperienceDTO[]> {

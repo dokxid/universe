@@ -4,7 +4,7 @@ import {
     editLabAppearanceDTO,
     editLabPictureDTO,
     editLabVisibilityDTO,
-} from "@/data/dto/experience-dto";
+} from "@/data/dto/mutators/mutate-lab-dto";
 
 export async function editLabPictureAction(formData: FormData) {
     try {
@@ -38,7 +38,10 @@ export async function editLabAppearanceAction(formData: FormData): Promise<{
         return { result, redirect };
     } catch (error) {
         return {
-            result: { success: false, error: error instanceof Error ? error.message : "Unknown error" },
+            result: {
+                success: false,
+                error: error instanceof Error ? error.message : "Unknown error",
+            },
         };
     }
 }

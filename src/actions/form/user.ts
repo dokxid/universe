@@ -4,7 +4,7 @@ import {
     editDisplayNameFormSchemaDTO,
     editUserDetailsFormSchemaDTO,
     editUserProfilePictureFormSchemaDTO,
-} from "@/data/dto/user-dto";
+} from "@/data/dto/mutators/mutate-user-dto";
 
 export async function editDisplayNameFormAction(formData: FormData) {
     try {

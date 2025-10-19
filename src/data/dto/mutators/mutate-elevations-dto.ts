@@ -7,7 +7,7 @@ import { NewElevationRequestData } from "@/types/dtos";
 import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
 
-export async function submitElevationRequestDTO(
+export async function createElevationRequestDTO(
     storyID: string,
     slug: string,
     status: "created" | "approved" | "rejected" | "pending"
