@@ -1,3 +1,6 @@
+include:
+    - ../garage-configuration-universe/docker-compose.yml
+
 services:
     app:
         container_name: next
@@ -16,11 +19,22 @@ services:
         image: mongo
         restart: always
         volumes:
-            - ./data:/data/db
+            - ./mongodb:/data/db
         ports:
             - "27017:27017"
         networks:
             - app-network
+    garage:
+        image: dxflrs/garage:v2.1.0
+        ports:
+            - "3900:3900"
+        networks:
+            - app-network
+        restart: unless-stopped
+        volumes:
+            - ./garage/garage.toml:/etc/garage.toml
+            - ./garage/meta:/var/lib/garage/meta
+            - ./garage/data:/var/lib/garage/data
 
 volumes:
     mongo-data:
