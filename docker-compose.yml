@@ -23,7 +23,7 @@ services:
     volumes:
       - ./mongodb:/data/db
     ports:
-      - "27017:27017"
+      - "28017:27017"
     networks:
       - app-network
 
