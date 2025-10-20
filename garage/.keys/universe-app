@@ -1,0 +1,14 @@
+[2m2025-10-20T15:49:02.632806Z[0m [32m INFO[0m [2mgarage_net::netapp[0m[2m:[0m Connected to 127.0.0.1:3901, negotiating handshake...    
+[2m2025-10-20T15:49:02.674661Z[0m [32m INFO[0m [2mgarage_net::netapp[0m[2m:[0m Connection established to dc12e85cf361d755    
+==== ACCESS KEY INFORMATION ====
+Key ID:              GK33e8c016b2dfbc7c7d167582
+Key name:            next_server
+Secret key:          24c2a54c9733e4e7c33c3764754ac8b2bc0bbf9c80877813342378af5aa2c0e2
+Created:             2025-10-20 15:49:02.674 +00:00
+Validity:            valid
+Expiration:          never
+
+Can create buckets:  false
+
+==== BUCKETS FOR THIS KEY ====
+Permissions  ID  Global aliases  Local aliases

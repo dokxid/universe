@@ -1,43 +1,48 @@
 services:
-    app:
-        container_name: universe-app
-        restart: always
-        build:
-            context: .
-            dockerfile: Dockerfile
-        ports:
-            - "3000:3000" # Map port 3000 on the host to port 3000 in the container
-        networks:
-            - app-network
-        depends_on:
-            - mongo
-            - garage
-    mongo:
-        container_name: mongo
-        image: mongo
-        restart: always
-        volumes:
-            - ./mongodb:/data/db
-        ports:
-            - "27017:27017"
-        networks:
-            - app-network
-    garage:
-        container_name: garage
-        image: dxflrs/garage:v2.1.0
-        ports:
-            - "3900:3900"
-        networks:
-            - app-network
-        restart: unless-stopped
-        volumes:
-            - ./garage/garage.toml:/etc/garage.toml
-            - ./garage/meta:/var/lib/garage/meta
-            - ./garage/data:/var/lib/garage/data
+  app:
+    container_name: universe-app
+    restart: always
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017
+      - MONGODB_DBNAME=universe-production
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - mongo
+      - garage
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongodb:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  garage:
+    container_name: garage
+    image: dxflrs/garage:v2.1.0
+    ports:
+      - "3900:3900"
+    networks:
+      - app-network
+    restart: unless-stopped
+    volumes:
+      - ./garage/garage.toml:/etc/garage.toml
+      - ./garage/meta:/var/lib/garage/meta
+      - ./garage/data:/var/lib/garage/data
 
 volumes:
-    mongo-data:
+  mongo-data:
 
 networks:
-    app-network:
-        driver: bridge
+  app-network:
+    driver: bridge

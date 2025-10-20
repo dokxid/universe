@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-# Load environment variables from .env file
-[ ! -f .env ] || export $(grep -v '^#' .env | xargs)
+# load script pwd
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-cat > garage.toml <<EOF
+# Load environment variables from .env file
+[ ! -f "$SCRIPT_DIR/.env" ] || source "$SCRIPT_DIR/.env"
+
+cat > $SCRIPT_DIR/garage.toml <<EOF
 metadata_dir = "/tmp/meta"
 data_dir = "/tmp/data"
 db_engine = "sqlite"
