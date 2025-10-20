@@ -91,9 +91,9 @@ remember to forward these ports (if not modified):
 | 9443  | portainer to manage docker containers |
 | 27017 | mongoDB                               |
 
-### deploying docker
+# deployment via docker
 
-#### workspace setup
+## workspace setup
 
 yarn magic, or any other pacman u like, you know the drill
 
@@ -106,12 +106,12 @@ yarn install
 make sure to copy the .env.example to make ur own one for development
 
 ```bash
-cp .env.example .env.docker
+cp .env.docker.example .env.docker
 ```
 
 and fill it out with the things mentioned in the comments in that file
 
-#### setup garage
+## setup garage
 
 ```sh
 # enter your desired storage size and node name
@@ -124,14 +124,14 @@ docker compose up -d garage
 ./garage/setup-garage.sh
 ```
 
-#### setup mongodb and initial seeding
+## setup mongodb and initial seeding
 
 ```sh
 docker compose up -d mongo
-yarn seed:production  # init the database
+yarn seed:docker  # init the database
 ```
 
-#### setup universe app
+## setup universe app
 
 ```sh
 docker compose build --no-cache
