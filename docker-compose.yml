@@ -1,0 +1,22 @@
+services:
+    app:
+        container_name: next
+        restart: always
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000" # Map port 3000 on the host to port 3000 in the container
+        depends_on:
+            - mongo
+    mongo:
+        container_name: mongo
+        image: mongo
+        restart: always
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "28017:27017"
+
+volumes:
+    mongo-data:

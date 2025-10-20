@@ -1,5 +1,8 @@
 import { seedAllElevationRequests } from "@/data/scripts/seed-elevation-requests";
-import { seedExperiences } from "@/data/scripts/seed-experiences";
+import {
+    seedExperiences,
+    seedUniverseLab,
+} from "@/data/scripts/seed-experiences";
 import {
     deleteUploadsFolder,
     initializeFeaturedLabImages,
@@ -64,6 +67,16 @@ export async function seedDatabase(
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);
+        throw error;
+    }
+}
+
+export async function initDatabase() {
+    try {
+        await seedUnescoTags();
+        await seedUniverseLab();
+    } catch (error) {
+        console.error("Error during database initialization:", error);
         throw error;
     }
 }

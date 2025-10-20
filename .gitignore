@@ -49,3 +49,4 @@ next-env.d.ts
 
 # mongodb playgrounds
 *.mongodb.js
+/data
