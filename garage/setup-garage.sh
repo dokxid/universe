@@ -24,10 +24,3 @@ $garage bucket allow \
   --owner \
   universe \
   --key next_server
-$garage key create aws_cli | tee keys/.aws_cli
-$garage bucket allow \
-  --read \
-  --write \
-  --owner \
-  universe \
-  --key aws_cli
