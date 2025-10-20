@@ -1,4 +1,4 @@
-import StoryEdit from "@/app/components/views/story-edit";
+import StoryEdit from "@/app/components/views/edit-story-view";
 import { canUserEditStoryId } from "@/data/dto/auth/story-permissions";
 import { getStoryDTO } from "@/data/dto/getters/get-story-dto";
 import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";

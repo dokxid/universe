@@ -50,7 +50,7 @@ export function StoryAuthorDetails({
                                 src={story.authorProfilePictureUrl || undefined}
                             />
                             <AvatarFallback>
-                                {story.author_name.charAt(0)}
+                                {story.authorName.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -64,7 +64,7 @@ export function StoryAuthorDetails({
                             className={"hover:underline cursor-pointer"}
                             href={`/${story.experience}/user/view/${story.author}`}
                         >
-                            <b>{`${story.author_name}`}</b>
+                            <b>{`${story.authorName}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
@@ -117,7 +117,7 @@ export function StoryAuthorEditDetails({
                                 src={story.authorProfilePictureUrl || undefined}
                             />
                             <AvatarFallback>
-                                {story.author_name.charAt(0)}
+                                {story.authorName.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -133,7 +133,7 @@ export function StoryAuthorEditDetails({
                             className={"hover:underline cursor-pointer"}
                             href={`/${story.experience}/user/view/${story.author}`}
                         >
-                            <b>{`${story.author_name}`}</b>
+                            <b>{`${story.authorName}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
@@ -222,7 +222,7 @@ export function StoryAuthorHeaderMapView({
                                 src={story.authorProfilePictureUrl || undefined}
                             />
                             <AvatarFallback>
-                                {story.author_name.charAt(0)}
+                                {story.authorName.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -254,7 +254,7 @@ export function StoryAuthorHeaderMapView({
                             }`}
                             href={`/${story.experience}/user/view/${story.author}`}
                         >
-                            {story.author_name}
+                            {story.authorName}
                         </Link>
                     </p>
                 </article>

@@ -105,7 +105,7 @@ export function LabPictureForm({ experience }: { experience: ExperienceDTO }) {
                                     >
                                         <HostedImage
                                             fileName={
-                                                experience.featured_image_url
+                                                experience.featuredImageUrl
                                             }
                                             alt={experience.title}
                                         />

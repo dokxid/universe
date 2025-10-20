@@ -7,6 +7,7 @@ import { HostedImage } from "@/app/components/embeds/s3-image";
 import { CCLicensesFormField } from "@/app/components/form/story-forms/cc-licenses-form";
 import { CoordinatesFormField } from "@/app/components/form/story-forms/coordinates-form";
 import { FeaturedPictureFormField } from "@/app/components/form/story-forms/featured-picture-form";
+import EditorView from "@/app/components/form/story-forms/story-text-editor-form";
 import {
     ContentLayout,
     ContentLayoutInner,
@@ -20,7 +21,6 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { StoryAuthorEditDetails } from "@/app/components/layout/story-author-details";
-import EditorView from "@/app/components/views/editor-view";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -100,7 +100,7 @@ export default function StoryEdit({
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
                 <HostedImage
-                    fileName={story.featured_image_url}
+                    fileName={story.featuredImageUrl}
                     alt={story.title}
                 />
             </div>

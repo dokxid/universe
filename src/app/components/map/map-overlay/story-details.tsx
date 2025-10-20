@@ -96,7 +96,7 @@ export function StoryDetails({
                                 className={
                                     "hover:scale-105 transition-all duration-200"
                                 }
-                                fileName={activeStory.featured_image_url}
+                                fileName={activeStory.featuredImageUrl}
                             />
                         </Link>
                         <Separator className={"my-4"} />
@@ -156,7 +156,7 @@ export function StoryDetails({
             >
                 <HostedImage
                     className={"hover:scale-105 transition-all duration-200"}
-                    fileName={activeStory.featured_image_url}
+                    fileName={activeStory.featuredImageUrl}
                 />
             </Link>
             <div className={"px-6 pb-6 flex flex-col"}>

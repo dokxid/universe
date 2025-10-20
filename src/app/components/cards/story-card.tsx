@@ -24,9 +24,9 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                             "origin-bottom group-hover:scale-110 transition-all duration-300 ease-in-out h-60 md:h-90 group-hover:blur-[2px] group-hover:brightness-25"
                         }
                     >
-                        {story.featured_image_url ? (
+                        {story.featuredImageUrl ? (
                             <HostedImage
-                                fileName={story.featured_image_url}
+                                fileName={story.featuredImageUrl}
                                 className="object-cover "
                             />
                         ) : (
@@ -44,7 +44,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                                     {story.title}
                                 </h1>
                                 <p className="text-sm text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
-                                    by {story.author_name}
+                                    by {story.authorName}
                                 </p>
                                 <p className="text-xs text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
                                     published:{" "}

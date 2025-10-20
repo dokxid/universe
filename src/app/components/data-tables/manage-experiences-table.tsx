@@ -305,10 +305,12 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant={"secondary_custom"} className={""}>
-                            <UserPlus />
-                            Invite new lab
-                        </Button>
+                        <Link href={"/universe/labs/create"}>
+                            <Button variant={"secondary_custom"} className={""}>
+                                <UserPlus />
+                                Create new lab
+                            </Button>
+                        </Link>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button

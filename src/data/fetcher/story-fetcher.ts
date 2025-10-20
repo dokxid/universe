@@ -65,17 +65,18 @@ export async function queryStory(
         // Find the specific story by ID instead of taking the first one
         const queriedStory = sanitizedLabWithFoundStories.stories.find(
             (story) => story._id === storyId.toString()
-        );
+        ) as Omit<StoryDTO, "experience" | "authorName">;
 
         if (!queriedStory) {
             throw new Error("Story not found in sanitized stories");
         }
 
         // add experience slug and author name to story dto
-        const storyDTO: StoryDTO = {
+        const storyDTO = {
             ...queriedStory,
             experience: sanitizedLabWithFoundStories.slug,
-        } as StoryDTO;
+            authorName: "", // will be populated in fetchAndMapAuthorsForStoryDTO
+        };
 
         const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([storyDTO]);
 

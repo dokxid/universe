@@ -39,11 +39,11 @@ export async function fetchAndMapAuthorsForStoryDTO(
         // replace author ids with user data in stories
         stories.forEach((story) => {
             if (authorMap[story.author]) {
-                story.author_name = authorMap[story.author];
+                story.authorName = authorMap[story.author];
                 story.authorProfilePictureUrl =
                     authorProfilePictureMap[story.author];
             } else {
-                story.author_name = "Unknown Author";
+                story.authorName = "Unknown Author";
             }
         });
     } catch (err) {

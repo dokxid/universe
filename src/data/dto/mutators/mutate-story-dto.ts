@@ -76,14 +76,14 @@ export async function submitStoryDTO(formData: FormData) {
             tags: data.tags,
             year: data.year,
             license: data.license,
-            featured_image_url: path,
+            featuredImageUrl: path,
             draft: data.draft,
-            visible_universe: data.universe,
-            elevation_requests: [
+            visibleUniverse: data.universe,
+            elevationRequests: [
                 {
                     status: "created",
-                    requested_at: new Date(),
-                    resolved_at: new Date(),
+                    requestedAt: new Date(),
+                    resolvedAt: new Date(),
                 },
             ],
             createdAt: new Date(),

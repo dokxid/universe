@@ -15,7 +15,7 @@ export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
         const sanitizedLabs: ExperienceDTO[] = labs.map((lab) => ({
             ...lab,
             amountStories: lab.stories.length,
-        })) as ExperienceDTO[];
+        }));
         return sanitizedLabs;
     } catch (err) {
         console.error(
@@ -90,7 +90,7 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
         const experience = await getExperience(experienceSlug);
         return {
             organization_id: experience.organizationId,
-            connection_id: experience.connection_id,
+            connection_id: experience.connectionId,
         };
     } catch (err) {
         throw new Error(

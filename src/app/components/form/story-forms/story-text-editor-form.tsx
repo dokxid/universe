@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-export default function EditorView({ story }: { story: StoryDTO }) {
+export default function StoryTextEditorForm({ story }: { story: StoryDTO }) {
     const editorRef = useRef<Editor | null>(null);
     const editContentForm = useForm<z.infer<typeof editContentFormSchema>>({
         resolver: zodResolver(editContentFormSchema),

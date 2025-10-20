@@ -11,3 +11,14 @@ export const canUserEditLab = async (slug: string): Promise<boolean> => {
         return false;
     }
 };
+
+export const canUserCreateLab = async (): Promise<boolean> => {
+    try {
+        const user = await getCurrentUser();
+        if (!user) return false;
+        return await isUserSuperAdmin(user);
+    } catch (error) {
+        console.error("Error checking user permissions:", error);
+        return false;
+    }
+};

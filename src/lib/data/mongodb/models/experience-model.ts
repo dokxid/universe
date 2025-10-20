@@ -13,8 +13,8 @@ const elevationRequestSchema = new Schema({
         enum: ["pending", "approved", "rejected"],
         required: true,
     },
-    requested_at: { type: Date, required: true },
-    resolved_at: { type: Date },
+    requestedAt: { type: Date, required: true },
+    resolvedAt: { type: Date },
 });
 
 const storySchema = new Schema({
@@ -36,9 +36,9 @@ const storySchema = new Schema({
     },
     tags: { type: [String], required: true },
     year: { type: Number, required: true },
-    visible_universe: { type: Boolean, required: true },
-    featured_image_url: { type: String, required: true },
-    elevation_requests: { type: [elevationRequestSchema], required: true },
+    visibleUniverse: { type: Boolean, required: true },
+    featuredImageUrl: { type: String, required: true },
+    elevationRequests: { type: [elevationRequestSchema], required: true },
     license: {
         type: String,
         enum: Object.values(CC_LICENSES).map((license) => license.code),
@@ -61,11 +61,11 @@ const experienceSchema = new Schema({
             required: true,
         },
     },
-    initial_zoom: { type: Number, required: true },
+    initialZoom: { type: Number, required: true },
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
-    description: { type: String, required: true },
-    featured_image_url: { type: String, required: true },
+    content: { type: String, required: true },
+    featuredImageUrl: { type: String, required: true },
     stories: { type: [storySchema], required: true },
     organizationId: { type: String, required: true },
     visibility: {

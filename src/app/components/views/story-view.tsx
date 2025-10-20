@@ -22,7 +22,7 @@ export default async function StoryView({ story }: { story: StoryDTO }) {
     return (
         <ContentLayout>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80 mb-8"}>
-                <HostedImage fileName={story.featured_image_url} />
+                <HostedImage fileName={story.featuredImageUrl} />
             </div>
             <Header>
                 <div className={"flex flex-col gap-3 w-full"}>

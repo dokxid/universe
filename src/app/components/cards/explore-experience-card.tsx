@@ -33,10 +33,10 @@ export function ExploreExperienceCard({
         >
             <div className="overflow-hidden rounded-t-md group-hover:h-6 shrink">
                 <AspectRatio ratio={16 / 9}>
-                    {experience.featured_image_url ? (
+                    {experience.featuredImageUrl ? (
                         <Suspense fallback={<ListExperiencesSkeleton />}>
                             <Image
-                                src={experience.featured_image_url}
+                                src={experience.featuredImageUrl}
                                 alt={experience.title}
                                 fill={true}
                                 sizes="(min-width: 768px) 50vw, 100vw"
@@ -66,7 +66,7 @@ export function ExploreExperienceCard({
                                 "text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4"
                             }
                         >
-                            {experience.description}
+                            {experience.content}
                         </p>
                     </div>
                     {/* <div className="shrink-0 ml-2">

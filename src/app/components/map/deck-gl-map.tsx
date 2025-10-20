@@ -105,7 +105,7 @@ function MapController({
     useEffect(() => {
         if (!map) return;
         const center = currentExperience.center.coordinates;
-        const zoom = currentExperience.initial_zoom;
+        const zoom = currentExperience.initialZoom;
         const edgeInsets = new EdgeInsets(0, 0, 0, 0);
         map.flyTo({
             center,
@@ -232,7 +232,7 @@ export function DeckGLMap({
         : {
               longitude: experience.center.coordinates[0],
               latitude: experience.center.coordinates[1],
-              zoom: experience.initial_zoom,
+              zoom: experience.initialZoom,
           };
 
     const getSameRouteConnections = (
