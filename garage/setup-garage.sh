@@ -5,7 +5,7 @@
 
 set -x
 
-garage="docker exec -ti garage-universe-garage-1 /garage"
+garage="docker exec -ti garage /garage"
 
 $garage status
 

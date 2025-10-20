@@ -1,9 +1,6 @@
-include:
-    - ../garage-configuration-universe/docker-compose.yml
-
 services:
     app:
-        container_name: next
+        container_name: universe-app
         restart: always
         build:
             context: .
@@ -14,6 +11,7 @@ services:
             - app-network
         depends_on:
             - mongo
+            - garage
     mongo:
         container_name: mongo
         image: mongo
@@ -25,6 +23,7 @@ services:
         networks:
             - app-network
     garage:
+        container_name: garage
         image: dxflrs/garage:v2.1.0
         ports:
             - "3900:3900"
