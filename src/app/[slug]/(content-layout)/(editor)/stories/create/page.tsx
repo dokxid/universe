@@ -15,10 +15,15 @@ import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
 export async function generateStaticParams() {
-    const experiences = await getExperiencesDTO();
-    return experiences.map((experience) => ({
-        slug: experience.slug,
-    }));
+    try {
+        const experiences = await getExperiencesDTO();
+        return experiences.map((experience) => ({
+            slug: experience.slug,
+        }));
+    } catch (error) {
+        console.error("Error generating static params:", error);
+        return [];
+    }
 }
 
 export default async function Page({

@@ -36,10 +36,15 @@ import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
 export async function generateStaticParams() {
-    const experiences = await getExperiencesDTO();
-    return experiences.map((experience) => ({
-        slug: experience.slug,
-    }));
+    try {
+        const experiences = await getExperiencesDTO();
+        return experiences.map((experience) => ({
+            slug: experience.slug,
+        }));
+    } catch (error) {
+        console.error("Error generating static params:", error);
+        return [];
+    }
 }
 
 export default async function AboutPage({

@@ -15,13 +15,14 @@ export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
         const sanitizedLabs: ExperienceDTO[] = labs.map((lab) => ({
             ...lab,
             amountStories: lab.stories.length,
-        }));
+        })) as ExperienceDTO[];
         return sanitizedLabs;
     } catch (err) {
-        throw new Error(
+        console.error(
             "Error fetching experiences: " +
                 (err instanceof Error ? err.message : "Unknown error")
         );
+        return [];
     }
 });
 
@@ -35,10 +36,11 @@ export const getPublicLabsDTO = cache(async (): Promise<ExperienceDTO[]> => {
             (exp) => exp.visibility === "public"
         );
     } catch (err) {
-        throw new Error(
+        console.error(
             "Error fetching public labs: " +
                 (err instanceof Error ? err.message : "Unknown error")
         );
+        return [];
     }
 });
 

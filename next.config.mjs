@@ -25,7 +25,6 @@ console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
 
 const config = {
     output: "standalone",
-    env,
     turbopack: {
         rules: {
             "*.svg": {
