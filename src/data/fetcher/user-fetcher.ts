@@ -55,16 +55,31 @@ export async function syncUsersWithDatabase() {
     try {
         await dbConnect();
         const users = await getAllWorkOSUsers();
-        await UserModel.insertMany(
+
+        const result = await UserModel.insertMany(
             users.map((user) => ({
                 ...user,
             })),
             {
-                ordered: true,
+                ordered: false,
             }
         ).catch((err) => {
+            if (err.code === 11000) {
+                console.warn(
+                    `Skipped ${
+                        err.result?.nInserted || 0
+                    } duplicate users during sync`
+                );
+                return err.result; // Return the partial result
+            }
             throw new Error(`Error syncing users with database: ${err}`);
         });
+
+        console.log(
+            `Successfully synced users: ${
+                result?.insertedCount || 0
+            } new users added`
+        );
     } catch (err) {
         console.error("Error syncing users with database:", err);
         throw err;

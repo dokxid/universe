@@ -491,7 +491,11 @@ export const elevationRequestsColumns = [
         ),
     }),
     columnHelper.accessor(
-        (row) => row.elevationRequests[row.elevationRequests.length - 1].status,
+        (row) => {
+            const lastRequest =
+                row.elevationRequests?.[row.elevationRequests.length - 1];
+            return lastRequest?.status ?? "pending";
+        },
         {
             id: "latest_elevation_request",
             header: ({ column }) => (
@@ -535,8 +539,11 @@ export const elevationRequestsColumns = [
         }
     ),
     columnHelper.accessor(
-        (row) =>
-            row.elevationRequests[row.elevationRequests.length - 1].requestedAt,
+        (row) => {
+            const lastRequest =
+                row.elevationRequests?.[row.elevationRequests.length - 1];
+            return lastRequest?.requestedAt ?? new Date().toISOString();
+        },
         {
             id: "requested_at",
             header: ({ column }) => (
