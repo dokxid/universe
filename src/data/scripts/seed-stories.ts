@@ -6,6 +6,7 @@ import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { UserModel } from "@/lib/data/mongodb/models/user-model";
 import { Experience } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
+
 export async function seedStories(
     experienceSlug: string,
     center: number[],

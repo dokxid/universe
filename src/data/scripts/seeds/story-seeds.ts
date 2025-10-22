@@ -71,14 +71,14 @@ export const test_story_doc = async (
             faker.number.int({ min: 3, max: 8 })
         ),
         year: faker.number.int({ min: 1800, max: 2024 }),
-        visible_universe: faker.datatype.boolean(),
-        featured_image_url:
+        visibleUniverse: faker.datatype.boolean(),
+        featuredImageUrl:
             process.env.LOCAL_UPLOADER === "true"
                 ? await getStoryImageUrl(experienceSlug)
                 : "https://picsum.photos/seed/" +
                   faker.string.alphanumeric(10) +
                   "/800/600",
-        elevation_requests: [],
+        elevationRequests: [],
         license: faker.helpers.arrayElement(
             Object.values(CC_LICENSES).map((license) => license.code)
         ),
