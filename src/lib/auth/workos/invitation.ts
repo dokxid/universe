@@ -29,10 +29,10 @@ export async function inviteLabAdmin(
             roleSlug: "admin",
         });
         if (!invitation || !invitation.id) {
-            throw new Error("Failed to get inviter user ID from invitation");
+            throw new Error("Failed to invite lab admin");
         }
         console.log(
-            `Successfully invited lab admin ${adminEmail} to organization ${organizationId} by inviter ${invitation.id}`
+            `Successfully invited lab admin ${adminEmail} to organization ${organizationId}`
         );
     } catch (error) {
         throw new Error(
@@ -69,6 +69,9 @@ export async function getOrganizationMembership(
                 organizationId,
                 userId,
             });
+        if (!membership.data.length) {
+            throw new Error("No membership found");
+        }
         return membership.data[0];
     } catch (error) {
         throw new Error(
