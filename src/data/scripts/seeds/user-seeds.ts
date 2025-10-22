@@ -20,6 +20,7 @@ export const testMemberDoc = (
         email,
         firstName,
         lastName,
+        externalId: `$user_${faker.string.uuid()}`,
         displayName: faker.datatype.boolean(0.75) ? displayName : undefined,
         profilePictureUrl: faker.datatype.boolean()
             ? faker.image.urlPicsumPhotos({ width: 800, height: 800, blur: 0 })

@@ -2,10 +2,7 @@ import {
     canUserCreateLab,
     canUserEditLab,
 } from "@/data/dto/auth/lab-permissions";
-import {
-    createOrganization,
-    inviteLabAdmin,
-} from "@/lib/auth/workos/invitation";
+import { createOrganization } from "@/lib/auth/workos/invitation";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
@@ -159,11 +156,13 @@ export async function editLabAppearanceDTO(formData: FormData) {
 
 export async function createLabDTO(formData: FormData) {
     try {
+        // check permissions of user
         const isAllowedToCreateLab = await canUserCreateLab();
         if (!isAllowedToCreateLab) {
             throw new Error("User is not allowed to create a lab");
         }
 
+        // validate form data
         const rawData = Object.fromEntries(formData.entries());
         const processedData = {
             ...rawData,
@@ -180,10 +179,12 @@ export async function createLabDTO(formData: FormData) {
             throw new Error("No lab picture provided");
         }
 
+        // create organization and invite admin
         console.log("Inviting admin:", adminEmail, "to lab:", rest.slug);
-        const organizationId = await createOrganization(rest.slug);
-        await inviteLabAdmin(adminEmail, rest.slug);
+        const organization = await createOrganization(rest.slug, adminEmail);
+        const organizationId = organization.id;
 
+        // upload image and create lab in database
         let path: string;
         if (process.env.LOCAL_UPLOADER === "true") {
             path = await uploadFileToPublicFolder(image, rest.slug);
@@ -191,6 +192,7 @@ export async function createLabDTO(formData: FormData) {
             path = await uploadFile(image, rest.slug);
         }
 
+        // insert newly created lab into database
         const data = {
             featuredImageUrl: path,
             organizationId,
@@ -200,7 +202,8 @@ export async function createLabDTO(formData: FormData) {
             },
             ...rest,
         };
-        await ExperienceModel.insertOne(data);
+        const insertResult = await ExperienceModel.insertOne(data);
+        console.log("result:", JSON.stringify(insertResult));
         console.log("Validated data:", data);
         return { success: true, error: undefined };
     } catch (error) {

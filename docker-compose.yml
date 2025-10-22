@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "443:3000"
+      - "4000:3000"
     networks:
       - app-network
     depends_on:

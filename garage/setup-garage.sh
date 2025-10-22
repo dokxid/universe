@@ -21,7 +21,7 @@ $garage bucket create universe
 
 # generate keys
 mkdir -p $SCRIPT_DIR/.keys
-$garage key create next_server | tee $SCRIPT_DIR/.keys/universe-app
+$garage key create universe-app | tee $SCRIPT_DIR/.keys/universe-app
 $garage bucket allow \
   --read \
   --write \
