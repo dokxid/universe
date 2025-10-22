@@ -16,7 +16,7 @@ export default function LabHeader({
             <AspectRatio ratio={16 / 9} className="relative w-full">
                 <Image
                     key={experience.slug}
-                    src={experience.featured_image_url}
+                    src={experience.featuredImageUrl}
                     alt={experience.title}
                     width={400}
                     height={225}
@@ -46,7 +46,7 @@ export default function LabHeader({
                 </div>
                 <p className="text-sm">{experience.subtitle}</p>
                 <p className="my-1 text-xs line-clamp-5">
-                    {experience.description}
+                    {experience.content}
                 </p>
                 <Link href={`/${experience.slug}/about`}>
                     <p

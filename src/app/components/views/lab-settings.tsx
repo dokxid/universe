@@ -56,7 +56,7 @@ export function TeamSettings({
             lab: slug,
             title: experience.title || "",
             subtitle: experience.subtitle || "",
-            description: experience.description || "",
+            description: experience.content || "",
             subdomain: slug,
         },
     });

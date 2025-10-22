@@ -11,7 +11,6 @@ import {
     UserDTO,
     UserModel,
 } from "@/lib/data/mongodb/models/user-model";
-import { faker } from "@faker-js/faker";
 import { User } from "@workos-inc/node";
 
 export type UserUpdateDTO = {
@@ -59,7 +58,6 @@ export async function syncUsersWithDatabase() {
         await UserModel.insertMany(
             users.map((user) => ({
                 ...user,
-                _id: faker.database.mongodbObjectId(),
             })),
             {
                 ordered: true,

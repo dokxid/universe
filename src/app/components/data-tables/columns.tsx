@@ -252,7 +252,7 @@ export const manageStoryColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("author_name", {
+    columnHelper.accessor("authorName", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -288,7 +288,7 @@ export const manageStoryColumns = [
             </Badge>
         ),
     }),
-    columnHelper.accessor("visible_universe", {
+    columnHelper.accessor("visibleUniverse", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="On Level" />
         ),
@@ -316,8 +316,7 @@ export const manageStoryColumns = [
         ),
     }),
     columnHelper.accessor(
-        (row) =>
-            row.elevation_requests[row.elevation_requests.length - 1].status,
+        (row) => row.elevationRequests[row.elevationRequests.length - 1].status,
         {
             id: "latest_elevation_request",
             header: ({ column }) => (
@@ -428,7 +427,7 @@ export const elevationRequestsColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("author_name", {
+    columnHelper.accessor("authorName", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -464,7 +463,7 @@ export const elevationRequestsColumns = [
             </Badge>
         ),
     }),
-    columnHelper.accessor("visible_universe", {
+    columnHelper.accessor("visibleUniverse", {
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="On Level" />
         ),
@@ -492,8 +491,7 @@ export const elevationRequestsColumns = [
         ),
     }),
     columnHelper.accessor(
-        (row) =>
-            row.elevation_requests[row.elevation_requests.length - 1].status,
+        (row) => row.elevationRequests[row.elevationRequests.length - 1].status,
         {
             id: "latest_elevation_request",
             header: ({ column }) => (
@@ -538,8 +536,7 @@ export const elevationRequestsColumns = [
     ),
     columnHelper.accessor(
         (row) =>
-            row.elevation_requests[row.elevation_requests.length - 1]
-                .requested_at,
+            row.elevationRequests[row.elevationRequests.length - 1].requestedAt,
         {
             id: "requested_at",
             header: ({ column }) => (

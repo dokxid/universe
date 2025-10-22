@@ -3,14 +3,14 @@ export type Experience = {
     __v: number;
     slug: string;
     center: { coordinates: [number, number] };
-    initial_zoom: number;
+    initialZoom: number;
     title: string;
     subtitle: string;
-    description: string;
-    featured_image_url: string;
+    content: string;
+    featuredImageUrl: string;
     stories: Story[];
     organizationId: string;
-    connection_id?: string;
+    connectionId?: string;
     visibility: "public" | "unlisted" | "private";
 };
 
@@ -19,11 +19,11 @@ export type ExperienceDTO = {
     slug: string;
     center: { coordinates: [number, number] };
     amountStories: number;
-    initial_zoom: number;
+    initialZoom: number;
     title: string;
     subtitle: string;
-    description: string;
-    featured_image_url: string;
+    content: string;
+    featuredImageUrl: string;
     organizationId: string;
     visibility: "public" | "unlisted" | "private";
 };
@@ -43,9 +43,9 @@ export type Story = {
     location: { type: string; coordinates: [number, number] };
     tags: string[];
     year: number;
-    featured_image_url: string;
-    visible_universe: boolean;
-    elevation_requests: ElevationRequest[];
+    featuredImageUrl: string;
+    visibleUniverse: boolean;
+    elevationRequests: ElevationRequest[];
     license: CreativeCommonsLicense;
     createdAt: Date;
     updatedAt: Date;
@@ -53,23 +53,23 @@ export type Story = {
 
 export type NewElevationRequestData = {
     status: "pending" | "approved" | "rejected" | "created";
-    requested_at: Date;
-    resolved_at?: Date;
+    requestedAt: Date;
+    resolvedAt?: Date;
 };
 
 export type ElevationRequest = {
     _id: string;
-    requested_at: Date;
-    resolved_at?: Date;
+    requestedAt: Date;
+    resolvedAt?: Date;
     status: "pending" | "approved" | "rejected" | "created";
 };
 
 export type NewStoryData = Omit<Story, "_id" | "elevation_requests"> & {
-    elevation_requests: NewElevationRequestData[];
+    elevationRequests: NewElevationRequestData[];
 };
 
 export interface StoryDTO extends Story {
-    author_name: string;
+    authorName: string;
     authorProfilePictureUrl?: string;
     experience: string;
 }
@@ -79,8 +79,8 @@ export type ImageURL = {
 };
 
 export type ExperienceSignInDTO = {
-    organization_id?: string;
-    connection_id?: string;
+    organizationId?: string;
+    connectionId?: string;
 };
 
 export type UnescoTagTheme = {

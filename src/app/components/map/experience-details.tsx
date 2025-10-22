@@ -88,7 +88,7 @@ export function ExperienceDetails({
             </div>
             <div className={"overflow-y-auto h-fit"}>
                 <p className={"prose-h3 lead mt-2"}>{experience.subtitle}</p>
-                <p className={"prose-p"}>{experience.description}</p>
+                <p className={"prose-p"}>{experience.content}</p>
             </div>
         </article>
     );

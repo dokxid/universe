@@ -90,3 +90,50 @@ remember to forward these ports (if not modified):
 | 3900  | garage s3 api port                    |
 | 9443  | portainer to manage docker containers |
 | 27017 | mongoDB                               |
+
+# deployment via docker
+
+## workspace setup
+
+yarn magic, or any other pacman u like, you know the drill
+
+```bash
+git clone https://github.com/dokxid/universe.git
+cd universe
+yarn install
+```
+
+make sure to copy the .env.example to make ur own one for development
+
+```bash
+cp .env.docker.example .env.docker
+```
+
+and fill it out with the things mentioned in the comments in that file
+
+## setup garage
+
+```sh
+# enter your desired storage size and node name
+cp garage/.env.example garage/.env
+vim garage/.env
+# generate the config toml out of the .env and start service
+./garage/generate-garage-config.sh
+docker compose up -d garage
+# generate the access key next needs and inser them into .env
+./garage/setup-garage.sh
+```
+
+## setup mongodb and initial seeding
+
+```sh
+docker compose up -d mongo
+yarn seed:docker  # init the database
+```
+
+## setup universe app
+
+```sh
+docker compose build --no-cache
+docker compose up -d
+```

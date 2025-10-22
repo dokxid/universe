@@ -18,8 +18,8 @@ export async function createElevationRequestDTO(
         }
         const requestToInsert: NewElevationRequestData = {
             status: status,
-            requested_at: new Date(),
-            resolved_at: new Date(),
+            requestedAt: new Date(),
+            resolvedAt: new Date(),
         };
         await dbConnect();
 

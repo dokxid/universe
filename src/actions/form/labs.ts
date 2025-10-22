@@ -1,6 +1,7 @@
 "use server";
 
 import {
+    createLabDTO,
     editLabAppearanceDTO,
     editLabPictureDTO,
     editLabVisibilityDTO,
@@ -42,6 +43,18 @@ export async function editLabAppearanceAction(formData: FormData): Promise<{
                 success: false,
                 error: error instanceof Error ? error.message : "Unknown error",
             },
+        };
+    }
+}
+
+export async function createLabFormAction(formData: FormData) {
+    try {
+        const result = await createLabDTO(formData);
+        return result;
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Unknown error",
         };
     }
 }

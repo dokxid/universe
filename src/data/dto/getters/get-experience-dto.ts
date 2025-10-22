@@ -18,10 +18,11 @@ export const getExperiencesDTO = cache(async (): Promise<ExperienceDTO[]> => {
         }));
         return sanitizedLabs;
     } catch (err) {
-        throw new Error(
+        console.error(
             "Error fetching experiences: " +
                 (err instanceof Error ? err.message : "Unknown error")
         );
+        return [];
     }
 });
 
@@ -35,10 +36,11 @@ export const getPublicLabsDTO = cache(async (): Promise<ExperienceDTO[]> => {
             (exp) => exp.visibility === "public"
         );
     } catch (err) {
-        throw new Error(
+        console.error(
             "Error fetching public labs: " +
                 (err instanceof Error ? err.message : "Unknown error")
         );
+        return [];
     }
 });
 
@@ -88,7 +90,7 @@ export async function getExperienceSignInDTO(experienceSlug: string) {
         const experience = await getExperience(experienceSlug);
         return {
             organization_id: experience.organizationId,
-            connection_id: experience.connection_id,
+            connection_id: experience.connectionId,
         };
     } catch (err) {
         throw new Error(

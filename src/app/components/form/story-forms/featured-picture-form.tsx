@@ -80,7 +80,7 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
                                         className={"w-full"}
                                     >
                                         <HostedImage
-                                            fileName={story.featured_image_url}
+                                            fileName={story.featuredImageUrl}
                                             alt={story.title}
                                         />
                                     </AspectRatio>

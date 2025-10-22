@@ -13,7 +13,7 @@ export function sanitizeExperience(experienceToSanitize: {
                 ...story,
                 _id: convertToString(story._id),
                 elevation_requests:
-                    story.elevation_requests?.map((req) => ({
+                    story.elevationRequests?.map((req) => ({
                         ...req,
                         _id: convertToString(req._id),
                     })) || [],

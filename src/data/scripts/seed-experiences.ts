@@ -45,16 +45,23 @@ export async function seedExperiences(cityCenters: number[][]) {
         })
     );
 
-    // seed universe experience
-    const universe_experience = universe_experience_doc();
-    const result_universe_experience = await ExperienceModel.insertOne(
-        universe_experience
-    );
-    console.log(
-        `Inserted universe experience with id ${result_universe_experience._id}`
-    );
-
+    await seedUniverseLab();
     console.log("Experiences seeded successfully");
+}
+
+export async function seedUniverseLab() {
+    try {
+        // seed universe experience
+        const universe_experience = universe_experience_doc();
+        const result_universe_experience = await ExperienceModel.insertOne(
+            universe_experience
+        );
+        console.log(
+            `Inserted universe experience with id ${result_universe_experience._id}`
+        );
+    } catch (error) {
+        console.error("Error inserting universe experience:", error);
+    }
 }
 
 export async function seedOneExperience(

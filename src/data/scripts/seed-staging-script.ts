@@ -1,13 +1,13 @@
 import { seedDatabase } from "@/data/scripts/seed-database";
 
-export async function seedDatabaseScript(
+export async function seedStagingScript(
     numRandomCityCenters: number,
     numStories: number
 ) {
     // ensure we are running on a test database
     if (
         process.env.MONGODB_DBNAME !== "test" &&
-        process.env.MONGODB_DBNAME !== "hl-universe-staging"
+        process.env.MONGODB_DBNAME !== "universe-staging"
     ) {
         throw new Error(
             "Seeding can only be run on a test database. Current DB: " +
@@ -23,4 +23,4 @@ export async function seedDatabaseScript(
     }
 }
 
-seedDatabaseScript(5, 20);
+seedStagingScript(5, 20);

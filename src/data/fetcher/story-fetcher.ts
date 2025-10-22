@@ -72,10 +72,11 @@ export async function queryStory(
         }
 
         // add experience slug and author name to story dto
-        const storyDTO: StoryDTO = {
+        const storyDTO = {
             ...queriedStory,
             experience: sanitizedLabWithFoundStories.slug,
-        } as StoryDTO;
+            authorName: "", // will be populated in fetchAndMapAuthorsForStoryDTO
+        };
 
         const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([storyDTO]);
 

@@ -128,6 +128,7 @@ export const config = {
         "/:slug/debug-settings",
         "/universe/labs/manage",
         "/universe/labs/view/:id",
+        "/universe/labs/create",
         // static pages
         "/:slug/legal/privacy",
         "/:slug/legal/terms",
