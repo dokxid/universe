@@ -200,7 +200,7 @@ export async function createLabDTO(formData: FormData) {
             },
             ...rest,
         };
-        ExperienceModel.insertOne(data);
+        await ExperienceModel.insertOne(data);
         console.log("Validated data:", data);
         return { success: true, error: undefined };
     } catch (error) {

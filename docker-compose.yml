@@ -5,6 +5,7 @@ services:
     environment:
       - MONGODB_URI=mongodb://mongo:27017
       - MONGODB_DBNAME=universe-production
+      - DOCKER=true
     build:
       context: .
       dockerfile: Dockerfile

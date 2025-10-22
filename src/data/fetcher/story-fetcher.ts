@@ -65,7 +65,7 @@ export async function queryStory(
         // Find the specific story by ID instead of taking the first one
         const queriedStory = sanitizedLabWithFoundStories.stories.find(
             (story) => story._id === storyId.toString()
-        ) as Omit<StoryDTO, "experience" | "authorName">;
+        );
 
         if (!queriedStory) {
             throw new Error("Story not found in sanitized stories");
