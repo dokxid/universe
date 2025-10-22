@@ -105,22 +105,27 @@ export const stock_experiences_doc = [
     },
 ];
 
-export const universe_experience_doc = () => ({
-    center: {
-        type: "Point",
-        coordinates: [0, 0],
-    },
-    initialZoom: "1",
-    title: "Universe Map",
-    subtitle: "Explore our curated stories",
-    slug: "universe",
-    featuredImageUrl:
-        "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
-    organizationId: process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID || "",
-    stories: [],
-    content: "Universe Map",
-    visibility: "public",
-});
+export const universe_experience_doc = () => {
+    if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
+        throw new Error("Super admin organization ID is not defined");
+    }
+    return {
+        center: {
+            type: "Point",
+            coordinates: [0, 0],
+        },
+        initialZoom: "1",
+        title: "Universe Map",
+        subtitle: "Explore our curated stories",
+        slug: "universe",
+        featuredImageUrl:
+            "https://heritagelab.center/wp-content/uploads/2024/07/MS448_A4315_2_15_0032-Large-870x570.jpeg",
+        organizationId: process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID || "",
+        stories: [],
+        content: "Universe Map",
+        visibility: "public",
+    };
+};
 
 export const test_experiences_doc = async (slug: string, center: number[]) => {
     return {
