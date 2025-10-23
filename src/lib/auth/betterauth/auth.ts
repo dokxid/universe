@@ -11,6 +11,12 @@ export const auth = betterAuth({
     plugins: [
         organization({
             schema: {
+                member: {
+                    fields: {
+                        organizationId: "labId",
+                        organization: "lab",
+                    },
+                },
                 organization: {
                     modelName: "Lab",
                     additionalFields: {

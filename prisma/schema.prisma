@@ -1,5 +1,6 @@
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -24,21 +25,22 @@ enum License {
 }
 
 enum ElevationRequestStatus {
-    pending
-    approved
-    rejected
+    created  @map("created")
+    pending  @map("pending")
+    approved @map("approved")
+    rejected @map("rejected")
 }
 
 // https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
 enum GeoType {
-    Position
-    Point
-    MultiPoint
-    LineString
-    MultiLineString
-    Polygon
-    MultiPolygon
-    GeometryCollection
+    Position           @map("Position")
+    Point              @map("Point")
+    MultiPoint         @map("MultiPoint")
+    LineString         @map("LineString")
+    MultiLineString    @map("MultiLineString")
+    Polygon            @map("Polygon")
+    MultiPolygon       @map("MultiPolygon")
+    GeometryCollection @map("GeometryCollection")
 }
 
 type GeoJson {
@@ -47,22 +49,26 @@ type GeoJson {
 }
 
 model ElevationRequest {
-    id        String                 @id @map("_id")
-    Story     Story?                 @relation(fields: [storyId], references: [id])
-    storyId   String?
+    id        String                 @id @default(auto()) @map("_id") @db.ObjectId
+    story     Story?                 @relation(fields: [storyId], references: [id])
+    storyId   String?                @db.ObjectId
     status    ElevationRequestStatus
     createdAt DateTime               @default(now())
     updatedAt DateTime               @default(now()) @updatedAt
+
+    @@map("elevation_requests")
 }
 
 model Story {
-    id                String             @id @map("_id")
+    id                String             @id @default(auto()) @map("_id") @db.ObjectId
     author            User               @relation(fields: [userId], references: [id])
-    userId            String
+    userId            String             @db.ObjectId
     draft             Boolean
     title             String
+    content           String
     location          GeoJson
-    tags              String[]
+    tags              Tag[]              @relation(fields: [tagIds], references: [id])
+    tagIds            String[]           @db.ObjectId
     year              Int
     visibleUniverse   Boolean
     featuredImageUrl  String
@@ -70,20 +76,24 @@ model Story {
     license           License
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @default(now()) @updatedAt
-    Lab               Lab?               @relation(fields: [labId], references: [id])
-    labId             String?
+    lab               Lab?               @relation(fields: [labId], references: [id])
+    labId             String             @db.ObjectId
+
+    @@map("story")
 }
 
 model User {
-    id                String       @id @map("_id")
+    id                String       @id @default(auto()) @map("_id") @db.ObjectId
+    displayName       String?
     name              String?
+    familyName        String?
     email             String
     emailVerified     Boolean      @default(false)
     profilePictureUrl String?
     createdAt         DateTime     @default(now())
     updatedAt         DateTime     @default(now()) @updatedAt
+    description       String?
     title             String?
-    familyName        String?
     position          String?
     website           String?
     phoneNumber       String?
@@ -92,29 +102,34 @@ model User {
     accounts          Account[]
     members           Member[]
     invitations       Invitation[]
-    Story             Story[]
+    story             Story[]
 
     @@unique([email])
     @@map("user")
 }
 
 model Tag {
-    id       String  @id @map("_id")
+    id       String   @id @default(auto()) @map("_id") @db.ObjectId
     name     String
     category String?
     theme    String?
     color    String
+    isUnesco Boolean
+    story    Story[]  @relation(fields: [storyId], references: [id])
+    storyId  String[] @db.ObjectId
+
+    @@map("tag")
 }
 
 model Session {
-    id                   String   @id @map("_id")
+    id                   String   @id @default(auto()) @map("_id") @db.ObjectId
     expiresAt            DateTime
     token                String
     createdAt            DateTime @default(now())
     updatedAt            DateTime @updatedAt
     ipAddress            String?
     userAgent            String?
-    userId               String
+    userId               String   @db.ObjectId
     user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     activeOrganizationId String?
 
@@ -123,10 +138,10 @@ model Session {
 }
 
 model Account {
-    id                    String    @id @map("_id")
+    id                    String    @id @default(auto()) @map("_id") @db.ObjectId
     accountId             String
     providerId            String
-    userId                String
+    userId                String    @db.ObjectId
     user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     accessToken           String?
     refreshToken          String?
@@ -142,7 +157,7 @@ model Account {
 }
 
 model Verification {
-    id         String   @id @map("_id")
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
     identifier String
     value      String
     expiresAt  DateTime
@@ -153,11 +168,11 @@ model Verification {
 }
 
 model Lab {
-    id          String        @id @map("_id")
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
     name        String
     slug        String
     logo        String?
-    createdAt   DateTime
+    createdAt   DateTime      @default(now())
     metadata    String?
     center      GeoJson
     initialZoom Int
@@ -173,26 +188,26 @@ model Lab {
 }
 
 model Member {
-    id             String   @id @map("_id")
-    organizationId String
-    organization   Lab      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    userId         String
-    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role           String
-    createdAt      DateTime
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    labId     String   @db.ObjectId
+    lab       Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+    userId    String   @db.ObjectId
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role      String
+    createdAt DateTime @default(now())
 
     @@map("member")
 }
 
 model Invitation {
-    id             String   @id @map("_id")
-    organizationId String
+    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    organizationId String   @db.ObjectId
     organization   Lab      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
     email          String
     role           String?
     status         String
     expiresAt      DateTime
-    inviterId      String
+    inviterId      String   @db.ObjectId
     user           User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
     @@map("invitation")

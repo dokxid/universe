@@ -8,19 +8,19 @@ import {
     test_experiences_doc,
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
+import { PrismaClient } from "@/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 
+const prisma = new PrismaClient();
+
 export async function seedExperiences(cityCenters: number[][]) {
-    await dbConnect();
-    await ExperienceModel.deleteMany({});
+    await prisma.lab.deleteMany();
 
     // seed stock experiences
-    const result_stock_experiences = await ExperienceModel.insertMany(
-        stock_experiences_doc
-    );
-    console.log(`Inserted ${result_stock_experiences.length} experiences`);
+    const result_stock_experiences = await prisma.lab.createMany({
+        data: stock_experiences_doc,
+    });
+    console.log(`Inserted ${result_stock_experiences.count} experiences`);
 
     // create unique slugs
     const uniqueSlugArray = faker.helpers.uniqueArray(
@@ -36,11 +36,11 @@ export async function seedExperiences(cityCenters: number[][]) {
                 uniqueSlugArray[index],
                 center
             );
-            const result_test_experience = await ExperienceModel.insertOne(
-                test_experience
-            );
+            const result_test_experience = await prisma.lab.create({
+                data: test_experience,
+            });
             console.log(
-                `Inserted test experience with id ${result_test_experience._id}`
+                `Inserted test experience with id ${result_test_experience.id}`
             );
         })
     );
@@ -53,11 +53,11 @@ export async function seedUniverseLab() {
     try {
         // seed universe experience
         const universe_experience = universe_experience_doc();
-        const result_universe_experience = await ExperienceModel.insertOne(
-            universe_experience
-        );
+        const result_universe_experience = await prisma.lab.create({
+            data: universe_experience,
+        });
         console.log(
-            `Inserted universe experience with id ${result_universe_experience._id}`
+            `Inserted universe experience with id ${result_universe_experience.id}`
         );
     } catch (error) {
         console.error("Error inserting universe experience:", error);
@@ -79,7 +79,7 @@ export async function seedOneExperience(
         // if ((await isUserSuperAdmin(user)) === false) {
         //     throw new Error("Only super admins can seed the database");
         // }
-        const testExperience = test_experiences_doc(slug, center);
+        const testExperience = await test_experiences_doc(slug, center);
         const generatedExperience = {
             ...testExperience,
             title: title,
@@ -89,9 +89,8 @@ export async function seedOneExperience(
             initial_zoom: initialZoom,
             organizationId: organizationId,
         };
-        await dbConnect();
-        const result = await ExperienceModel.insertOne(generatedExperience);
-        console.log(`Inserted experience with id ${result._id}`);
+        const result = await prisma.lab.create({ data: generatedExperience });
+        console.log(`Inserted experience with id ${result.id}`);
         await seedStories(slug, center, experienceStories);
         console.log("Stories seeding completed");
         await seedElevationRequests(slug);
@@ -99,7 +98,7 @@ export async function seedOneExperience(
         await seedLabStoryImages(slug);
         console.log("Lab images seeding completed");
         console.log("Single experience seeding completed");
-        return result.insertedId;
+        return result.id;
     } catch (error) {
         console.error("Error inserting experience:", error);
         throw error;

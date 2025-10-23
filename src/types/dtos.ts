@@ -128,12 +128,12 @@ export type CreativeCommonsLicenseDetailed = {
 
 export type CreativeCommonsLicense =
     | "CC0" // Public Domain Dedication
-    | "CC BY" // Attribution
-    | "CC BY-SA" // Attribution-ShareAlike
-    | "CC BY-NC" // Attribution-NonCommercial
-    | "CC BY-NC-SA" // Attribution-NonCommercial-ShareAlike
-    | "CC BY-ND" // Attribution-NoDerivatives
-    | "CC BY-NC-ND"; // Attribution-NonCommercial-NoDerivatives
+    | "CC_BY" // Attribution
+    | "CC_BY_SA" // Attribution-ShareAlike
+    | "CC_BY_NC" // Attribution-NonCommercial
+    | "CC_BY_NC_SA" // Attribution-NonCommercial-ShareAlike
+    | "CC_BY_ND" // Attribution-NoDerivatives
+    | "CC_BY_NC_ND"; // Attribution-NonCommercial-NoDerivatives
 
 export const CC_LICENSES: Record<
     CreativeCommonsLicense,
@@ -147,48 +147,48 @@ export const CC_LICENSES: Record<
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY": {
-        code: "CC BY",
+    CC_BY: {
+        code: "CC_BY",
         name: "Attribution",
         url: "https://creativecommons.org/licenses/by/4.0/",
         commercial: true,
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY-SA": {
-        code: "CC BY-SA",
+    CC_BY_SA: {
+        code: "CC_BY_SA",
         name: "Attribution-ShareAlike",
         url: "https://creativecommons.org/licenses/by-sa/4.0/",
         commercial: true,
         derivatives: true,
         shareAlike: true,
     },
-    "CC BY-NC": {
-        code: "CC BY-NC",
+    CC_BY_NC: {
+        code: "CC_BY_NC",
         name: "Attribution-NonCommercial",
         url: "https://creativecommons.org/licenses/by-nc/4.0/",
         commercial: false,
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY-NC-SA": {
-        code: "CC BY-NC-SA",
+    CC_BY_NC_SA: {
+        code: "CC_BY_NC_SA",
         name: "Attribution-NonCommercial-ShareAlike",
         url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
         commercial: false,
         derivatives: true,
         shareAlike: true,
     },
-    "CC BY-ND": {
-        code: "CC BY-ND",
+    CC_BY_ND: {
+        code: "CC_BY_ND",
         name: "Attribution-NoDerivatives",
         url: "https://creativecommons.org/licenses/by-nd/4.0/",
         commercial: true,
         derivatives: false,
         shareAlike: false,
     },
-    "CC BY-NC-ND": {
-        code: "CC BY-NC-ND",
+    CC_BY_NC_ND: {
+        code: "CC_BY_NC_ND",
         name: "Attribution-NonCommercial-NoDerivatives",
         url: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
         commercial: false,

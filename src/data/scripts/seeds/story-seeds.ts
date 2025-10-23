@@ -1,5 +1,6 @@
 import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
-import { ALL_UNESCO_TAGS } from "@/data/scripts/seeds/unesco-tags-seeds";
+import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
+import { GeoType, Prisma } from "@/generated/prisma/client";
 import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
@@ -50,15 +51,15 @@ export const test_story_doc = async (
     experience_center: number[],
     experienceSlug: string,
     userId: string
-) => {
+): Promise<Omit<Prisma.StoryCreateInput, "Lab">> => {
     const date = faker.date.past({ years: 3 });
     const doc = {
-        author: userId,
+        author: { connect: { id: userId } },
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
         title: faker.lorem.sentence({ min: 3, max: 5 }),
         location: {
-            type: "Point",
+            type: "Point" as GeoType, // Explicitly cast "Point" to GeoType
             coordinates: [
                 experience_center[0] +
                     faker.number.float({ min: -0.8, max: 0.8 }),
@@ -66,10 +67,12 @@ export const test_story_doc = async (
                     faker.number.float({ min: -0.3, max: 0.3 }),
             ],
         },
-        tags: faker.helpers.uniqueArray(
-            ALL_UNESCO_TAGS,
-            faker.number.int({ min: 3, max: 8 })
-        ),
+        tags: {
+            create: faker.helpers.uniqueArray(
+                UNESCO_TAGS_SEEDS,
+                faker.number.int({ min: 3, max: 8 })
+            ),
+        },
         year: faker.number.int({ min: 1800, max: 2024 }),
         visibleUniverse: faker.datatype.boolean(),
         featuredImageUrl:
@@ -78,7 +81,7 @@ export const test_story_doc = async (
                 : "https://picsum.photos/seed/" +
                   faker.string.alphanumeric(10) +
                   "/800/600",
-        elevationRequests: [],
+        elevationRequests: undefined,
         license: faker.helpers.arrayElement(
             Object.values(CC_LICENSES).map((license) => license.code)
         ),

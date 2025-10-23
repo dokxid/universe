@@ -1,36 +1,32 @@
 "use server";
 
 import { generateElevationRequests } from "@/data/scripts/seeds/elevation-requests-seeds";
+import { PrismaClient } from "@/generated/prisma/client";
 import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
+
+const prisma = new PrismaClient();
+
 export async function seedAllElevationRequests() {
     try {
-        const experiences = await ExperienceModel.find({}).exec();
-        for (const experience of experiences) {
-            const stories = experience.stories || [];
-            for (let i = 0; i < stories.length; i++) {
-                await ExperienceModel.findOneAndUpdate(
-                    { _id: experience._id, "stories._id": stories[i]._id },
-                    {
-                        $push: {
-                            "stories.$.elevation_requests":
-                                generateElevationRequests(),
-                        },
-                    },
-                    { safe: true, upsert: false }
-                ).exec();
-                console.log(
-                    `Seeding elevation requests for story ${i + 1}/${
-                        stories.length
-                    }`
-                );
-            }
+        const stories = await prisma.story.findMany();
+        if (stories.length === 0) {
             console.log(
-                `Seeded elevation requests for experience: ${experience.slug}`
+                "No stories found. Skipping elevation requests seeding."
             );
+            return;
         }
-        console.log("Elevation requests seeding completed");
-    } catch (err) {
-        console.error("Error inserting story:", err);
+        for (let i = 0; i < stories.length; i++) {
+            await prisma.story.update({
+                where: { id: stories[i].id },
+                data: {
+                    elevationRequests: {
+                        create: generateElevationRequests(),
+                    },
+                },
+            });
+        }
+    } catch (error) {
+        console.error("Error inserting story:", error);
     }
 }
 
@@ -39,16 +35,21 @@ export async function seedElevationRequests(slug: string) {
         const experience = await ExperienceModel.findOne({ slug }).exec();
         const stories = experience.stories || [];
         for (let i = 0; i < stories.length; i++) {
-            await ExperienceModel.findOneAndUpdate(
-                { _id: experience._id, "stories._id": stories[i]._id },
-                {
-                    $push: {
-                        "stories.$.elevation_requests":
-                            generateElevationRequests(),
+            await prisma.lab.update({
+                where: { slug: experience.slug },
+                data: {
+                    stories: {
+                        update: {
+                            where: { id: stories[i]._id.toString() },
+                            data: {
+                                elevationRequests: {
+                                    create: generateElevationRequests(),
+                                },
+                            },
+                        },
                     },
                 },
-                { safe: true, upsert: false }
-            ).exec();
+            });
         }
         console.log("Elevation requests seeding completed");
     } catch (err) {

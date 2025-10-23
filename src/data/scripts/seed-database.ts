@@ -3,15 +3,10 @@ import {
     seedExperiences,
     seedUniverseLab,
 } from "@/data/scripts/seed-experiences";
-import {
-    deleteUploadsFolder,
-    initializeFeaturedLabImages,
-    seedAllStoryImages,
-} from "@/data/scripts/seed-images";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
-import dbConnect from "@/lib/data/mongodb/connections";
+import { PrismaClient } from "@/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -47,32 +42,30 @@ const city_centers: { [key: string]: number[] } = {
     luxembourg: [6.1296, 49.8116],
 };
 
-async function testConnection() {
-    try {
-        await dbConnect();
-        console.log("Connection successful!");
-    } catch (error) {
-        console.error("Connection failed:", error);
-    }
-}
+const prisma = new PrismaClient();
 
 export async function seedDatabase(
     numRandomCityCenters: number,
     numStories: number
 ) {
     try {
-        await testConnection();
+        // tear down in order
+        await prisma.elevationRequest.deleteMany({});
+        await prisma.story.deleteMany({});
+        await prisma.lab.deleteMany({});
+
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,
             numRandomCityCenters
         );
-        await deleteUploadsFolder();
+
+        // await deleteUploadsFolder();
         await seedUnescoTags();
         await seedExperiences(randomCityCenters);
         await seedUsers(10, 1);
-        await seedAllStoryImages();
-        await initializeFeaturedLabImages();
+        // await seedAllStoryImages();
+        // await initializeFeaturedLabImages();
         await seedAllStories(numStories);
         await seedAllElevationRequests();
         console.log("Database seeding completed");
