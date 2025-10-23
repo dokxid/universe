@@ -10,6 +10,8 @@
         "build": "next build --turbopack",
         "start": "next start",
         "lint": "tsc --noEmit && eslint .",
+        "prisma:generate": "prisma generate",
+        "prisma:push": "prisma db push",
         "test": "TS_NODE_PROJECT=tsconfig.json jest",
         "e2e": "cypress open --e2e",
         "e2e:headless": "cypress run --e2e 2>/dev/null",
