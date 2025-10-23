@@ -1,0 +1,199 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+enum LabVisibility {
+    private
+    public
+    unlisted
+}
+
+enum License {
+    CC0
+    CC_BY
+    CC_BY_SA
+    CC_BY_NC
+    CC_BY_NC_SA
+    CC_BY_ND
+    CC_BY_NC_ND
+}
+
+enum ElevationRequestStatus {
+    pending
+    approved
+    rejected
+}
+
+// https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+enum GeoType {
+    Position
+    Point
+    MultiPoint
+    LineString
+    MultiLineString
+    Polygon
+    MultiPolygon
+    GeometryCollection
+}
+
+type GeoJson {
+    type        GeoType
+    coordinates Float[]
+}
+
+model ElevationRequest {
+    id        String                 @id @map("_id")
+    Story     Story?                 @relation(fields: [storyId], references: [id])
+    storyId   String?
+    status    ElevationRequestStatus
+    createdAt DateTime               @default(now())
+    updatedAt DateTime               @default(now()) @updatedAt
+}
+
+model Story {
+    id                String             @id @map("_id")
+    author            User               @relation(fields: [userId], references: [id])
+    userId            String
+    draft             Boolean
+    title             String
+    location          GeoJson
+    tags              String[]
+    year              Int
+    visibleUniverse   Boolean
+    featuredImageUrl  String
+    elevationRequests ElevationRequest[]
+    license           License
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @default(now()) @updatedAt
+    Lab               Lab?               @relation(fields: [labId], references: [id])
+    labId             String?
+}
+
+model User {
+    id                String       @id @map("_id")
+    name              String?
+    email             String
+    emailVerified     Boolean      @default(false)
+    profilePictureUrl String?
+    createdAt         DateTime     @default(now())
+    updatedAt         DateTime     @default(now()) @updatedAt
+    title             String?
+    familyName        String?
+    position          String?
+    website           String?
+    phoneNumber       String?
+    publicEmail       String?
+    sessions          Session[]
+    accounts          Account[]
+    members           Member[]
+    invitations       Invitation[]
+    Story             Story[]
+
+    @@unique([email])
+    @@map("user")
+}
+
+model Tag {
+    id       String  @id @map("_id")
+    name     String
+    category String?
+    theme    String?
+    color    String
+}
+
+model Session {
+    id                   String   @id @map("_id")
+    expiresAt            DateTime
+    token                String
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    ipAddress            String?
+    userAgent            String?
+    userId               String
+    user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    activeOrganizationId String?
+
+    @@unique([token])
+    @@map("session")
+}
+
+model Account {
+    id                    String    @id @map("_id")
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id @map("_id")
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now()) @updatedAt
+
+    @@map("verification")
+}
+
+model Lab {
+    id          String        @id @map("_id")
+    name        String
+    slug        String
+    logo        String?
+    createdAt   DateTime
+    metadata    String?
+    center      GeoJson
+    initialZoom Int
+    subtitle    String
+    content     String
+    stories     Story[]
+    visibility  LabVisibility
+    members     Member[]
+    invitations Invitation[]
+
+    @@unique([slug])
+    @@map("lab")
+}
+
+model Member {
+    id             String   @id @map("_id")
+    organizationId String
+    organization   Lab      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    userId         String
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role           String
+    createdAt      DateTime
+
+    @@map("member")
+}
+
+model Invitation {
+    id             String   @id @map("_id")
+    organizationId String
+    organization   Lab      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+    email          String
+    role           String?
+    status         String
+    expiresAt      DateTime
+    inviterId      String
+    user           User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+    @@map("invitation")
+}

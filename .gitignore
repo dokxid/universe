@@ -52,4 +52,5 @@ next-env.d.ts
 *.mongodb.js
 
 # docker service mounts
-/mongodb
+/mongodb/data
+src/generated/prisma

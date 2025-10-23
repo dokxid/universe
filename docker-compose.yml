@@ -19,14 +19,35 @@ services:
 
   mongo:
     container_name: mongo
-    image: mongo
-    restart: always
-    volumes:
-      - ./mongodb:/data/db
-    ports:
-      - "28017:27017"
+    build:
+      context: ./mongodb
+      args:
+        MONGO_VERSION: 8
+    environment:
+      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_PORT: 27017
+      MONGO_COMMAND: "mongosh"
+    volumes:      
+      - ./mongodb/data:/data/db
     networks:
       - app-network
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "admin",
+          "--port",
+          "27017",
+          "--eval",
+          "db.adminCommand('ping').ok",
+        ]
+      interval: 5s
+      timeout: 2s
+      retries: 20
 
   garage:
     container_name: garage

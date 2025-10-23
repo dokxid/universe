@@ -35,6 +35,7 @@ async function dbConnect(): Promise<typeof mongoose> {
         process.env.MONGODB_URI,
         process.env.MONGODB_DBNAME
     );
+    console.log("Connecting to MongoDB at URI:", uri);
 
     if (cached.conn) {
         return cached.conn;

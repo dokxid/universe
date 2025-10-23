@@ -1,12 +1,64 @@
+import { PrismaClient } from "@/generated/prisma/client";
 import { betterAuth } from "better-auth";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { MongoClient } from "mongodb";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { organization } from "better-auth/plugins/organization";
 
-const client = new MongoClient("mongodb://localhost:27017/auth");
-const db = client.db();
+const prisma = new PrismaClient();
+
+const db = prismaAdapter(prisma, { provider: "mongodb" });
 
 export const auth = betterAuth({
-    database: mongodbAdapter(db),
+    plugins: [
+        organization({
+            schema: {
+                organization: {
+                    modelName: "Lab",
+                    additionalFields: {
+                        center: {
+                            type: "json",
+                            required: true,
+                        },
+                        initialZoom: {
+                            type: "number",
+                            required: true,
+                        },
+                        subtitle: {
+                            type: "string",
+                            required: false,
+                        },
+                        content: {
+                            type: "string",
+                            required: false,
+                        },
+                        stories: {
+                            type: "json",
+                            required: true,
+                        },
+                        visibility: {
+                            type: "string",
+                            required: true,
+                        },
+                    },
+                },
+            },
+        }),
+    ],
+    user: {
+        fields: {
+            name: "displayName",
+            image: "profilePictureUrl",
+        },
+        additionalFields: {
+            title: { type: "string", required: false },
+            name: { type: "string", required: false },
+            familyName: { type: "string", required: false },
+            position: { type: "string", required: false },
+            website: { type: "string", required: false },
+            phoneNumber: { type: "string", required: false },
+            publicEmail: { type: "string", required: false },
+        },
+    },
+    database: db,
     emailAndPassword: {
         enabled: true,
     },

@@ -11,6 +11,7 @@ import {
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
+import dbConnect from "@/lib/data/mongodb/connections";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -46,11 +47,21 @@ const city_centers: { [key: string]: number[] } = {
     luxembourg: [6.1296, 49.8116],
 };
 
+async function testConnection() {
+    try {
+        await dbConnect();
+        console.log("Connection successful!");
+    } catch (error) {
+        console.error("Connection failed:", error);
+    }
+}
+
 export async function seedDatabase(
     numRandomCityCenters: number,
     numStories: number
 ) {
     try {
+        await testConnection();
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,

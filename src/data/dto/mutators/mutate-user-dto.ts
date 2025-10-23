@@ -158,3 +158,13 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         );
     }
 }
+
+export async function addUserDTO() {
+    try {
+        await dbConnect();
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}

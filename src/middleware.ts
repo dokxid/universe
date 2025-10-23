@@ -31,6 +31,7 @@ const UNAUTHENTICATED_SLUG_PATHS = [
     "/contact",
     "/login",
     "/user/view/:userId",
+    "/signup",
 ];
 const UNAUTHENTICATED_SLUGLESS_PATHS = ["/api/files/:key"];
 const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_SLUG_PATHS.map(
@@ -111,6 +112,7 @@ export const config = {
         "/:slug/stories",
         "/:slug/stories/view/:id",
         "/:slug/login",
+        "/:slug/signup",
         "/:slug/user/view/:userId",
         "/api/files/:key",
         // account and related paths
