@@ -20,8 +20,7 @@ export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
 
 export async function getAllStoriesDTO(): Promise<StoryDTO[]> {
     try {
-        const user = await getCurrentUser();
-        if (!(await isUserSuperAdmin(user))) {
+        if (!(await isUserSuperAdmin())) {
             throw new Error("Unauthorized");
         }
         const allStories = await getAllStories();
@@ -46,7 +45,10 @@ export async function getLabPrivateStoriesDTO(
 ): Promise<StoryDTO[]> {
     try {
         const user = await getCurrentUser();
-        if (await isUserSuperAdmin(user)) {
+        if (!user) {
+            throw new Error("Unauthorized");
+        }
+        if (await isUserSuperAdmin()) {
             const stories = await getAllStories();
             return stories.filter(
                 async (story) => await canUserViewStory(story)

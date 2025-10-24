@@ -50,7 +50,7 @@ export function UserWidgetAuthorized({
             }
         >
             <Link
-                href={`/${user.labs?.[0].slug}/profile`}
+                href={`/profile`}
                 className={
                     "cursor-pointer hover:brightness-80 transition-all duration-100"
                 }
@@ -72,7 +72,7 @@ export function UserWidgetAuthorized({
             </Link>
             <div className={"text-sm flex flex-col grow"}>
                 <Link
-                    href={`/${user.labs?.[0].slug}/user/view/${user.id}`}
+                    href={`/user/view/${user.id}`}
                     className={"font-semibold hover:underline line-clamp-1"}
                 >
                     {user.displayName

@@ -2,6 +2,7 @@ import { PrismaClient } from "@/generated/prisma/client";
 import { sendEmail } from "@/lib/mail";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { admin } from "better-auth/plugins/admin";
 import { organization } from "better-auth/plugins/organization";
 
 const prisma = new PrismaClient();
@@ -39,6 +40,7 @@ function sendOrganizationInvitation(data: {
 
 export const auth = betterAuth({
     plugins: [
+        admin({}),
         organization({
             async sendInvitationEmail(data) {
                 const inviteLink = `http://localhost:3000/auth/accept-invitation/${data.id}`;
@@ -102,10 +104,16 @@ export const auth = betterAuth({
             website: { type: "string", required: false },
             phoneNumber: { type: "string", required: false },
             publicEmail: { type: "string", required: false },
+            description: { type: "string", required: false },
         },
     },
     database: db,
     emailAndPassword: {
         enabled: true,
+    },
+    advanced: {
+        database: {
+            generateId: false,
+        },
     },
 });

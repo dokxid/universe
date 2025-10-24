@@ -6,7 +6,6 @@ import {
 } from "@/data/auth";
 import { getStoryDTO } from "@/data/dto/getters/get-story-dto";
 import { StoryDTO } from "@/types/dtos";
-import { User } from "@workos-inc/node";
 
 export function isPublicStory(story: StoryDTO) {
     return !story.draft;
@@ -29,7 +28,7 @@ export async function canUserViewStory(story: StoryDTO) {
     if (!user) {
         return false;
     }
-    if (await isUserSuperAdmin(user)) {
+    if (await isUserSuperAdmin()) {
         return true;
     }
     if (await isStoryOwner(story)) {
@@ -41,11 +40,11 @@ export async function canUserCreateStory(experienceSlug: string) {
     const user = await getCurrentUser();
     if (!user) return false;
     if (experienceSlug === "universe") return false;
-    if (await isUserSuperAdmin(user)) return true;
+    if (await isUserSuperAdmin()) return true;
     return isUserPartOfOrganization(user, experienceSlug);
 }
-export async function canUserEditStory(user: User | null, story: StoryDTO) {
-    if (await isUserSuperAdmin(user)) return true;
+export async function canUserEditStory(story: StoryDTO) {
+    if (await isUserSuperAdmin()) return true;
     if (await isStoryOwner(story)) return true;
     return false;
 }
@@ -60,9 +59,8 @@ export async function canUserViewStoryId(storyId: string) {
 }
 export async function canUserEditStoryId(storyId: string) {
     try {
-        const user = await getCurrentUser();
         const story = await getStoryDTO(storyId);
-        return canUserEditStory(user, story);
+        return canUserEditStory(story);
     } catch (err) {
         console.error("Error checking if user can edit story:", err);
         return false;

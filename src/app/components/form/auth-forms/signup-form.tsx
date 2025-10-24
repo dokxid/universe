@@ -49,7 +49,7 @@ export function SignupForm() {
         formData.append("labSlug", data.labSlug);
         const result = await signUpAction(formData);
         if (result?.success) {
-            toast.success("Story updated successfully!");
+            toast.success("Signed up successfully!");
         }
         if (result?.error) {
             if (!result.error.startsWith("{")) {

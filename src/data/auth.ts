@@ -1,19 +1,14 @@
 import "server-only";
 
-import { workos } from "@/lib/auth/workos/callback";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { UserRole } from "@/types/user";
-import { withAuth } from "@workos-inc/authkit-nextjs";
-import { User } from "@workos-inc/node";
+import { Role as UserRole } from "@/generated/prisma/enums";
+import { withAuth } from "@/lib/auth/betterauth/session";
+import { UserDTO } from "@/types/dtos";
 import { cache } from "react";
 import { canUserEditStoryId } from "./dto/auth/story-permissions";
-import { getLabDTO } from "./dto/getters/get-experience-dto";
 
 type MembershipResult = {
     isMember: boolean;
     isAdmin: boolean;
-    isSuperAdmin: boolean;
-    isActive: boolean;
     error?: string;
 };
 
@@ -32,16 +27,16 @@ export type Role =
 
 export const getPermissionsByUser = cache(
     async (
-        userWorkOS: User | null,
+        user: UserDTO | null,
         experienceSlug: string,
         storyId?: string
     ): Promise<Permissions[]> => {
         const permissions: Permissions[] = [];
 
         // case when user not logged in, no permissions
-        if (!userWorkOS) return permissions;
+        if (!user) return permissions;
 
-        if (await isUserSuperAdmin(userWorkOS)) {
+        if (await isUserSuperAdmin()) {
             permissions.push(
                 "superadmin",
                 "manage_users",
@@ -51,7 +46,7 @@ export const getPermissionsByUser = cache(
             return permissions;
         } else if (await isUserAdmin(experienceSlug)) {
             permissions.push("manage_users", "add_story", "edit_story");
-        } else if (await isUserMember(userWorkOS, experienceSlug)) {
+        } else if (await isUserMember(user, experienceSlug)) {
             if (storyId) {
                 if (await canUserEditStoryId(storyId)) {
                     permissions.push("edit_story");
@@ -59,44 +54,33 @@ export const getPermissionsByUser = cache(
             }
             permissions.push("add_story");
         }
+        console.log(
+            `User ${user.id} permissions in ${experienceSlug}:`,
+            permissions
+        );
         return permissions;
     }
 );
 
 export const getCurrentUser = cache(async () => {
-    const { user } = await withAuth({ ensureSignedIn: true });
+    const user = await withAuth({ ensureSignedIn: true });
     return user;
 });
 
 export const getCurrentUserOptional = cache(async () => {
-    const { user } = await withAuth({ ensureSignedIn: false });
+    const user = await withAuth({ ensureSignedIn: false });
     return user;
 });
 
-export async function isUserActive(
-    viewer: User,
-    experienceSlug: string
-): Promise<boolean> {
-    try {
-        const userRelation = await getUserExperienceRelationBySlug(
-            viewer,
-            experienceSlug
-        );
-        return userRelation.isActive;
-    } catch {
-        return false;
-    }
-}
-
 export async function isUserMember(
-    viewer: User | null,
+    viewer: UserDTO,
     experienceSlug: string
 ): Promise<boolean> {
     try {
         if (!viewer) return false;
-        if (await isUserSuperAdmin(viewer)) return true;
+        if (await isUserSuperAdmin()) return true;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelationBySlug(
+        const userRelation = await getUserLabRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -108,10 +92,10 @@ export async function isUserMember(
 
 export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
     try {
-        const viewer = await getCurrentUser();
+        const viewer = await getCurrentUserOptional();
         if (!viewer) return false;
         if (experienceSlug === "universe") return false;
-        const userRelation = await getUserExperienceRelationBySlug(
+        const userRelation = await getUserLabRelationBySlug(
             viewer,
             experienceSlug
         );
@@ -121,23 +105,11 @@ export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
     }
 }
 
-export async function isUserSuperAdmin(user: User | null): Promise<boolean> {
+export async function isUserSuperAdmin(): Promise<boolean> {
     try {
-        if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
-            throw new Error("WORKOS_SUPER_ADMIN_ORG_ID is not set");
-        }
+        const user = await getCurrentUserOptional();
         if (!user) return false;
-        const organizationId =
-            process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID;
-        const membership =
-            await workos.userManagement.listOrganizationMemberships({
-                userId: user.id,
-                organizationId: organizationId,
-            });
-        const membershipToReturn = membership.data.pop();
-        if (membershipToReturn === undefined) {
-            return false;
-        }
+        if (!user.superAdmin) return false;
         return true;
     } catch (err) {
         console.error("Error fetching user experience relation:", err);
@@ -146,50 +118,35 @@ export async function isUserSuperAdmin(user: User | null): Promise<boolean> {
 }
 
 export async function isUserPartOfOrganization(
-    user: User | null,
+    user: UserDTO | null,
     experienceSlug: string
 ) {
     try {
         if (!user) return false;
-        const isActive = await isUserActive(user, experienceSlug);
         const isMember = await isUserMember(user, experienceSlug);
-        return isActive && isMember;
+        return isMember;
     } catch {
         return false;
     }
 }
 
-async function getUserExperienceRelationBySlug(
-    user: User | null,
-    experienceSlug: string
+async function getUserLabRelationBySlug(
+    user: UserDTO | null,
+    labSlug: string
 ): Promise<MembershipResult> {
     try {
         if (!user) throw new Error("User is not authenticated");
-        dbConnect();
-        const experience = await getLabDTO(experienceSlug);
-        const organizationId = experience.id;
-        const membership =
-            await workos.userManagement.listOrganizationMemberships({
-                userId: user.id,
-                organizationId: organizationId,
-            });
-        const membershipToReturn = membership.data.pop();
-        if (membershipToReturn === undefined) {
+        const role = user.labs.find((lab) => lab.slug === labSlug)?.role;
+        if (!role) {
             return {
                 isMember: false,
                 isAdmin: false,
-                isSuperAdmin: false,
-                isActive: false,
                 error: "No membership found",
             };
         }
         return {
-            isMember:
-                membershipToReturn.role.slug === UserRole.MEMBER ||
-                membershipToReturn.role.slug === UserRole.ADMIN,
-            isAdmin: membershipToReturn.role.slug === UserRole.ADMIN,
-            isSuperAdmin: membershipToReturn.role.slug === UserRole.SUPERADMIN,
-            isActive: membershipToReturn.status === "active",
+            isMember: role === UserRole.member || role === UserRole.admin,
+            isAdmin: role === UserRole.admin,
         };
     } catch (err) {
         console.error("Error fetching user experience relation:", err);

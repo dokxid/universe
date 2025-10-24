@@ -1,10 +1,8 @@
-import { getCurrentUser, isUserAdmin, isUserSuperAdmin } from "@/data/auth";
+import { isUserAdmin, isUserSuperAdmin } from "@/data/auth";
 
 export const canUserEditLab = async (slug: string): Promise<boolean> => {
     try {
-        const user = await getCurrentUser();
-        if (!user) return false;
-        if (await isUserSuperAdmin(user)) return true;
+        if (await isUserSuperAdmin()) return true;
         return isUserAdmin(slug);
     } catch (error) {
         console.error("Error checking user permissions:", error);
@@ -14,9 +12,7 @@ export const canUserEditLab = async (slug: string): Promise<boolean> => {
 
 export const canUserCreateLab = async (): Promise<boolean> => {
     try {
-        const user = await getCurrentUser();
-        if (!user) return false;
-        return await isUserSuperAdmin(user);
+        return await isUserSuperAdmin();
     } catch (error) {
         console.error("Error checking user permissions:", error);
         return false;

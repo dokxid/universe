@@ -1,6 +1,7 @@
 "use server";
 
 import {
+    getCurrentUser,
     getCurrentUserOptional,
     getPermissionsByUser,
     Permissions,
@@ -21,7 +22,7 @@ export async function getUserAction(userId: string): Promise<UserDTO | null> {
 
 export async function getCurrentUserAction(): Promise<UserDTO | null> {
     try {
-        const currentUser = await getCurrentUserOptional();
+        const currentUser = await getCurrentUser();
         if (!currentUser) return null;
         const user = await getUserDTO(currentUser.id);
         return user;
@@ -49,7 +50,7 @@ export async function getUserPermissionAction(
     storyId?: string
 ): Promise<boolean> {
     try {
-        const user = await getCurrentUserOptional();
+        const user = await getCurrentUser();
         const permissions = await getPermissionsByUser(user, labSlug, storyId);
         return permissions.includes(permission);
     } catch (error) {

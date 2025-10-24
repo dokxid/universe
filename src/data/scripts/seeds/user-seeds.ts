@@ -28,6 +28,7 @@ export const testMemberDoc = (): Prisma.UserCreateInput => {
             ? faker.lorem.paragraph()
             : undefined,
         members: undefined,
+        role: "user",
         createdAt: faker.date.past({ years: 5 }),
         updatedAt: new Date(),
     };

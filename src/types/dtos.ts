@@ -77,6 +77,10 @@ export type UserDTO = {
     phoneNumber?: string;
     website?: string;
     description?: string;
+    superAdmin?: boolean;
+    banned?: boolean;
+    banReason?: string;
+    banExpires?: Date;
     labs: {
         id: string;
         slug: string;

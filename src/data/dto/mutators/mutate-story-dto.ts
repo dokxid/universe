@@ -25,10 +25,10 @@ export async function submitStoryDTO(formData: FormData) {
     try {
         // check if the user has permission to create a story for the given experience
         const user = await getCurrentUser();
-        const userId = user.id;
-        if (!userId) {
+        if (!user) {
             throw new Error("User must be logged in to create a story.");
         }
+        const userId = user.id;
         if (!(await canUserCreateStory(formData.get("slug") as string))) {
             throw new Error(
                 "User does not have permission to create a story for this experience."

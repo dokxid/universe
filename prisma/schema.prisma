@@ -26,7 +26,7 @@ enum License {
 }
 
 enum Role {
-    editor
+    member
     admin
 }
 
@@ -104,6 +104,10 @@ model User {
     website           String?
     phoneNumber       String?
     publicEmail       String?
+    role              String?
+    banned            Boolean?
+    banReason         String?
+    banExpires        DateTime?
     sessions          Session[]
     accounts          Account[]
     members           Member[]

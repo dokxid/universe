@@ -31,7 +31,7 @@ export function sanitizeToUserDTO(
         stories: Prisma.StoryModel[];
     }
 ): UserDTO {
-    const userDTO = {
+    const userDTO: UserDTO = {
         id: user.id,
         email: user.email,
         name: buildDisplayedName(user),
@@ -49,6 +49,10 @@ export function sanitizeToUserDTO(
         phoneNumber: user.phoneNumber ?? undefined,
         website: user.website ?? undefined,
         description: user.description ?? undefined,
+        banExpires: user.banExpires ?? undefined,
+        banReason: user.banReason ?? undefined,
+        banned: user.banned ?? undefined,
+        superAdmin: user.role === "admin",
     };
     return userDTO;
 }

@@ -1,4 +1,4 @@
-import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
+import { isUserSuperAdmin } from "@/data/auth";
 import { notFound } from "next/navigation";
 
 export default async function RootLayout({
@@ -6,8 +6,7 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const user = await getCurrentUser();
-    const permissionToView = await isUserSuperAdmin(user);
+    const permissionToView = await isUserSuperAdmin();
     if (!permissionToView) {
         return notFound();
     }

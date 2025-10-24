@@ -1,7 +1,5 @@
 "use client";
 
-import { logInAction } from "@/actions/auth";
-import { DebugListObject } from "@/app/components/cards/debug-list-object";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -9,14 +7,7 @@ import {
     SettingsFormTitle,
 } from "@/app/components/layout/content-layout";
 import { Button } from "@/components/ui/button";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -25,81 +16,48 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Organization } from "@/types/workos-errors";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { handleFormErrors } from "@/lib/utils/form-error-handling";
+import { getLabSlugFromPathname } from "@/lib/utils/pathname";
+import { LoginFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { mutate } from "swr";
+import z from "zod";
 
-type Inputs = {
-    email: string;
-    password: string;
-    organizationId: string;
-};
-
-export function LoginForm({
-    authToken,
-    organizationList,
-}: {
-    authToken: string | null;
-    organizationList: Organization[];
-}) {
-    const [pendingAuthToken, setPendingAuthToken] = useState<string | null>(
-        authToken || null
-    );
+export function LoginForm() {
     const pathname = usePathname();
-    const slug = pathname.split("/")[1];
+    const slug = getLabSlugFromPathname(pathname);
     const router = useRouter();
 
-    const [organizations, setOrganizations] = useState<Organization[]>([
-        ...organizationList,
-    ]);
-
-    const form = useForm<Inputs>({
+    const form = useForm<z.infer<typeof LoginFormSchema>>({
         defaultValues: {
             email: "",
             password: "",
-            organizationId: organizations.length > 0 ? organizations[0].id : "",
+            slug: slug || "",
         },
     });
 
-    function onSubmit(data: Inputs) {
+    async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
         const formData = new FormData();
         formData.append("email", data.email);
         formData.append("password", data.password);
-        formData.append("organizationId", data.organizationId);
-        if (pendingAuthToken) {
-            formData.append("pendingAuthToken", pendingAuthToken);
-        }
-        logInAction(formData).then((res) => {
-            if (!res) return;
-            if (res.redirectUrl) {
-                router.push(res.redirectUrl);
-                return;
-            }
-            if (res.pendingAuthToken && res.organizations) {
-                setPendingAuthToken(res.pendingAuthToken);
-                setOrganizations(res.organizations || []);
-                form.setValue(
-                    "organizationId",
-                    res.organizations.find((org) => org.name === slug)?.id || ""
-                );
-                form.clearErrors("organizationId");
-                return;
-            }
-            Object.entries(res).forEach(([field, message]) => {
-                form.setError(field as keyof Inputs, {
-                    type: "manual",
-                    message: message.message || message,
-                });
-            });
+        formData.append("rememberMe", String(data.rememberMe));
+        formData.append("slug", data.slug);
+        const response = await fetch("/auth/login", {
+            method: "POST",
+            body: formData,
         });
+        const result = await response.json();
+        console.log("Login result:", result);
+        if (result) {
+            mutate("currentUser");
+            mutate(["userRoles", data.slug]);
+            toast.success("Signed in successfully!");
+            router.push(result.url || `/${data.slug}/map`);
+        }
+        handleFormErrors(result, form);
     }
 
     return (
@@ -136,12 +94,6 @@ export function LoginForm({
                             <SettingsBoxFormElement>
                                 <FormLabel className="flex shrink-0 justify-between">
                                     Password
-                                    <a
-                                        href="#"
-                                        className="ml-auto text-xs text-muted-foreground underline-offset-4 hover:underline"
-                                    >
-                                        Forgot your password?
-                                    </a>
                                 </FormLabel>
                                 <FormControl>
                                     <Input
@@ -156,112 +108,74 @@ export function LoginForm({
                     />
                     <FormField
                         control={form.control}
-                        name={"organizationId"}
+                        name={"slug"}
                         render={({ field }) => (
                             <SettingsBoxFormElement>
                                 <FormLabel className="flex shrink-0 justify-between">
-                                    Heritage Lab
+                                    Lab
                                 </FormLabel>
                                 <FormControl>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    disabled={!pendingAuthToken}
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className={cn(
-                                                        "w-full justify-between",
-                                                        !field.value &&
-                                                            "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value
-                                                        ? organizations.find(
-                                                              (org) =>
-                                                                  org.id ===
-                                                                  field.value
-                                                          )?.name
-                                                        : "Select lab"}
-                                                    <ChevronsUpDown className="opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[200px] p-0">
-                                            <Command>
-                                                <CommandInput
-                                                    placeholder="Search framework..."
-                                                    className="h-9"
-                                                />
-                                                <CommandList>
-                                                    <CommandEmpty>
-                                                        No framework found.
-                                                    </CommandEmpty>
-                                                    <CommandGroup>
-                                                        {organizations.map(
-                                                            (org) => (
-                                                                <CommandItem
-                                                                    value={
-                                                                        org.id
-                                                                    }
-                                                                    key={org.id}
-                                                                    onSelect={() => {
-                                                                        form.setValue(
-                                                                            "organizationId",
-                                                                            org.id
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    {org.name}
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "ml-auto",
-                                                                            org.id ===
-                                                                                field.value
-                                                                                ? "opacity-100"
-                                                                                : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                </CommandItem>
-                                                            )
-                                                        )}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <Input
+                                        disabled={true}
+                                        type="text"
+                                        {...field}
+                                    />
                                 </FormControl>
-                                {pendingAuthToken && (
-                                    <div className="text-sm text-red-500 mt-1">
-                                        Multiple organizations detected. Please
-                                        select a lab to continue.
-                                    </div>
-                                )}
                                 <FormMessage />
                             </SettingsBoxFormElement>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="rememberMe"
+                        render={({ field }) => (
+                            <>
+                                <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                    <FormControl>
+                                        <Checkbox
+                                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary cursor-pointer"
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <p className="ml-1 text-sm select-none">
+                                        Remember me
+                                    </p>
+                                </label>
+                                <FormMessage />
+                            </>
                         )}
                     />
                     <SettingsBoxFormElement>
                         {form.formState.errors && (
                             <div className="text-sm text-red-500"></div>
                         )}
-                        <Button type="submit">Login</Button>
+                        <Button
+                            type="submit"
+                            disabled={
+                                form.formState.isSubmitting ||
+                                !form.formState.isValid
+                            }
+                        >
+                            Login
+                        </Button>
                     </SettingsBoxFormElement>
                     <SettingsBoxFormElement>
-                        <DebugListObject
-                            data={{
-                                pendingAuthToken,
-                                organizations,
-                            }}
-                        />
-                        <SettingsFormDescription>
-                            Don&apos;t have an account?{" "}
-                            <a
+                        <SettingsFormDescription
+                            className={"flex flex-col gap-2"}
+                        >
+                            <Link
                                 href="#"
-                                className="underline underline-offset-4"
+                                className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+                            >
+                                Forgot your password?
+                            </Link>
+                            <Link
+                                href={`/${slug}/signup`}
+                                className="text-xs text-muted-foreground underline-offset-4 hover:underline"
                             >
                                 Sign up
-                            </a>
+                            </Link>
                         </SettingsFormDescription>
                     </SettingsBoxFormElement>
                 </SettingsBoxContent>
