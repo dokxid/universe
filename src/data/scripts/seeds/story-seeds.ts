@@ -51,10 +51,9 @@ export const test_story_doc = async (
     labCenter: number[],
     labSlug: string,
     userId: string
-): Promise<Omit<Prisma.StoryCreateInput, "Lab">> => {
+): Promise<Omit<Prisma.StoryCreateInput, "lab">> => {
     const date = faker.date.past({ years: 3 });
     const doc = {
-        lab: { connect: { slug: labSlug } },
         author: { connect: { id: userId } },
         content: getContent(),
         draft: faker.datatype.boolean(0.2),

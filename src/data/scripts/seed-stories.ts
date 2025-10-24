@@ -28,7 +28,6 @@ export async function seedStories(
         );
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
-
             const doc = await test_story_doc(center, labSlug, user.id);
             const storyInsertResult = await prisma.lab.update({
                 where: { slug: labSlug },

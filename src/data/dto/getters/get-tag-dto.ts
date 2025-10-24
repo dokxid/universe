@@ -17,9 +17,9 @@ export const getTagsDTO = cache(async (): Promise<TagDTO[]> => {
 });
 
 export const getUniqueTagDTOsForLab = cache(
-    async (labId: string): Promise<TagDTO[]> => {
+    async (slug: string): Promise<TagDTO[]> => {
         try {
-            const tags = await getTagsForLab(labId);
+            const tags = await getTagsForLab(slug);
             const sanitizedTags = tags.map((tag) => sanitizeToTagDTO(tag));
             return sanitizedTags;
         } catch (error) {

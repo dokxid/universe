@@ -20,12 +20,12 @@ export const getTags = cache(async () => {
     }
 });
 
-export const getTagsForLab = cache(async (labId: string) => {
+export const getTagsForLab = cache(async (slug: string) => {
     try {
         const result = await prisma.tag.findMany({
             where: {
                 story: {
-                    some: { labId: labId },
+                    some: { lab: { slug: slug } },
                 },
             },
             include: {
