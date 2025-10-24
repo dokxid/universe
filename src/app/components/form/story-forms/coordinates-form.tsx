@@ -82,7 +82,7 @@ export function CoordinatesFormField({ story }: { story: StoryDTO }) {
                     <input
                         type={"hidden"}
                         {...editStoryCoordinatesForm.register("storyId")}
-                        defaultValue={story._id}
+                        defaultValue={story.id}
                     />
                     <Collapsible>
                         <CollapsibleTrigger asChild>

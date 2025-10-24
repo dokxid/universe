@@ -4,7 +4,6 @@ import { isUserAdmin } from "@/data/auth";
 import { insertElevationRequest } from "@/data/fetcher/elevation-request-fetcher";
 import dbConnect from "@/lib/data/mongodb/connections";
 import { NewElevationRequestData } from "@/types/dtos";
-import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
 
 export async function createElevationRequestDTO(
@@ -23,14 +22,7 @@ export async function createElevationRequestDTO(
         };
         await dbConnect();
 
-        // validate id before creating ObjectId
-        if (!mongoose.Types.ObjectId.isValid(storyID)) {
-            throw new Error("Invalid story id format.");
-        }
-
-        // parse serializable id to mongoose.Types.ObjectId
-        const objectId = new mongoose.Types.ObjectId(storyID);
-        await insertElevationRequest(slug, requestToInsert, objectId);
+        await insertElevationRequest(requestToInsert, storyID);
         revalidatePath(`/universe/elevation_requests`);
         revalidatePath(`/${slug}/stories/manage`);
     } catch (err) {

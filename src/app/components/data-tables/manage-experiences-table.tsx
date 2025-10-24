@@ -33,17 +33,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Experience } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { ChevronDown, Columns3, MoreHorizontal, UserPlus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 
-const ManageExperiencesActionsCell = ({
-    experience,
-}: {
-    experience: Experience;
-}) => {
+const ManageExperiencesActionsCell = ({ lab }: { lab: LabDTO }) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -58,7 +54,7 @@ const ManageExperiencesActionsCell = ({
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Link href={`/universe/labs/view/${experience._id}`}>
+                    <Link href={`/universe/labs/view/${lab.id}`}>
                         View Lab details
                     </Link>
                 </DropdownMenuItem>
@@ -90,7 +86,7 @@ const ManageExperiencesActionsCell = ({
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Removed ${experience.title} from Heritage Lab successfully.`
+                                `Removed ${lab.name} from Heritage Lab successfully.`
                             );
                         }}
                         tabIndex={-1}
@@ -116,11 +112,11 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
     const dataFetched = React.useMemo(
-        () => JSON.parse(data) as Experience[],
+        () => JSON.parse(data) as LabDTO[],
         [data]
     );
 
-    const columnHelper = createColumnHelper<Experience>();
+    const columnHelper = createColumnHelper<LabDTO>();
 
     const columns = [
         columnHelper.display({
@@ -148,12 +144,12 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
             enableSorting: false,
             enableHiding: false,
         }),
-        columnHelper.accessor("title", {
+        columnHelper.accessor("name", {
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Title" />
+                <DataTableColumnHeader column={column} title="Name" />
             ),
             cell: (info) => (
-                <Link href={`/universe/labs/view/${info.row.original._id}`}>
+                <Link href={`/universe/labs/view/${info.row.original.id}`}>
                     <span className={"hover:underline"}>
                         {info.getValue() || "N/A"}
                     </span>
@@ -172,7 +168,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                 </Link>
             ),
         }),
-        columnHelper.accessor((row) => row.stories.length, {
+        columnHelper.accessor((row) => row.amountStories, {
             id: "storiesCount",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Stories" />
@@ -197,7 +193,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
             id: "actions",
             cell: ({ row }) => {
                 const experience = row.original;
-                return <ManageExperiencesActionsCell experience={experience} />;
+                return <ManageExperiencesActionsCell lab={experience} />;
             },
         }),
     ];
@@ -205,7 +201,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
     const table = useReactTable({
         data: dataFetched,
         columns,
-        getRowId: (row) => row._id,
+        getRowId: (row) => row.id,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

@@ -1,6 +1,6 @@
 "use server";
 
-import { getSlugsFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabByObjectIdDTO } from "@/data/dto/getters/get-experience-dto";
 import {
     SSORequiredException,
     type AuthException,
@@ -85,20 +85,20 @@ export async function logInAction(formData: FormData) {
         if (!organizationId) {
             redirect("/");
         }
-        const slugs = await getSlugsFromOrganizationIdDTO(organizationId);
-        if (!slugs) {
+        const { slug } = await getLabByObjectIdDTO(organizationId);
+        if (!slug) {
             throw new Error(
-                `Could not find slugs for organization ID: ${organizationId}`
+                `Could not find slug for organization ID: ${organizationId}`
             );
         }
-        const isTest = slugs.includes("test");
+        const isTest = slug.includes("test");
         cookieStore.delete("pendingAuthToken");
         cookieStore.delete("organizations");
         return {
             redirectUrl: isTest
                 ? "/test/map"
-                : slugs
-                ? `/${slugs[0]}/map`
+                : slug
+                ? `/${slug}/map`
                 : "/universe/map",
         };
     } catch (error) {

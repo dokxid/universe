@@ -1,19 +1,19 @@
-import { getOrganizationFromSlugDTO } from "@/data/dto/getters/get-experience-dto";
+import { auth } from "@/lib/auth/betterauth/auth";
 import { OrganizationMembership, WorkOS } from "@workos-inc/node";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY!);
 
-export async function sendInvitation(email: string, slug: string) {
-    const { organizationId } = await getOrganizationFromSlugDTO(slug);
-    if (!organizationId) throw new Error("Organization not found");
+// export async function sendInvitation(email: string, slug: string) {
+//     const { organizationId } = await getOrganizationFromSlugDTO(slug);
+//     if (!organizationId) throw new Error("Organization not found");
 
-    const invitation = await workos.userManagement.sendInvitation({
-        email,
-        organizationId: organizationId,
-        roleSlug: "member",
-    });
-    return invitation;
-}
+//     const invitation = await workos.userManagement.sendInvitation({
+//         email,
+//         organizationId: organizationId,
+//         roleSlug: "member",
+//     });
+//     return invitation;
+// }
 
 export async function inviteLabAdmin(
     organizationId: string,
@@ -23,14 +23,18 @@ export async function inviteLabAdmin(
         console.log(
             `Inviting lab admin ${adminEmail} to organization ${organizationId}`
         );
-        const invitation = await workos.userManagement.sendInvitation({
-            email: adminEmail,
-            organizationId: organizationId,
-            roleSlug: "admin",
+        const invitation = await auth.api.createInvitation({
+            body: {
+                email: adminEmail,
+                role: "admin",
+                organizationId: organizationId,
+                resend: true,
+            },
         });
         if (!invitation || !invitation.id) {
             throw new Error("Failed to invite lab admin");
         }
+        console.log(JSON.stringify(invitation));
         console.log(
             `Successfully invited lab admin ${adminEmail} to organization ${organizationId}`
         );

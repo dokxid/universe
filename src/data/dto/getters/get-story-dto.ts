@@ -1,23 +1,18 @@
 import "server-only";
 
 import { getCurrentUser, isUserMember, isUserSuperAdmin } from "@/data/auth";
-import {
-    canUserViewStory,
-    isPublicStory,
-} from "@/data/dto/auth/story-permissions";
+import { canUserViewStory } from "@/data/dto/auth/story-permissions";
 import {
     getAllStories,
     getStoriesByUser,
     queryStory,
 } from "@/data/fetcher/story-fetcher";
 import { StoryDTO } from "@/types/dtos";
-import mongoose from "mongoose";
 
 export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
     try {
-        const stories = await getAllStories();
-        const filteredStories = stories.filter(isPublicStory);
-        return filteredStories;
+        const nonDraftStories = await getAllStories({ draft: false });
+        return nonDraftStories;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
@@ -29,26 +24,25 @@ export async function getAllStoriesDTO(): Promise<StoryDTO[]> {
         if (!(await isUserSuperAdmin(user))) {
             throw new Error("Unauthorized");
         }
-        const stories = await getAllStories();
-        return stories;
+        const allStories = await getAllStories();
+        return allStories;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
 export async function getLabPublicStoriesDTO(
-    experienceSlug: string
+    labSlug: string
 ): Promise<StoryDTO[]> {
-    const stories = await getAllStories();
-    const publicStories = stories.filter(isPublicStory);
-    const filteredStories = publicStories.filter(
-        (story) => story.experience === experienceSlug
-    );
-    return filteredStories;
+    const nonDraftLabStories = await getAllStories({
+        draft: false,
+        lab: { slug: labSlug },
+    });
+    return nonDraftLabStories;
 }
 
 export async function getLabPrivateStoriesDTO(
-    experienceSlug: string
+    labSlug: string
 ): Promise<StoryDTO[]> {
     try {
         const user = await getCurrentUser();
@@ -57,7 +51,7 @@ export async function getLabPrivateStoriesDTO(
             return stories.filter(
                 async (story) => await canUserViewStory(story)
             );
-        } else if (await isUserMember(user, experienceSlug)) {
+        } else if (await isUserMember(user, labSlug)) {
             const stories = await getAllStories();
             return stories.filter(
                 async (story) => await canUserViewStory(story)
@@ -72,14 +66,7 @@ export async function getLabPrivateStoriesDTO(
 
 export async function getStoryDTO(id: string): Promise<StoryDTO> {
     try {
-        // validate id before creating ObjectId
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw new Error("Invalid story id format.");
-        }
-
-        // parse serializable id to mongoose.Types.ObjectId
-        const objectId = new mongoose.Types.ObjectId(id);
-        const queryResult = await queryStory(objectId);
+        const queryResult = await queryStory(id);
 
         if (!(await canUserViewStory(queryResult))) {
             throw new Error("You do not have permission to view this story.");

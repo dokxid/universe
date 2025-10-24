@@ -5,7 +5,6 @@ import {
     triggerRevalidateTagAction,
 } from "@/actions/cache";
 import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
-import { syncUsersWithDatabaseAction } from "@/actions/sync_users";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -23,7 +22,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
 import { toast } from "sonner";
-import { mutate } from "swr";
 
 export function DebugSettings() {
     const location = faker.location.city();
@@ -132,20 +130,7 @@ export function DebugSettings() {
                 </SettingsFormDescription>
                 <SettingsBoxContent>
                     <SettingsFormButtonGroup>
-                        <Button
-                            className={"w-full md:w-fit"}
-                            onClick={() => {
-                                try {
-                                    syncUsersWithDatabaseAction().then(() => {
-                                        toast.success("User sync successful");
-                                    });
-                                    mutate("currentUser");
-                                } catch (error) {
-                                    toast.error("User sync failed");
-                                    console.error(error);
-                                }
-                            }}
-                        >
+                        <Button disabled={true} className={"w-full md:w-fit"}>
                             Sync users
                         </Button>
                     </SettingsFormButtonGroup>

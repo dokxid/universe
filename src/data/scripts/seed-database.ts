@@ -1,4 +1,4 @@
-import { seedAllElevationRequests } from "@/data/scripts/seed-elevation-requests";
+import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
 import {
     seedExperiences,
     seedUniverseLab,
@@ -67,7 +67,7 @@ export async function seedDatabase(
         // await seedAllStoryImages();
         // await initializeFeaturedLabImages();
         await seedAllStories(numStories);
-        await seedAllElevationRequests();
+        await seedElevationRequests();
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);

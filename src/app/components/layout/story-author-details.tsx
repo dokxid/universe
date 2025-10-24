@@ -10,6 +10,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { buildAvatarFallbackString } from "@/lib/utils/build-avatar-fallback-string";
 import { StoryDTO } from "@/types/dtos";
 import { editStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import Link from "next/link";
@@ -42,15 +43,17 @@ export function StoryAuthorDetails({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.experience}/user/view/${story.author}`}
+                        href={`/${story.lab.slug}/user/view/${story.author.id}`}
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage
                                 className={"object-cover"}
-                                src={story.authorProfilePictureUrl || undefined}
+                                src={
+                                    story.author.profilePictureUrl || undefined
+                                }
                             />
                             <AvatarFallback>
-                                {story.authorName.charAt(0)}
+                                {buildAvatarFallbackString(story.author.name)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -62,9 +65,9 @@ export function StoryAuthorDetails({
                         {"by "}
                         <Link
                             className={"hover:underline cursor-pointer"}
-                            href={`/${story.experience}/user/view/${story.author}`}
+                            href={`/${story.lab.slug}/user/view/${story.author}`}
                         >
-                            <b>{`${story.authorName}`}</b>
+                            <b>{`${story.author.name}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
@@ -109,15 +112,17 @@ export function StoryAuthorEditDetails({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.experience}/user/view/${story.author}`}
+                        href={`/${story.lab.slug}/user/view/${story.author}`}
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage
                                 className={"object-cover"}
-                                src={story.authorProfilePictureUrl || undefined}
+                                src={
+                                    story.author.profilePictureUrl || undefined
+                                }
                             />
                             <AvatarFallback>
-                                {story.authorName.charAt(0)}
+                                {buildAvatarFallbackString(story.author.name)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -131,9 +136,9 @@ export function StoryAuthorEditDetails({
                         {"by "}
                         <Link
                             className={"hover:underline cursor-pointer"}
-                            href={`/${story.experience}/user/view/${story.author}`}
+                            href={`/${story.lab.slug}/user/view/${story.author.id}`}
                         >
-                            <b>{`${story.authorName}`}</b>
+                            <b>{`${story.author.name}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
@@ -214,15 +219,17 @@ export function StoryAuthorHeaderMapView({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.experience}/user/view/${story.author}`}
+                        href={`/${story.lab.slug}/user/view/${story.author.id}`}
                     >
                         <Avatar>
                             <AvatarImage
                                 className={"object-cover"}
-                                src={story.authorProfilePictureUrl || undefined}
+                                src={
+                                    story.author.profilePictureUrl || undefined
+                                }
                             />
                             <AvatarFallback>
-                                {story.authorName.charAt(0)}
+                                {buildAvatarFallbackString(story.author.name)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -230,10 +237,7 @@ export function StoryAuthorHeaderMapView({
                 <article className={"flex flex-col text-left gap-1"}>
                     <Link
                         href={
-                            "/" +
-                            story.experience +
-                            "/stories/view/" +
-                            story._id
+                            "/" + story.lab.slug + "/stories/view/" + story.id
                         }
                     >
                         <h3
@@ -252,9 +256,9 @@ export function StoryAuthorHeaderMapView({
                                     ? "arrow-external"
                                     : "link-external"
                             }`}
-                            href={`/${story.experience}/user/view/${story.author}`}
+                            href={`/${story.lab.slug}/user/view/${story.author.id}`}
                         >
-                            {story.authorName}
+                            {story.author.name}
                         </Link>
                     </p>
                 </article>

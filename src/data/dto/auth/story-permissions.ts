@@ -5,7 +5,6 @@ import {
     isUserSuperAdmin,
 } from "@/data/auth";
 import { getStoryDTO } from "@/data/dto/getters/get-story-dto";
-import { getUserByWorkOSId } from "@/data/fetcher/user-fetcher";
 import { StoryDTO } from "@/types/dtos";
 import { User } from "@workos-inc/node";
 
@@ -16,9 +15,7 @@ export async function isStoryOwner(story: StoryDTO) {
     try {
         const user = await getCurrentUser();
         if (!user) return false;
-        const viewerId = (await getUserByWorkOSId(user.id))?._id.toString();
-        console.log("Viewer ID:", viewerId, "Story Author ID:", story.author);
-        return viewerId === story.author;
+        return user.id === story.author.id;
     } catch (err) {
         console.error("Error checking story ownership:", err);
         return false;

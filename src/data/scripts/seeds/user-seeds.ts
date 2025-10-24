@@ -12,7 +12,7 @@ export const testMemberDoc = (): Prisma.UserCreateInput => {
     return {
         email,
         displayName: faker.datatype.boolean(0.75) ? displayName : undefined,
-        name: faker.datatype.boolean(0.75) ? name : undefined,
+        firstName: faker.datatype.boolean(0.75) ? name : undefined,
         familyName: faker.datatype.boolean(0.75) ? familyName : undefined,
         profilePictureUrl: faker.datatype.boolean()
             ? faker.image.urlPicsumPhotos({ width: 800, height: 800, blur: 0 })

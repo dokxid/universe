@@ -44,8 +44,8 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             await submitElevationRequestAction(
-                story._id,
-                story.experience,
+                story.id,
+                story.lab.slug,
                 "rejected"
             );
             toast.success("Elevation request set to: rejected");
@@ -60,8 +60,8 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             await submitElevationRequestAction(
-                story._id,
-                story.experience,
+                story.id,
+                story.lab.slug,
                 "approved"
             );
             toast.success("Elevation request set to: approved");
@@ -85,14 +85,14 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             Story page
                         </Link>
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             Elevation history
                         </Link>
                     </Button>
@@ -137,8 +137,8 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             const result = await submitElevationRequestAction(
-                story._id,
-                story.experience,
+                story.id,
+                story.lab.slug,
                 "pending"
             );
             toast.success("Elevation request completed: " + result);
@@ -162,14 +162,14 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             View story
                         </Link>
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/edit/${story._id}`}>
+                        <Link href={`/${slug}/stories/edit/${story.id}`}>
                             Edit story
                         </Link>
                     </Button>
@@ -252,7 +252,8 @@ export const manageStoryColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("authorName", {
+    columnHelper.accessor((row) => row.author.name, {
+        id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -427,7 +428,8 @@ export const elevationRequestsColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("authorName", {
+    columnHelper.accessor((row) => row.author.name, {
+        id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -542,7 +544,7 @@ export const elevationRequestsColumns = [
         (row) => {
             const lastRequest =
                 row.elevationRequests?.[row.elevationRequests.length - 1];
-            return lastRequest?.requestedAt ?? new Date().toISOString();
+            return lastRequest?.createdAt ?? new Date().toISOString();
         },
         {
             id: "requested_at",

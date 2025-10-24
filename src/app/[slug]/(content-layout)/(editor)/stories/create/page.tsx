@@ -10,13 +10,13 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
 import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
+        const experiences = await getLabsDTO();
         return experiences.map((experience) => ({
             slug: experience.slug,
         }));

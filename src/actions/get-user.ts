@@ -6,11 +6,8 @@ import {
     Permissions,
     Role,
 } from "@/data/auth";
-import {
-    getUserDTO,
-    getUserFromWorkOSIdDTO,
-} from "@/data/dto/getters/get-user-dto";
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { getUserDTO } from "@/data/dto/getters/get-user-dto";
+import { UserDTO } from "@/types/dtos";
 
 export async function getUserAction(userId: string): Promise<UserDTO | null> {
     try {
@@ -24,9 +21,9 @@ export async function getUserAction(userId: string): Promise<UserDTO | null> {
 
 export async function getCurrentUserAction(): Promise<UserDTO | null> {
     try {
-        const userWorkOS = await getCurrentUserOptional();
-        if (!userWorkOS) return null;
-        const user = await getUserFromWorkOSIdDTO(userWorkOS.id);
+        const currentUser = await getCurrentUserOptional();
+        if (!currentUser) return null;
+        const user = await getUserDTO(currentUser.id);
         return user;
     } catch (error) {
         console.error("Error fetching lab:", error);
@@ -34,11 +31,11 @@ export async function getCurrentUserAction(): Promise<UserDTO | null> {
     }
 }
 
-export async function getUserFromWorkOSIdAction(
+export async function getUserFromIdAction(
     userId: string
 ): Promise<UserDTO | null> {
     try {
-        const user = await getUserFromWorkOSIdDTO(userId);
+        const user = await getUserDTO(userId);
         return user;
     } catch (error) {
         console.error("Error fetching lab:", error);

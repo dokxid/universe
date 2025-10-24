@@ -1,6 +1,7 @@
 generator client {
-    provider = "prisma-client"
-    output   = "../src/generated/prisma"
+    provider        = "prisma-client"
+    output          = "../src/generated/prisma"
+    previewFeatures = ["views"]
 }
 
 datasource db {
@@ -22,6 +23,11 @@ enum License {
     CC_BY_NC_SA
     CC_BY_ND
     CC_BY_NC_ND
+}
+
+enum Role {
+    editor
+    admin
 }
 
 enum ElevationRequestStatus {
@@ -76,7 +82,7 @@ model Story {
     license           License
     createdAt         DateTime           @default(now())
     updatedAt         DateTime           @default(now()) @updatedAt
-    lab               Lab?               @relation(fields: [labId], references: [id])
+    lab               Lab                @relation(fields: [labId], references: [id])
     labId             String             @db.ObjectId
 
     @@map("story")
@@ -85,7 +91,7 @@ model Story {
 model User {
     id                String       @id @default(auto()) @map("_id") @db.ObjectId
     displayName       String?
-    name              String?
+    firstName         String?
     familyName        String?
     email             String
     emailVerified     Boolean      @default(false)
@@ -102,7 +108,7 @@ model User {
     accounts          Account[]
     members           Member[]
     invitations       Invitation[]
-    story             Story[]
+    stories           Story[]
 
     @@unique([email])
     @@map("user")
@@ -193,7 +199,7 @@ model Member {
     lab       Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
     userId    String   @db.ObjectId
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role      String
+    role      Role
     createdAt DateTime @default(now())
 
     @@map("member")

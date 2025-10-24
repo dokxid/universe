@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
-import { CC_LICENSES, UnescoTagDTO } from "@/types/dtos";
+import { CC_LICENSES, TagDTO } from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
@@ -35,7 +35,7 @@ export default function AddStoryForm({
     tagsPromise,
 }: {
     slug: string;
-    tagsPromise: Promise<UnescoTagDTO[]>;
+    tagsPromise: Promise<TagDTO[]>;
 }) {
     useAuth({ ensureSignedIn: true });
     const router = useRouter();

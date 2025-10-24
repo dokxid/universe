@@ -65,7 +65,7 @@ export default async function AboutPage({
                         {users.map((user, index) => (
                             <ContactCard key={index}>
                                 <ContactImage
-                                    href={`/${slug}/user/view/${user._id}`}
+                                    href={`/${slug}/user/view/${user.id}`}
                                 >
                                     {user.profilePictureUrl ? (
                                         <ImageElement
@@ -90,7 +90,7 @@ export default async function AboutPage({
                                 <ContactCardContent>
                                     <ContactNameRole>
                                         <ContactName
-                                            href={`/${slug}/user/view/${user._id}`}
+                                            href={`/${slug}/user/view/${user.id}`}
                                         >
                                             {user.displayName
                                                 ? user.displayName
@@ -153,7 +153,7 @@ export default async function AboutPage({
                                             </Button>
                                         </Link>
                                         <ContactStoriesLink
-                                            href={`/${slug}/user/view/${user._id}#stories`}
+                                            href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
                                                 user.stories?.length || 0
                                             }

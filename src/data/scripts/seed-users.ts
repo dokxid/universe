@@ -1,5 +1,5 @@
 import { testMemberDoc } from "@/data/scripts/seeds/user-seeds";
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient, Role } from "@/generated/prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -37,8 +37,8 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                         members: {
                             create: [
                                 {
-                                    labId: lab.id,
-                                    role: "admin",
+                                    lab: { connect: { id: lab.id } },
+                                    role: "admin" as Role,
                                 },
                             ],
                         },
@@ -54,8 +54,8 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                         members: {
                             create: [
                                 {
-                                    labId: lab.id,
-                                    role: "member",
+                                    lab: { connect: { id: lab.id } },
+                                    role: "editor" as Role,
                                 },
                             ],
                         },

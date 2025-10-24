@@ -7,7 +7,7 @@ import { withAuth } from "@workos-inc/authkit-nextjs";
 import { User } from "@workos-inc/node";
 import { cache } from "react";
 import { canUserEditStoryId } from "./dto/auth/story-permissions";
-import { getExperienceDTO } from "./dto/getters/get-experience-dto";
+import { getLabDTO } from "./dto/getters/get-experience-dto";
 
 type MembershipResult = {
     isMember: boolean;
@@ -166,8 +166,8 @@ async function getUserExperienceRelationBySlug(
     try {
         if (!user) throw new Error("User is not authenticated");
         dbConnect();
-        const experience = await getExperienceDTO(experienceSlug);
-        const organizationId = experience.organizationId;
+        const experience = await getLabDTO(experienceSlug);
+        const organizationId = experience.id;
         const membership =
             await workos.userManagement.listOrganizationMemberships({
                 userId: user.id,

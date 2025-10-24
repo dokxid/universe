@@ -4,7 +4,7 @@ import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { ExploreSidebar } from "@/app/components/sidebar/explore-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-    getExperiencesDTO,
+    getLabsDTO,
     getPublicLabsDTO,
 } from "@/data/dto/getters/get-experience-dto";
 import {
@@ -19,7 +19,7 @@ export const experimental_ppr = true;
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
+        const experiences = await getLabsDTO();
         return experiences.map((experience) => ({
             slug: experience.slug,
         }));

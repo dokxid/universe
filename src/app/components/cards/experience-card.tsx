@@ -1,12 +1,12 @@
-import { ListExperiencesSkeleton } from "@/components/skeletons/list-experiences-skeleton";
+import { ListLabsSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export function ExperienceCard({ experience }: { experience: ExperienceDTO }) {
+export function ExperienceCard({ experience }: { experience: LabDTO }) {
     const url = `/${experience.slug}/map`;
 
     return (
@@ -22,11 +22,11 @@ export function ExperienceCard({ experience }: { experience: ExperienceDTO }) {
             >
                 <div className="overflow-hidden rounded-t-md group-hover:h-6 shrink">
                     <AspectRatio ratio={16 / 9}>
-                        {experience.featuredImageUrl ? (
-                            <Suspense fallback={<ListExperiencesSkeleton />}>
+                        {experience.logo ? (
+                            <Suspense fallback={<ListLabsSkeleton />}>
                                 <Image
-                                    src={experience.featuredImageUrl}
-                                    alt={experience.title}
+                                    src={experience.logo}
+                                    alt={experience.name}
                                     fill={true}
                                     sizes="(min-width: 768px) 50vw, 100vw"
                                     className="group-hover:opacity-75 transition-translate duration-100 object-cover group-hover:-translate-y-10"
@@ -45,7 +45,7 @@ export function ExperienceCard({ experience }: { experience: ExperienceDTO }) {
                     <div className="flex flex-row items-center w-full gap-2 justify-between h-fit">
                         <div className="flex-1 min-w-0 flex flex-col gap-0">
                             <h2 className="text-base font-semibold truncate group-hover:underline">
-                                {experience.title}
+                                {experience.name}
                             </h2>
                             <h3 className="text-sm text-muted-foreground line-clamp-1 group-hover:line-clamp-2">
                                 {experience.subtitle}

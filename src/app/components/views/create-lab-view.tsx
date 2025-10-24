@@ -41,7 +41,7 @@ export default function CreateLabView() {
     const createLabForm = useForm<z.infer<typeof createLabFormSchema>>({
         resolver: zodResolver(createLabFormSchema),
         defaultValues: {
-            title: "",
+            name: "",
             subtitle: "",
             content: undefined,
             slug: "",
@@ -55,7 +55,7 @@ export default function CreateLabView() {
     const onSubmit = async (data: z.output<typeof createLabFormSchema>) => {
         try {
             const formData = new FormData();
-            formData.append("title", data.title);
+            formData.append("title", data.name);
             formData.append("subtitle", data.subtitle);
             formData.append("content", data.content);
             formData.append("slug", data.slug);
@@ -114,14 +114,14 @@ export default function CreateLabView() {
                             <SettingsBoxContent>
                                 <SettingsBoxFormElement>
                                     <FormField
-                                        name={"title"}
+                                        name={"name"}
                                         control={createLabForm.control}
                                         render={({ field }) => (
                                             <FormItem>
-                                                <Label>Lab Title</Label>
+                                                <Label>Lab Name</Label>
                                                 <FormControl>
                                                     <Input
-                                                        placeholder="Enter lab title"
+                                                        placeholder="Enter lab name"
                                                         {...field}
                                                     />
                                                 </FormControl>

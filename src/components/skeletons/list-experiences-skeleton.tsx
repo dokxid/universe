@@ -2,7 +2,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ListExperiencesSkeleton() {
+export function ListLabsSkeleton() {
     return (
         <Card className="w-full mx-auto pt-0 flex-row md:flex-col brightness-50 grayscale overflow-clip">
             <CardHeader className="overflow-hidden p-0">

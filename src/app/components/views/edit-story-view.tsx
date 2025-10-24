@@ -30,7 +30,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Toggle } from "@/components/ui/toggle";
-import { StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { StoryDTO, TagDTO } from "@/types/dtos";
 import { editStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -44,7 +44,7 @@ export default function StoryEdit({
     allTags,
 }: {
     story: StoryDTO;
-    allTags: UnescoTagDTO[];
+    allTags: TagDTO[];
 }) {
     const [isPreviewMode, setIsPreviewMode] = useState(false);
 
@@ -52,7 +52,7 @@ export default function StoryEdit({
         resolver: zodResolver(editStoryFormSchema),
         defaultValues: {
             title: story.title,
-            tags: story.tags,
+            tags: story.tags.map((tag) => tag.name),
             year: story.year,
         },
     });
@@ -116,7 +116,7 @@ export default function StoryEdit({
                                 <input
                                     type={"hidden"}
                                     {...editStoryForm.register("storyId")}
-                                    defaultValue={story._id}
+                                    defaultValue={story.id}
                                 />
                                 <FormField
                                     control={editStoryForm.control}
@@ -206,7 +206,7 @@ export default function StoryEdit({
                                     className={"h-full self-start"}
                                 >
                                     <Link
-                                        href={`/${story.experience}/stories/view/${story._id}`}
+                                        href={`/${story.lab.slug}/stories/view/${story.id}`}
                                     >
                                         <Button
                                             type={"button"}

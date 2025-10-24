@@ -1,22 +1,26 @@
 import "server-only";
 
-import { sanitizeExperience } from "@/data/transformers/experience-transformer";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { sanitizeObjectId } from "@/lib/data/mongodb/object-id-sanitizer";
-import { Experience } from "@/types/dtos";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
-export async function getExperience(
-    experienceSlug: string
-): Promise<Experience> {
+const prisma = new PrismaClient();
+
+const includeCountStories = {
+    _count: {
+        select: { stories: true },
+    },
+};
+
+export async function getLab(whereInput: Prisma.LabWhereUniqueInput) {
     try {
-        await dbConnect();
-        const experience = await ExperienceModel.findOne({
-            slug: experienceSlug,
-        }).exec();
-        if (!experience) throw new Error();
-        const sanitizedExperience = sanitizeExperience(experience);
-        return sanitizedExperience;
+        const lab = await prisma.lab.findUnique({
+            where: whereInput,
+            include: includeCountStories,
+        });
+        if (!lab)
+            throw new Error(
+                "Lab not found for input: " + JSON.stringify(whereInput)
+            );
+        return lab;
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
@@ -25,36 +29,18 @@ export async function getExperience(
     }
 }
 
-export async function getExperiences(): Promise<Experience[]> {
+export async function getLabs(whereInput: Prisma.LabWhereInput = {}) {
     try {
-        await dbConnect();
-        const experiences = await ExperienceModel.find({}).exec();
-
-        const sanitizedExperiences = experiences.map((experience) =>
-            sanitizeExperience(experience)
-        );
-
-        return sanitizedExperiences;
+        const labs = await prisma.lab.findMany({
+            where: whereInput,
+            include: includeCountStories,
+        });
+        if (!labs)
+            throw new Error(
+                "Labs not found for input: " + JSON.stringify(whereInput)
+            );
+        return labs;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
-    }
-}
-
-export async function getLabByObjectId(id: string): Promise<Experience> {
-    try {
-        await dbConnect();
-        const objectId = sanitizeObjectId(id);
-        const lab = await ExperienceModel.findOne({
-            _id: objectId,
-        }).exec();
-        if (!lab) throw new Error("Lab not found for ID: " + id);
-        const sanitizedLab = sanitizeExperience(lab);
-        return sanitizedLab;
-    } catch (err) {
-        throw new Error(
-            `Error fetching lab by ID ${id}: ${
-                err instanceof Error ? err.message : "Unknown error"
-            }`
-        );
     }
 }

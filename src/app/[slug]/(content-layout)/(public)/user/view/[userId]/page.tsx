@@ -30,14 +30,14 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
+        const experiences = await getLabsDTO();
         return experiences.map((experience) => ({
             slug: experience.slug,
         }));
@@ -77,7 +77,7 @@ export default async function AboutPage({
                         <div className={"form-box w-full"}>
                             <ContactCard>
                                 <ContactImage
-                                    href={`/${slug}/user/view/${user._id}`}
+                                    href={`/${slug}/user/view/${user.id}`}
                                 >
                                     {user.profilePictureUrl ? (
                                         <ImageElement
@@ -163,7 +163,7 @@ export default async function AboutPage({
                                             </Button>
                                         </Link>
                                         <ContactStoriesLink
-                                            href={`/${slug}/user/view/${user._id}#stories`}
+                                            href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
                                                 user.stories?.length || 0
                                             }
@@ -185,7 +185,7 @@ export default async function AboutPage({
                                 {user.stories &&
                                     user.stories.map((story) => (
                                         <StoryCard
-                                            key={story._id}
+                                            key={story.id}
                                             story={story}
                                         />
                                     ))}

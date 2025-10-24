@@ -14,7 +14,7 @@ import {
     addSelectedTagParam,
     setSelectedStoryIdParams,
 } from "@/lib/utils/param-setter";
-import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { LabDTO, StoryDTO, TagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,
@@ -55,7 +55,7 @@ function MapController({
     currentExperience,
     selectedStory,
 }: {
-    currentExperience: ExperienceDTO;
+    currentExperience: LabDTO;
     selectedStory: StoryDTO | null;
 }) {
     const { mainMap: map } = useMap();
@@ -141,9 +141,9 @@ export function DeckGLMap({
     experiences,
     experienceSlug,
 }: {
-    tags: UnescoTagDTO[];
+    tags: TagDTO[];
     stories: StoryDTO[];
-    experiences: ExperienceDTO[];
+    experiences: LabDTO[];
     experienceSlug: string;
 }) {
     // global state management stuff
@@ -160,7 +160,7 @@ export function DeckGLMap({
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(
-        stories.find((story) => story._id === searchParams.get("story")) || null
+        stories.find((story) => story.id === searchParams.get("story")) || null
     );
     const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
@@ -170,20 +170,20 @@ export function DeckGLMap({
         if (experienceSlug !== "universe") {
             return experiences.find(
                 (exp) => exp.slug === experienceSlug
-            ) as ExperienceDTO;
+            ) as LabDTO;
         }
         const experienceToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
         return experiences.find(
             (exp) => exp.slug === experienceToShow
-        ) as ExperienceDTO;
+        ) as LabDTO;
     }, [experienceSlug, experiences, searchParams]);
 
     const storiesFiltered = useMemo(() => {
         if (selectedFilterTags === null) return stories;
         return stories.filter((story) =>
-            story.tags.some((tag) => selectedFilterTags.includes(tag))
+            story.tags.some((tag) => selectedFilterTags.includes(tag.name))
         );
     }, [selectedFilterTags, stories]);
 
@@ -193,7 +193,7 @@ export function DeckGLMap({
         } else {
             setActiveStory(
                 stories.find(
-                    (story) => story._id === searchParams.get("story")
+                    (story) => story.id === searchParams.get("story")
                 ) || null
             );
         }
@@ -207,11 +207,11 @@ export function DeckGLMap({
         }
         setArcHeight(1.2);
         const storiesExceptActive = storiesFiltered.filter(
-            (story) => story._id !== activeStory?._id
+            (story) => story.id !== activeStory?.id
         );
         const tagFilters = selectedFilterTags
             ? selectedFilterTags.split(",")
-            : activeStory.tags;
+            : activeStory.tags.map((tag) => tag.name);
         const storiesToUse = [activeStory, ...storiesExceptActive];
         const connectionsSanitized = getTaggedConnectionDTO(
             storiesToUse,
@@ -287,7 +287,7 @@ export function DeckGLMap({
 
     const handleStorySelection = (story: StoryDTO) => {
         setActiveStory(story);
-        setSelectedStoryIdParams(pathname, searchParams, story._id);
+        setSelectedStoryIdParams(pathname, searchParams, story.id);
     };
 
     const layers: LayersList = useMemo(
@@ -414,7 +414,7 @@ export function DeckGLMap({
                         >
                             <CustomMarker
                                 story={story}
-                                isActive={activeStory?._id === story._id}
+                                isActive={activeStory?.id === story.id}
                             />
                         </Marker>
                     ))}

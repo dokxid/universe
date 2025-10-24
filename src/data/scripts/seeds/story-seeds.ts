@@ -48,12 +48,13 @@ function getContent() {
 }
 
 export const test_story_doc = async (
-    experience_center: number[],
-    experienceSlug: string,
+    labCenter: number[],
+    labSlug: string,
     userId: string
 ): Promise<Omit<Prisma.StoryCreateInput, "Lab">> => {
     const date = faker.date.past({ years: 3 });
     const doc = {
+        lab: { connect: { slug: labSlug } },
         author: { connect: { id: userId } },
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
@@ -61,10 +62,8 @@ export const test_story_doc = async (
         location: {
             type: "Point" as GeoType, // Explicitly cast "Point" to GeoType
             coordinates: [
-                experience_center[0] +
-                    faker.number.float({ min: -0.8, max: 0.8 }),
-                experience_center[1] +
-                    faker.number.float({ min: -0.3, max: 0.3 }),
+                labCenter[0] + faker.number.float({ min: -0.8, max: 0.8 }),
+                labCenter[1] + faker.number.float({ min: -0.3, max: 0.3 }),
             ],
         },
         tags: {
@@ -77,7 +76,7 @@ export const test_story_doc = async (
         visibleUniverse: faker.datatype.boolean(),
         featuredImageUrl:
             process.env.LOCAL_UPLOADER === "true"
-                ? await getStoryImageUrl(experienceSlug)
+                ? await getStoryImageUrl(labSlug)
                 : "https://picsum.photos/seed/" +
                   faker.string.alphanumeric(10) +
                   "/800/600",

@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { LAB_VISIBILITY_OPTIONS } from "@/types/form-schemas/form-schemas";
 import {
     editLabAppearanceSchema,
@@ -43,20 +43,20 @@ import { z } from "zod";
 
 export function TeamSettings({
     slug,
-    experienceSerialized,
+    labSerialized,
 }: {
     slug: string;
-    experienceSerialized: string;
+    labSerialized: string;
 }) {
-    const experience = JSON.parse(experienceSerialized) as ExperienceDTO;
+    const lab = JSON.parse(labSerialized) as LabDTO;
     const router = useRouter();
     const labAppearanceForm = useForm({
         resolver: zodResolver(editLabAppearanceSchema),
         defaultValues: {
             lab: slug,
-            title: experience.title || "",
-            subtitle: experience.subtitle || "",
-            description: experience.content || "",
+            title: lab.name || "",
+            subtitle: lab.subtitle || "",
+            description: lab.content || "",
             subdomain: slug,
         },
     });
@@ -64,7 +64,7 @@ export function TeamSettings({
         resolver: zodResolver(editVisibilityFormSchema),
         defaultValues: {
             lab: slug,
-            visibility: experience.visibility as LAB_VISIBILITY_OPTIONS,
+            visibility: lab.visibility as LAB_VISIBILITY_OPTIONS,
         },
     });
 
@@ -264,7 +264,7 @@ export function TeamSettings({
                         </form>
                     </Form>
                 </SettingsFormBox>
-                <LabPictureForm experience={experience} />
+                <LabPictureForm experience={lab} />
                 <SettingsFormBox>
                     <SettingsFormTitle>Change visibility?</SettingsFormTitle>
                     <SettingsFormDescription>

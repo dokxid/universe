@@ -2,9 +2,8 @@ import {
     canUserCreateLab,
     canUserEditLab,
 } from "@/data/dto/auth/lab-permissions";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { createOrganization } from "@/lib/auth/workos/invitation";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -15,6 +14,8 @@ import {
 } from "@/types/form-schemas/lab-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
+
+const prisma = new PrismaClient();
 
 export async function editLabPictureDTO(formData: FormData) {
     try {
@@ -43,19 +44,20 @@ export async function editLabPictureDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { slug: data.lab },
-            {
-                $set: {
-                    featured_image_url: path,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+
+        const mutate = await prisma.lab.update({
+            where: { slug: data.lab },
+            data: {
+                logo: path,
+            },
+        });
+        if (!mutate) {
+            throw new Error("No changes made.");
+        }
 
         // revalidate caches
         revalidateTag(`labs/${data.lab}`);
+        console.debug("Updated lab picture:", mutate);
         return { success: true };
     } catch (error) {
         throw new Error(
@@ -85,15 +87,13 @@ export async function editLabVisibilityDTO(
         const data = result.data;
 
         // update database
-        const mutate = await ExperienceModel.updateOne(
-            { slug: data.lab },
-            {
-                $set: {
-                    visibility: data.visibility,
-                },
-            }
-        );
-        if (mutate.modifiedCount === 0) {
+        const mutate = await prisma.lab.update({
+            where: { slug: data.lab },
+            data: {
+                visibility: data.visibility,
+            },
+        });
+        if (!mutate) {
             throw new Error("No changes made.");
         }
 
@@ -126,26 +126,24 @@ export async function editLabAppearanceDTO(formData: FormData) {
         const data = result.data;
 
         // update database
-        const mutate = await ExperienceModel.updateOne(
-            { slug: data.lab },
-            {
-                $set: {
-                    title: data.title,
-                    subtitle: data.subtitle,
-                    description: data.description,
-                    subdomain: data.subdomain,
-                },
-            }
-        );
-        if (mutate.modifiedCount === 0) {
+        const mutate = await prisma.lab.update({
+            where: { slug: data.lab },
+            data: {
+                name: data.title,
+                subtitle: data.subtitle,
+                content: data.description,
+                slug: data.subdomain,
+            },
+        });
+        if (!mutate) {
             throw new Error("No changes made.");
         }
 
         // revalidate cache
-        revalidateTag(`labs/${data.lab}`);
+        revalidateTag(`labs/${mutate.slug}`);
         return {
             result: { success: true },
-            redirect: `/${data.subdomain}/lab/settings`,
+            redirect: `/${mutate.slug}/lab/settings`,
         };
     } catch (error) {
         throw new Error(
@@ -181,8 +179,7 @@ export async function createLabDTO(formData: FormData) {
 
         // create organization and invite admin
         console.log("Inviting admin:", adminEmail, "to lab:", rest.slug);
-        const organization = await createOrganization(rest.slug, adminEmail);
-        const organizationId = organization.id;
+        await createOrganization(rest.slug, adminEmail);
 
         // upload image and create lab in database
         let path: string;
@@ -193,18 +190,24 @@ export async function createLabDTO(formData: FormData) {
         }
 
         // insert newly created lab into database
-        const data = {
-            featuredImageUrl: path,
-            organizationId,
+        const data: Prisma.LabCreateInput = {
+            logo: path,
             center: {
                 type: "Point",
                 coordinates: [longitude, latitude],
             },
             ...rest,
         };
-        const insertResult = await ExperienceModel.insertOne(data);
-        console.log("result:", JSON.stringify(insertResult));
-        console.log("Validated data:", data);
+        const createResult = await prisma.lab.create({
+            data,
+        });
+        if (!createResult) {
+            throw new Error("Failed to create lab");
+        }
+
+        // revalidate caches
+        revalidateTag(`labs`);
+        revalidateTag(`labs/${data.slug}`);
         return { success: true, error: undefined };
     } catch (error) {
         throw new Error(

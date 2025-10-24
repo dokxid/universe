@@ -34,7 +34,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { UserDTO } from "@/types/dtos";
 import { ChevronDown, Columns3, MoreHorizontal } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -146,7 +146,7 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
             ),
         }),
         columnHelper.accessor(
-            (row) => row.labs?.filter((lab) => lab.slug === slug)[0]?.role,
+            (row) => row.labs.find((lab) => lab.slug === slug)?.role,
             {
                 id: "role",
                 header: ({ column }) => (
@@ -175,7 +175,7 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
     const table = useReactTable({
         data: dataFetched,
         columns,
-        getRowId: (row) => row._id,
+        getRowId: (row) => row.id,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

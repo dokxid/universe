@@ -93,7 +93,7 @@ export async function seedOneExperience(
         console.log(`Inserted experience with id ${result.id}`);
         await seedStories(slug, center, experienceStories);
         console.log("Stories seeding completed");
-        await seedElevationRequests(slug);
+        await seedElevationRequests({ lab: { slug } });
         console.log("Elevation requests seeding completed");
         await seedLabStoryImages(slug);
         console.log("Lab images seeding completed");

@@ -1,4 +1,3 @@
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
 import { AuthException } from "@/types/workos-errors";
 import { WorkOS } from "@workos-inc/node";
 import { cookies } from "next/headers";
@@ -11,6 +10,9 @@ const workos = new WorkOS(process.env.WORKOS_API_KEY!, {
 export const GET = async (req: NextRequest) => {
     const code = req.nextUrl.searchParams.get("code");
     const state = req.nextUrl.searchParams.get("state") || "/";
+    const referer = req.headers.get("referer") || "";
+    const slugMatch = referer.match(/\/([^\/]+)\/auth\/callback/);
+    const slug = slugMatch ? slugMatch[1] : null;
 
     if (!code) {
         return NextResponse.redirect(new URL("/universe/login", req.url));
@@ -49,7 +51,6 @@ export const GET = async (req: NextRequest) => {
             return NextResponse.redirect(new URL(state, req.url));
         }
 
-        const slug = await getSlugFromOrganizationIdDTO(organizationId);
         const redirectUrl = slug ? `/${slug}/map` : "/universe/map";
         return NextResponse.redirect(new URL(redirectUrl, req.url));
     } catch (error) {
