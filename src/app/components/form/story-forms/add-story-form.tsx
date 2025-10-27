@@ -23,7 +23,6 @@ import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { CC_LICENSES, TagDTO } from "@/types/dtos";
 import { submitStoryFormSchema } from "@/types/form-schemas/story-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -37,7 +36,6 @@ export default function AddStoryForm({
     slug: string;
     tagsPromise: Promise<TagDTO[]>;
 }) {
-    useAuth({ ensureSignedIn: true });
     const router = useRouter();
     const searchParams = useSearchParams();
     const lng = searchParams.get("lng");
@@ -93,7 +91,7 @@ export default function AddStoryForm({
                             type: "server",
                             message:
                                 zodErrors.fieldErrors[fieldName].join(", "),
-                        }
+                        },
                     );
                 });
                 zodErrors.formErrors.forEach((error: string) => {
@@ -103,7 +101,7 @@ export default function AddStoryForm({
         } catch (error) {
             console.error("Error submitting form:", error);
             toast.error(
-                "An unexpected error occurred. Please try again later."
+                "An unexpected error occurred. Please try again later.",
             );
         }
     }
@@ -189,8 +187,8 @@ export default function AddStoryForm({
                                                 onChange={(e) =>
                                                     field.onChange(
                                                         parseFloat(
-                                                            e.target.value
-                                                        )
+                                                            e.target.value,
+                                                        ),
                                                     )
                                                 }
                                             />
@@ -227,11 +225,11 @@ export default function AddStoryForm({
                                                     field.onChange(file);
                                                     form.setValue(
                                                         "featuredPicture",
-                                                        file
+                                                        file,
                                                     );
                                                     // run validation right away
                                                     form.trigger(
-                                                        "featuredPicture"
+                                                        "featuredPicture",
                                                     );
                                                 }}
                                             />
@@ -277,8 +275,8 @@ export default function AddStoryForm({
                                                 onChange={(e) =>
                                                     field.onChange(
                                                         parseFloat(
-                                                            e.target.value
-                                                        )
+                                                            e.target.value,
+                                                        ),
                                                     )
                                                 }
                                             />
@@ -310,8 +308,8 @@ export default function AddStoryForm({
                                                 onChange={(e) =>
                                                     field.onChange(
                                                         parseFloat(
-                                                            e.target.value
-                                                        )
+                                                            e.target.value,
+                                                        ),
                                                     )
                                                 }
                                             />
@@ -351,7 +349,7 @@ export default function AddStoryForm({
                                                             {`${label.code} - ${label.name}`}
                                                         </Label>
                                                     </div>
-                                                )
+                                                ),
                                             )}
                                         </RadioGroup>
                                     </FormControl>
@@ -449,11 +447,11 @@ export default function AddStoryForm({
                                     ? () => {
                                           console.log(
                                               "Form has errors, cannot submit:",
-                                              form.formState.errors
+                                              form.formState.errors,
                                           );
                                           console.log(
                                               "Current form values:",
-                                              form.getValues()
+                                              form.getValues(),
                                           );
                                       }
                                     : undefined

@@ -86,7 +86,7 @@ const ManageExperiencesActionsCell = ({ lab }: { lab: LabDTO }) => {
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Removed ${lab.name} from Heritage Lab successfully.`
+                                `Removed ${lab.name} from Heritage Lab successfully.`,
                             );
                         }}
                         tabIndex={-1}
@@ -113,7 +113,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
         React.useState<ColumnFiltersState>([]);
     const dataFetched = React.useMemo(
         () => JSON.parse(data) as LabDTO[],
-        [data]
+        [data],
     );
 
     const columnHelper = createColumnHelper<LabDTO>();
@@ -225,11 +225,11 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                     <Input
                         placeholder="Filter users..."
                         value={
-                            table.getColumn("title")?.getFilterValue() as string
+                            table.getColumn("name")?.getFilterValue() as string
                         }
                         onChange={(event) =>
                             table
-                                .getColumn("title")
+                                .getColumn("name")
                                 ?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
@@ -256,7 +256,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                             const selectedIds =
                                                 Object.keys(rowSelection);
                                             toast.success(
-                                                `Elevation for ${selectedIds.length} stories have been requested`
+                                                `Elevation for ${selectedIds.length} stories have been requested`,
                                             );
                                         }}
                                         tabIndex={-1}
@@ -273,7 +273,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                             const selectedIds =
                                                 Object.keys(rowSelection);
                                             toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Draft.`
+                                                `Updating Visibility for ${selectedIds.length} stories to: Draft.`,
                                             );
                                         }}
                                         tabIndex={-1}
@@ -290,7 +290,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                             const selectedIds =
                                                 Object.keys(rowSelection);
                                             toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Map.`
+                                                `Updating Visibility for ${selectedIds.length} stories to: Map.`,
                                             );
                                         }}
                                         tabIndex={-1}
@@ -329,7 +329,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                                 checked={column.getIsVisible()}
                                                 onCheckedChange={(value) =>
                                                     column.toggleVisibility(
-                                                        !!value
+                                                        !!value,
                                                     )
                                                 }
                                             >
@@ -354,7 +354,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                                     : flexRender(
                                                           header.column
                                                               .columnDef.header,
-                                                          header.getContext()
+                                                          header.getContext(),
                                                       )}
                                             </TableHead>
                                         );
@@ -375,7 +375,7 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                             <TableCell key={cell.id}>
                                                 {flexRender(
                                                     cell.column.columnDef.cell,
-                                                    cell.getContext()
+                                                    cell.getContext(),
                                                 )}
                                             </TableCell>
                                         ))}

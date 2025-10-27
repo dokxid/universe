@@ -16,7 +16,6 @@ import {
 import { useCurrentUser } from "@/lib/swr/user-hook";
 import { StoryDTO } from "@/types/dtos";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import {
     Map,
     MapPinCheckInside,
@@ -46,7 +45,7 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
             await submitElevationRequestAction(
                 story.id,
                 story.lab.slug,
-                "rejected"
+                "rejected",
             );
             toast.success("Elevation request set to: rejected");
         } catch (error) {
@@ -62,7 +61,7 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
             await submitElevationRequestAction(
                 story.id,
                 story.lab.slug,
-                "approved"
+                "approved",
             );
             toast.success("Elevation request set to: approved");
         } catch (error) {
@@ -127,9 +126,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <div>Please log in to request elevation.</div>;
 
     const handlePendingElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -139,7 +135,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
             const result = await submitElevationRequestAction(
                 story.id,
                 story.lab.slug,
-                "pending"
+                "pending",
             );
             toast.success("Elevation request completed: " + result);
         } catch (error) {
@@ -180,7 +176,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Updating Visibility for story ${story.title} to: Draft.`
+                                `Updating Visibility for story ${story.title} to: Draft.`,
                             );
                         }}
                         tabIndex={-1}
@@ -195,7 +191,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Updating Visibility for story ${story.title} to: Public.`
+                                `Updating Visibility for story ${story.title} to: Public.`,
                             );
                         }}
                         tabIndex={-1}
@@ -361,7 +357,7 @@ export const manageStoryColumns = [
                     );
                 }
             },
-        }
+        },
     ),
     columnHelper.accessor("createdAt", {
         header: ({ column }) => (
@@ -538,7 +534,7 @@ export const elevationRequestsColumns = [
                     );
                 }
             },
-        }
+        },
     ),
     columnHelper.accessor(
         (row) => {
@@ -556,7 +552,7 @@ export const elevationRequestsColumns = [
                     {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             ),
-        }
+        },
     ),
     columnHelper.accessor("createdAt", {
         header: ({ column }) => (

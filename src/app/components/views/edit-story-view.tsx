@@ -74,7 +74,7 @@ export default function StoryEdit({
                     (zodErrors.fieldErrors + zodErrors.formErrors) as Record<
                         string,
                         string[]
-                    >
+                    >,
                 ).forEach(([field, messages]) => {
                     if (field in editStoryForm.getValues()) {
                         editStoryForm.setError(
@@ -82,7 +82,7 @@ export default function StoryEdit({
                             {
                                 type: "server",
                                 message: messages.join(", "),
-                            }
+                            },
                         );
                     }
                     toast.error(field + ": " + JSON.stringify(messages));
@@ -165,7 +165,7 @@ export default function StoryEdit({
                                                                         "Enter title here..."
                                                                     }
                                                                     onInput={(
-                                                                        e
+                                                                        e,
                                                                     ) => {
                                                                         const target =
                                                                             e.target as HTMLTextAreaElement;
@@ -178,7 +178,7 @@ export default function StoryEdit({
                                                                                 target.value;
                                                                         }
                                                                         field.onChange(
-                                                                            e
+                                                                            e,
                                                                         );
                                                                     }}
                                                                     {...field}

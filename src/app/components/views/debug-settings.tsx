@@ -32,14 +32,14 @@ export function DebugSettings() {
     const [title, setTitle] = useState(location + " Lab");
     const [slug, setSlug] = useState(location.toLowerCase().replace(" ", "-"));
     const [description, setDescription] = useState<string>(
-        faker.lorem.sentence({ min: 40, max: 60 })
+        faker.lorem.sentence({ min: 40, max: 60 }),
     );
     const [subtitle, setSubtitle] = useState<string>(
-        faker.lorem.words({ min: 5, max: 10 })
+        faker.lorem.words({ min: 5, max: 10 }),
     );
     const [initialZoom, setInitialZoom] = useState<number>(9);
     const [organizationId, setOrganizationId] = useState<string>(
-        "org_01K6FWE14DZBT1Q17JFC75JN72"
+        "org_01K6FWE14DZBT1Q17JFC75JN72",
     );
     const [experienceStories, setExperienceStories] = useState<number>(40);
 
@@ -58,19 +58,19 @@ export function DebugSettings() {
                                 try {
                                     triggerRevalidatePathAction("/[slug]/map");
                                     triggerRevalidatePathAction(
-                                        "/[slug]/stories"
+                                        "/[slug]/stories",
                                     );
                                     triggerRevalidatePathAction(
-                                        "/[slug]/experiences"
+                                        "/[slug]/experiences",
                                     );
                                     triggerRevalidatePathAction(
-                                        "/[slug]/users"
+                                        "/[slug]/users",
                                     );
                                     triggerRevalidatePathAction(
-                                        "/[slug]/account/user-preferences"
+                                        "/[slug]/account/user-preferences",
                                     );
                                     toast.success(
-                                        "Path revalidation successful"
+                                        "Path revalidation successful",
                                     );
                                 } catch (error) {
                                     toast.error("Path revalidation failed");
@@ -85,32 +85,32 @@ export function DebugSettings() {
                             onClick={() => {
                                 try {
                                     triggerRevalidateTagAction(
-                                        "experiences"
+                                        "experiences",
                                     ).then(() => {
                                         toast.success(
-                                            "Heritage Lab revalidation successful"
+                                            "Heritage Lab revalidation successful",
                                         );
                                     });
                                     triggerRevalidateTagAction("stories").then(
                                         () => {
                                             toast.success(
-                                                "Story revalidation successful"
+                                                "Story revalidation successful",
                                             );
-                                        }
+                                        },
                                     );
                                     triggerRevalidateTagAction("tags").then(
                                         () => {
                                             toast.success(
-                                                "Tag revalidation successful"
+                                                "Tag revalidation successful",
                                             );
-                                        }
+                                        },
                                     );
                                     triggerRevalidateTagAction("users").then(
                                         () => {
                                             toast.success(
-                                                "User revalidation successful"
+                                                "User revalidation successful",
                                             );
-                                        }
+                                        },
                                     );
                                 } catch (error) {
                                     toast.error("Tag revalidation failed");
@@ -124,14 +124,46 @@ export function DebugSettings() {
                 </SettingsBoxContent>
             </SettingsFormBox>
             <SettingsFormBox>
-                <SettingsFormTitle>Sync users</SettingsFormTitle>
+                <SettingsFormTitle>Create user</SettingsFormTitle>
                 <SettingsFormDescription>
-                    Sync users with the latest data from the database.
+                    create a new user in the authentication system.
                 </SettingsFormDescription>
                 <SettingsBoxContent>
+                    <SettingsBoxForm>
+                        <SettingsBoxFormElement>
+                            <Label className={""}>Email</Label>
+                            <Input
+                                className={"max-w-full"}
+                                placeholder="Email"
+                                type="email"
+                                value={""}
+                                onChange={() => { }}
+                            />
+                        </SettingsBoxFormElement>
+                        <SettingsBoxFormElement>
+                            <Label className={""}>Password</Label>
+                            <Input
+                                className={"max-w-full"}
+                                placeholder="Password"
+                                type="password"
+                                value={""}
+                                onChange={() => { }}
+                            />
+                        </SettingsBoxFormElement>
+                        <SettingsBoxFormElement>
+                            <Label className={""}>Name</Label>
+                            <Input
+                                className={"max-w-full"}
+                                placeholder="Name"
+                                type="text"
+                                value={""}
+                                onChange={() => { }}
+                            />
+                        </SettingsBoxFormElement>
+                    </SettingsBoxForm>
                     <SettingsFormButtonGroup>
                         <Button disabled={true} className={"w-full md:w-fit"}>
-                            Sync users
+                            Create User
                         </Button>
                     </SettingsFormButtonGroup>
                 </SettingsBoxContent>
@@ -188,10 +220,10 @@ export function DebugSettings() {
                                 try {
                                     seedDatabaseAction(
                                         numCityCenters,
-                                        numStories
+                                        numStories,
                                     );
                                     toast.success(
-                                        "Database seeding successful"
+                                        "Database seeding successful",
                                     );
                                 } catch (error) {
                                     toast.error("Database seeding failed");
@@ -349,10 +381,10 @@ export function DebugSettings() {
                                         subtitle,
                                         initialZoom,
                                         organizationId,
-                                        experienceStories
+                                        experienceStories,
                                     );
                                     toast.success(
-                                        "Experience seeding successful"
+                                        "Experience seeding successful",
                                     );
                                 } catch (error) {
                                     toast.error("Experience seeding failed");

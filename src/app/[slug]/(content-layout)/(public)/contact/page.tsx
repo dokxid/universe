@@ -37,7 +37,7 @@ import Link from "next/link";
 export default async function AboutPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
     const users = await getUsersByLabDTO(slug);
@@ -95,9 +95,9 @@ export default async function AboutPage({
                                             {user.displayName
                                                 ? user.displayName
                                                 : user.firstName &&
-                                                  user.lastName
-                                                ? `${user.firstName} ${user.lastName}`
-                                                : "Anonymous"}
+                                                    user.lastName
+                                                  ? `${user.firstName} ${user.lastName}`
+                                                  : "Anonymous"}
                                         </ContactName>
                                         <ContactRole>
                                             {user.position || "Not specified"}

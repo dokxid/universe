@@ -34,7 +34,7 @@ export function StoryAuthorDetails({
                 `flex flex-row items-center mb-1 justify-between ${
                     sticky ? "sticky" : ""
                 } py-4 top-0 transition-all duration-200`,
-                className
+                className,
             )}
         >
             <div className={"flex flex-row items-center gap-3"}>
@@ -65,14 +65,14 @@ export function StoryAuthorDetails({
                         {"by "}
                         <Link
                             className={"hover:underline cursor-pointer"}
-                            href={`/${story.lab.slug}/user/view/${story.author}`}
+                            href={`/${story.lab.slug}/user/view/${story.author.name}`}
                         >
                             <b>{`${story.author.name}`}</b>
                         </Link>
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
                         {`created on: ${new Date(
-                            story.createdAt
+                            story.createdAt,
                         ).toLocaleDateString()}`}
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
@@ -103,7 +103,7 @@ export function StoryAuthorEditDetails({
                 `flex flex-row items-center mb-1 justify-between ${
                     sticky ? "sticky" : ""
                 } py-4 top-0 transition-all duration-200`,
-                className
+                className,
             )}
         >
             <div className={"flex flex-row items-center gap-3 w-full"}>
@@ -112,7 +112,7 @@ export function StoryAuthorEditDetails({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.lab.slug}/user/view/${story.author}`}
+                        href={`/${story.lab.slug}/user/view/${story.author.name}`}
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage
@@ -143,7 +143,7 @@ export function StoryAuthorEditDetails({
                     </p>
                     <p className={"text-xs text-muted-foreground"}>
                         {`created on: ${new Date(
-                            story.createdAt
+                            story.createdAt,
                         ).toLocaleDateString()}`}
                     </p>
                     <div className={"flex flex-row gap-0.5"}>
@@ -210,7 +210,7 @@ export function StoryAuthorHeaderMapView({
         <div
             className={cn(
                 "flex flex-row items-center mb-1 justify-between sticky py-4 top-0 transition-all duration-200",
-                className
+                className,
             )}
         >
             <div className={"flex flex-row items-center gap-3"}>

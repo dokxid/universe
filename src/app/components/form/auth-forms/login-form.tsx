@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { handleFormErrors } from "@/lib/utils/form-error-handling";
 import { getLabSlugFromPathname } from "@/lib/utils/pathname";
-import { LoginFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ export function LoginForm() {
     const slug = getLabSlugFromPathname(pathname);
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof LoginFormSchema>>({
+    const form = useForm<z.infer<typeof loginFormSchema>>({
         defaultValues: {
             email: "",
             password: "",
@@ -39,7 +39,7 @@ export function LoginForm() {
         },
     });
 
-    async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
+    async function onSubmit(data: z.infer<typeof loginFormSchema>) {
         const formData = new FormData();
         formData.append("email", data.email);
         formData.append("password", data.password);

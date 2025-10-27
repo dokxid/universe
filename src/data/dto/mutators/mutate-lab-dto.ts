@@ -2,8 +2,8 @@ import {
     canUserCreateLab,
     canUserEditLab,
 } from "@/data/dto/auth/lab-permissions";
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
-import { createOrganization } from "@/lib/auth/workos/invitation";
+import { GeoType, Prisma, PrismaClient } from "@/generated/prisma/client";
+import { auth } from "@/lib/auth/betterauth/auth";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -13,6 +13,7 @@ import {
     editVisibilityFormSchema,
 } from "@/types/form-schemas/lab-form-schemas";
 import { revalidateTag } from "next/cache";
+import { headers } from "next/headers";
 import z from "zod";
 
 const prisma = new PrismaClient();
@@ -20,7 +21,7 @@ const prisma = new PrismaClient();
 export async function editLabPictureDTO(formData: FormData) {
     try {
         const isAllowedToEdit = await canUserEditLab(
-            formData.get("lab") as string
+            formData.get("lab") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error("User is not allowed to edit this lab");
@@ -61,18 +62,18 @@ export async function editLabPictureDTO(formData: FormData) {
         return { success: true };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editLabVisibilityDTO(
-    formData: FormData
+    formData: FormData,
 ): Promise<{ success: boolean; error?: string }> {
     try {
         // check permissions of user
         const isAllowedToEdit = await canUserEditLab(
-            formData.get("lab") as string
+            formData.get("lab") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error("User is not allowed to edit this lab");
@@ -102,7 +103,7 @@ export async function editLabVisibilityDTO(
         return { success: true };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -111,7 +112,7 @@ export async function editLabAppearanceDTO(formData: FormData) {
     try {
         // check permissions of user
         const isAllowedToEdit = await canUserEditLab(
-            formData.get("lab") as string
+            formData.get("lab") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error("User is not allowed to edit this lab");
@@ -147,7 +148,7 @@ export async function editLabAppearanceDTO(formData: FormData) {
         };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -172,14 +173,11 @@ export async function createLabDTO(formData: FormData) {
         if (!result.success) {
             throw new Error(JSON.stringify(z.flattenError(result.error)));
         }
+
         const { longitude, latitude, adminEmail, image, ...rest } = result.data;
         if (!image) {
             throw new Error("No lab picture provided");
         }
-
-        // create organization and invite admin
-        console.log("Inviting admin:", adminEmail, "to lab:", rest.slug);
-        await createOrganization(rest.slug, adminEmail);
 
         // upload image and create lab in database
         let path: string;
@@ -193,11 +191,12 @@ export async function createLabDTO(formData: FormData) {
         const data: Prisma.LabCreateInput = {
             logo: path,
             center: {
-                type: "Point",
+                type: "Point" as GeoType,
                 coordinates: [longitude, latitude],
             },
             ...rest,
         };
+        await createOrganization(data, adminEmail);
         const createResult = await prisma.lab.create({
             data,
         });
@@ -211,7 +210,43 @@ export async function createLabDTO(formData: FormData) {
         return { success: true, error: undefined };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
+
+async function createOrganization(
+    data: Prisma.LabCreateInput,
+    adminEmail: string,
+) {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        if (!session || !session.user) {
+            throw new Error("No valid session found");
+        }
+
+        console.log("Creating organization for lab:", data.slug);
+        console.log("inviting admin user:", adminEmail);
+        throw new Error("Disabled lab creation for now");
+        // TODO: implement this
+        // const createOrganizationResult = await auth.api.createOrganization({
+        //     body: {
+        //         name: data.name,
+        //         content: data.content,
+        //         logo: data.logo || "",
+        //         slug: data.slug,
+        //         initialZoom: data.initialZoom,
+        //         visibility: data.visibility,
+        //     },
+        //     // This endpoint requires session cookies.
+        //     headers: await headers(),
+        // });
+        // return createOrganizationResult;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }

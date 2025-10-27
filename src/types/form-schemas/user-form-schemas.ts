@@ -37,3 +37,4 @@ export const editUserProfilePictureFormSchema = z.object({
             "Only .jpg and .png files are accepted."
         ),
 });
+

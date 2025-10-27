@@ -17,7 +17,7 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
         await prisma.user.deleteMany({
             where: {
                 accounts: {
-                    some: {},
+                    none: {},
                 },
             },
         });
@@ -55,7 +55,7 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                             create: [
                                 {
                                     lab: { connect: { id: lab.id } },
-                                    role: "editor" as Role,
+                                    role: "member" as Role,
                                 },
                             ],
                         },
@@ -64,9 +64,9 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                     console.log(`Inserted test member for lab: ${lab}`);
                 }
                 console.log(
-                    `Inserted ${adminPerLab} admins and ${memberPerLab} members for lab: ${lab}`
+                    `Inserted ${adminPerLab} admins and ${memberPerLab} members for lab: ${lab}`,
                 );
-            })
+            }),
         );
 
         console.log("Existing users synced successfully");

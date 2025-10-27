@@ -1,25 +1,13 @@
-import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth/betterauth/auth";
+import { headers } from "next/headers";
+import { getLabSlugFromPathname } from "./lib/utils/pathname";
 
 const CSP_ENABLED = false;
 
-// determine origin based on environment
-const REDIRECT_ORIGIN =
-    process.env.VERCEL_ENV === "production"
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : process.env.VERCEL_ENV === "preview"
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
-
-// build redirect URI if no environment variable is set
-const CALLBACK_REDIRECT_PATHNAME = "/auth/callback";
-const REDIRECT_URI = process.env.WORKOS_REDIRECT_URL
-    ? new URL(process.env.WORKOS_REDIRECT_URL)
-    : new URL(CALLBACK_REDIRECT_PATHNAME, REDIRECT_ORIGIN);
-
 // prefix for labs (to avoid subdomain routing complexity)
 const SLUG_PATH_PREFIX = "/:slug";
-const UNAUTHENTICATED_SLUG_PATHS = [
+const GUEST_SLUG_PATHS = [
     "",
     "/map",
     "/stories",
@@ -33,19 +21,22 @@ const UNAUTHENTICATED_SLUG_PATHS = [
     "/user/view/:userId",
     "/signup",
 ];
-const UNAUTHENTICATED_SLUGLESS_PATHS = ["/api/files/:key"];
-const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_SLUG_PATHS.map(
-    (path) => SLUG_PATH_PREFIX + path
-).concat(UNAUTHENTICATED_SLUGLESS_PATHS);
+const GUEST_SLUGLESS_PATHS = ["/api/files/:key"];
+const SANITIZED_GUEST_PATHS = GUEST_SLUG_PATHS.map(
+    (path) => SLUG_PATH_PREFIX + path,
+).concat(GUEST_SLUGLESS_PATHS);
 
-function addCSPHeaders(response: Response): Response {
+function addCSPHeaders(response: NextResponse): NextResponse {
+    if (CSP_ENABLED === false) {
+        return response;
+    }
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
     const cspHeader = `
     default-src 'self';
-    script-src 'self' https://auth.workos.com 'nonce-${nonce}' 'strict-dynamic';
-    connect-src 'self' https://auth.workos.com https://*.tiles.mapbox.com https://tiles.stadiamaps.com https://api.mapbox.com https://events.mapbox.com;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    connect-src 'self' https://*.tiles.mapbox.com https://tiles.stadiamaps.com https://api.mapbox.com https://events.mapbox.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' https://auth.workos.com blob: data:;
+    img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
     child-src blob:;
@@ -65,40 +56,46 @@ function addCSPHeaders(response: Response): Response {
     response.headers.set("x-nonce", nonce);
     response.headers.set(
         "Content-Security-Policy",
-        contentSecurityPolicyHeaderValue
+        contentSecurityPolicyHeaderValue,
     );
     return response;
 }
 
-export default async function middleware(
-    req: NextRequest,
-    event: NextFetchEvent
-) {
-    // apply authkit middleware
-    let response = await authkitMiddleware({
-        redirectUri: REDIRECT_URI.href,
-        middlewareAuth: {
-            enabled: true,
-            unauthenticatedPaths: SANITIZED_UNAUTHENTICATED_PATHS,
-        },
-        debug: process.env.NODE_ENV !== "production",
-    })(req, event);
+function isGuestPath(pathname: string): boolean {
+    return SANITIZED_GUEST_PATHS.some((path) => {
+        const pattern = path.replace(":slug", "[^/]+");
+        const regex = new RegExp(`^${pattern}$`);
+        return regex.test(pathname);
+    });
+}
 
-    // ensure response is not null or undefined
-    if (!response) {
-        response = NextResponse.next(); // Fallback to a default response
-    }
+export default async function middleware(req: NextRequest) {
+    const slug = getLabSlugFromPathname(req.nextUrl.pathname);
+    const response = NextResponse.next();
 
-    // add CSP if needed
-    if (CSP_ENABLED) {
+    // case: guest path, allow response
+    if (isGuestPath(req.nextUrl.pathname)) {
         return addCSPHeaders(response);
     }
 
-    return response;
+    // get session to verify authentication
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    // case: no session / user, redirect to login
+    if (!session || !session.user) {
+        const redirectUrl = req.nextUrl.clone();
+        redirectUrl.pathname = `/${slug}/login`;
+        return NextResponse.redirect(redirectUrl);
+    }
+
+    return addCSPHeaders(response);
 }
 
 // Match against pages that require authentication
 export const config = {
+    runtime: "nodejs",
     matcher: [
         // public paths
         "/:slug/",

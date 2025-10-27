@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth/betterauth/auth";
-import { LoginFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import z from "zod";
@@ -9,7 +9,7 @@ import z from "zod";
 export async function logInAction(formData: FormData) {
     try {
         const rawData = Object.fromEntries(formData.entries());
-        const result = LoginFormSchema.safeParse(rawData);
+        const result = loginFormSchema.safeParse(rawData);
         if (!result.success) {
             throw new Error(JSON.stringify(z.flattenError(result.error)));
         }
