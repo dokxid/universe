@@ -37,7 +37,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-export default function CreateLabView() {
+export default function LabsCreateView() {
     const createLabForm = useForm<z.infer<typeof createLabFormSchema>>({
         resolver: zodResolver(createLabFormSchema),
         defaultValues: {
@@ -55,7 +55,7 @@ export default function CreateLabView() {
     const onSubmit = async (data: z.output<typeof createLabFormSchema>) => {
         try {
             const formData = new FormData();
-            formData.append("title", data.name);
+            formData.append("name", data.name);
             formData.append("subtitle", data.subtitle);
             formData.append("content", data.content);
             formData.append("slug", data.slug);
@@ -70,13 +70,14 @@ export default function CreateLabView() {
                 toast.success("Lab added successfully!");
             }
             if (result?.error) {
+                console.error("Zod validation errors:", result.error);
                 if (!result.error.startsWith("{")) {
                     toast.error("Failed to create lab: " + result.error);
                     return;
                 }
                 const zodErrors = JSON.parse(result.error);
                 Object.entries(
-                    zodErrors.fieldErrors as Record<string, string[]>
+                    zodErrors.fieldErrors as Record<string, string[]>,
                 ).forEach(([field, messages]) => {
                     if (field in createLabForm.getValues()) {
                         createLabForm.setError(
@@ -84,7 +85,7 @@ export default function CreateLabView() {
                             {
                                 type: "server",
                                 message: messages.join(", "),
-                            }
+                            },
                         );
                     }
                     toast.error(field + ": " + JSON.stringify(messages));
@@ -210,7 +211,7 @@ export default function CreateLabView() {
                     />
                     <SettingsLayout className={"snap-center"}>
                         <SettingsFormBox className={"p-0"}>
-                            <Collapsible>
+                            <Collapsible defaultOpen={true}>
                                 <CollapsibleTrigger asChild>
                                     <SettingsFormTitle className={"pb-0 mb-0"}>
                                         <div className="flex flex-row cursor-pointer items-center gap-2">
@@ -264,8 +265,8 @@ export default function CreateLabView() {
                                                                         parseFloat(
                                                                             e
                                                                                 .target
-                                                                                .value
-                                                                        )
+                                                                                .value,
+                                                                        ),
                                                                     )
                                                                 }
                                                             />
@@ -295,8 +296,8 @@ export default function CreateLabView() {
                                                                         parseFloat(
                                                                             e
                                                                                 .target
-                                                                                .value
-                                                                        )
+                                                                                .value,
+                                                                        ),
                                                                     )
                                                                 }
                                                             />
@@ -324,8 +325,8 @@ export default function CreateLabView() {
                                                                         parseInt(
                                                                             e
                                                                                 .target
-                                                                                .value
-                                                                        )
+                                                                                .value,
+                                                                        ),
                                                                     )
                                                                 }
                                                             />
@@ -340,7 +341,7 @@ export default function CreateLabView() {
                             </Collapsible>
                         </SettingsFormBox>
                         <SettingsFormBox className={"p-0"}>
-                            <Collapsible>
+                            <Collapsible defaultOpen={true}>
                                 <CollapsibleTrigger asChild>
                                     <SettingsFormTitle className={"pb-0 mb-0"}>
                                         <div className="flex flex-row cursor-pointer items-center gap-2">
@@ -368,7 +369,7 @@ export default function CreateLabView() {
                                                             <Input
                                                                 type="file"
                                                                 onChange={(
-                                                                    e
+                                                                    e,
                                                                 ) => {
                                                                     const file =
                                                                         e.target
@@ -379,15 +380,15 @@ export default function CreateLabView() {
                                                                     }
                                                                     // update RHF with the actual File object
                                                                     field.onChange(
-                                                                        file
+                                                                        file,
                                                                     );
                                                                     createLabForm.setValue(
                                                                         "image",
-                                                                        file
+                                                                        file,
                                                                     );
                                                                     // run validation right away
                                                                     createLabForm.trigger(
-                                                                        "image"
+                                                                        "image",
                                                                     );
                                                                 }}
                                                             />

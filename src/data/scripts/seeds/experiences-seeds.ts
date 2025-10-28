@@ -6,10 +6,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
     {
         slug: "istanbul",
         name: "Istanbul – Türkiye",
-        center: {
-            type: "Point",
-            coordinates: [28.955, 41.0136],
-        },
+        lngCenter: 28.955,
+        latCenter: 41.0136,
         initialZoom: 12,
         logo: "https://heritagelab.center/wp-content/uploads/2022/10/WhatsApp-Image-2023-06-12-at-13.29.04-e1686618130600.jpeg",
         content: "Explore Istanbul",
@@ -18,10 +16,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
         visibility: "public",
     },
     {
-        center: {
-            type: "Point",
-            coordinates: [34.747, 32.0453],
-        },
+        lngCenter: 34.747,
+        latCenter: 32.0453,
         initialZoom: 15,
         slug: "resurfacingjaffa",
         name: "Jaffa Resurfacing",
@@ -33,10 +29,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
         visibility: "public",
     },
     {
-        center: {
-            type: "Point",
-            coordinates: [40.7275, -15.0364],
-        },
+        lngCenter: 40.7275,
+        latCenter: -15.0364,
         initialZoom: 15,
         slug: "mozambique",
         name: "Island of Mozambique",
@@ -48,10 +42,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
         visibility: "public",
     },
     {
-        center: {
-            type: "Point",
-            coordinates: [55.6011, 25.6087],
-        },
+        lngCenter: 55.6011,
+        latCenter: 25.6087,
         initialZoom: 14,
         slug: "ummalquwain",
         name: "Umm Al Quwain",
@@ -63,10 +55,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
         visibility: "public",
     },
     {
-        center: {
-            type: "Point",
-            coordinates: [39.2026, -6.1659],
-        },
+        lngCenter: 39.2026,
+        latCenter: -6.1659,
         slug: "zanzibar",
         name: "Zanzibar, Tanzania",
         content:
@@ -78,10 +68,8 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
         visibility: "public",
     },
     {
-        center: {
-            type: "Point",
-            coordinates: [70.5, 10.75],
-        },
+        lngCenter: 70.5,
+        latCenter: 10.75,
         initialZoom: 7,
         slug: "kerala",
         name: "Kerala",
@@ -99,10 +87,8 @@ export const universe_experience_doc = (): Prisma.LabCreateInput => {
         throw new Error("Super admin organization ID is not defined");
     }
     return {
-        center: {
-            type: "Point",
-            coordinates: [0, 0],
-        },
+        lngCenter: 0,
+        latCenter: 0,
         initialZoom: 1,
         name: "Universe Map",
         subtitle: "Explore our curated stories",
@@ -116,13 +102,11 @@ export const universe_experience_doc = (): Prisma.LabCreateInput => {
 
 export const test_experiences_doc = async (
     slug: string,
-    center: number[]
+    center: number[],
 ): Promise<Prisma.LabCreateInput> => {
     return {
-        center: {
-            type: "Point",
-            coordinates: center,
-        },
+        lngCenter: center[0],
+        latCenter: center[1],
         initialZoom: 9,
         name:
             faker.lorem.sentence({ min: 2, max: 3 }).replace(".", "") + " Lab",
@@ -131,8 +115,8 @@ export const test_experiences_doc = async (
             process.env.LOCAL_UPLOADER === "true"
                 ? await getLocalFeaturedLabImageUrl()
                 : "https://picsum.photos/seed/" +
-                  faker.string.alphanumeric(10) +
-                  "/800/600",
+                faker.string.alphanumeric(10) +
+                "/800/600",
         stories: undefined,
         content: faker.lorem.sentence({ min: 40, max: 60 }),
         subtitle: faker.lorem.words({ min: 5, max: 10 }).replace(".", ""),

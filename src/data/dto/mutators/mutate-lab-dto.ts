@@ -2,7 +2,7 @@ import {
     canUserCreateLab,
     canUserEditLab,
 } from "@/data/dto/auth/lab-permissions";
-import { GeoType, Prisma, PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
@@ -173,8 +173,13 @@ export async function createLabDTO(formData: FormData) {
         if (!result.success) {
             throw new Error(JSON.stringify(z.flattenError(result.error)));
         }
-
         const { longitude, latitude, adminEmail, image, ...rest } = result.data;
+
+        // check if lab exists already
+        if (await prisma.lab.findUnique({ where: { slug: rest.slug } })) {
+            throw new Error("Lab with this subdomain already exists");
+        }
+
         if (!image) {
             throw new Error("No lab picture provided");
         }
@@ -190,19 +195,11 @@ export async function createLabDTO(formData: FormData) {
         // insert newly created lab into database
         const data: Prisma.LabCreateInput = {
             logo: path,
-            center: {
-                type: "Point" as GeoType,
-                coordinates: [longitude, latitude],
-            },
+            lngCenter: longitude,
+            latCenter: latitude,
             ...rest,
         };
         await createOrganization(data, adminEmail);
-        const createResult = await prisma.lab.create({
-            data,
-        });
-        if (!createResult) {
-            throw new Error("Failed to create lab");
-        }
 
         // revalidate caches
         revalidateTag(`labs`);
@@ -220,33 +217,73 @@ async function createOrganization(
     adminEmail: string,
 ) {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-        if (!session || !session.user) {
-            throw new Error("No valid session found");
+        // check permissions of user
+        const isAllowedToCreateLab = await canUserCreateLab();
+        if (!isAllowedToCreateLab) {
+            throw new Error("User is not allowed to create a lab");
         }
 
-        console.log("Creating organization for lab:", data.slug);
-        console.log("inviting admin user:", adminEmail);
-        throw new Error("Disabled lab creation for now");
-        // TODO: implement this
-        // const createOrganizationResult = await auth.api.createOrganization({
-        //     body: {
-        //         name: data.name,
-        //         content: data.content,
-        //         logo: data.logo || "",
-        //         slug: data.slug,
-        //         initialZoom: data.initialZoom,
-        //         visibility: data.visibility,
-        //     },
-        //     // This endpoint requires session cookies.
-        //     headers: await headers(),
-        // });
-        // return createOrganizationResult;
+        // create a new organization via BetterAuth API
+        const createOrganizationResult = await createLab(data);
+
+        // invite the admin user to the newly created organization
+        const inviteResult = await inviteAdminToLab(
+            createOrganizationResult.id,
+            adminEmail,
+        );
+
+        return { org: createOrganizationResult, admin: inviteResult };
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
+
+const createLab = async (data: Prisma.LabCreateInput) => {
+    try {
+        const createOrganizationResult = await auth.api.createOrganization({
+            body: {
+                subtitle: data.subtitle,
+                lngCenter: data.lngCenter,
+                latCenter: data.latCenter,
+                name: data.name,
+                content: data.content,
+                logo: data.logo || "",
+                slug: data.slug,
+                initialZoom: data.initialZoom,
+                visibility: data.visibility,
+            },
+            // This endpoint requires session cookies.
+            headers: await headers(),
+        });
+        if (!createOrganizationResult) {
+            throw new Error("Failed to create organization");
+        }
+        return createOrganizationResult;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+};
+
+const inviteAdminToLab = async (labId: string, adminEmail: string) => {
+    try {
+        const inviteResult = await auth.api.createInvitation({
+            body: {
+                organizationId: labId,
+                email: adminEmail,
+                role: "admin",
+            },
+            headers: await headers(),
+        });
+        if (!inviteResult)
+            throw new Error("Failed to invite admin user to organization");
+        return inviteResult;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+};

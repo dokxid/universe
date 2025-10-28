@@ -9,7 +9,7 @@ export async function sanitizeToStoryDTO(
         tags: Prisma.TagModel[];
         elevationRequests: Prisma.ElevationRequestModel[];
         lab: Prisma.LabModel;
-    }
+    },
 ): Promise<StoryDTO> {
     try {
         const sanitizedStory: StoryDTO = {
@@ -29,7 +29,7 @@ export async function sanitizeToStoryDTO(
             elevationRequests: rawStory.elevationRequests,
             author: {
                 id: rawStory.author.id,
-                name: await buildDisplayedName(rawStory.author),
+                name: buildDisplayedName(rawStory.author),
                 profilePictureUrl:
                     rawStory.author.profilePictureUrl ?? undefined,
             },
@@ -45,7 +45,7 @@ export async function sanitizeToStoryDTO(
     } catch (error) {
         console.error("Error sanitizing story:", error);
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }

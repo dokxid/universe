@@ -46,10 +46,11 @@ const prisma = new PrismaClient();
 
 export async function seedDatabase(
     numRandomCityCenters: number,
-    numStories: number
+    numStories: number,
 ) {
     try {
         // tear down in order
+        await prisma.invitation.deleteMany({});
         await prisma.elevationRequest.deleteMany({});
         await prisma.story.deleteMany({});
         await prisma.lab.deleteMany({});
@@ -57,7 +58,7 @@ export async function seedDatabase(
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,
-            numRandomCityCenters
+            numRandomCityCenters,
         );
 
         // await deleteUploadsFolder();

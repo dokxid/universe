@@ -1,23 +1,31 @@
 import { Prisma } from "@/generated/prisma/client";
 import { UserDTO } from "@/types/dtos";
 
-export function buildDisplayedName(user: Prisma.UserModel): string {
+export function buildDisplayedName({
+    firstName,
+    displayName,
+    familyName,
+}: {
+    firstName?: string | null;
+    displayName?: string | null;
+    familyName?: string | null;
+}): string {
     // case 1: displayName exists
-    if (user.displayName && user.displayName.trim().length > 0) {
-        return user.displayName;
+    if (displayName) {
+        return displayName.trim().length > 0 ? displayName : "Anonymous User";
     }
     // case 2: construct from firstName and familyName
-    const firstName = user.firstName ? user.firstName.trim() : "";
-    const familyName = user.familyName ? user.familyName.trim() : "";
-    if (firstName && familyName) {
-        return `${firstName} ${familyName}`;
+    const sanitizedFirstName = firstName ? firstName.trim() : "";
+    const sanitizedFamilyName = familyName ? familyName.trim() : "";
+    if (sanitizedFirstName && sanitizedFamilyName) {
+        return `${sanitizedFirstName} ${sanitizedFamilyName}`;
     }
     // case 3: use whichever is available
-    if (firstName) {
-        return firstName;
+    if (sanitizedFirstName) {
+        return sanitizedFirstName;
     }
-    if (familyName) {
-        return familyName;
+    if (sanitizedFamilyName) {
+        return sanitizedFamilyName;
     }
     // case 4: fallback to "Anonymous User"
     return "Anonymous User";
@@ -29,7 +37,7 @@ export function sanitizeToUserDTO(
             lab: Prisma.LabModel;
         })[];
         stories: Prisma.StoryModel[];
-    }
+    },
 ): UserDTO {
     const userDTO: UserDTO = {
         id: user.id,

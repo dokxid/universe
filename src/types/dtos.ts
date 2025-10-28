@@ -63,6 +63,19 @@ export type StoryDTO = {
     };
 };
 
+export type InvitationDTO = {
+    id: string;
+    inviter: { name: string; id: string };
+    email: string;
+    lab: {
+        id: string;
+        name: string;
+        slug: string;
+        logo: string | null;
+    };
+    role: Role;
+};
+
 export type UserDTO = {
     id: string;
     email: string;

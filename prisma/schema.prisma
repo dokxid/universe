@@ -28,6 +28,7 @@ enum License {
 enum Role {
     member
     admin
+    owner
 }
 
 enum ElevationRequestStatus {
@@ -184,7 +185,8 @@ model Lab {
     logo        String?
     createdAt   DateTime      @default(now())
     metadata    String?
-    center      GeoJson
+    lngCenter   Float
+    latCenter   Float
     initialZoom Int
     subtitle    String
     content     String
@@ -210,15 +212,15 @@ model Member {
 }
 
 model Invitation {
-    id             String   @id @default(auto()) @map("_id") @db.ObjectId
-    organizationId String   @db.ObjectId
-    organization   Lab      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-    email          String
-    role           String?
-    status         String
-    expiresAt      DateTime
-    inviterId      String   @db.ObjectId
-    user           User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    labId     String   @db.ObjectId
+    lab       Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+    email     String
+    role      String?
+    status    String
+    expiresAt DateTime
+    inviterId String   @db.ObjectId
+    user      User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
     @@map("invitation")
 }

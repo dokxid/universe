@@ -29,7 +29,7 @@ export const getPermissionsByUser = cache(
     async (
         user: UserDTO | null,
         experienceSlug: string,
-        storyId?: string
+        storyId?: string,
     ): Promise<Permissions[]> => {
         const permissions: Permissions[] = [];
 
@@ -41,7 +41,7 @@ export const getPermissionsByUser = cache(
                 "superadmin",
                 "manage_users",
                 "add_story",
-                "edit_story"
+                "edit_story",
             );
             return permissions;
         } else if (await isUserAdmin(experienceSlug)) {
@@ -56,25 +56,34 @@ export const getPermissionsByUser = cache(
         }
         console.log(
             `User ${user.id} permissions in ${experienceSlug}:`,
-            permissions
+            permissions,
         );
         return permissions;
-    }
+    },
 );
 
 export const getCurrentUser = cache(async () => {
-    const user = await withAuth({ ensureSignedIn: true });
-    return user;
+    try {
+        const user = await withAuth({ ensureSignedIn: true });
+        if (!user) throw new Error("User is not authenticated");
+        return user;
+    } catch (err) {
+        throw err;
+    }
 });
 
 export const getCurrentUserOptional = cache(async () => {
-    const user = await withAuth({ ensureSignedIn: false });
-    return user;
+    try {
+        const user = await withAuth({ ensureSignedIn: false });
+        return user;
+    } catch {
+        return null;
+    }
 });
 
 export async function isUserMember(
     viewer: UserDTO,
-    experienceSlug: string
+    experienceSlug: string,
 ): Promise<boolean> {
     try {
         if (!viewer) return false;
@@ -82,7 +91,7 @@ export async function isUserMember(
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserLabRelationBySlug(
             viewer,
-            experienceSlug
+            experienceSlug,
         );
         return userRelation.isMember;
     } catch {
@@ -97,7 +106,7 @@ export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
         if (experienceSlug === "universe") return false;
         const userRelation = await getUserLabRelationBySlug(
             viewer,
-            experienceSlug
+            experienceSlug,
         );
         return userRelation.isAdmin;
     } catch {
@@ -119,7 +128,7 @@ export async function isUserSuperAdmin(): Promise<boolean> {
 
 export async function isUserPartOfOrganization(
     user: UserDTO | null,
-    experienceSlug: string
+    experienceSlug: string,
 ) {
     try {
         if (!user) return false;
@@ -132,7 +141,7 @@ export async function isUserPartOfOrganization(
 
 async function getUserLabRelationBySlug(
     user: UserDTO | null,
-    labSlug: string
+    labSlug: string,
 ): Promise<MembershipResult> {
     try {
         if (!user) throw new Error("User is not authenticated");

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getLabSlugFromPathname } from "./lib/utils/pathname";
 
 const CSP_ENABLED = false;
+const DEBUG = false;
 
 // prefix for labs (to avoid subdomain routing complexity)
 const SLUG_PATH_PREFIX = "/:slug";
@@ -21,10 +22,13 @@ const GUEST_SLUG_PATHS = [
     "/user/view/:userId",
     "/signup",
 ];
-const GUEST_SLUGLESS_PATHS = ["/api/files/:key"];
+const GUEST_SLUGLESS_PATHS = [
+    "/api/files/:key",
+    "/auth/accept-invitation/:invitationId",
+];
 const SANITIZED_GUEST_PATHS = GUEST_SLUG_PATHS.map(
     (path) => SLUG_PATH_PREFIX + path,
-).concat(GUEST_SLUGLESS_PATHS);
+);
 
 function addCSPHeaders(response: NextResponse): NextResponse {
     if (CSP_ENABLED === false) {
@@ -62,16 +66,30 @@ function addCSPHeaders(response: NextResponse): NextResponse {
 }
 
 function isGuestPath(pathname: string): boolean {
-    return SANITIZED_GUEST_PATHS.some((path) => {
-        const pattern = path.replace(":slug", "[^/]+");
-        const regex = new RegExp(`^${pattern}$`);
-        return regex.test(pathname);
-    });
+    if (
+        !SANITIZED_GUEST_PATHS.some((path) => {
+            const pattern = path.replace(":slug", "[^/]+");
+            const regex = new RegExp(`^${pattern}$`);
+            return regex.test(pathname);
+        })
+    )
+        return true;
+    if (GUEST_SLUGLESS_PATHS.includes(pathname)) return true;
+    return false;
 }
 
 export default async function middleware(req: NextRequest) {
     const slug = getLabSlugFromPathname(req.nextUrl.pathname);
     const response = NextResponse.next();
+
+    if (DEBUG) {
+        const debugObject = {
+            pathname: req.nextUrl.pathname,
+            isGuestPath: isGuestPath(req.nextUrl.pathname),
+            slug: slug,
+        };
+        console.debug("Middleware debug:", JSON.stringify(debugObject));
+    }
 
     // case: guest path, allow response
     if (isGuestPath(req.nextUrl.pathname)) {
@@ -97,6 +115,9 @@ export default async function middleware(req: NextRequest) {
 export const config = {
     runtime: "nodejs",
     matcher: [
+        // public apis
+        "/api/files/:key",
+
         // public paths
         "/:slug/",
         "/:slug/images/:filename",
@@ -111,23 +132,28 @@ export const config = {
         "/:slug/login",
         "/:slug/signup",
         "/:slug/user/view/:userId",
-        "/api/files/:key",
+        "/auth/accept-invitation/:invitationId",
+
         // account and related paths
         "/:slug/account/user-preferences",
+
         // editor+ paths
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
         "/:slug/elevation-requests",
+
         // admin paths
         "/:slug/lab/settings",
         "/:slug/lab/manage",
+
         // super admin paths
         "/:slug/debug-settings",
         "/universe/labs/manage",
         "/universe/labs/view/:id",
         "/universe/labs/create",
+
         // static pages
         "/:slug/legal/privacy",
         "/:slug/legal/terms",

@@ -59,11 +59,21 @@ export const auth = betterAuth({
                         organization: "lab",
                     },
                 },
+                invitation: {
+                    fields: {
+                        organizationId: "labId",
+                        organization: "lab",
+                    },
+                },
                 organization: {
                     modelName: "Lab",
                     additionalFields: {
-                        center: {
-                            type: "json",
+                        lngCenter: {
+                            type: "number",
+                            required: true,
+                        },
+                        latCenter: {
+                            type: "number",
                             required: true,
                         },
                         initialZoom: {
@@ -72,15 +82,16 @@ export const auth = betterAuth({
                         },
                         subtitle: {
                             type: "string",
-                            required: false,
+                            required: true,
                         },
                         content: {
                             type: "string",
-                            required: false,
+                            required: true,
                         },
                         stories: {
                             type: "json",
-                            required: true,
+                            required: false,
+                            input: false,
                         },
                         visibility: {
                             type: "string",
