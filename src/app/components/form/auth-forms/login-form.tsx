@@ -20,7 +20,7 @@ import { handleFormErrors } from "@/lib/utils/form-error-handling";
 import { getLabSlugFromPathname } from "@/lib/utils/pathname";
 import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { mutate } from "swr";
