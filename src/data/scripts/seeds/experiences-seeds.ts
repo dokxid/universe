@@ -83,9 +83,6 @@ export const stock_experiences_doc: Prisma.LabCreateInput[] = [
 ];
 
 export const universe_experience_doc = (): Prisma.LabCreateInput => {
-    if (!process.env.NEXT_PUBLIC_WORKOS_SUPER_ADMIN_ORG_ID) {
-        throw new Error("Super admin organization ID is not defined");
-    }
     return {
         lngCenter: 0,
         latCenter: 0,
@@ -115,8 +112,8 @@ export const test_experiences_doc = async (
             process.env.LOCAL_UPLOADER === "true"
                 ? await getLocalFeaturedLabImageUrl()
                 : "https://picsum.photos/seed/" +
-                faker.string.alphanumeric(10) +
-                "/800/600",
+                  faker.string.alphanumeric(10) +
+                  "/800/600",
         stories: undefined,
         content: faker.lorem.sentence({ min: 40, max: 60 }),
         subtitle: faker.lorem.words({ min: 5, max: 10 }).replace(".", ""),

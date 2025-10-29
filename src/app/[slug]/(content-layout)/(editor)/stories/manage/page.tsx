@@ -14,7 +14,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Newspaper } from "lucide-react";
 import { Suspense } from "react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
     const { slug } = await params;
     const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
