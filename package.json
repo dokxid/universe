@@ -22,7 +22,8 @@
         "seed:staging": "tsx --env-file=.env.staging src/data/scripts/seed-staging-script.ts",
         "seed:docker": "MONGODB_URI=mongodb://localhost:28017 MONGODB_DBNAME=universe-production tsx --env-file=.env.docker src/data/scripts/seed-production-script.ts",
         "prepare": "husky",
-        "vercel-build": "prisma generate && prisma db push && next build"
+        "vercel-build": "prisma generate && prisma db push && next build",
+        "postinstall": "prisma generate --no-engine"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.888.0",
