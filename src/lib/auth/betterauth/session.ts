@@ -20,6 +20,7 @@ export async function getUserFromSession({
         console.log("ensureSignedIn: " + ensureSignedIn);
         return null;
     }
+    // console.log("Session user ID: " + JSON.stringify(session));
     const user = session.user;
     const userDTO = getUserDTO(user.id);
     return userDTO;

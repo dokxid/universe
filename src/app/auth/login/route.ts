@@ -1,7 +1,11 @@
+import { PrismaClient } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
 import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { APIError } from "better-auth";
 import { NextRequest } from "next/server";
 import z from "zod";
+
+const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
     try {
@@ -12,6 +16,12 @@ export const POST = async (request: NextRequest) => {
             throw new Error(JSON.stringify(z.flattenError(result.error)));
         }
         const data = result.data;
+        const lab = await prisma.lab.findUnique({
+            where: { slug: data.slug },
+        });
+        if (!lab) {
+            throw new Error("Lab not found");
+        }
         const response = await auth.api.signInEmail({
             body: {
                 email: data.email,
@@ -23,6 +33,8 @@ export const POST = async (request: NextRequest) => {
         });
         return response;
     } catch (error) {
+        if (error instanceof APIError)
+            console.log("Login response:", JSON.stringify(error.body));
         return Response.json({
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",

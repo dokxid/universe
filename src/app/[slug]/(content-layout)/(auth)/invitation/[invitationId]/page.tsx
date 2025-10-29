@@ -15,15 +15,7 @@ export default async function AcceptInvitationPage({
     return (
         <ContentLayout>
             <ContentLayoutInner className="flex flex-col items-center h-full justify-center">
-                <div className="grid w-lg">
-                    <div className="flex flex-col gap-4 p-6 md:p-10">
-                        <div className="flex flex-1 items-center justify-center">
-                            <div className="w-full max-w-xs">
-                                <AcceptInvitationView invitation={invitation} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <AcceptInvitationView invitation={invitation} />
             </ContentLayoutInner>
         </ContentLayout>
     );

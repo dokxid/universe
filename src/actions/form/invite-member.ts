@@ -3,6 +3,8 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
 import { inviteMemberSchema } from "@/types/form-schemas/invite-member-form-schemas";
+import { APIError } from "better-auth";
+import { headers } from "next/headers";
 import z from "zod";
 
 export async function inviteMemberAction(formData: FormData) {
@@ -13,29 +15,42 @@ export async function inviteMemberAction(formData: FormData) {
         });
         if (!validatedData.success) {
             return {
-                errors: z.treeifyError(validatedData.error),
+                errors: z.flattenError(validatedData.error),
             };
         }
         const prisma = new PrismaClient();
+        console.log(
+            "Inviting member to lab with slug:",
+            validatedData.data.slug,
+        );
         const lab = await prisma.lab.findUnique({
             where: { slug: validatedData.data.slug },
         });
         if (!lab) {
             throw new Error("Lab not found");
         }
-        await auth.api.createInvitation({
+        const result = await auth.api.createInvitation({
             body: {
                 email: validatedData.data.email,
                 role: "member",
                 organizationId: lab.id,
                 resend: true,
             },
+            headers: await headers(),
         });
+        console.log("Invitation result:", result);
         return { success: true };
     } catch (error) {
-        console.error("Error inviting member:", error);
-        throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
-        );
+        if (error instanceof APIError)
+            console.log("Login response:", JSON.stringify(error.body));
+        return {
+            success: false,
+            error:
+                error instanceof Error
+                    ? error.message
+                    : error instanceof APIError
+                      ? JSON.stringify(error.body)
+                      : "Unknown error",
+        };
     }
 }

@@ -1,4 +1,3 @@
-import { getCurrentUser } from "@/data/auth";
 import { getInvitationDTO } from "@/data/dto/getters/get-invitation-dto";
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,18 +17,18 @@ export async function GET(
             return notFound();
         }
 
-        // case: user not logged in, redirect to login
-        const user = await getCurrentUser(false);
-        console.log("Current user:", user);
-        if (!user) {
-            const redirectUrl = req.nextUrl.clone();
-            redirectUrl.pathname = `/${slug}/login`;
-            redirectUrl.searchParams.set(
-                "next",
-                returnUrl + req.nextUrl.search,
-            );
-            return NextResponse.redirect(redirectUrl);
-        }
+        // // case: user not logged in, redirect to login
+        // const user = await getCurrentUser(false);
+        // console.log("Current user:", user);
+        // if (!user) {
+        //     const redirectUrl = req.nextUrl.clone();
+        //     redirectUrl.pathname = `/${slug}/login`;
+        //     redirectUrl.searchParams.set(
+        //         "next",
+        //         returnUrl + req.nextUrl.search,
+        //     );
+        //     return NextResponse.redirect(redirectUrl);
+        // }
         return NextResponse.redirect(returnUrl);
     } catch (error) {
         console.log("Error accepting invitation:", error);

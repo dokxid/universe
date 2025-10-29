@@ -22,10 +22,11 @@ export const signUpDTO = async (formData: FormData) => {
         });
         console.log("user created: ", response);
 
-        return { success: true, error: null };
+
+        return { success: true, error: null, response: response };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 };

@@ -63,7 +63,7 @@ export function SignupForm() {
                     {
                         type: "server",
                         message: zodErrors.fieldErrors[fieldName].join(", "),
-                    }
+                    },
                 );
             });
             zodErrors.formErrors.forEach((error: string) => {
