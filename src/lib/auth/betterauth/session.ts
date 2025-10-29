@@ -17,7 +17,7 @@ export async function withAuth({
         headers: await headers(),
     });
     if (!session || !session.user) {
-        console.log(ensureSignedIn);
+        console.log("ensureSignedIn: " + ensureSignedIn);
         return null;
     }
     const user = session.user;

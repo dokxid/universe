@@ -20,9 +20,13 @@ export async function getUserAction(userId: string): Promise<UserDTO | null> {
     }
 }
 
-export async function getCurrentUserAction(): Promise<UserDTO | null> {
+export async function getCurrentUserAction(
+    ensureLoggedIn = true,
+): Promise<UserDTO | null> {
     try {
-        const currentUser = await getCurrentUser();
+        const currentUser = await (ensureLoggedIn
+            ? getCurrentUser()
+            : getCurrentUserOptional());
         if (!currentUser) return null;
         const user = await getUserDTO(currentUser.id);
         return user;
@@ -33,7 +37,7 @@ export async function getCurrentUserAction(): Promise<UserDTO | null> {
 }
 
 export async function getUserFromIdAction(
-    userId: string
+    userId: string,
 ): Promise<UserDTO | null> {
     try {
         const user = await getUserDTO(userId);
@@ -47,7 +51,7 @@ export async function getUserFromIdAction(
 export async function getUserPermissionAction(
     labSlug: string,
     permission: Permissions,
-    storyId?: string
+    storyId?: string,
 ): Promise<boolean> {
     try {
         const user = await getCurrentUser();

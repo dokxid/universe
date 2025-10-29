@@ -6,29 +6,22 @@ import { getLabSlugFromPathname } from "./lib/utils/pathname";
 const CSP_ENABLED = false;
 const DEBUG = false;
 
-// prefix for labs (to avoid subdomain routing complexity)
-const SLUG_PATH_PREFIX = "/:slug";
-const GUEST_SLUG_PATHS = [
-    "",
-    "/map",
-    "/stories",
-    "/stories/view/:id",
-    "/labs",
-    "/map-settings",
-    "/images/:filename",
-    "/about",
-    "/contact",
-    "/login",
-    "/user/view/:userId",
-    "/signup",
-];
-const GUEST_SLUGLESS_PATHS = [
+const GUEST_PATHS = [
+    "/:slug/",
+    "/:slug/map",
+    "/:slug/stories",
+    "/:slug/stories/view/:id",
+    "/:slug/labs",
+    "/:slug/map-settings",
+    "/:slug/images/:filename",
+    "/:slug/about",
+    "/:slug/contact",
+    "/:slug/login",
+    "/:slug/user/view/:userId",
+    "/:slug/signup",
     "/api/files/:key",
     "/auth/accept-invitation/:invitationId",
 ];
-const SANITIZED_GUEST_PATHS = GUEST_SLUG_PATHS.map(
-    (path) => SLUG_PATH_PREFIX + path,
-);
 
 function addCSPHeaders(response: NextResponse): NextResponse {
     if (CSP_ENABLED === false) {
@@ -66,16 +59,12 @@ function addCSPHeaders(response: NextResponse): NextResponse {
 }
 
 function isGuestPath(pathname: string): boolean {
-    if (
-        !SANITIZED_GUEST_PATHS.some((path) => {
-            const pattern = path.replace(":slug", "[^/]+");
-            const regex = new RegExp(`^${pattern}$`);
-            return regex.test(pathname);
-        })
-    )
-        return true;
-    if (GUEST_SLUGLESS_PATHS.includes(pathname)) return true;
-    return false;
+    const isGuestPath = GUEST_PATHS.some((path) => {
+        const pattern = path.replace(/:[^/]+/g, "[^/]+");
+        const regex = new RegExp(`^${pattern}$`);
+        return regex.test(pathname);
+    });
+    return isGuestPath;
 }
 
 export default async function middleware(req: NextRequest) {

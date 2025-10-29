@@ -3,7 +3,7 @@
 import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-experience-dto";
 import { LabDTO } from "@/types/dtos";
 
-export async function getExperiencesAction(): Promise<LabDTO[]> {
+export async function getLabsAction(): Promise<LabDTO[]> {
     try {
         const experiences = await getLabsDTO();
         return experiences;
@@ -13,7 +13,7 @@ export async function getExperiencesAction(): Promise<LabDTO[]> {
     }
 }
 
-export async function getExperienceAction(
+export async function getLabAction(
     slug: string
 ): Promise<LabDTO | null> {
     try {

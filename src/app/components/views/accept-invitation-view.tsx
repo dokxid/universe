@@ -20,7 +20,7 @@ export function AcceptInvitationView({
 }: {
     invitation: InvitationDTO;
 }) {
-    const { user, isLoading, isError } = useCurrentUser();
+    const { user, isLoading, isError } = useCurrentUser(false);
     if (isLoading) {
         return <div>Loading...</div>;
     }
