@@ -52,6 +52,7 @@ export async function getUsers(whereInput: Prisma.UserWhereInput) {
             include: {
                 stories: storiesSelectFields,
                 members: membersSelectFields,
+                _count: { select: { stories: true } },
             },
         });
         return result;

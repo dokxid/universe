@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 
 const authorSelectFields: { select: Prisma.UserSelect } = {
     select: {
+        id: true,
         displayName: true,
         firstName: true,
         familyName: true,
@@ -18,12 +19,13 @@ const authorSelectFields: { select: Prisma.UserSelect } = {
 
 const labSelectFields: { select: Prisma.LabSelect } = {
     select: {
+        id: true,
         slug: true,
     },
 };
 
 export async function getAllStories(
-    whereInput?: Prisma.StoryWhereInput
+    whereInput?: Prisma.StoryWhereInput,
 ): Promise<StoryDTO[]> {
     try {
         const allStories = await prisma.story.findMany({
@@ -36,7 +38,7 @@ export async function getAllStories(
             },
         });
         const sanitizedStories = await Promise.all(
-            allStories.map((story) => sanitizeToStoryDTO(story))
+            allStories.map((story) => sanitizeToStoryDTO(story)),
         );
         return sanitizedStories;
     } catch (err) {
@@ -70,7 +72,7 @@ export async function queryStory(storyId: string): Promise<StoryDTO> {
 }
 
 export async function insertStory(
-    storyToInsert: Prisma.StoryCreateInput
+    storyToInsert: Prisma.StoryCreateInput,
 ): Promise<StoryModel> {
     try {
         const result = await prisma.story.create({
@@ -99,7 +101,7 @@ export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
             },
         });
         const sanitizedStories = await Promise.all(
-            result.map((story) => sanitizeToStoryDTO(story))
+            result.map((story) => sanitizeToStoryDTO(story)),
         );
         return sanitizedStories;
     } catch (err) {

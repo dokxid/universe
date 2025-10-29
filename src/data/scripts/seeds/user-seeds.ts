@@ -23,7 +23,10 @@ export const testMemberDoc = (): Prisma.UserCreateInput => {
         phoneNumber: faker.datatype.boolean(0.4)
             ? faker.phone.number()
             : undefined,
-        website: faker.datatype.boolean(0.4) ? faker.internet.url() : undefined,
+        website: faker.datatype.boolean(0.6) ? faker.internet.url() : undefined,
+        publicEmail: faker.datatype.boolean(0.8)
+            ? faker.internet.email()
+            : undefined,
         description: faker.datatype.boolean(0.5)
             ? faker.lorem.paragraph()
             : undefined,

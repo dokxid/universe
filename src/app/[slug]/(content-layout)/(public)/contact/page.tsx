@@ -92,12 +92,7 @@ export default async function AboutPage({
                                         <ContactName
                                             href={`/${slug}/user/view/${user.id}`}
                                         >
-                                            {user.displayName
-                                                ? user.displayName
-                                                : user.firstName &&
-                                                    user.lastName
-                                                  ? `${user.firstName} ${user.lastName}`
-                                                  : "Anonymous"}
+                                            {user.name}
                                         </ContactName>
                                         <ContactRole>
                                             {user.position || "Not specified"}

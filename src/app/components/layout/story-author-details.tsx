@@ -65,7 +65,7 @@ export function StoryAuthorDetails({
                         {"by "}
                         <Link
                             className={"hover:underline cursor-pointer"}
-                            href={`/${story.lab.slug}/user/view/${story.author.name}`}
+                            href={`/${story.lab.slug}/user/view/${story.author.id}`}
                         >
                             <b>{`${story.author.name}`}</b>
                         </Link>
@@ -112,7 +112,7 @@ export function StoryAuthorEditDetails({
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
-                        href={`/${story.lab.slug}/user/view/${story.author.name}`}
+                        href={`/${story.lab.slug}/user/view/${story.author.id}`}
                     >
                         <Avatar className={"size-[52px]"}>
                             <AvatarImage

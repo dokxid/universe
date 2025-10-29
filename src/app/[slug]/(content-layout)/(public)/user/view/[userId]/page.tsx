@@ -50,7 +50,7 @@ export async function generateStaticParams() {
 export default async function AboutPage({
     params,
 }: {
-    params: { slug: string; userId: string };
+    params: Promise<{ slug: string; userId: string }>;
 }) {
     const { slug, userId } = await params;
     const user = await getUserDTO(userId);
@@ -101,14 +101,7 @@ export default async function AboutPage({
                                 </ContactImage>
                                 <ContactCardContent>
                                     <ContactNameRole>
-                                        <ContactName>
-                                            {user.displayName
-                                                ? user.displayName
-                                                : user.firstName &&
-                                                  user.lastName
-                                                ? `${user.firstName} ${user.lastName}`
-                                                : "Anonymous"}
-                                        </ContactName>
+                                        <ContactName>{user.name}</ContactName>
                                         <ContactRole>
                                             {user.position || "Not specified"}
                                         </ContactRole>
