@@ -1,5 +1,7 @@
 import { testMemberDoc } from "@/data/scripts/seeds/user-seeds";
 import { Prisma, PrismaClient, Role } from "@/generated/prisma/client";
+import { auth } from "@/lib/auth/betterauth/auth";
+import fs from "node:fs/promises";
 
 const prisma = new PrismaClient();
 
@@ -74,5 +76,152 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
         console.log("Users seeded successfully");
     } catch (error) {
         console.error("Error seeding users:", error);
+    }
+}
+
+type CypressEnv = {
+    superadmin_email: string;
+    superadmin_password: string;
+    admin_email: string;
+    admin_password: string;
+    member_email: string;
+    member_password: string;
+};
+
+type CypressCredentials = {
+    superAdmin: {
+        email: string;
+        password: string;
+    };
+    admin: {
+        email: string;
+        password: string;
+    };
+    member: {
+        email: string;
+        password: string;
+    };
+};
+
+async function getCypressEnvVars(): Promise<CypressCredentials> {
+    const CYPRESS_ENV_PATHNAME = "cypress.env.json";
+    const data = await fs.readFile(CYPRESS_ENV_PATHNAME, "utf8");
+    const cypressEnv = JSON.parse(data) as CypressEnv;
+    return {
+        superAdmin: {
+            email: cypressEnv.superadmin_email,
+            password: cypressEnv.superadmin_password,
+        },
+        admin: {
+            email: cypressEnv.admin_email,
+            password: cypressEnv.admin_password,
+        },
+        member: {
+            email: cypressEnv.member_email,
+            password: cypressEnv.member_password,
+        },
+    };
+}
+
+export async function seedCypressUsers() {
+    try {
+        // validate env variables
+        const credentials = await getCypressEnvVars();
+
+        // tear down existing cypress users
+        await prisma.user.deleteMany({
+            where: {
+                email: {
+                    in: [
+                        credentials.superAdmin.email,
+                        credentials.admin.email,
+                        credentials.member.email,
+                    ],
+                },
+            },
+        });
+
+        // generate seeding data
+        const cypressSuperAdmin: Prisma.UserCreateInput = {
+            ...testMemberDoc(),
+            email: credentials.superAdmin.email,
+            role: "admin",
+        };
+        const cypressAdmin: Prisma.UserCreateInput = {
+            ...testMemberDoc(),
+            email: credentials.admin.email,
+        };
+        const cypressMember: Prisma.UserCreateInput = {
+            ...testMemberDoc(),
+            email: credentials.member.email,
+        };
+
+        // create cypress users
+        const createdSuperAdmin = await auth.api.createUser({
+            body: {
+                email: credentials.superAdmin.email,
+                password: credentials.superAdmin.password,
+                name: "Cypress SuperAdmin",
+                role: "admin",
+            },
+        });
+        const createdAdmin = await auth.api.createUser({
+            body: {
+                email: credentials.admin.email,
+                password: credentials.admin.password,
+                name: "Cypress Admin",
+                role: "user",
+            },
+        });
+        const createdMember = await auth.api.createUser({
+            body: {
+                email: credentials.member.email,
+                password: credentials.member.password,
+                name: "Cypress Member",
+                role: "user",
+            },
+        });
+
+        // get test lab
+        const testLab = await prisma.lab.findUnique({
+            where: { slug: "test" },
+        });
+        if (!testLab) {
+            throw new Error("Test lab not found");
+        }
+
+        // add cypress users to test lab
+        const dataSuperAdmin = await auth.api.addMember({
+            body: {
+                userId: createdSuperAdmin.user.id,
+                role: "owner",
+                organizationId: testLab.id,
+            },
+        });
+        if (!dataSuperAdmin) {
+            throw new Error("Failed to add super admin to test lab");
+        }
+        const dataAdmin = await auth.api.addMember({
+            body: {
+                userId: createdAdmin.user.id,
+                role: "admin",
+                organizationId: testLab.id,
+            },
+        });
+        if (!dataAdmin) {
+            throw new Error("Failed to add admin to test lab");
+        }
+        const dataMember = await auth.api.addMember({
+            body: {
+                userId: createdMember.user.id,
+                role: "member",
+                organizationId: testLab.id,
+            },
+        });
+        if (!dataMember) {
+            throw new Error("Failed to add member to test lab");
+        }
+    } catch (error) {
+        console.error("Error seeding cypress users:", error);
     }
 }

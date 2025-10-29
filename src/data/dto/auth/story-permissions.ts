@@ -1,6 +1,5 @@
 import {
     getCurrentUser,
-    getCurrentUserOptional,
     isUserPartOfOrganization,
     isUserSuperAdmin,
 } from "@/data/auth";
@@ -21,7 +20,7 @@ export async function isStoryOwner(story: StoryDTO) {
     }
 }
 export async function canUserViewStory(story: StoryDTO) {
-    const user = await getCurrentUserOptional();
+    const user = await getCurrentUser(false);
     if (isPublicStory(story)) {
         return true;
     }

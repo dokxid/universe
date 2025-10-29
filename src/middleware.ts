@@ -71,7 +71,7 @@ export default async function middleware(req: NextRequest) {
     const slug = getLabSlugFromPathname(req.nextUrl.pathname);
     const response = NextResponse.next();
 
-    if (DEBUG) {
+    if (DEBUG && req.method === "GET") {
         const debugObject = {
             pathname: req.nextUrl.pathname,
             isGuestPath: isGuestPath(req.nextUrl.pathname),

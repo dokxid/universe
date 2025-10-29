@@ -5,7 +5,7 @@ import {
 } from "@/data/scripts/seed-experiences";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
-import { seedUsers } from "@/data/scripts/seed-users";
+import { seedCypressUsers, seedUsers } from "@/data/scripts/seed-users";
 import { PrismaClient } from "@/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 

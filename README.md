@@ -2,19 +2,18 @@
 
 one day i will:
 
--   [ ] clean up this rushed readme.md
--   [ ] make a github organization for heritage lab
+- [ ] clean up this rushed readme.md
+- [ ] make a github organization for heritage lab
 
 # setting up for development
 
 ## 3rd party cloud services that may be needed
 
--   [WorkOS](https://workos.com/) for auth
-    -   used rn for just authkit and their hosted login interfaces
--   [MongoDB](https://www.mongodb.com/) for database (self hostable)
--   [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
-    -   how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
-    -   in the .env file u will see a `LOCAL_UPLOADER=` line, that will circumvent the garage s3 bucket setup for now. but its still useful for testing production
+- [WorkOS](https://workos.com/) for auth
+    - used rn for just authkit and their hosted login interfaces
+- [MongoDB](https://www.mongodb.com/) for database (self hostable)
+- [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
+    - how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
 
 ## installing dependencies
 
@@ -39,16 +38,19 @@ and fill it out with the things mentioned in the comments in that file
 
 before u seed, make sure to fill out the mongodb section in the .env file, so the seeder knows, where to seed the data. ~~also make sure ure not accidentally seeding production~~
 
-a script is included for seeding databases, you have to include ur own images for now though for the stories:
-
-```bash
-# copy image folder for our seeder
-cp /path/to/image/folder ./src/data/scripts/seeds/images
-yarn seed
-```
-
 > [!NOTE]
 > if you seed with this script, while the app is running, just be aware that the caches havent been revalidated yet, either revalidate manually or just seed within the app; we just need to seed it initially to get on the site without any bugs
+
+### seeding cypress users for e2e testing
+
+```bash
+cp cypress.env.json.example cypress.env.json
+```
+
+and fill out the credentials you wanna use for testing
+
+> [!NOTE]
+> they will be added without email verification, but make sure its an email u have access for if you wanna try email stuff.
 
 ## running the server (finally)
 

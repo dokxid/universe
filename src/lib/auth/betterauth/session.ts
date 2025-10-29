@@ -8,7 +8,7 @@ import { headers } from "next/headers";
 export type Session = typeof auth.$Infer.Session;
 export type User = (typeof auth.$Infer.Session)["user"];
 
-export async function withAuth({
+export async function getUserFromSession({
     ensureSignedIn,
 }: {
     ensureSignedIn: boolean;

@@ -2,7 +2,6 @@
 
 import {
     getCurrentUser,
-    getCurrentUserOptional,
     getPermissionsByUser,
     Permissions,
     Role,
@@ -24,9 +23,7 @@ export async function getCurrentUserAction(
     ensureLoggedIn = true,
 ): Promise<UserDTO | null> {
     try {
-        const currentUser = await (ensureLoggedIn
-            ? getCurrentUser()
-            : getCurrentUserOptional());
+        const currentUser = await getCurrentUser(ensureLoggedIn);
         if (!currentUser) return null;
         const user = await getUserDTO(currentUser.id);
         return user;
@@ -54,7 +51,7 @@ export async function getUserPermissionAction(
     storyId?: string,
 ): Promise<boolean> {
     try {
-        const user = await getCurrentUser();
+        const user = await getCurrentUser(false);
         const permissions = await getPermissionsByUser(user, labSlug, storyId);
         return permissions.includes(permission);
     } catch (error) {
@@ -65,7 +62,7 @@ export async function getUserPermissionAction(
 
 export async function getUserRoleAction(labSlug: string): Promise<Role> {
     try {
-        const user = await getCurrentUserOptional();
+        const user = await getCurrentUser(false);
         if (!user) return "guest";
         const permissions = await getPermissionsByUser(user, labSlug);
         if (permissions.includes("superadmin")) return "superadmin";
