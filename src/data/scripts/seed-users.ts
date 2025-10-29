@@ -141,21 +141,6 @@ export async function seedCypressUsers() {
             },
         });
 
-        // generate seeding data
-        const cypressSuperAdmin: Prisma.UserCreateInput = {
-            ...testMemberDoc(),
-            email: credentials.superAdmin.email,
-            role: "admin",
-        };
-        const cypressAdmin: Prisma.UserCreateInput = {
-            ...testMemberDoc(),
-            email: credentials.admin.email,
-        };
-        const cypressMember: Prisma.UserCreateInput = {
-            ...testMemberDoc(),
-            email: credentials.member.email,
-        };
-
         // create cypress users
         const createdSuperAdmin = await auth.api.createUser({
             body: {

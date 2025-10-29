@@ -67,6 +67,7 @@ export async function seedDatabase(
         await seedUsers(10, 1);
         // await seedAllStoryImages();
         // await initializeFeaturedLabImages();
+        await seedCypressUsers();
         await seedAllStories(numStories);
         await seedElevationRequests();
         console.log("Database seeding completed");

@@ -1,6 +1,7 @@
 import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
 import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
-import { GeoType, Prisma } from "@/generated/prisma/client";
+import { GeoType, Prisma, PrismaClient } from "@/generated/prisma/client";
+import { TagWhereInput } from "@/generated/prisma/models";
 import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
@@ -50,9 +51,29 @@ function getContent() {
 export const test_story_doc = async (
     labCenter: number[],
     labSlug: string,
-    userId: string
+    userId: string,
 ): Promise<Omit<Prisma.StoryCreateInput, "lab">> => {
     const date = faker.date.past({ years: 3 });
+    const tags = faker.helpers.uniqueArray(
+        UNESCO_TAGS_SEEDS,
+        faker.number.int({ min: 3, max: 8 }),
+    );
+    const prisma = new PrismaClient();
+    const tagIds = await prisma.tag.findMany({
+        where: {
+            AND: tags.map((tag) => ({
+                name: tag.name,
+                theme: tag.theme,
+                category: tag.category,
+            })) as TagWhereInput[],
+        },
+        select: { id: true },
+    });
+
+    // console.log(
+    //     `Creating story for lab ${labSlug} by user ${userId} with tags: `,
+    //     JSON.stringify(tags),
+    // );
     const doc = {
         author: { connect: { id: userId } },
         content: getContent(),
@@ -66,10 +87,7 @@ export const test_story_doc = async (
             ],
         },
         tags: {
-            create: faker.helpers.uniqueArray(
-                UNESCO_TAGS_SEEDS,
-                faker.number.int({ min: 3, max: 8 })
-            ),
+            connect: tagIds,
         },
         year: faker.number.int({ min: 1800, max: 2024 }),
         visibleUniverse: faker.datatype.boolean(),
@@ -81,7 +99,7 @@ export const test_story_doc = async (
                   "/800/600",
         elevationRequests: undefined,
         license: faker.helpers.arrayElement(
-            Object.values(CC_LICENSES).map((license) => license.code)
+            Object.values(CC_LICENSES).map((license) => license.code),
         ),
         createdAt: date,
         updatedAt: faker.date.between({ from: date, to: new Date() }),

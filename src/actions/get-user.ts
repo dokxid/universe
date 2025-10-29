@@ -65,6 +65,7 @@ export async function getUserRoleAction(labSlug: string): Promise<Role> {
         const user = await getCurrentUser(false);
         if (!user) return "guest";
         const permissions = await getPermissionsByUser(user, labSlug);
+        console.log("User permissions:", permissions);
         if (permissions.includes("superadmin")) return "superadmin";
         if (permissions.includes("manage_users")) return "admin";
         if (permissions.includes("add_story")) return "editor";

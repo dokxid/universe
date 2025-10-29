@@ -26,6 +26,7 @@ export function UserWidgetHolder() {
         not_authorized: "Not Authorized",
         superadmin: "Super Admin",
     };
+    console.log("roleInLab:", roleInLab);
 
     if (roleInLab === "superadmin") {
         return <UserWidgetAuthorized slug={slug} role={roleMap[roleInLab]} />;

@@ -442,20 +442,6 @@ export default function AddStoryForm({
                         <Button
                             data-testid="submit-story-button"
                             disabled={form.formState.isSubmitting}
-                            onClick={
-                                form.formState.errors
-                                    ? () => {
-                                          console.log(
-                                              "Form has errors, cannot submit:",
-                                              form.formState.errors,
-                                          );
-                                          console.log(
-                                              "Current form values:",
-                                              form.getValues(),
-                                          );
-                                      }
-                                    : undefined
-                            }
                             type="submit"
                             variant="default"
                             className={"w-full cursor-pointer"}

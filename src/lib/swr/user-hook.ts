@@ -40,8 +40,10 @@ export function useUser(userId: string) {
 }
 
 export function useCurrentUser(ensureLoggedIn = true) {
-    const { data, error, isLoading } = useSWR("currentUser", () =>
-        getCurrentUserFetcher(ensureLoggedIn),
+    const { data, error, isLoading } = useSWR(
+        "currentUser",
+        () => getCurrentUserFetcher(ensureLoggedIn),
+        { revalidateOnMount: true },
     );
     return {
         user: data,
@@ -105,6 +107,7 @@ export function useGetRoleInLab(labSlug: string) {
             const role = await userRoleFetcher(labSlug);
             return role;
         },
+        { revalidateOnMount: true },
     );
     return {
         roleInLab: data,

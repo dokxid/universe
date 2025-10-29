@@ -17,7 +17,8 @@ export function ExploreLabCard({ lab }: { lab: LabDTO }) {
                 setSelectedLabParams("/universe/map", searchParams, lab.slug)
             }
             key={lab.slug}
-            className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group ${
+            data-testid={`explore-lab-card-${lab.slug}`}
+            className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group cursor-pointer ${
                 lab.slug === selectedLab
                     ? "bg-secondary text-secondary-foreground"
                     : ""

@@ -31,7 +31,6 @@ const PERMISSIONS_SUPERADMIN: Permissions[] = [
     "edit_story",
 ];
 const PERMISSIONS_ADMIN: Permissions[] = [
-    "superadmin",
     "manage_users",
     "add_story",
     "edit_story",
@@ -132,9 +131,7 @@ export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
 export async function isUserSuperAdmin(): Promise<boolean> {
     try {
         const user = await getCurrentUser(false);
-        if (!user) return false;
-        if (!user.superAdmin) return false;
-        return true;
+        return user?.superAdmin || false;
     } catch (err) {
         console.error("Error fetching user experience relation:", err);
         throw err;

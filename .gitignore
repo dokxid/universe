@@ -53,4 +53,3 @@ next-env.d.ts
 
 # docker service mounts
 /mongodb/data
-src/generated/prisma

@@ -31,7 +31,7 @@ export async function submitStoryDTO(formData: FormData) {
         const userId = user.id;
         if (!(await canUserCreateStory(formData.get("slug") as string))) {
             throw new Error(
-                "User does not have permission to create a story for this experience."
+                "User does not have permission to create a story for this experience.",
             );
         }
 
@@ -65,31 +65,42 @@ export async function submitStoryDTO(formData: FormData) {
 
         // prepare the data for insertion
         const data = validationResult.data;
+        const tags = await prisma.tag.findMany({
+            where: {
+                name: { in: data.tags },
+            },
+            select: { id: true },
+        });
+
         const storyToInsert = {
-            author: userId,
+            author: { connect: { id: userId } },
             content: data.content,
             title: data.title,
             location: {
                 type: "Point",
                 coordinates: [data.longitude, data.latitude],
             },
-            tags: data.tags,
+            tags: {
+                connect: tags.map((tag) => ({ id: tag.id })),
+            },
             year: data.year,
             license: data.license,
             featuredImageUrl: path,
             draft: data.draft,
             visibleUniverse: data.universe,
-            elevationRequests: [
-                {
-                    status: "created",
-                },
-                // add a pending elevation request if the story has been opted in to be published to the universe
-                data.universe
-                    ? {
-                          status: "pending",
-                      }
-                    : null,
-            ],
+            elevationRequests: {
+                create: [
+                    {
+                        status: "created",
+                    },
+                    // add a pending elevation request if the story has been opted in to be published to the universe
+                    data.universe
+                        ? {
+                              status: "pending",
+                          }
+                        : null,
+                ],
+            },
             lab: { connect: { slug: data.slug } },
         } as StoryCreateInput;
 
@@ -98,7 +109,7 @@ export async function submitStoryDTO(formData: FormData) {
         return newStoryId;
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -110,11 +121,11 @@ export async function editStoryPictureDTO(formData: FormData) {
             throw new Error("User must be logged in to edit a story.");
         }
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -155,7 +166,7 @@ export async function editStoryPictureDTO(formData: FormData) {
         revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -163,11 +174,11 @@ export async function editStoryPictureDTO(formData: FormData) {
 export async function editContentFormSchemaDTO(formData: FormData) {
     try {
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -191,7 +202,7 @@ export async function editContentFormSchemaDTO(formData: FormData) {
         revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -199,11 +210,11 @@ export async function editContentFormSchemaDTO(formData: FormData) {
 export async function editStoryFormSchemaDTO(formData: FormData) {
     try {
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -238,21 +249,21 @@ export async function editStoryFormSchemaDTO(formData: FormData) {
         revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editVisibilityAndLicensingFormSchemaDTO(
-    formData: FormData
+    formData: FormData,
 ) {
     try {
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -282,7 +293,7 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
         revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
@@ -290,11 +301,11 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
 export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
     try {
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -326,7 +337,7 @@ export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
         revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }

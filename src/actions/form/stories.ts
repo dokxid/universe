@@ -13,8 +13,8 @@ export async function submitStoryAction(formData: FormData) {
     try {
         console.log("Submitting story action...");
         console.log(formData);
-        const newStoryId = await submitStoryDTO(formData);
-        return { success: true, storyId: newStoryId };
+        const newStory = await submitStoryDTO(formData);
+        return { success: true, storyId: newStory.id };
     } catch (error) {
         return {
             success: false,
