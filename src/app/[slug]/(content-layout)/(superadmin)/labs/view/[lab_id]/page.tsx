@@ -15,7 +15,7 @@ import { BookKey } from "lucide-react";
 export default async function PrivacyPage({
     params,
 }: {
-    params: { lab_id: string };
+    params: Promise<{ lab_id: string }>;
 }) {
     const { lab_id } = await params;
     const labDetails = await getLabByObjectIdDTO(lab_id);
