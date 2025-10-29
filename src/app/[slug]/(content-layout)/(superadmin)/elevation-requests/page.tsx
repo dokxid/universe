@@ -13,7 +13,11 @@ import { StoryDTO } from "@/types/dtos";
 import { ColumnDef } from "@tanstack/react-table";
 import { Grid2X2Check } from "lucide-react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
     const { slug } = await params;
     const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
