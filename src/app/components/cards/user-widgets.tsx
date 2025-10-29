@@ -50,7 +50,7 @@ export function UserWidgetAuthorized({
             }
         >
             <Link
-                href={`/${user.labs?.[0].slug}/profile`}
+                href={`/profile`}
                 className={
                     "cursor-pointer hover:brightness-80 transition-all duration-100"
                 }
@@ -60,26 +60,15 @@ export function UserWidgetAuthorized({
                         className={"object-cover"}
                         src={user.profilePictureUrl || undefined}
                     ></AvatarImage>
-                    <AvatarFallback>
-                        {(user.displayName
-                            ? user.displayName
-                            : user.firstName || user.lastName
-                            ? `${user.firstName || ""} ${user.lastName || ""}`
-                            : "Anonymous"
-                        ).charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </Link>
             <div className={"text-sm flex flex-col grow"}>
                 <Link
-                    href={`/${user.labs?.[0].slug}/user/view/${user._id}`}
+                    href={`/user/view/${user.id}`}
                     className={"font-semibold hover:underline line-clamp-1"}
                 >
-                    {user.displayName
-                        ? user.displayName
-                        : user.firstName || user.lastName
-                        ? `${user.firstName || ""} ${user.lastName || ""}`
-                        : "Anonymous"}
+                    {user.name}
                 </Link>
                 <div className="overflow-hidden w-full">
                     <div

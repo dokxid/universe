@@ -15,7 +15,7 @@ export function ImageElement({
     alt,
 }: {
     className?: string;
-    src: string;
+    src: string | null;
     internal?: boolean;
     alt?: string;
 }) {
@@ -23,7 +23,7 @@ export function ImageElement({
     return (
         <div className={"relative w-full h-full aspect-video"}>
             <Image
-                src={src}
+                src={src ?? "/img/image-placeholder.jpg"}
                 alt={alt || "Image"}
                 fill
                 sizes="(min-width: 808px) 50vw, 100vw"
@@ -44,13 +44,16 @@ export function S3Image({
     alt,
 }: {
     experience: string;
-    fileName: string;
+    fileName: string | null;
     className?: string;
     link?: boolean;
     internal?: boolean;
     alt?: string;
 }) {
-    const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
+    const { imageUrl, isError, isLoading } = useImageURL(
+        experience,
+        fileName || "",
+    );
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
     if (isError) return <p>Error loading image</p>;
     if (!imageUrl) return <p>No image available</p>;
@@ -71,7 +74,7 @@ export function HostedImage({
     internal = true,
     alt,
 }: {
-    fileName: string;
+    fileName: string | null;
     className?: string;
     internal?: boolean;
     alt?: string;

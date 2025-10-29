@@ -1,6 +1,6 @@
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
+import { PrismaClient } from "@/generated/prisma/client";
 import dbConnect from "@/lib/data/mongodb/connections";
-import { UserModel } from "@/lib/data/mongodb/models/user-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -11,6 +11,8 @@ import {
 import { revalidateTag } from "next/cache";
 import z from "zod";
 import { canEditUser } from "../auth/user-permissions";
+
+const prisma = new PrismaClient();
 
 export async function editDisplayNameFormSchemaDTO(formData: FormData) {
     try {
@@ -36,20 +38,17 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
 
         // update the user's display name in the database
         await dbConnect();
-        await UserModel.updateOne(
-            { _id: result.data.userId },
-            {
-                $set: {
-                    displayName: result.data.displayName,
-                    firstName: result.data.firstName,
-                    lastName: result.data.lastName,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: result.data.userId },
+            data: {
+                displayName: result.data.displayName,
+                firstName: result.data.firstName,
+                familyName: result.data.lastName,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -80,23 +79,19 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
         }
 
         // update the user's display name in the database
-        await dbConnect();
-        await UserModel.updateOne(
-            { _id: result.data.userId },
-            {
-                $set: {
-                    publicEmail: result.data.publicEmail,
-                    position: result.data.position,
-                    phoneNumber: result.data.phoneNumber,
-                    website: result.data.website,
-                    description: result.data.description,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: result.data.userId },
+            data: {
+                publicEmail: result.data.publicEmail,
+                position: result.data.position,
+                phoneNumber: result.data.phoneNumber,
+                website: result.data.website,
+                description: result.data.description,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -139,19 +134,15 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await UserModel.updateOne(
-            { _id: data.userId },
-            {
-                $set: {
-                    profilePictureUrl: path,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: data.userId },
+            data: {
+                profilePictureUrl: path,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"

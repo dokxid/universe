@@ -1,7 +1,7 @@
 "use client";
 
 import { DeckGLMap } from "@/app/components/map/deck-gl-map";
-import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { LabDTO, StoryDTO, TagDTO } from "@/types/dtos";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { use } from "react";
 import { MapProvider } from "react-map-gl/maplibre";
@@ -12,9 +12,9 @@ export default function MapWrapper({
     experiences,
     experienceSlug,
 }: {
-    tagsPromise: Promise<UnescoTagDTO[]>;
+    tagsPromise: Promise<TagDTO[]>;
     stories: StoryDTO[];
-    experiences: ExperienceDTO[];
+    experiences: LabDTO[];
     experienceSlug: string;
 }) {
     const tags = use(tagsPromise);

@@ -1,9 +1,9 @@
 "use server";
 
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { Experience } from "@/types/dtos";
+import { PrismaClient } from "@/generated/prisma/client";
 import fs from "fs";
+
+const prisma = new PrismaClient();
 
 export async function initializeFeaturedLabImages() {
     try {
@@ -85,14 +85,11 @@ export async function seedAllStoryImages() {
             );
             return;
         }
-        await dbConnect();
-        const allExperiences = (await ExperienceModel.find({})) as Experience[];
+        const allLabs = await prisma.lab.findMany({});
         await Promise.all(
-            allExperiences.map(async (experience) => {
-                await initializeLabImageFolders(experience.slug);
-                console.log(
-                    "Inserted images for experience: " + experience.slug
-                );
+            allLabs.map(async (lab) => {
+                await initializeLabImageFolders(lab.slug);
+                console.log("Inserted images for lab: " + lab.slug);
             })
         );
         console.log("Image seeding completed");
@@ -103,10 +100,11 @@ export async function seedAllStoryImages() {
 
 export async function seedLabStoryImages(slug: string) {
     try {
-        await dbConnect();
-        ExperienceModel.findOne({ slug }).then((experience) => {
-            initializeLabImageFolders(experience.slug);
-        });
+        const result = await prisma.lab.findUnique({ where: { slug } });
+        if (!result) {
+            throw new Error("Lab not found with slug: " + slug);
+        }
+        initializeLabImageFolders(result.slug);
     } catch (error) {
         console.error("Error seeding images:", error);
     }

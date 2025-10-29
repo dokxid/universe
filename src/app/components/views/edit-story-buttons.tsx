@@ -8,8 +8,8 @@ import Link from "next/link";
 
 export function EditStoryButtons({ story }: { story: StoryDTO }) {
     const { allowedToEditStory, isLoading, isError } = useAllowedToEditStory(
-        story.experience,
-        story._id
+        story.lab.slug,
+        story.id
     );
     if (isLoading) return <Button>Loading...</Button>;
     if (isError) return <Button>Error</Button>;
@@ -17,13 +17,11 @@ export function EditStoryButtons({ story }: { story: StoryDTO }) {
         <>
             <SettingsFormButtonGroup className={"h-full self-start"}>
                 {allowedToEditStory && (
-                    <Link
-                        href={`/${story.experience}/stories/edit/${story._id}`}
-                    >
+                    <Link href={`/${story.lab.slug}/stories/edit/${story.id}`}>
                         <Button variant={"secondary_custom"}>Edit</Button>
                     </Link>
                 )}
-                <Link href={`/${story.experience}/map?story=${story._id}`}>
+                <Link href={`/${story.lab.slug}/map?story=${story.id}`}>
                     <Button variant={"primary_custom"}>View on map</Button>
                 </Link>
             </SettingsFormButtonGroup>

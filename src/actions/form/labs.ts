@@ -52,6 +52,7 @@ export async function createLabFormAction(formData: FormData) {
         const result = await createLabDTO(formData);
         return result;
     } catch (error) {
+        console.error("Error in createLabFormAction:", error);
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",

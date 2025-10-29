@@ -1,0 +1,226 @@
+generator client {
+    provider        = "prisma-client"
+    output          = "../src/generated/prisma"
+    previewFeatures = ["views"]
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+enum LabVisibility {
+    private
+    public
+    unlisted
+}
+
+enum License {
+    CC0
+    CC_BY
+    CC_BY_SA
+    CC_BY_NC
+    CC_BY_NC_SA
+    CC_BY_ND
+    CC_BY_NC_ND
+}
+
+enum Role {
+    member
+    admin
+    owner
+}
+
+enum ElevationRequestStatus {
+    created  @map("created")
+    pending  @map("pending")
+    approved @map("approved")
+    rejected @map("rejected")
+}
+
+// https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+enum GeoType {
+    Position           @map("Position")
+    Point              @map("Point")
+    MultiPoint         @map("MultiPoint")
+    LineString         @map("LineString")
+    MultiLineString    @map("MultiLineString")
+    Polygon            @map("Polygon")
+    MultiPolygon       @map("MultiPolygon")
+    GeometryCollection @map("GeometryCollection")
+}
+
+type GeoJson {
+    type        GeoType
+    coordinates Float[]
+}
+
+model ElevationRequest {
+    id        String                 @id @default(auto()) @map("_id") @db.ObjectId
+    story     Story?                 @relation(fields: [storyId], references: [id])
+    storyId   String?                @db.ObjectId
+    status    ElevationRequestStatus
+    createdAt DateTime               @default(now())
+    updatedAt DateTime               @default(now()) @updatedAt
+
+    @@map("elevation_requests")
+}
+
+model Story {
+    id                String             @id @default(auto()) @map("_id") @db.ObjectId
+    author            User               @relation(fields: [userId], references: [id])
+    userId            String             @db.ObjectId
+    draft             Boolean
+    title             String
+    content           String
+    location          GeoJson
+    tags              Tag[]              @relation(fields: [tagIds], references: [id])
+    tagIds            String[]           @db.ObjectId
+    year              Int
+    visibleUniverse   Boolean
+    featuredImageUrl  String
+    elevationRequests ElevationRequest[]
+    license           License
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @default(now()) @updatedAt
+    lab               Lab                @relation(fields: [labId], references: [id])
+    labId             String             @db.ObjectId
+
+    @@map("story")
+}
+
+model User {
+    id                String       @id @default(auto()) @map("_id") @db.ObjectId
+    displayName       String?
+    firstName         String?
+    familyName        String?
+    email             String
+    emailVerified     Boolean      @default(false)
+    profilePictureUrl String?
+    createdAt         DateTime     @default(now())
+    updatedAt         DateTime     @default(now()) @updatedAt
+    description       String?
+    title             String?
+    position          String?
+    website           String?
+    phoneNumber       String?
+    publicEmail       String?
+    role              String?
+    banned            Boolean?
+    banReason         String?
+    banExpires        DateTime?
+    sessions          Session[]
+    accounts          Account[]
+    members           Member[]
+    invitations       Invitation[]
+    stories           Story[]
+
+    @@unique([email])
+    @@map("user")
+}
+
+model Tag {
+    id       String   @id @default(auto()) @map("_id") @db.ObjectId
+    name     String
+    category String?
+    theme    String?
+    color    String
+    isUnesco Boolean
+    story    Story[]  @relation(fields: [storyId], references: [id])
+    storyId  String[] @db.ObjectId
+
+    @@map("tag")
+}
+
+model Session {
+    id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+    expiresAt            DateTime
+    token                String
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    ipAddress            String?
+    userAgent            String?
+    userId               String   @db.ObjectId
+    user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    activeOrganizationId String?
+
+    @@unique([token])
+    @@map("session")
+}
+
+model Account {
+    id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+    accountId             String
+    providerId            String
+    userId                String    @db.ObjectId
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now()) @updatedAt
+
+    @@map("verification")
+}
+
+model Lab {
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    slug        String
+    logo        String?
+    createdAt   DateTime      @default(now())
+    metadata    String?
+    lngCenter   Float
+    latCenter   Float
+    initialZoom Int
+    subtitle    String
+    content     String
+    stories     Story[]
+    visibility  LabVisibility
+    members     Member[]
+    invitations Invitation[]
+
+    @@unique([slug])
+    @@map("lab")
+}
+
+model Member {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    labId     String   @db.ObjectId
+    lab       Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+    userId    String   @db.ObjectId
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role      Role
+    createdAt DateTime @default(now())
+
+    @@map("member")
+}
+
+model Invitation {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    labId     String   @db.ObjectId
+    lab       Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+    email     String
+    role      String?
+    status    String
+    expiresAt DateTime
+    inviterId String   @db.ObjectId
+    user      User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+    @@map("invitation")
+}

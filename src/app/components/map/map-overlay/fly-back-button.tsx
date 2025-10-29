@@ -17,6 +17,7 @@ export function FlyBackButton() {
 
     return !isVisible ? null : (
         <Button
+            data-testid="fly-back-button"
             onClick={() => {
                 dispatch(triggerZoomOut());
                 if (isUniverseView) {

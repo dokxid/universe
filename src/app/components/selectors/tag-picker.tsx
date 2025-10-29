@@ -17,7 +17,8 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { useAppSelector } from "@/lib/hooks";
 import { groupByKey } from "@/lib/utils/group-by-key";
-import { UnescoTagDTO, UnescoTagDTOWithCount } from "@/types/dtos";
+import { convertTagNamesToTagDTOs } from "@/lib/utils/tags";
+import { TagDTO } from "@/types/dtos";
 import { Check, PlusIcon, Tag, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ import { Badge } from "../../../components/ui/badge";
 
 // Base component - no form binding
 interface TagPickerFilterProps {
-    availableTags: UnescoTagDTOWithCount[];
+    availableTags: TagDTO[];
     selectedTags?: string[];
     onTagsChange?: (tags: string[]) => void;
     className?: string;
@@ -33,7 +34,7 @@ interface TagPickerFilterProps {
 }
 
 interface TagPickerFormProps {
-    availableTags: UnescoTagDTO[];
+    availableTags: TagDTO[];
     selectedTags?: string[];
     onTagsChange?: (tags: string[]) => void;
     className?: string;
@@ -47,7 +48,7 @@ export function TagPickerForm({
     className,
     showLabel = true,
 }: TagPickerFormProps) {
-    const [inputTags, setInputTags] = useState<UnescoTagDTO[]>([]);
+    const [inputTags, setInputTags] = useState<TagDTO[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
     const debug = useAppSelector((state) => state.settings.debug);
 
@@ -65,13 +66,13 @@ export function TagPickerForm({
         setTagPickerOpen(true);
     };
 
-    const handleTagRemove = (tagToRemove: UnescoTagDTO) => {
+    const handleTagRemove = (tagToRemove: TagDTO) => {
         const newTags = inputTags.filter((t) => t !== tagToRemove);
         setInputTags(newTags);
         onTagsChange?.(newTags.map((tag) => tag.name));
     };
 
-    const handleTagAdd = (tagToAdd: UnescoTagDTO) => {
+    const handleTagAdd = (tagToAdd: TagDTO) => {
         if (inputTags.find((t) => t.name === tagToAdd.name)) {
             return;
         }
@@ -114,7 +115,7 @@ export function TagPickerForm({
                                 style={{
                                     backgroundColor: tag.color,
                                 }}
-                                key={tag._id}
+                                key={tag.id}
                                 variant={"tag"}
                                 onClick={() => {
                                     handleTagRemove(tag);
@@ -195,7 +196,7 @@ export function TagPickerFilter({
     className,
     showLabel = true,
 }: TagPickerFilterProps) {
-    const [inputTags, setInputTags] = useState<UnescoTagDTOWithCount[]>([]);
+    const [inputTags, setInputTags] = useState<TagDTO[]>([]);
     const [inputTagStrings, setInputTagStrings] = useState<string[]>([]);
     const [tagPickerOpen, setTagPickerOpen] = useState<boolean>(false);
     const searchParams = useSearchParams();
@@ -229,7 +230,7 @@ export function TagPickerFilter({
         setTagPickerOpen(true);
     };
 
-    const handleTagAdd = (tagToAdd: UnescoTagDTOWithCount) => {
+    const handleTagAdd = (tagToAdd: TagDTO) => {
         if (inputTags.find((t) => t.name === tagToAdd.name)) {
             return;
         }
@@ -271,7 +272,13 @@ export function TagPickerFilter({
                             <PlusIcon />
                         </Toggle>
                     </PopoverTrigger>
-                    <TagList tags={inputTagStrings} variant={"remove"} />
+                    <TagList
+                        tags={convertTagNamesToTagDTOs(
+                            availableTags,
+                            inputTagStrings
+                        )}
+                        variant={"remove"}
+                    />
                 </div>
                 <PopoverContent className="p-2">
                     <Command>
@@ -286,7 +293,7 @@ export function TagPickerFilter({
                                     >
                                         {tagsInCategory.map((tag) => (
                                             <CommandItem
-                                                key={tag._id}
+                                                key={tag.id}
                                                 onSelect={() => {
                                                     handleTagAdd(tag);
                                                 }}

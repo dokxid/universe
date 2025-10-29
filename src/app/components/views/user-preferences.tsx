@@ -91,16 +91,16 @@ export function UserPreferences() {
         if (!user) return; // Don't reset if user is not loaded
 
         displayNameForm.reset({
-            userId: user._id || "",
+            userId: user.id || "",
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             displayName: user.displayName || "",
         });
         profilePictureForm.reset({
-            userId: user._id || "",
+            userId: user.id || "",
         });
         detailsForm.reset({
-            userId: user._id || "",
+            userId: user.id || "",
             publicEmail: user.publicEmail || "",
             description: user.description || "",
             position: user.position || "",

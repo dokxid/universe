@@ -1,18 +1,18 @@
 import { CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { Experience } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 export function ExperiencesList({
     setOpen,
-    experiences,
-    currentExperience,
+    labs,
+    currentLab,
 }: {
     setOpen: (open: boolean) => void;
-    experiences: Experience[];
-    currentExperience: Experience;
+    labs: LabDTO[];
+    currentLab: LabDTO;
 }) {
     const router = useRouter();
     const pathname = usePathname();
@@ -30,10 +30,10 @@ export function ExperiencesList({
         [searchParams]
     );
 
-    return experiences.map((exp: Experience, index: number) => (
+    return labs.map((lab: LabDTO, index: number) => (
         <CommandItem
             key={index}
-            value={exp.slug}
+            value={lab.slug}
             onSelect={(selectedValue) => {
                 router.push(
                     pathname + "?" + createQueryString("exp", selectedValue)
@@ -44,12 +44,10 @@ export function ExperiencesList({
             <CheckIcon
                 className={cn(
                     "mr-2 h-4 w-4",
-                    currentExperience.slug === exp.slug
-                        ? "opacity-100"
-                        : "opacity-0"
+                    currentLab.slug === lab.slug ? "opacity-100" : "opacity-0"
                 )}
             />
-            {exp.title}
+            {lab.name}
         </CommandItem>
     ));
 }

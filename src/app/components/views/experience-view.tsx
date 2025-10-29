@@ -1,23 +1,21 @@
 import { ImageElement } from "@/app/components/embeds/s3-image";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 
 export default async function LabView({
-    experiencePromise,
+    labPromise,
 }: {
-    experiencePromise: Promise<ExperienceDTO>;
+    labPromise: Promise<LabDTO>;
 }) {
-    const experience = await experiencePromise;
+    const lab = await labPromise;
     return (
         <>
             <div className={"w-full h-48 sm:h-56 md:h-64 lg:h-72 xl:h-80"}>
-                <ImageElement src={experience.featuredImageUrl} />
+                <ImageElement src={lab.logo || "/default-lab-banner.jpg"} />
             </div>
             <div className="flex-1 p-4 px-8 prose dark:prose-invert mb-15">
-                <h1 className="flex flex-row items-center">
-                    {experience.title}
-                </h1>
-                <h2 className="text-lg font-semibold">{experience.subtitle}</h2>
-                <p>{experience.content}</p>
+                <h1 className="flex flex-row items-center">{lab.name}</h1>
+                <h2 className="text-lg font-semibold">{lab.subtitle}</h2>
+                <p>{lab.content}</p>
             </div>
         </>
     );

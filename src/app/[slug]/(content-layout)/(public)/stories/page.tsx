@@ -1,16 +1,16 @@
 import { StoryCollection } from "@/app/components/views/story-collection";
-import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
 import {
     getAllPublicStoriesDTO,
     getLabPublicStoriesDTO,
 } from "@/data/dto/getters/get-story-dto";
-import { getTagsForLabDTO } from "@/data/dto/getters/get-tag-dto";
+import { getUniqueTagDTOsForLab } from "@/data/dto/getters/get-tag-dto";
 
 export const experimental_ppr = true;
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
+        const experiences = await getLabsDTO();
         return experiences.map((experience) => ({
             slug: experience.slug,
         }));
@@ -26,7 +26,7 @@ export default async function StoriesPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const tagsPromise = getTagsForLabDTO(slug);
+    const tagsPromise = getUniqueTagDTOsForLab(slug);
 
     // fetch stories based on slug
     let storiesPromise;

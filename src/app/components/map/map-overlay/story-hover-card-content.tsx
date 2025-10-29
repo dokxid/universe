@@ -26,7 +26,7 @@ export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
                         setSelectedStoryIdParams(
                             pathname,
                             searchParams,
-                            story._id
+                            story.id
                         );
                     }}
                 >

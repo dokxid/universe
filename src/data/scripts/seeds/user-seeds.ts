@@ -1,27 +1,19 @@
-import { InsertUserDTO } from "@/lib/data/mongodb/models/user-model";
+import { Prisma } from "@/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 
-export const testMemberDoc = (
-    organizationId: string,
-    lab: string
-): InsertUserDTO => {
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    const displayName = `${firstName} ${lastName}`;
-    const email = faker.internet.email({ firstName, lastName });
+export const testMemberDoc = (): Prisma.UserCreateInput => {
+    const name = faker.person.firstName();
+    const familyName = faker.person.lastName();
+    const displayName = `${name} ${familyName}`;
+    const email = faker.internet.email({
+        firstName: name,
+        lastName: familyName,
+    });
     return {
-        labs: [
-            {
-                organizationId,
-                slug: lab,
-                role: "member",
-            },
-        ],
         email,
-        firstName,
-        lastName,
-        externalId: `$user_${faker.string.uuid()}`,
         displayName: faker.datatype.boolean(0.75) ? displayName : undefined,
+        firstName: faker.datatype.boolean(0.75) ? name : undefined,
+        familyName: faker.datatype.boolean(0.75) ? familyName : undefined,
         profilePictureUrl: faker.datatype.boolean()
             ? faker.image.urlPicsumPhotos({ width: 800, height: 800, blur: 0 })
             : undefined,
@@ -35,6 +27,8 @@ export const testMemberDoc = (
         description: faker.datatype.boolean(0.5)
             ? faker.lorem.paragraph()
             : undefined,
+        members: undefined,
+        role: "user",
         createdAt: faker.date.past({ years: 5 }),
         updatedAt: new Date(),
     };

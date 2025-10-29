@@ -1,8 +1,9 @@
 import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { UserDTO } from "@/types/dtos";
 
 export async function canEditUser(userDTO: UserDTO): Promise<boolean> {
     const user = await getCurrentUser();
-    if (await isUserSuperAdmin(user)) return true;
-    return user.id === userDTO.externalId;
+    if (!user) return false;
+    if (await isUserSuperAdmin()) return true;
+    return user.id === userDTO.id;
 }

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
+import { isUserSuperAdmin } from "@/data/auth";
 import { seedDatabase } from "@/data/scripts/seed-database";
 import { revalidateTag } from "next/cache";
 
@@ -19,8 +19,7 @@ export async function startSeedingDatabase(
         );
     }
     try {
-        const user = await getCurrentUser();
-        if ((await isUserSuperAdmin(user)) === false) {
+        if ((await isUserSuperAdmin()) === false) {
             throw new Error("Only super admins can seed the database");
         }
         await seedDatabase(numStories, numRandomCityCenters);

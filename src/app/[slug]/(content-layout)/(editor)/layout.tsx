@@ -10,6 +10,9 @@ export default async function RootLayout({
 }) {
     const { slug } = await params;
     const user = await getCurrentUser();
+    if (!user) {
+        return notFound();
+    }
     const permissionToView = await isUserMember(user, slug);
     if (!permissionToView) {
         return notFound();

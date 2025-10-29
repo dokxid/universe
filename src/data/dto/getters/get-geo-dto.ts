@@ -29,8 +29,8 @@ export function getTagLineStrings(
 ): TaggedLineConnectionStringDTO[] {
     const allConnections: TaggedLineConnectionStringDTO[] = [];
     for (const tag of tags) {
-        const filteredStories = stories.filter((story) =>
-            story.tags.includes(tag)
+        const filteredStories = stories.filter(
+            (story) => story.tags && story.tags.map((t) => t.name).includes(tag)
         );
         const tagLines = getTagLines(filteredStories);
         allConnections.push({

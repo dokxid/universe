@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAppSelector } from "@/lib/hooks";
 import { setSelectedTagsParams } from "@/lib/utils/param-setter";
-import { UnescoTagDTOWithCount } from "@/types/dtos";
+import { TagDTO } from "@/types/dtos";
 import { Funnel } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
@@ -21,7 +21,7 @@ export function FilterStoriesDialog({
     tagsPromise,
     size = "icon",
 }: {
-    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
+    tagsPromise: Promise<TagDTO[]>;
     size?: "icon" | "icon-lg";
 }) {
     const tags = React.use(tagsPromise);

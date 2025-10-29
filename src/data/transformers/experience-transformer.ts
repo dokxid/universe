@@ -1,22 +1,16 @@
-import { convertToString } from "@/lib/data/mongodb/object-id-sanitizer";
-import { Experience } from "@/types/dtos";
+import { Prisma } from "@/generated/prisma/client";
+import { validateCoordinates } from "@/lib/utils/validate-coordinates";
+import { LabDTO } from "@/types/dtos";
 
-export function sanitizeExperience(experienceToSanitize: {
-    toJSON: () => Experience;
-}) {
-    const plainExperience = experienceToSanitize.toJSON() as Experience;
+export const sanitizeToLabDTO = (
+    lab: Prisma.LabModel & { _count: { stories: number } },
+): LabDTO => {
     return {
-        ...plainExperience,
-        _id: convertToString(plainExperience._id),
-        stories:
-            plainExperience.stories?.map((story) => ({
-                ...story,
-                _id: convertToString(story._id),
-                elevation_requests:
-                    story.elevationRequests?.map((req) => ({
-                        ...req,
-                        _id: convertToString(req._id),
-                    })) || [],
-            })) || [],
+        ...lab,
+        center: {
+            type: "Point",
+            coordinates: validateCoordinates([lab.lngCenter, lab.latCenter]),
+        },
+        amountStories: lab._count.stories,
     };
-}
+};

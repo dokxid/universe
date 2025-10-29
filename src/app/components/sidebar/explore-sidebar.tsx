@@ -1,6 +1,6 @@
 "use client";
 
-import { ExploreExperienceCard } from "@/app/components/cards/explore-experience-card";
+import { ExploreLabCard } from "@/app/components/cards/explore-experience-card";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -9,21 +9,15 @@ import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
 import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";
 import { useDispatch } from "react-redux";
 
-function ExploreSidebarContent({
-    experiences,
-}: {
-    experiences: ExperienceDTO[];
-}) {
+function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
     const [experiencesSearchTerm, setExperiencesSearchTerm] = useState("");
-    const filteredExperiences = experiences.filter((experiences) =>
-        experiences.title
-            .toLowerCase()
-            .includes(experiencesSearchTerm.toLowerCase())
+    const filteredExperiences = labs.filter((lab) =>
+        lab.name.toLowerCase().includes(experiencesSearchTerm.toLowerCase())
     );
 
     return (
@@ -38,11 +32,11 @@ function ExploreSidebarContent({
                     To support the communities, this public access, independent
                     online platform brings together a multidisciplinary team of
                     researchers, educators, web developers, and community
-                    organizers. HeritageLab’s ambition to understand personal
-                    connections as a way to incorporate self-reflection into the
-                    meaning of a location. Our contributors do not aim toward a
-                    solution-oriented approach but rather consider heritage as a
-                    matter of ethics and practice.
+                    organizers. HeritageLab&apos;s ambition to understand
+                    personal connections as a way to incorporate self-reflection
+                    into the meaning of a location. Our contributors do not aim
+                    toward a solution-oriented approach but rather consider
+                    heritage as a matter of ethics and practice.
                 </p>
             </article>
             <Separator className="w-full my-2" />
@@ -59,11 +53,8 @@ function ExploreSidebarContent({
                 />
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
-                {filteredExperiences.map((experience: ExperienceDTO) => (
-                    <ExploreExperienceCard
-                        key={experience.slug}
-                        experience={experience}
-                    />
+                {filteredExperiences.map((lab: LabDTO) => (
+                    <ExploreLabCard key={lab.slug} lab={lab} />
                 ))}
             </div>
         </div>
@@ -75,7 +66,7 @@ export function ExploreSidebar({
     experiencesPromise,
 }: {
     slug: string;
-    experiencesPromise: Promise<ExperienceDTO[]>;
+    experiencesPromise: Promise<LabDTO[]>;
 }) {
     const isMobile = useIsMobile();
     const experiences = use(experiencesPromise).filter(
@@ -98,7 +89,7 @@ export function ExploreSidebar({
                         <DialogTitle>Experiences</DialogTitle>
                     </VisuallyHidden>
                     <div className={"overflow-y-auto p-2"}>
-                        <ExploreSidebarContent experiences={experiences} />
+                        <ExploreSidebarContent labs={experiences} />
                     </div>
                 </DrawerContent>
             </Drawer>
@@ -110,7 +101,7 @@ export function ExploreSidebar({
             data-state={state}
             className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 max-w-70 xl:max-w-80 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
         >
-            <ExploreSidebarContent experiences={experiences} />
+            <ExploreSidebarContent labs={experiences} />
         </div>
     );
 }

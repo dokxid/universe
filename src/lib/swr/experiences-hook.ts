@@ -1,35 +1,29 @@
-import {
-    getExperienceAction,
-    getExperiencesAction,
-} from "@/actions/get-experience";
+import { getLabAction, getLabsAction } from "@/actions/get-experience";
 import useSWR from "swr";
 
-const experiencesFetcher = async () => {
-    return await getExperiencesAction();
+const labsFetcher = async () => {
+    return await getLabsAction();
 };
 
-const experienceFetcher = async (slug: string) => {
-    return await getExperienceAction(slug);
+const labFetcher = async (slug: string) => {
+    return await getLabAction(slug);
 };
 
-export function useExperiences() {
-    const { data, error, isLoading } = useSWR(
-        "experiences",
-        experiencesFetcher
-    );
+export function useLabs() {
+    const { data, error, isLoading } = useSWR("labs", labsFetcher);
     return {
-        experiences: data,
+        labs: data,
         isLoading,
         isError: error,
     };
 }
 
-export function useExperience(slug: string) {
-    const { data, error, isLoading } = useSWR(["labs", slug], () =>
-        experienceFetcher(slug)
+export function useLab(slug: string) {
+    const { data, error, isLoading } = useSWR(["lab", slug], () =>
+        labFetcher(slug),
     );
     return {
-        experience: data,
+        lab: data,
         isLoading,
         isError: error,
     };

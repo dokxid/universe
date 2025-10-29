@@ -1,54 +1,51 @@
-import { getUser } from "@/data/fetcher/user-fetcher";
+import { buildDisplayedName } from "@/data/transformers/user-transformer";
+import { Prisma } from "@/generated/prisma/client";
+import { validateCoordinates } from "@/lib/utils/validate-coordinates";
 import { StoryDTO } from "@/types/dtos";
 
-export async function fetchAndMapAuthorsForStoryDTO(
-    stories: StoryDTO[]
-): Promise<StoryDTO[]> {
-    if (stories.length === 0) {
-        throw new Error("No stories provided");
-    }
+export async function sanitizeToStoryDTO(
+    rawStory: Prisma.StoryModel & {
+        author: Prisma.UserModel;
+        tags: Prisma.TagModel[];
+        elevationRequests: Prisma.ElevationRequestModel[];
+        lab: Prisma.LabModel;
+    },
+): Promise<StoryDTO> {
     try {
-        const users = [];
-        const authors = stories.map((story) => story.author);
-        const uniqueAuthors = [...new Set(authors)];
-        if (uniqueAuthors.length === 0) {
-            throw new Error("No authors found in the provided stories");
-        }
-        for (const author of uniqueAuthors) {
-            const user = await getUser(author);
-            if (!user) {
-                continue;
-            }
-            users.push(user);
-        }
-
-        if (users.length === 0) {
-            throw new Error("No authors found for the provided stories");
-        }
-        // map author ids to user data
-        const authorMap: { [key: string]: string } = {};
-        const authorProfilePictureMap: { [key: string]: string } = {};
-        users.forEach((user) => {
-            authorMap[user._id] =
-                user.displayName ||
-                `${user.firstName} ${user.lastName}`.trim() ||
-                "Anonymous";
-            authorProfilePictureMap[user._id] = user.profilePictureUrl || "";
-        });
-
-        // replace author ids with user data in stories
-        stories.forEach((story) => {
-            if (authorMap[story.author]) {
-                story.authorName = authorMap[story.author];
-                story.authorProfilePictureUrl =
-                    authorProfilePictureMap[story.author];
-            } else {
-                story.authorName = "Unknown Author";
-            }
-        });
-    } catch (err) {
-        console.error("Error fetching authors:", err);
+        const sanitizedStory: StoryDTO = {
+            id: rawStory.id,
+            title: rawStory.title,
+            content: rawStory.content,
+            draft: rawStory.draft,
+            location: {
+                type: rawStory.location.type,
+                coordinates: validateCoordinates(rawStory.location.coordinates),
+            },
+            tags: rawStory.tags,
+            year: rawStory.year,
+            featuredImageUrl: rawStory.featuredImageUrl,
+            visibleUniverse: rawStory.visibleUniverse,
+            license: rawStory.license,
+            elevationRequests: rawStory.elevationRequests,
+            author: {
+                id: rawStory.author.id,
+                name: buildDisplayedName(rawStory.author),
+                profilePictureUrl:
+                    rawStory.author.profilePictureUrl ?? undefined,
+            },
+            lab: {
+                id: rawStory.lab.id,
+                name: rawStory.lab.name,
+                slug: rawStory.lab.slug,
+            },
+            createdAt: rawStory.createdAt,
+            updatedAt: rawStory.updatedAt,
+        };
+        return sanitizedStory;
+    } catch (error) {
+        console.error("Error sanitizing story:", error);
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
     }
-
-    return stories;
 }

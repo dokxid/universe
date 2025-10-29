@@ -36,8 +36,8 @@ export function FeaturedPictureFormField({ story }: { story: StoryDTO }) {
     const editFeaturedPictureForm = useForm({
         resolver: zodResolver(editFeaturedPictureFormSchema),
         defaultValues: {
-            storyId: story._id,
-            lab: story.experience,
+            storyId: story.id,
+            lab: story.lab.slug,
             featuredPicture: undefined,
         },
     });

@@ -1,50 +1,39 @@
-import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
-import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth/betterauth/auth";
+import { headers } from "next/headers";
+import { getLabSlugFromPathname } from "./lib/utils/pathname";
 
 const CSP_ENABLED = false;
+const DEBUG = false;
 
-// determine origin based on environment
-const REDIRECT_ORIGIN =
-    process.env.VERCEL_ENV === "production"
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : process.env.VERCEL_ENV === "preview"
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
-
-// build redirect URI if no environment variable is set
-const CALLBACK_REDIRECT_PATHNAME = "/auth/callback";
-const REDIRECT_URI = process.env.WORKOS_REDIRECT_URL
-    ? new URL(process.env.WORKOS_REDIRECT_URL)
-    : new URL(CALLBACK_REDIRECT_PATHNAME, REDIRECT_ORIGIN);
-
-// prefix for labs (to avoid subdomain routing complexity)
-const SLUG_PATH_PREFIX = "/:slug";
-const UNAUTHENTICATED_SLUG_PATHS = [
-    "",
-    "/map",
-    "/stories",
-    "/stories/view/:id",
-    "/labs",
-    "/map-settings",
-    "/images/:filename",
-    "/about",
-    "/contact",
-    "/login",
-    "/user/view/:userId",
+const GUEST_PATHS = [
+    "/:slug/",
+    "/:slug/map",
+    "/:slug/stories",
+    "/:slug/stories/view/:id",
+    "/:slug/labs",
+    "/:slug/map-settings",
+    "/:slug/images/:filename",
+    "/:slug/about",
+    "/:slug/contact",
+    "/:slug/login",
+    "/:slug/user/view/:userId",
+    "/:slug/signup",
+    "/api/files/:key",
+    "/auth/accept-invitation/:invitationId",
 ];
-const UNAUTHENTICATED_SLUGLESS_PATHS = ["/api/files/:key"];
-const SANITIZED_UNAUTHENTICATED_PATHS = UNAUTHENTICATED_SLUG_PATHS.map(
-    (path) => SLUG_PATH_PREFIX + path
-).concat(UNAUTHENTICATED_SLUGLESS_PATHS);
 
-function addCSPHeaders(response: Response): Response {
+function addCSPHeaders(response: NextResponse): NextResponse {
+    if (CSP_ENABLED === false) {
+        return response;
+    }
     const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
     const cspHeader = `
     default-src 'self';
-    script-src 'self' https://auth.workos.com 'nonce-${nonce}' 'strict-dynamic';
-    connect-src 'self' https://auth.workos.com https://*.tiles.mapbox.com https://tiles.stadiamaps.com https://api.mapbox.com https://events.mapbox.com;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    connect-src 'self' https://*.tiles.mapbox.com https://tiles.stadiamaps.com https://api.mapbox.com https://events.mapbox.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' https://auth.workos.com blob: data:;
+    img-src 'self' blob: data:;
     font-src 'self';
     object-src 'none';
     child-src blob:;
@@ -64,41 +53,60 @@ function addCSPHeaders(response: Response): Response {
     response.headers.set("x-nonce", nonce);
     response.headers.set(
         "Content-Security-Policy",
-        contentSecurityPolicyHeaderValue
+        contentSecurityPolicyHeaderValue,
     );
     return response;
 }
 
-export default async function middleware(
-    req: NextRequest,
-    event: NextFetchEvent
-) {
-    // apply authkit middleware
-    let response = await authkitMiddleware({
-        redirectUri: REDIRECT_URI.href,
-        middlewareAuth: {
-            enabled: true,
-            unauthenticatedPaths: SANITIZED_UNAUTHENTICATED_PATHS,
-        },
-        debug: process.env.NODE_ENV !== "production",
-    })(req, event);
+function isGuestPath(pathname: string): boolean {
+    const isGuestPath = GUEST_PATHS.some((path) => {
+        const pattern = path.replace(/:[^/]+/g, "[^/]+");
+        const regex = new RegExp(`^${pattern}$`);
+        return regex.test(pathname);
+    });
+    return isGuestPath;
+}
 
-    // ensure response is not null or undefined
-    if (!response) {
-        response = NextResponse.next(); // Fallback to a default response
+export default async function middleware(req: NextRequest) {
+    const slug = getLabSlugFromPathname(req.nextUrl.pathname);
+    const response = NextResponse.next();
+
+    if (DEBUG && req.method === "GET") {
+        const debugObject = {
+            pathname: req.nextUrl.pathname,
+            isGuestPath: isGuestPath(req.nextUrl.pathname),
+            slug: slug,
+        };
+        console.debug("Middleware debug:", JSON.stringify(debugObject));
     }
 
-    // add CSP if needed
-    if (CSP_ENABLED) {
+    // case: guest path, allow response
+    if (isGuestPath(req.nextUrl.pathname)) {
         return addCSPHeaders(response);
     }
 
-    return response;
+    // get session to verify authentication
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    // case: no session / user, redirect to login
+    if (!session || !session.user) {
+        const redirectUrl = req.nextUrl.clone();
+        redirectUrl.pathname = `/${slug}/login`;
+        return NextResponse.redirect(redirectUrl);
+    }
+
+    return addCSPHeaders(response);
 }
 
 // Match against pages that require authentication
 export const config = {
+    runtime: "nodejs",
     matcher: [
+        // public apis
+        "/api/files/:key",
+
         // public paths
         "/:slug/",
         "/:slug/images/:filename",
@@ -111,24 +119,30 @@ export const config = {
         "/:slug/stories",
         "/:slug/stories/view/:id",
         "/:slug/login",
+        "/:slug/signup",
         "/:slug/user/view/:userId",
-        "/api/files/:key",
+        "/auth/accept-invitation/:invitationId",
+
         // account and related paths
         "/:slug/account/user-preferences",
+
         // editor+ paths
         "/:slug/stories/create",
         "/:slug/stories/manage",
         "/:slug/stories/dashboard",
         "/:slug/stories/edit/:id",
         "/:slug/elevation-requests",
+
         // admin paths
         "/:slug/lab/settings",
         "/:slug/lab/manage",
+
         // super admin paths
         "/:slug/debug-settings",
         "/universe/labs/manage",
         "/universe/labs/view/:id",
         "/universe/labs/create",
+
         // static pages
         "/:slug/legal/privacy",
         "/:slug/legal/terms",

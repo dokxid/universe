@@ -1,16 +1,12 @@
-import { seedAllElevationRequests } from "@/data/scripts/seed-elevation-requests";
+import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
 import {
     seedExperiences,
     seedUniverseLab,
 } from "@/data/scripts/seed-experiences";
-import {
-    deleteUploadsFolder,
-    initializeFeaturedLabImages,
-    seedAllStoryImages,
-} from "@/data/scripts/seed-images";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
-import { seedUsers } from "@/data/scripts/seed-users";
+import { seedCypressUsers, seedUsers } from "@/data/scripts/seed-users";
+import { PrismaClient } from "@/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -46,24 +42,34 @@ const city_centers: { [key: string]: number[] } = {
     luxembourg: [6.1296, 49.8116],
 };
 
+const prisma = new PrismaClient();
+
 export async function seedDatabase(
     numRandomCityCenters: number,
-    numStories: number
+    numStories: number,
 ) {
     try {
+        // tear down in order
+        await prisma.invitation.deleteMany({});
+        await prisma.elevationRequest.deleteMany({});
+        await prisma.story.deleteMany({});
+        await prisma.lab.deleteMany({});
+
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,
-            numRandomCityCenters
+            numRandomCityCenters,
         );
-        await deleteUploadsFolder();
+
+        // await deleteUploadsFolder();
         await seedUnescoTags();
         await seedExperiences(randomCityCenters);
         await seedUsers(10, 1);
-        await seedAllStoryImages();
-        await initializeFeaturedLabImages();
+        // await seedAllStoryImages();
+        // await initializeFeaturedLabImages();
+        await seedCypressUsers();
         await seedAllStories(numStories);
-        await seedAllElevationRequests();
+        await seedElevationRequests();
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);

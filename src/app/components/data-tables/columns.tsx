@@ -16,7 +16,6 @@ import {
 import { useCurrentUser } from "@/lib/swr/user-hook";
 import { StoryDTO } from "@/types/dtos";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import {
     Map,
     MapPinCheckInside,
@@ -44,9 +43,9 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "rejected"
+                story.id,
+                story.lab.slug,
+                "rejected",
             );
             toast.success("Elevation request set to: rejected");
         } catch (error) {
@@ -60,9 +59,9 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "approved"
+                story.id,
+                story.lab.slug,
+                "approved",
             );
             toast.success("Elevation request set to: approved");
         } catch (error) {
@@ -85,14 +84,14 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             Story page
                         </Link>
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             Elevation history
                         </Link>
                     </Button>
@@ -127,9 +126,6 @@ const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
 const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <div>Please log in to request elevation.</div>;
 
     const handlePendingElevationRequest = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -137,9 +133,9 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
 
         try {
             const result = await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "pending"
+                story.id,
+                story.lab.slug,
+                "pending",
             );
             toast.success("Elevation request completed: " + result);
         } catch (error) {
@@ -162,14 +158,14 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             View story
                         </Link>
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/edit/${story._id}`}>
+                        <Link href={`/${slug}/stories/edit/${story.id}`}>
                             Edit story
                         </Link>
                     </Button>
@@ -180,7 +176,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Updating Visibility for story ${story.title} to: Draft.`
+                                `Updating Visibility for story ${story.title} to: Draft.`,
                             );
                         }}
                         tabIndex={-1}
@@ -195,7 +191,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                         className="w-full justify-start"
                         onClick={() => {
                             toast.success(
-                                `Updating Visibility for story ${story.title} to: Public.`
+                                `Updating Visibility for story ${story.title} to: Public.`,
                             );
                         }}
                         tabIndex={-1}
@@ -252,7 +248,8 @@ export const manageStoryColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("authorName", {
+    columnHelper.accessor((row) => row.author.name, {
+        id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -360,7 +357,7 @@ export const manageStoryColumns = [
                     );
                 }
             },
-        }
+        },
     ),
     columnHelper.accessor("createdAt", {
         header: ({ column }) => (
@@ -427,7 +424,8 @@ export const elevationRequestsColumns = [
         ),
         cell: (info) => <span className={""}>{info.getValue()}</span>,
     }),
-    columnHelper.accessor("authorName", {
+    columnHelper.accessor((row) => row.author.name, {
+        id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
@@ -536,13 +534,13 @@ export const elevationRequestsColumns = [
                     );
                 }
             },
-        }
+        },
     ),
     columnHelper.accessor(
         (row) => {
             const lastRequest =
                 row.elevationRequests?.[row.elevationRequests.length - 1];
-            return lastRequest?.requestedAt ?? new Date().toISOString();
+            return lastRequest?.createdAt ?? new Date().toISOString();
         },
         {
             id: "requested_at",
@@ -554,7 +552,7 @@ export const elevationRequestsColumns = [
                     {new Date(info.getValue()).toLocaleDateString()}
                 </span>
             ),
-        }
+        },
     ),
     columnHelper.accessor("createdAt", {
         header: ({ column }) => (

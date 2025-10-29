@@ -15,29 +15,28 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Experience } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
 import React from "react";
 import CurrentExperienceDescriptor from "./current-experience-descriptor";
 
 export function CurrentExperienceSelector({
-    experiences,
+    labs,
     className,
 }: {
-    experiences: Experience[];
+    labs: LabDTO[];
     className?: string;
 }) {
     const [open, setOpen] = React.useState(false);
     const searchParams = useSearchParams();
-    const safeData = experiences.map((item) => ({
+    const safeData = labs.map((item) => ({
         ...item,
-        stories: [...item.stories],
     }));
-    const experience = safeData.find(
+    const lab = safeData.find(
         (exp) => exp.slug === (searchParams.get("exp") ?? "universe")
     );
-    if (!experience) {
+    if (!lab) {
         redirect("/universe/map");
     }
     return (
@@ -51,7 +50,7 @@ export function CurrentExperienceSelector({
                         className={"justify-between min-h-20 w-full"}
                         aria-label={"Experience Selector"}
                     >
-                        <CurrentExperienceDescriptor experience={experience} />
+                        <CurrentExperienceDescriptor lab={lab} />
                         <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </div>
@@ -63,8 +62,8 @@ export function CurrentExperienceSelector({
                         <CommandEmpty>No experience found.</CommandEmpty>
                         <CommandGroup>
                             <ExperiencesList
-                                experiences={safeData}
-                                currentExperience={experience}
+                                labs={safeData}
+                                currentLab={lab}
                                 setOpen={setOpen}
                             />
                         </CommandGroup>

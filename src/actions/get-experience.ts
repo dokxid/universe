@@ -1,14 +1,11 @@
 "use server";
 
-import {
-    getExperienceDTO,
-    getExperiencesDTO,
-} from "@/data/dto/getters/get-experience-dto";
-import { ExperienceDTO } from "@/types/dtos";
+import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { LabDTO } from "@/types/dtos";
 
-export async function getExperiencesAction(): Promise<ExperienceDTO[]> {
+export async function getLabsAction(): Promise<LabDTO[]> {
     try {
-        const experiences = await getExperiencesDTO();
+        const experiences = await getLabsDTO();
         return experiences;
     } catch (error) {
         console.error("Error fetching labs:", error);
@@ -16,11 +13,11 @@ export async function getExperiencesAction(): Promise<ExperienceDTO[]> {
     }
 }
 
-export async function getExperienceAction(
+export async function getLabAction(
     slug: string
-): Promise<ExperienceDTO | null> {
+): Promise<LabDTO | null> {
     try {
-        const experience = await getExperienceDTO(slug);
+        const experience = await getLabDTO(slug);
         return experience;
     } catch (error) {
         console.error("Error fetching lab:", error);
