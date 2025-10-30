@@ -23,13 +23,8 @@ Object.keys(process.env).forEach((key) => {
 });
 console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
 
-// check if docker
-const isDocker =
-    process.env.DOCKER === "true" ||
-    process.env.MONGODB_URI?.includes("mongo:");
-
 const config = {
-    output: isDocker ? "standalone" : undefined,
+    output: "standalone",
     turbopack: {
         rules: {
             "*.svg": {
