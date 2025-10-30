@@ -129,7 +129,11 @@ docker compose up -d garage
 ## setup mongodb and initial seeding
 
 ```sh
+# idk why i cant use other .envs yet
 docker compose up -d mongo
+vim .env  # enter database_url: mongodb://localhost:27017/<db_name>
+yarn prisma:generate
+yarn prisma:push
 yarn seed:docker  # init the database
 ```
 

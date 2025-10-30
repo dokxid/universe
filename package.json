@@ -20,7 +20,7 @@
         "component:headless": "cypress run --component",
         "seed:local": "tsx --trace-warnings --env-file=.env.local src/data/scripts/seed-staging-script.ts",
         "seed:staging": "tsx --env-file=.env.staging src/data/scripts/seed-staging-script.ts",
-        "seed:docker": "MONGODB_URI=mongodb://localhost:28017 MONGODB_DBNAME=universe-production tsx --env-file=.env.docker src/data/scripts/seed-production-script.ts",
+        "seed:docker": "DATABASE_URL=mongodb://localhost:27017/universe-staging MONGODB_URI=mongodb://localhost:27017 MONGODB_DBNAME=universe-staging tsx --env-file=.env.docker src/data/scripts/seed-production-script.ts",
         "prepare": "husky",
         "vercel-build": "prisma generate && prisma db push && next build"
     },
