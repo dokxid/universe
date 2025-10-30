@@ -302,24 +302,24 @@ export type UserWhereInput = {
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  displayName?: Prisma.SortOrder
-  firstName?: Prisma.SortOrder
-  familyName?: Prisma.SortOrder
+  displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  familyName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
-  profilePictureUrl?: Prisma.SortOrder
+  profilePictureUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  website?: Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrder
-  publicEmail?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  banned?: Prisma.SortOrder
-  banReason?: Prisma.SortOrder
-  banExpires?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrderInput | Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  banExpires?: Prisma.SortOrderInput | Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   members?: Prisma.MemberOrderByRelationAggregateInput
@@ -359,24 +359,24 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  displayName?: Prisma.SortOrder
-  firstName?: Prisma.SortOrder
-  familyName?: Prisma.SortOrder
+  displayName?: Prisma.SortOrderInput | Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  familyName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
-  profilePictureUrl?: Prisma.SortOrder
+  profilePictureUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  title?: Prisma.SortOrder
-  position?: Prisma.SortOrder
-  website?: Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrder
-  publicEmail?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  banned?: Prisma.SortOrder
-  banReason?: Prisma.SortOrder
-  banExpires?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  publicEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrderInput | Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  banExpires?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -462,6 +462,7 @@ export type UserUncheckedCreateInput = {
 }
 
 export type UserUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,6 +489,7 @@ export type UserUpdateInput = {
 }
 
 export type UserUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -536,6 +538,7 @@ export type UserCreateManyInput = {
 }
 
 export type UserUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -557,6 +560,7 @@ export type UserUpdateManyMutationInput = {
 }
 
 export type UserUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -664,12 +668,10 @@ export type UserUpdateOneRequiredWithoutStoriesNestedInput = {
 
 export type NullableBoolFieldUpdateOperationsInput = {
   set?: boolean | null
-  unset?: boolean
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
-  unset?: boolean
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -797,6 +799,7 @@ export type UserUpdateToOneWithWhereWithoutStoriesInput = {
 }
 
 export type UserUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -822,6 +825,7 @@ export type UserUpdateWithoutStoriesInput = {
 }
 
 export type UserUncheckedUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -915,6 +919,7 @@ export type UserUpdateToOneWithWhereWithoutSessionsInput = {
 }
 
 export type UserUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -940,6 +945,7 @@ export type UserUpdateWithoutSessionsInput = {
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1033,6 +1039,7 @@ export type UserUpdateToOneWithWhereWithoutAccountsInput = {
 }
 
 export type UserUpdateWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1058,6 +1065,7 @@ export type UserUpdateWithoutAccountsInput = {
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1151,6 +1159,7 @@ export type UserUpdateToOneWithWhereWithoutMembersInput = {
 }
 
 export type UserUpdateWithoutMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1176,6 +1185,7 @@ export type UserUpdateWithoutMembersInput = {
 }
 
 export type UserUncheckedUpdateWithoutMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1269,6 +1279,7 @@ export type UserUpdateToOneWithWhereWithoutInvitationsInput = {
 }
 
 export type UserUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1294,6 +1305,7 @@ export type UserUpdateWithoutInvitationsInput = {
 }
 
 export type UserUncheckedUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   familyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1413,7 +1425,49 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
+export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  displayName?: boolean
+  firstName?: boolean
+  familyName?: boolean
+  email?: boolean
+  emailVerified?: boolean
+  profilePictureUrl?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  description?: boolean
+  title?: boolean
+  position?: boolean
+  website?: boolean
+  phoneNumber?: boolean
+  publicEmail?: boolean
+  role?: boolean
+  banned?: boolean
+  banReason?: boolean
+  banExpires?: boolean
+}, ExtArgs["result"]["user"]>
 
+export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  displayName?: boolean
+  firstName?: boolean
+  familyName?: boolean
+  email?: boolean
+  emailVerified?: boolean
+  profilePictureUrl?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  description?: boolean
+  title?: boolean
+  position?: boolean
+  website?: boolean
+  phoneNumber?: boolean
+  publicEmail?: boolean
+  role?: boolean
+  banned?: boolean
+  banReason?: boolean
+  banExpires?: boolean
+}, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
@@ -1446,6 +1500,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   stories?: boolean | Prisma.User$storiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
@@ -1594,6 +1650,30 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   createMany<T extends UserCreateManyArgs>(args?: Prisma.SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Users and returns the data saved in the database.
+   * @param {UserCreateManyAndReturnArgs} args - Arguments to create many Users.
+   * @example
+   * // Create many Users
+   * const user = await prisma.user.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Users and only return the `id`
+   * const userWithIdOnly = await prisma.user.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a User.
    * @param {UserDeleteArgs} args - Arguments to delete one User.
    * @example
@@ -1658,6 +1738,36 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
   updateMany<T extends UserUpdateManyArgs>(args: Prisma.SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Users and returns the data updated in the database.
+   * @param {UserUpdateManyAndReturnArgs} args - Arguments to update many Users.
+   * @example
+   * // Update many Users
+   * const user = await prisma.user.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Users and only return the `id`
+   * const userWithIdOnly = await prisma.user.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one User.
    * @param {UserUpsertArgs} args - Arguments to update or create a User.
    * @example
@@ -1675,29 +1785,6 @@ export interface UserDelegate<ExtArgs extends runtime.Types.Extensions.InternalA
    * })
    */
   upsert<T extends UserUpsertArgs>(args: Prisma.SelectSubset<T, UserUpsertArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Users that matches the filter.
-   * @param {UserFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const user = await prisma.user.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.UserFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a User.
-   * @param {UserAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const user = await prisma.user.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.UserAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -2121,6 +2208,26 @@ export type UserCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * User createManyAndReturn
+ */
+export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * The data used to create many Users.
+   */
+  data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -2153,6 +2260,32 @@ export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
  * User updateMany
  */
 export type UserUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The data used to update Users.
+   */
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyInput>
+  /**
+   * Filter which Users to update
+   */
+  where?: Prisma.UserWhereInput
+  /**
+   * Limit how many Users to update.
+   */
+  limit?: number
+}
+
+/**
+ * User updateManyAndReturn
+ */
+export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
   /**
    * The data used to update Users.
    */
@@ -2231,34 +2364,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
-}
-
-/**
- * User findRaw
- */
-export type UserFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * User aggregateRaw
- */
-export type UserAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

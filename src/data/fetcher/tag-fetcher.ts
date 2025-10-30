@@ -1,15 +1,13 @@
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import { cache } from "react";
 import "server-only";
-
-const prisma = new PrismaClient();
 
 export const getTags = cache(async () => {
     try {
         const result = await prisma.tag.findMany({
             include: {
                 _count: {
-                    select: { story: true },
+                    select: { stories: true },
                 },
             },
         });
@@ -24,13 +22,13 @@ export const getTagsForLab = cache(async (slug: string) => {
     try {
         const result = await prisma.tag.findMany({
             where: {
-                story: {
-                    some: { lab: { slug: slug } },
+                stories: {
+                    some: { story: { lab: { slug: slug } } },
                 },
             },
             include: {
                 _count: {
-                    select: { story: true },
+                    select: { stories: true },
                 },
             },
         });

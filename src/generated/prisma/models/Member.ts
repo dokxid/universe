@@ -247,6 +247,7 @@ export type MemberUncheckedCreateInput = {
 }
 
 export type MemberUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lab?: Prisma.LabUpdateOneRequiredWithoutMembersNestedInput
@@ -254,6 +255,7 @@ export type MemberUpdateInput = {
 }
 
 export type MemberUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -269,11 +271,13 @@ export type MemberCreateManyInput = {
 }
 
 export type MemberUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MemberUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
@@ -423,6 +427,7 @@ export type MemberCreateOrConnectWithoutUserInput = {
 
 export type MemberCreateManyUserInputEnvelope = {
   data: Prisma.MemberCreateManyUserInput | Prisma.MemberCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type MemberUpsertWithWhereUniqueWithoutUserInput = {
@@ -473,6 +478,7 @@ export type MemberCreateOrConnectWithoutLabInput = {
 
 export type MemberCreateManyLabInputEnvelope = {
   data: Prisma.MemberCreateManyLabInput | Prisma.MemberCreateManyLabInput[]
+  skipDuplicates?: boolean
 }
 
 export type MemberUpsertWithWhereUniqueWithoutLabInput = {
@@ -499,18 +505,21 @@ export type MemberCreateManyUserInput = {
 }
 
 export type MemberUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lab?: Prisma.LabUpdateOneRequiredWithoutMembersNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MemberUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -524,18 +533,21 @@ export type MemberCreateManyLabInput = {
 }
 
 export type MemberUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembersNestedInput
 }
 
 export type MemberUncheckedUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MemberUncheckedUpdateManyWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -553,7 +565,25 @@ export type MemberSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["member"]>
 
+export type MemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  labId?: boolean
+  userId?: boolean
+  role?: boolean
+  createdAt?: boolean
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["member"]>
 
+export type MemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  labId?: boolean
+  userId?: boolean
+  role?: boolean
+  createdAt?: boolean
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["member"]>
 
 export type MemberSelectScalar = {
   id?: boolean
@@ -565,6 +595,14 @@ export type MemberSelectScalar = {
 
 export type MemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "labId" | "userId" | "role" | "createdAt", ExtArgs["result"]["member"]>
 export type MemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type MemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type MemberIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -699,6 +737,30 @@ export interface MemberDelegate<ExtArgs extends runtime.Types.Extensions.Interna
   createMany<T extends MemberCreateManyArgs>(args?: Prisma.SelectSubset<T, MemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Members and returns the data saved in the database.
+   * @param {MemberCreateManyAndReturnArgs} args - Arguments to create many Members.
+   * @example
+   * // Create many Members
+   * const member = await prisma.member.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Members and only return the `id`
+   * const memberWithIdOnly = await prisma.member.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends MemberCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, MemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Member.
    * @param {MemberDeleteArgs} args - Arguments to delete one Member.
    * @example
@@ -763,6 +825,36 @@ export interface MemberDelegate<ExtArgs extends runtime.Types.Extensions.Interna
   updateMany<T extends MemberUpdateManyArgs>(args: Prisma.SelectSubset<T, MemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Members and returns the data updated in the database.
+   * @param {MemberUpdateManyAndReturnArgs} args - Arguments to update many Members.
+   * @example
+   * // Update many Members
+   * const member = await prisma.member.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Members and only return the `id`
+   * const memberWithIdOnly = await prisma.member.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends MemberUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, MemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Member.
    * @param {MemberUpsertArgs} args - Arguments to update or create a Member.
    * @example
@@ -780,29 +872,6 @@ export interface MemberDelegate<ExtArgs extends runtime.Types.Extensions.Interna
    * })
    */
   upsert<T extends MemberUpsertArgs>(args: Prisma.SelectSubset<T, MemberUpsertArgs<ExtArgs>>): Prisma.Prisma__MemberClient<runtime.Types.Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Members that matches the filter.
-   * @param {MemberFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const member = await prisma.member.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.MemberFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Member.
-   * @param {MemberAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const member = await prisma.member.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.MemberAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1209,6 +1278,30 @@ export type MemberCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * The data used to create many Members.
    */
   data: Prisma.MemberCreateManyInput | Prisma.MemberCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Member createManyAndReturn
+ */
+export type MemberCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Member
+   */
+  select?: Prisma.MemberSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Member
+   */
+  omit?: Prisma.MemberOmit<ExtArgs> | null
+  /**
+   * The data used to create many Members.
+   */
+  data: Prisma.MemberCreateManyInput | Prisma.MemberCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1253,6 +1346,36 @@ export type MemberUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Members to update.
    */
   limit?: number
+}
+
+/**
+ * Member updateManyAndReturn
+ */
+export type MemberUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Member
+   */
+  select?: Prisma.MemberSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Member
+   */
+  omit?: Prisma.MemberOmit<ExtArgs> | null
+  /**
+   * The data used to update Members.
+   */
+  data: Prisma.XOR<Prisma.MemberUpdateManyMutationInput, Prisma.MemberUncheckedUpdateManyInput>
+  /**
+   * Filter which Members to update
+   */
+  where?: Prisma.MemberWhereInput
+  /**
+   * Limit how many Members to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MemberIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1319,34 +1442,6 @@ export type MemberDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Members to delete.
    */
   limit?: number
-}
-
-/**
- * Member findRaw
- */
-export type MemberFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Member aggregateRaw
- */
-export type MemberAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

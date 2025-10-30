@@ -205,7 +205,7 @@ export type InvitationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   labId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   inviterId?: Prisma.SortOrder
@@ -232,7 +232,7 @@ export type InvitationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   labId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   inviterId?: Prisma.SortOrder
@@ -275,6 +275,7 @@ export type InvitationUncheckedCreateInput = {
 }
 
 export type InvitationUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -284,6 +285,7 @@ export type InvitationUpdateInput = {
 }
 
 export type InvitationUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -303,6 +305,7 @@ export type InvitationCreateManyInput = {
 }
 
 export type InvitationUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -310,6 +313,7 @@ export type InvitationUpdateManyMutationInput = {
 }
 
 export type InvitationUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -467,6 +471,7 @@ export type InvitationCreateOrConnectWithoutUserInput = {
 
 export type InvitationCreateManyUserInputEnvelope = {
   data: Prisma.InvitationCreateManyUserInput | Prisma.InvitationCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type InvitationUpsertWithWhereUniqueWithoutUserInput = {
@@ -523,6 +528,7 @@ export type InvitationCreateOrConnectWithoutLabInput = {
 
 export type InvitationCreateManyLabInputEnvelope = {
   data: Prisma.InvitationCreateManyLabInput | Prisma.InvitationCreateManyLabInput[]
+  skipDuplicates?: boolean
 }
 
 export type InvitationUpsertWithWhereUniqueWithoutLabInput = {
@@ -551,6 +557,7 @@ export type InvitationCreateManyUserInput = {
 }
 
 export type InvitationUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -559,6 +566,7 @@ export type InvitationUpdateWithoutUserInput = {
 }
 
 export type InvitationUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -567,6 +575,7 @@ export type InvitationUncheckedUpdateWithoutUserInput = {
 }
 
 export type InvitationUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -584,6 +593,7 @@ export type InvitationCreateManyLabInput = {
 }
 
 export type InvitationUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -592,6 +602,7 @@ export type InvitationUpdateWithoutLabInput = {
 }
 
 export type InvitationUncheckedUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -600,6 +611,7 @@ export type InvitationUncheckedUpdateWithoutLabInput = {
 }
 
 export type InvitationUncheckedUpdateManyWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -621,7 +633,29 @@ export type InvitationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["invitation"]>
 
+export type InvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  labId?: boolean
+  email?: boolean
+  role?: boolean
+  status?: boolean
+  expiresAt?: boolean
+  inviterId?: boolean
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["invitation"]>
 
+export type InvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  labId?: boolean
+  email?: boolean
+  role?: boolean
+  status?: boolean
+  expiresAt?: boolean
+  inviterId?: boolean
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["invitation"]>
 
 export type InvitationSelectScalar = {
   id?: boolean
@@ -635,6 +669,14 @@ export type InvitationSelectScalar = {
 
 export type InvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "labId" | "email" | "role" | "status" | "expiresAt" | "inviterId", ExtArgs["result"]["invitation"]>
 export type InvitationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type InvitationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type InvitationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -771,6 +813,30 @@ export interface InvitationDelegate<ExtArgs extends runtime.Types.Extensions.Int
   createMany<T extends InvitationCreateManyArgs>(args?: Prisma.SelectSubset<T, InvitationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Invitations and returns the data saved in the database.
+   * @param {InvitationCreateManyAndReturnArgs} args - Arguments to create many Invitations.
+   * @example
+   * // Create many Invitations
+   * const invitation = await prisma.invitation.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Invitations and only return the `id`
+   * const invitationWithIdOnly = await prisma.invitation.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends InvitationCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, InvitationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Invitation.
    * @param {InvitationDeleteArgs} args - Arguments to delete one Invitation.
    * @example
@@ -835,6 +901,36 @@ export interface InvitationDelegate<ExtArgs extends runtime.Types.Extensions.Int
   updateMany<T extends InvitationUpdateManyArgs>(args: Prisma.SelectSubset<T, InvitationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Invitations and returns the data updated in the database.
+   * @param {InvitationUpdateManyAndReturnArgs} args - Arguments to update many Invitations.
+   * @example
+   * // Update many Invitations
+   * const invitation = await prisma.invitation.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Invitations and only return the `id`
+   * const invitationWithIdOnly = await prisma.invitation.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends InvitationUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, InvitationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Invitation.
    * @param {InvitationUpsertArgs} args - Arguments to update or create a Invitation.
    * @example
@@ -852,29 +948,6 @@ export interface InvitationDelegate<ExtArgs extends runtime.Types.Extensions.Int
    * })
    */
   upsert<T extends InvitationUpsertArgs>(args: Prisma.SelectSubset<T, InvitationUpsertArgs<ExtArgs>>): Prisma.Prisma__InvitationClient<runtime.Types.Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Invitations that matches the filter.
-   * @param {InvitationFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const invitation = await prisma.invitation.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.InvitationFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Invitation.
-   * @param {InvitationAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const invitation = await prisma.invitation.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.InvitationAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1283,6 +1356,30 @@ export type InvitationCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Invitations.
    */
   data: Prisma.InvitationCreateManyInput | Prisma.InvitationCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Invitation createManyAndReturn
+ */
+export type InvitationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invitation
+   */
+  select?: Prisma.InvitationSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invitation
+   */
+  omit?: Prisma.InvitationOmit<ExtArgs> | null
+  /**
+   * The data used to create many Invitations.
+   */
+  data: Prisma.InvitationCreateManyInput | Prisma.InvitationCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvitationIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1327,6 +1424,36 @@ export type InvitationUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Invitations to update.
    */
   limit?: number
+}
+
+/**
+ * Invitation updateManyAndReturn
+ */
+export type InvitationUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invitation
+   */
+  select?: Prisma.InvitationSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invitation
+   */
+  omit?: Prisma.InvitationOmit<ExtArgs> | null
+  /**
+   * The data used to update Invitations.
+   */
+  data: Prisma.XOR<Prisma.InvitationUpdateManyMutationInput, Prisma.InvitationUncheckedUpdateManyInput>
+  /**
+   * Filter which Invitations to update
+   */
+  where?: Prisma.InvitationWhereInput
+  /**
+   * Limit how many Invitations to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvitationIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1393,34 +1520,6 @@ export type InvitationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Invitations to delete.
    */
   limit?: number
-}
-
-/**
- * Invitation findRaw
- */
-export type InvitationFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Invitation aggregateRaw
- */
-export type InvitationAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

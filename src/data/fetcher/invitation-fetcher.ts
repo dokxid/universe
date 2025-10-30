@@ -1,8 +1,7 @@
 import "server-only";
 
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 
-const prisma = new PrismaClient();
 export const fetchInvitation = async (invitationId: string) => {
     return prisma.invitation.findUnique({
         where: { id: invitationId },

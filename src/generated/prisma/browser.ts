@@ -17,15 +17,15 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model GeoJson
- * 
- */
-export type GeoJson = Prisma.GeoJsonModel
-/**
  * Model ElevationRequest
  * 
  */
 export type ElevationRequest = Prisma.ElevationRequestModel
+/**
+ * Model TagsOnStories
+ * 
+ */
+export type TagsOnStories = Prisma.TagsOnStoriesModel
 /**
  * Model Story
  * 

@@ -253,13 +253,13 @@ export type AccountOrderByWithRelationInput = {
   accountId?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  accessToken?: Prisma.SortOrder
-  refreshToken?: Prisma.SortOrder
-  idToken?: Prisma.SortOrder
-  accessTokenExpiresAt?: Prisma.SortOrder
-  refreshTokenExpiresAt?: Prisma.SortOrder
-  scope?: Prisma.SortOrder
-  password?: Prisma.SortOrder
+  accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  idToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  accessTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  scope?: Prisma.SortOrderInput | Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -290,13 +290,13 @@ export type AccountOrderByWithAggregationInput = {
   accountId?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  accessToken?: Prisma.SortOrder
-  refreshToken?: Prisma.SortOrder
-  idToken?: Prisma.SortOrder
-  accessTokenExpiresAt?: Prisma.SortOrder
-  refreshTokenExpiresAt?: Prisma.SortOrder
-  scope?: Prisma.SortOrder
-  password?: Prisma.SortOrder
+  accessToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  idToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  accessTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  scope?: Prisma.SortOrderInput | Prisma.SortOrder
+  password?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AccountCountOrderByAggregateInput
@@ -356,6 +356,7 @@ export type AccountUncheckedCreateInput = {
 }
 
 export type AccountUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -371,6 +372,7 @@ export type AccountUpdateInput = {
 }
 
 export type AccountUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -402,6 +404,7 @@ export type AccountCreateManyInput = {
 }
 
 export type AccountUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -416,6 +419,7 @@ export type AccountUpdateManyMutationInput = {
 }
 
 export type AccountUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -567,6 +571,7 @@ export type AccountCreateOrConnectWithoutUserInput = {
 
 export type AccountCreateManyUserInputEnvelope = {
   data: Prisma.AccountCreateManyUserInput | Prisma.AccountCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -620,6 +625,7 @@ export type AccountCreateManyUserInput = {
 }
 
 export type AccountUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -634,6 +640,7 @@ export type AccountUpdateWithoutUserInput = {
 }
 
 export type AccountUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -648,6 +655,7 @@ export type AccountUncheckedUpdateWithoutUserInput = {
 }
 
 export type AccountUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   accountId?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
   accessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -680,7 +688,39 @@ export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
+export type AccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  accountId?: boolean
+  providerId?: boolean
+  userId?: boolean
+  accessToken?: boolean
+  refreshToken?: boolean
+  idToken?: boolean
+  accessTokenExpiresAt?: boolean
+  refreshTokenExpiresAt?: boolean
+  scope?: boolean
+  password?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["account"]>
 
+export type AccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  accountId?: boolean
+  providerId?: boolean
+  userId?: boolean
+  accessToken?: boolean
+  refreshToken?: boolean
+  idToken?: boolean
+  accessTokenExpiresAt?: boolean
+  refreshTokenExpiresAt?: boolean
+  scope?: boolean
+  password?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}, ExtArgs["result"]["account"]>
 
 export type AccountSelectScalar = {
   id?: boolean
@@ -700,6 +740,12 @@ export type AccountSelectScalar = {
 
 export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "accountId" | "providerId" | "userId" | "accessToken" | "refreshToken" | "idToken" | "accessTokenExpiresAt" | "refreshTokenExpiresAt" | "scope" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["account"]>
 export type AccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type AccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type AccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
@@ -840,6 +886,30 @@ export interface AccountDelegate<ExtArgs extends runtime.Types.Extensions.Intern
   createMany<T extends AccountCreateManyArgs>(args?: Prisma.SelectSubset<T, AccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Accounts and returns the data saved in the database.
+   * @param {AccountCreateManyAndReturnArgs} args - Arguments to create many Accounts.
+   * @example
+   * // Create many Accounts
+   * const account = await prisma.account.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Accounts and only return the `id`
+   * const accountWithIdOnly = await prisma.account.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends AccountCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, AccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Account.
    * @param {AccountDeleteArgs} args - Arguments to delete one Account.
    * @example
@@ -904,6 +974,36 @@ export interface AccountDelegate<ExtArgs extends runtime.Types.Extensions.Intern
   updateMany<T extends AccountUpdateManyArgs>(args: Prisma.SelectSubset<T, AccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Accounts and returns the data updated in the database.
+   * @param {AccountUpdateManyAndReturnArgs} args - Arguments to update many Accounts.
+   * @example
+   * // Update many Accounts
+   * const account = await prisma.account.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Accounts and only return the `id`
+   * const accountWithIdOnly = await prisma.account.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends AccountUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, AccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Account.
    * @param {AccountUpsertArgs} args - Arguments to update or create a Account.
    * @example
@@ -921,29 +1021,6 @@ export interface AccountDelegate<ExtArgs extends runtime.Types.Extensions.Intern
    * })
    */
   upsert<T extends AccountUpsertArgs>(args: Prisma.SelectSubset<T, AccountUpsertArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Accounts that matches the filter.
-   * @param {AccountFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const account = await prisma.account.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.AccountFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Account.
-   * @param {AccountAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const account = await prisma.account.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.AccountAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1357,6 +1434,30 @@ export type AccountCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many Accounts.
    */
   data: Prisma.AccountCreateManyInput | Prisma.AccountCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Account createManyAndReturn
+ */
+export type AccountCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Account
+   */
+  select?: Prisma.AccountSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Account
+   */
+  omit?: Prisma.AccountOmit<ExtArgs> | null
+  /**
+   * The data used to create many Accounts.
+   */
+  data: Prisma.AccountCreateManyInput | Prisma.AccountCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AccountIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1401,6 +1502,36 @@ export type AccountUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Accounts to update.
    */
   limit?: number
+}
+
+/**
+ * Account updateManyAndReturn
+ */
+export type AccountUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Account
+   */
+  select?: Prisma.AccountSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Account
+   */
+  omit?: Prisma.AccountOmit<ExtArgs> | null
+  /**
+   * The data used to update Accounts.
+   */
+  data: Prisma.XOR<Prisma.AccountUpdateManyMutationInput, Prisma.AccountUncheckedUpdateManyInput>
+  /**
+   * Filter which Accounts to update
+   */
+  where?: Prisma.AccountWhereInput
+  /**
+   * Limit how many Accounts to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AccountIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1467,34 +1598,6 @@ export type AccountDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Accounts to delete.
    */
   limit?: number
-}
-
-/**
- * Account findRaw
- */
-export type AccountFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Account aggregateRaw
- */
-export type AccountAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

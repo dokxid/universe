@@ -288,9 +288,9 @@ export type LabOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
+  logo?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  metadata?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   lngCenter?: Prisma.SortOrder
   latCenter?: Prisma.SortOrder
   initialZoom?: Prisma.SortOrder
@@ -327,9 +327,9 @@ export type LabOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
+  logo?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  metadata?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   lngCenter?: Prisma.SortOrder
   latCenter?: Prisma.SortOrder
   initialZoom?: Prisma.SortOrder
@@ -398,6 +398,7 @@ export type LabUncheckedCreateInput = {
 }
 
 export type LabUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -415,6 +416,7 @@ export type LabUpdateInput = {
 }
 
 export type LabUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -447,6 +449,7 @@ export type LabCreateManyInput = {
 }
 
 export type LabUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -461,6 +464,7 @@ export type LabUpdateManyMutationInput = {
 }
 
 export type LabUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -550,14 +554,6 @@ export type LabUpdateOneRequiredWithoutStoriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LabUpdateToOneWithWhereWithoutStoriesInput, Prisma.LabUpdateWithoutStoriesInput>, Prisma.LabUncheckedUpdateWithoutStoriesInput>
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumLabVisibilityFieldUpdateOperationsInput = {
   set?: $Enums.LabVisibility
 }
@@ -641,6 +637,7 @@ export type LabUpdateToOneWithWhereWithoutStoriesInput = {
 }
 
 export type LabUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -657,6 +654,7 @@ export type LabUpdateWithoutStoriesInput = {
 }
 
 export type LabUncheckedUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -723,6 +721,7 @@ export type LabUpdateToOneWithWhereWithoutMembersInput = {
 }
 
 export type LabUpdateWithoutMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -739,6 +738,7 @@ export type LabUpdateWithoutMembersInput = {
 }
 
 export type LabUncheckedUpdateWithoutMembersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -805,6 +805,7 @@ export type LabUpdateToOneWithWhereWithoutInvitationsInput = {
 }
 
 export type LabUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -821,6 +822,7 @@ export type LabUpdateWithoutInvitationsInput = {
 }
 
 export type LabUncheckedUpdateWithoutInvitationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -904,7 +906,35 @@ export type LabSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   _count?: boolean | Prisma.LabCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lab"]>
 
+export type LabSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  slug?: boolean
+  logo?: boolean
+  createdAt?: boolean
+  metadata?: boolean
+  lngCenter?: boolean
+  latCenter?: boolean
+  initialZoom?: boolean
+  subtitle?: boolean
+  content?: boolean
+  visibility?: boolean
+}, ExtArgs["result"]["lab"]>
 
+export type LabSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  slug?: boolean
+  logo?: boolean
+  createdAt?: boolean
+  metadata?: boolean
+  lngCenter?: boolean
+  latCenter?: boolean
+  initialZoom?: boolean
+  subtitle?: boolean
+  content?: boolean
+  visibility?: boolean
+}, ExtArgs["result"]["lab"]>
 
 export type LabSelectScalar = {
   id?: boolean
@@ -928,6 +958,8 @@ export type LabInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   invitations?: boolean | Prisma.Lab$invitationsArgs<ExtArgs>
   _count?: boolean | Prisma.LabCountOutputTypeDefaultArgs<ExtArgs>
 }
+export type LabIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type LabIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $LabPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Lab"
@@ -1067,6 +1099,30 @@ export interface LabDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
   createMany<T extends LabCreateManyArgs>(args?: Prisma.SelectSubset<T, LabCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Labs and returns the data saved in the database.
+   * @param {LabCreateManyAndReturnArgs} args - Arguments to create many Labs.
+   * @example
+   * // Create many Labs
+   * const lab = await prisma.lab.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Labs and only return the `id`
+   * const labWithIdOnly = await prisma.lab.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends LabCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, LabCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LabPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Lab.
    * @param {LabDeleteArgs} args - Arguments to delete one Lab.
    * @example
@@ -1131,6 +1187,36 @@ export interface LabDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
   updateMany<T extends LabUpdateManyArgs>(args: Prisma.SelectSubset<T, LabUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Labs and returns the data updated in the database.
+   * @param {LabUpdateManyAndReturnArgs} args - Arguments to update many Labs.
+   * @example
+   * // Update many Labs
+   * const lab = await prisma.lab.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Labs and only return the `id`
+   * const labWithIdOnly = await prisma.lab.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends LabUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, LabUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LabPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Lab.
    * @param {LabUpsertArgs} args - Arguments to update or create a Lab.
    * @example
@@ -1148,29 +1234,6 @@ export interface LabDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
    * })
    */
   upsert<T extends LabUpsertArgs>(args: Prisma.SelectSubset<T, LabUpsertArgs<ExtArgs>>): Prisma.Prisma__LabClient<runtime.Types.Result.GetResult<Prisma.$LabPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Labs that matches the filter.
-   * @param {LabFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const lab = await prisma.lab.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.LabFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Lab.
-   * @param {LabAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const lab = await prisma.lab.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.LabAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1585,6 +1648,26 @@ export type LabCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data used to create many Labs.
    */
   data: Prisma.LabCreateManyInput | Prisma.LabCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Lab createManyAndReturn
+ */
+export type LabCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Lab
+   */
+  select?: Prisma.LabSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Lab
+   */
+  omit?: Prisma.LabOmit<ExtArgs> | null
+  /**
+   * The data used to create many Labs.
+   */
+  data: Prisma.LabCreateManyInput | Prisma.LabCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1617,6 +1700,32 @@ export type LabUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
  * Lab updateMany
  */
 export type LabUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The data used to update Labs.
+   */
+  data: Prisma.XOR<Prisma.LabUpdateManyMutationInput, Prisma.LabUncheckedUpdateManyInput>
+  /**
+   * Filter which Labs to update
+   */
+  where?: Prisma.LabWhereInput
+  /**
+   * Limit how many Labs to update.
+   */
+  limit?: number
+}
+
+/**
+ * Lab updateManyAndReturn
+ */
+export type LabUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Lab
+   */
+  select?: Prisma.LabSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Lab
+   */
+  omit?: Prisma.LabOmit<ExtArgs> | null
   /**
    * The data used to update Labs.
    */
@@ -1695,34 +1804,6 @@ export type LabDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Limit how many Labs to delete.
    */
   limit?: number
-}
-
-/**
- * Lab findRaw
- */
-export type LabFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Lab aggregateRaw
- */
-export type LabAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

@@ -26,7 +26,7 @@ export const getUniqueTagDTOsForLab = cache(
             console.error("Error fetching unique tags for lab:", error);
             throw error;
         }
-    }
+    },
 );
 
 export async function getTagByNameDTO(tagName: string): Promise<TagDTO | null> {
@@ -44,10 +44,10 @@ export async function getTagByNameDTO(tagName: string): Promise<TagDTO | null> {
 }
 
 export function sanitizeToTagDTO(
-    tag: Omit<TagDTO, "count"> & { _count: { story: number } }
+    tag: TagDTO & { _count: { stories: number } },
 ): TagDTO {
     return {
         ...tag,
-        count: tag._count.story,
+        count: tag._count.stories,
     };
 }

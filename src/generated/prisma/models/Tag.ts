@@ -193,18 +193,20 @@ export type TagWhereInput = {
   color?: Prisma.StringFilter<"Tag"> | string
   isUnesco?: Prisma.BoolFilter<"Tag"> | boolean
   storyId?: Prisma.StringNullableListFilter<"Tag">
-  story?: Prisma.StoryListRelationFilter
+  stories?: Prisma.TagsOnStoriesListRelationFilter
+  Story?: Prisma.StoryListRelationFilter
 }
 
 export type TagOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  theme?: Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  theme?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrder
   isUnesco?: Prisma.SortOrder
   storyId?: Prisma.SortOrder
-  story?: Prisma.StoryOrderByRelationAggregateInput
+  stories?: Prisma.TagsOnStoriesOrderByRelationAggregateInput
+  Story?: Prisma.StoryOrderByRelationAggregateInput
 }
 
 export type TagWhereUniqueInput = Prisma.AtLeast<{
@@ -218,14 +220,15 @@ export type TagWhereUniqueInput = Prisma.AtLeast<{
   color?: Prisma.StringFilter<"Tag"> | string
   isUnesco?: Prisma.BoolFilter<"Tag"> | boolean
   storyId?: Prisma.StringNullableListFilter<"Tag">
-  story?: Prisma.StoryListRelationFilter
+  stories?: Prisma.TagsOnStoriesListRelationFilter
+  Story?: Prisma.StoryListRelationFilter
 }, "id">
 
 export type TagOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  theme?: Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  theme?: Prisma.SortOrderInput | Prisma.SortOrder
   color?: Prisma.SortOrder
   isUnesco?: Prisma.SortOrder
   storyId?: Prisma.SortOrder
@@ -254,7 +257,9 @@ export type TagCreateInput = {
   theme?: string | null
   color: string
   isUnesco: boolean
-  story?: Prisma.StoryCreateNestedManyWithoutTagsInput
+  storyId?: Prisma.TagCreatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesCreateNestedManyWithoutTagInput
+  Story?: Prisma.StoryCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateInput = {
@@ -265,26 +270,32 @@ export type TagUncheckedCreateInput = {
   color: string
   isUnesco: boolean
   storyId?: Prisma.TagCreatestoryIdInput | string[]
-  story?: Prisma.StoryUncheckedCreateNestedManyWithoutTagsInput
+  stories?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutTagInput
+  Story?: Prisma.StoryUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagUpdateInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.StringFieldUpdateOperationsInput | string
-  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  story?: Prisma.StoryUpdateManyWithoutTagsNestedInput
-}
-
-export type TagUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
   storyId?: Prisma.TagUpdatestoryIdInput | string[]
-  story?: Prisma.StoryUncheckedUpdateManyWithoutTagsNestedInput
+  stories?: Prisma.TagsOnStoriesUpdateManyWithoutTagNestedInput
+  Story?: Prisma.StoryUpdateManyWithoutTagNestedInput
+}
+
+export type TagUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  storyId?: Prisma.TagUpdatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutTagNestedInput
+  Story?: Prisma.StoryUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagCreateManyInput = {
@@ -298,14 +309,7 @@ export type TagCreateManyInput = {
 }
 
 export type TagUpdateManyMutationInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.StringFieldUpdateOperationsInput | string
-  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
-}
-
-export type TagUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -314,14 +318,24 @@ export type TagUncheckedUpdateManyInput = {
   storyId?: Prisma.TagUpdatestoryIdInput | string[]
 }
 
-export type TagListRelationFilter = {
-  every?: Prisma.TagWhereInput
-  some?: Prisma.TagWhereInput
-  none?: Prisma.TagWhereInput
+export type TagUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  storyId?: Prisma.TagUpdatestoryIdInput | string[]
 }
 
-export type TagOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type TagScalarRelationFilter = {
+  is?: Prisma.TagWhereInput
+  isNot?: Prisma.TagWhereInput
+}
+
+export type TagNullableScalarRelationFilter = {
+  is?: Prisma.TagWhereInput | null
+  isNot?: Prisma.TagWhereInput | null
 }
 
 export type TagCountOrderByAggregateInput = {
@@ -352,42 +366,34 @@ export type TagMinOrderByAggregateInput = {
   isUnesco?: Prisma.SortOrder
 }
 
-export type TagCreateNestedManyWithoutStoryInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput> | Prisma.TagCreateWithoutStoryInput[] | Prisma.TagUncheckedCreateWithoutStoryInput[]
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput | Prisma.TagCreateOrConnectWithoutStoryInput[]
-  connect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
+export type TagCreateNestedOneWithoutStoriesInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutStoriesInput, Prisma.TagUncheckedCreateWithoutStoriesInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoriesInput
+  connect?: Prisma.TagWhereUniqueInput
 }
 
-export type TagUncheckedCreateNestedManyWithoutStoryInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput> | Prisma.TagCreateWithoutStoryInput[] | Prisma.TagUncheckedCreateWithoutStoryInput[]
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput | Prisma.TagCreateOrConnectWithoutStoryInput[]
-  connect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
+export type TagUpdateOneRequiredWithoutStoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutStoriesInput, Prisma.TagUncheckedCreateWithoutStoriesInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoriesInput
+  upsert?: Prisma.TagUpsertWithoutStoriesInput
+  connect?: Prisma.TagWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutStoriesInput, Prisma.TagUpdateWithoutStoriesInput>, Prisma.TagUncheckedUpdateWithoutStoriesInput>
 }
 
-export type TagUpdateManyWithoutStoryNestedInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput> | Prisma.TagCreateWithoutStoryInput[] | Prisma.TagUncheckedCreateWithoutStoryInput[]
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput | Prisma.TagCreateOrConnectWithoutStoryInput[]
-  upsert?: Prisma.TagUpsertWithWhereUniqueWithoutStoryInput | Prisma.TagUpsertWithWhereUniqueWithoutStoryInput[]
-  set?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  disconnect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  delete?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  connect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  update?: Prisma.TagUpdateWithWhereUniqueWithoutStoryInput | Prisma.TagUpdateWithWhereUniqueWithoutStoryInput[]
-  updateMany?: Prisma.TagUpdateManyWithWhereWithoutStoryInput | Prisma.TagUpdateManyWithWhereWithoutStoryInput[]
-  deleteMany?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
+export type TagCreateNestedOneWithoutStoryInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput
+  connect?: Prisma.TagWhereUniqueInput
 }
 
-export type TagUncheckedUpdateManyWithoutStoryNestedInput = {
-  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput> | Prisma.TagCreateWithoutStoryInput[] | Prisma.TagUncheckedCreateWithoutStoryInput[]
-  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput | Prisma.TagCreateOrConnectWithoutStoryInput[]
-  upsert?: Prisma.TagUpsertWithWhereUniqueWithoutStoryInput | Prisma.TagUpsertWithWhereUniqueWithoutStoryInput[]
-  set?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  disconnect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  delete?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  connect?: Prisma.TagWhereUniqueInput | Prisma.TagWhereUniqueInput[]
-  update?: Prisma.TagUpdateWithWhereUniqueWithoutStoryInput | Prisma.TagUpdateWithWhereUniqueWithoutStoryInput[]
-  updateMany?: Prisma.TagUpdateManyWithWhereWithoutStoryInput | Prisma.TagUpdateManyWithWhereWithoutStoryInput[]
-  deleteMany?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
+export type TagUpdateOneWithoutStoryNestedInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutStoryInput
+  upsert?: Prisma.TagUpsertWithoutStoryInput
+  disconnect?: Prisma.TagWhereInput | boolean
+  delete?: Prisma.TagWhereInput | boolean
+  connect?: Prisma.TagWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutStoryInput, Prisma.TagUpdateWithoutStoryInput>, Prisma.TagUncheckedUpdateWithoutStoryInput>
 }
 
 export type TagCreatestoryIdInput = {
@@ -399,6 +405,66 @@ export type TagUpdatestoryIdInput = {
   push?: string | string[]
 }
 
+export type TagCreateWithoutStoriesInput = {
+  id?: string
+  name: string
+  category?: string | null
+  theme?: string | null
+  color: string
+  isUnesco: boolean
+  storyId?: Prisma.TagCreatestoryIdInput | string[]
+  Story?: Prisma.StoryCreateNestedManyWithoutTagInput
+}
+
+export type TagUncheckedCreateWithoutStoriesInput = {
+  id?: string
+  name: string
+  category?: string | null
+  theme?: string | null
+  color: string
+  isUnesco: boolean
+  storyId?: Prisma.TagCreatestoryIdInput | string[]
+  Story?: Prisma.StoryUncheckedCreateNestedManyWithoutTagInput
+}
+
+export type TagCreateOrConnectWithoutStoriesInput = {
+  where: Prisma.TagWhereUniqueInput
+  create: Prisma.XOR<Prisma.TagCreateWithoutStoriesInput, Prisma.TagUncheckedCreateWithoutStoriesInput>
+}
+
+export type TagUpsertWithoutStoriesInput = {
+  update: Prisma.XOR<Prisma.TagUpdateWithoutStoriesInput, Prisma.TagUncheckedUpdateWithoutStoriesInput>
+  create: Prisma.XOR<Prisma.TagCreateWithoutStoriesInput, Prisma.TagUncheckedCreateWithoutStoriesInput>
+  where?: Prisma.TagWhereInput
+}
+
+export type TagUpdateToOneWithWhereWithoutStoriesInput = {
+  where?: Prisma.TagWhereInput
+  data: Prisma.XOR<Prisma.TagUpdateWithoutStoriesInput, Prisma.TagUncheckedUpdateWithoutStoriesInput>
+}
+
+export type TagUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  storyId?: Prisma.TagUpdatestoryIdInput | string[]
+  Story?: Prisma.StoryUpdateManyWithoutTagNestedInput
+}
+
+export type TagUncheckedUpdateWithoutStoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  storyId?: Prisma.TagUpdatestoryIdInput | string[]
+  Story?: Prisma.StoryUncheckedUpdateManyWithoutTagNestedInput
+}
+
 export type TagCreateWithoutStoryInput = {
   id?: string
   name: string
@@ -406,6 +472,8 @@ export type TagCreateWithoutStoryInput = {
   theme?: string | null
   color: string
   isUnesco: boolean
+  storyId?: Prisma.TagCreatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateWithoutStoryInput = {
@@ -416,6 +484,7 @@ export type TagUncheckedCreateWithoutStoryInput = {
   color: string
   isUnesco: boolean
   storyId?: Prisma.TagCreatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagCreateOrConnectWithoutStoryInput = {
@@ -423,59 +492,37 @@ export type TagCreateOrConnectWithoutStoryInput = {
   create: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput>
 }
 
-export type TagUpsertWithWhereUniqueWithoutStoryInput = {
-  where: Prisma.TagWhereUniqueInput
+export type TagUpsertWithoutStoryInput = {
   update: Prisma.XOR<Prisma.TagUpdateWithoutStoryInput, Prisma.TagUncheckedUpdateWithoutStoryInput>
   create: Prisma.XOR<Prisma.TagCreateWithoutStoryInput, Prisma.TagUncheckedCreateWithoutStoryInput>
+  where?: Prisma.TagWhereInput
 }
 
-export type TagUpdateWithWhereUniqueWithoutStoryInput = {
-  where: Prisma.TagWhereUniqueInput
+export type TagUpdateToOneWithWhereWithoutStoryInput = {
+  where?: Prisma.TagWhereInput
   data: Prisma.XOR<Prisma.TagUpdateWithoutStoryInput, Prisma.TagUncheckedUpdateWithoutStoryInput>
 }
 
-export type TagUpdateManyWithWhereWithoutStoryInput = {
-  where: Prisma.TagScalarWhereInput
-  data: Prisma.XOR<Prisma.TagUpdateManyMutationInput, Prisma.TagUncheckedUpdateManyWithoutStoryInput>
-}
-
-export type TagScalarWhereInput = {
-  AND?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
-  OR?: Prisma.TagScalarWhereInput[]
-  NOT?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
-  id?: Prisma.StringFilter<"Tag"> | string
-  name?: Prisma.StringFilter<"Tag"> | string
-  category?: Prisma.StringNullableFilter<"Tag"> | string | null
-  theme?: Prisma.StringNullableFilter<"Tag"> | string | null
-  color?: Prisma.StringFilter<"Tag"> | string
-  isUnesco?: Prisma.BoolFilter<"Tag"> | boolean
-  storyId?: Prisma.StringNullableListFilter<"Tag">
-}
-
 export type TagUpdateWithoutStoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  storyId?: Prisma.TagUpdatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateWithoutStoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   color?: Prisma.StringFieldUpdateOperationsInput | string
   isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
   storyId?: Prisma.TagUpdatestoryIdInput | string[]
-}
-
-export type TagUncheckedUpdateManyWithoutStoryInput = {
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.StringFieldUpdateOperationsInput | string
-  isUnesco?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  storyId?: Prisma.TagUpdatestoryIdInput | string[]
+  stories?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutTagNestedInput
 }
 
 
@@ -484,11 +531,13 @@ export type TagUncheckedUpdateManyWithoutStoryInput = {
  */
 
 export type TagCountOutputType = {
-  story: number
+  stories: number
+  Story: number
 }
 
 export type TagCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  story?: boolean | TagCountOutputTypeCountStoryArgs
+  stories?: boolean | TagCountOutputTypeCountStoriesArgs
+  Story?: boolean | TagCountOutputTypeCountStoryArgs
 }
 
 /**
@@ -499,6 +548,13 @@ export type TagCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensio
    * Select specific fields to fetch from the TagCountOutputType
    */
   select?: Prisma.TagCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TagCountOutputType without action
+ */
+export type TagCountOutputTypeCountStoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TagsOnStoriesWhereInput
 }
 
 /**
@@ -517,11 +573,30 @@ export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   color?: boolean
   isUnesco?: boolean
   storyId?: boolean
-  story?: boolean | Prisma.Tag$storyArgs<ExtArgs>
+  stories?: boolean | Prisma.Tag$storiesArgs<ExtArgs>
+  Story?: boolean | Prisma.Tag$StoryArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tag"]>
 
+export type TagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  category?: boolean
+  theme?: boolean
+  color?: boolean
+  isUnesco?: boolean
+  storyId?: boolean
+}, ExtArgs["result"]["tag"]>
 
+export type TagSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  name?: boolean
+  category?: boolean
+  theme?: boolean
+  color?: boolean
+  isUnesco?: boolean
+  storyId?: boolean
+}, ExtArgs["result"]["tag"]>
 
 export type TagSelectScalar = {
   id?: boolean
@@ -535,14 +610,18 @@ export type TagSelectScalar = {
 
 export type TagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "theme" | "color" | "isUnesco" | "storyId", ExtArgs["result"]["tag"]>
 export type TagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  story?: boolean | Prisma.Tag$storyArgs<ExtArgs>
+  stories?: boolean | Prisma.Tag$storiesArgs<ExtArgs>
+  Story?: boolean | Prisma.Tag$StoryArgs<ExtArgs>
   _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }
+export type TagIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TagIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $TagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Tag"
   objects: {
-    story: Prisma.$StoryPayload<ExtArgs>[]
+    stories: Prisma.$TagsOnStoriesPayload<ExtArgs>[]
+    Story: Prisma.$StoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -670,6 +749,30 @@ export interface TagDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
   createMany<T extends TagCreateManyArgs>(args?: Prisma.SelectSubset<T, TagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Tags and returns the data saved in the database.
+   * @param {TagCreateManyAndReturnArgs} args - Arguments to create many Tags.
+   * @example
+   * // Create many Tags
+   * const tag = await prisma.tag.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Tags and only return the `id`
+   * const tagWithIdOnly = await prisma.tag.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends TagCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, TagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Tag.
    * @param {TagDeleteArgs} args - Arguments to delete one Tag.
    * @example
@@ -734,6 +837,36 @@ export interface TagDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
   updateMany<T extends TagUpdateManyArgs>(args: Prisma.SelectSubset<T, TagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Tags and returns the data updated in the database.
+   * @param {TagUpdateManyAndReturnArgs} args - Arguments to update many Tags.
+   * @example
+   * // Update many Tags
+   * const tag = await prisma.tag.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Tags and only return the `id`
+   * const tagWithIdOnly = await prisma.tag.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends TagUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, TagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Tag.
    * @param {TagUpsertArgs} args - Arguments to update or create a Tag.
    * @example
@@ -751,29 +884,6 @@ export interface TagDelegate<ExtArgs extends runtime.Types.Extensions.InternalAr
    * })
    */
   upsert<T extends TagUpsertArgs>(args: Prisma.SelectSubset<T, TagUpsertArgs<ExtArgs>>): Prisma.Prisma__TagClient<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Tags that matches the filter.
-   * @param {TagFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const tag = await prisma.tag.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.TagFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Tag.
-   * @param {TagAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const tag = await prisma.tag.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.TagAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -915,7 +1025,8 @@ readonly fields: TagFieldRefs;
  */
 export interface Prisma__TagClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  story<T extends Prisma.Tag$storyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$storyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stories<T extends Prisma.Tag$storiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$storiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagsOnStoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  Story<T extends Prisma.Tag$StoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$StoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1181,6 +1292,26 @@ export type TagCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * The data used to create many Tags.
    */
   data: Prisma.TagCreateManyInput | Prisma.TagCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Tag createManyAndReturn
+ */
+export type TagCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tag
+   */
+  select?: Prisma.TagSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tag
+   */
+  omit?: Prisma.TagOmit<ExtArgs> | null
+  /**
+   * The data used to create many Tags.
+   */
+  data: Prisma.TagCreateManyInput | Prisma.TagCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1213,6 +1344,32 @@ export type TagUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
  * Tag updateMany
  */
 export type TagUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The data used to update Tags.
+   */
+  data: Prisma.XOR<Prisma.TagUpdateManyMutationInput, Prisma.TagUncheckedUpdateManyInput>
+  /**
+   * Filter which Tags to update
+   */
+  where?: Prisma.TagWhereInput
+  /**
+   * Limit how many Tags to update.
+   */
+  limit?: number
+}
+
+/**
+ * Tag updateManyAndReturn
+ */
+export type TagUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tag
+   */
+  select?: Prisma.TagSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tag
+   */
+  omit?: Prisma.TagOmit<ExtArgs> | null
   /**
    * The data used to update Tags.
    */
@@ -1294,37 +1451,33 @@ export type TagDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * Tag findRaw
+ * Tag.stories
  */
-export type TagFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Tag$storiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+   * Select specific fields to fetch from the TagsOnStories
    */
-  filter?: runtime.InputJsonValue
+  select?: Prisma.TagsOnStoriesSelect<ExtArgs> | null
   /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+   * Omit specific fields from the TagsOnStories
    */
-  options?: runtime.InputJsonValue
+  omit?: Prisma.TagsOnStoriesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TagsOnStoriesInclude<ExtArgs> | null
+  where?: Prisma.TagsOnStoriesWhereInput
+  orderBy?: Prisma.TagsOnStoriesOrderByWithRelationInput | Prisma.TagsOnStoriesOrderByWithRelationInput[]
+  cursor?: Prisma.TagsOnStoriesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TagsOnStoriesScalarFieldEnum | Prisma.TagsOnStoriesScalarFieldEnum[]
 }
 
 /**
- * Tag aggregateRaw
+ * Tag.Story
  */
-export type TagAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Tag.story
- */
-export type Tag$storyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Tag$StoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Story
    */

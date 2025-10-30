@@ -26,10 +26,14 @@ export type AggregateStory = {
 }
 
 export type StoryAvgAggregateOutputType = {
+  longitude: number | null
+  latitude: number | null
   year: number | null
 }
 
 export type StorySumAggregateOutputType = {
+  longitude: number | null
+  latitude: number | null
   year: number | null
 }
 
@@ -39,6 +43,8 @@ export type StoryMinAggregateOutputType = {
   draft: boolean | null
   title: string | null
   content: string | null
+  longitude: number | null
+  latitude: number | null
   year: number | null
   visibleUniverse: boolean | null
   featuredImageUrl: string | null
@@ -46,6 +52,7 @@ export type StoryMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   labId: string | null
+  tagId: string | null
 }
 
 export type StoryMaxAggregateOutputType = {
@@ -54,6 +61,8 @@ export type StoryMaxAggregateOutputType = {
   draft: boolean | null
   title: string | null
   content: string | null
+  longitude: number | null
+  latitude: number | null
   year: number | null
   visibleUniverse: boolean | null
   featuredImageUrl: string | null
@@ -61,6 +70,7 @@ export type StoryMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   labId: string | null
+  tagId: string | null
 }
 
 export type StoryCountAggregateOutputType = {
@@ -69,6 +79,8 @@ export type StoryCountAggregateOutputType = {
   draft: number
   title: number
   content: number
+  longitude: number
+  latitude: number
   tagIds: number
   year: number
   visibleUniverse: number
@@ -77,15 +89,20 @@ export type StoryCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   labId: number
+  tagId: number
   _all: number
 }
 
 
 export type StoryAvgAggregateInputType = {
+  longitude?: true
+  latitude?: true
   year?: true
 }
 
 export type StorySumAggregateInputType = {
+  longitude?: true
+  latitude?: true
   year?: true
 }
 
@@ -95,6 +112,8 @@ export type StoryMinAggregateInputType = {
   draft?: true
   title?: true
   content?: true
+  longitude?: true
+  latitude?: true
   year?: true
   visibleUniverse?: true
   featuredImageUrl?: true
@@ -102,6 +121,7 @@ export type StoryMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   labId?: true
+  tagId?: true
 }
 
 export type StoryMaxAggregateInputType = {
@@ -110,6 +130,8 @@ export type StoryMaxAggregateInputType = {
   draft?: true
   title?: true
   content?: true
+  longitude?: true
+  latitude?: true
   year?: true
   visibleUniverse?: true
   featuredImageUrl?: true
@@ -117,6 +139,7 @@ export type StoryMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   labId?: true
+  tagId?: true
 }
 
 export type StoryCountAggregateInputType = {
@@ -125,6 +148,8 @@ export type StoryCountAggregateInputType = {
   draft?: true
   title?: true
   content?: true
+  longitude?: true
+  latitude?: true
   tagIds?: true
   year?: true
   visibleUniverse?: true
@@ -133,6 +158,7 @@ export type StoryCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   labId?: true
+  tagId?: true
   _all?: true
 }
 
@@ -228,6 +254,8 @@ export type StoryGroupByOutputType = {
   draft: boolean
   title: string
   content: string
+  longitude: number
+  latitude: number
   tagIds: string[]
   year: number
   visibleUniverse: boolean
@@ -236,6 +264,7 @@ export type StoryGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   labId: string
+  tagId: string | null
   _count: StoryCountAggregateOutputType | null
   _avg: StoryAvgAggregateOutputType | null
   _sum: StorySumAggregateOutputType | null
@@ -267,7 +296,8 @@ export type StoryWhereInput = {
   draft?: Prisma.BoolFilter<"Story"> | boolean
   title?: Prisma.StringFilter<"Story"> | string
   content?: Prisma.StringFilter<"Story"> | string
-  location?: Prisma.XOR<Prisma.GeoJsonCompositeFilter, Prisma.GeoJsonObjectEqualityInput>
+  longitude?: Prisma.FloatFilter<"Story"> | number
+  latitude?: Prisma.FloatFilter<"Story"> | number
   tagIds?: Prisma.StringNullableListFilter<"Story">
   year?: Prisma.IntFilter<"Story"> | number
   visibleUniverse?: Prisma.BoolFilter<"Story"> | boolean
@@ -276,10 +306,12 @@ export type StoryWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   labId?: Prisma.StringFilter<"Story"> | string
+  tagId?: Prisma.StringNullableFilter<"Story"> | string | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  tags?: Prisma.TagListRelationFilter
+  tags?: Prisma.TagsOnStoriesListRelationFilter
   elevationRequests?: Prisma.ElevationRequestListRelationFilter
   lab?: Prisma.XOR<Prisma.LabScalarRelationFilter, Prisma.LabWhereInput>
+  Tag?: Prisma.XOR<Prisma.TagNullableScalarRelationFilter, Prisma.TagWhereInput> | null
 }
 
 export type StoryOrderByWithRelationInput = {
@@ -288,7 +320,8 @@ export type StoryOrderByWithRelationInput = {
   draft?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
-  location?: Prisma.GeoJsonOrderByInput
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   tagIds?: Prisma.SortOrder
   year?: Prisma.SortOrder
   visibleUniverse?: Prisma.SortOrder
@@ -297,10 +330,12 @@ export type StoryOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   labId?: Prisma.SortOrder
+  tagId?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
-  tags?: Prisma.TagOrderByRelationAggregateInput
+  tags?: Prisma.TagsOnStoriesOrderByRelationAggregateInput
   elevationRequests?: Prisma.ElevationRequestOrderByRelationAggregateInput
   lab?: Prisma.LabOrderByWithRelationInput
+  Tag?: Prisma.TagOrderByWithRelationInput
 }
 
 export type StoryWhereUniqueInput = Prisma.AtLeast<{
@@ -312,7 +347,8 @@ export type StoryWhereUniqueInput = Prisma.AtLeast<{
   draft?: Prisma.BoolFilter<"Story"> | boolean
   title?: Prisma.StringFilter<"Story"> | string
   content?: Prisma.StringFilter<"Story"> | string
-  location?: Prisma.XOR<Prisma.GeoJsonCompositeFilter, Prisma.GeoJsonObjectEqualityInput>
+  longitude?: Prisma.FloatFilter<"Story"> | number
+  latitude?: Prisma.FloatFilter<"Story"> | number
   tagIds?: Prisma.StringNullableListFilter<"Story">
   year?: Prisma.IntFilter<"Story"> | number
   visibleUniverse?: Prisma.BoolFilter<"Story"> | boolean
@@ -321,10 +357,12 @@ export type StoryWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   labId?: Prisma.StringFilter<"Story"> | string
+  tagId?: Prisma.StringNullableFilter<"Story"> | string | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  tags?: Prisma.TagListRelationFilter
+  tags?: Prisma.TagsOnStoriesListRelationFilter
   elevationRequests?: Prisma.ElevationRequestListRelationFilter
   lab?: Prisma.XOR<Prisma.LabScalarRelationFilter, Prisma.LabWhereInput>
+  Tag?: Prisma.XOR<Prisma.TagNullableScalarRelationFilter, Prisma.TagWhereInput> | null
 }, "id">
 
 export type StoryOrderByWithAggregationInput = {
@@ -333,6 +371,8 @@ export type StoryOrderByWithAggregationInput = {
   draft?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   tagIds?: Prisma.SortOrder
   year?: Prisma.SortOrder
   visibleUniverse?: Prisma.SortOrder
@@ -341,6 +381,7 @@ export type StoryOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   labId?: Prisma.SortOrder
+  tagId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.StoryCountOrderByAggregateInput
   _avg?: Prisma.StoryAvgOrderByAggregateInput
   _max?: Prisma.StoryMaxOrderByAggregateInput
@@ -357,6 +398,8 @@ export type StoryScalarWhereWithAggregatesInput = {
   draft?: Prisma.BoolWithAggregatesFilter<"Story"> | boolean
   title?: Prisma.StringWithAggregatesFilter<"Story"> | string
   content?: Prisma.StringWithAggregatesFilter<"Story"> | string
+  longitude?: Prisma.FloatWithAggregatesFilter<"Story"> | number
+  latitude?: Prisma.FloatWithAggregatesFilter<"Story"> | number
   tagIds?: Prisma.StringNullableListFilter<"Story">
   year?: Prisma.IntWithAggregatesFilter<"Story"> | number
   visibleUniverse?: Prisma.BoolWithAggregatesFilter<"Story"> | boolean
@@ -365,6 +408,7 @@ export type StoryScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Story"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Story"> | Date | string
   labId?: Prisma.StringWithAggregatesFilter<"Story"> | string
+  tagId?: Prisma.StringNullableWithAggregatesFilter<"Story"> | string | null
 }
 
 export type StoryCreateInput = {
@@ -372,7 +416,9 @@ export type StoryCreateInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
   featuredImageUrl: string
@@ -380,9 +426,10 @@ export type StoryCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutStoriesInput
-  tags?: Prisma.TagCreateNestedManyWithoutStoryInput
+  tags?: Prisma.TagsOnStoriesCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestCreateNestedManyWithoutStoryInput
   lab: Prisma.LabCreateNestedOneWithoutStoriesInput
+  Tag?: Prisma.TagCreateNestedOneWithoutStoryInput
 }
 
 export type StoryUncheckedCreateInput = {
@@ -391,7 +438,8 @@ export type StoryUncheckedCreateInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -400,15 +448,19 @@ export type StoryUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   labId: string
-  tags?: Prisma.TagUncheckedCreateNestedManyWithoutStoryInput
+  tagId?: string | null
+  tags?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
@@ -416,17 +468,20 @@ export type StoryUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutStoriesNestedInput
-  tags?: Prisma.TagUpdateManyWithoutStoryNestedInput
+  tags?: Prisma.TagsOnStoriesUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
   lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
+  Tag?: Prisma.TagUpdateOneWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -435,7 +490,8 @@ export type StoryUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.TagUncheckedUpdateManyWithoutStoryNestedInput
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
 }
 
@@ -445,7 +501,8 @@ export type StoryCreateManyInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -454,13 +511,17 @@ export type StoryCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   labId: string
+  tagId?: string | null
 }
 
 export type StoryUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
@@ -470,11 +531,13 @@ export type StoryUpdateManyMutationInput = {
 }
 
 export type StoryUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -483,6 +546,7 @@ export type StoryUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StoryNullableScalarRelationFilter = {
@@ -490,9 +554,9 @@ export type StoryNullableScalarRelationFilter = {
   isNot?: Prisma.StoryWhereInput | null
 }
 
-export type GeoJsonObjectEqualityInput = {
-  type: $Enums.GeoType
-  coordinates?: number[]
+export type StoryScalarRelationFilter = {
+  is?: Prisma.StoryWhereInput
+  isNot?: Prisma.StoryWhereInput
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -509,6 +573,8 @@ export type StoryCountOrderByAggregateInput = {
   draft?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   tagIds?: Prisma.SortOrder
   year?: Prisma.SortOrder
   visibleUniverse?: Prisma.SortOrder
@@ -517,9 +583,12 @@ export type StoryCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   labId?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
 }
 
 export type StoryAvgOrderByAggregateInput = {
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
 
@@ -529,6 +598,8 @@ export type StoryMaxOrderByAggregateInput = {
   draft?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   year?: Prisma.SortOrder
   visibleUniverse?: Prisma.SortOrder
   featuredImageUrl?: Prisma.SortOrder
@@ -536,6 +607,7 @@ export type StoryMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   labId?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
 }
 
 export type StoryMinOrderByAggregateInput = {
@@ -544,6 +616,8 @@ export type StoryMinOrderByAggregateInput = {
   draft?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   year?: Prisma.SortOrder
   visibleUniverse?: Prisma.SortOrder
   featuredImageUrl?: Prisma.SortOrder
@@ -551,9 +625,12 @@ export type StoryMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   labId?: Prisma.SortOrder
+  tagId?: Prisma.SortOrder
 }
 
 export type StorySumOrderByAggregateInput = {
+  longitude?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
   year?: Prisma.SortOrder
 }
 
@@ -577,15 +654,24 @@ export type StoryUpdateOneWithoutElevationRequestsNestedInput = {
   create?: Prisma.XOR<Prisma.StoryCreateWithoutElevationRequestsInput, Prisma.StoryUncheckedCreateWithoutElevationRequestsInput>
   connectOrCreate?: Prisma.StoryCreateOrConnectWithoutElevationRequestsInput
   upsert?: Prisma.StoryUpsertWithoutElevationRequestsInput
-  disconnect?: boolean
+  disconnect?: Prisma.StoryWhereInput | boolean
   delete?: Prisma.StoryWhereInput | boolean
   connect?: Prisma.StoryWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StoryUpdateToOneWithWhereWithoutElevationRequestsInput, Prisma.StoryUpdateWithoutElevationRequestsInput>, Prisma.StoryUncheckedUpdateWithoutElevationRequestsInput>
 }
 
-export type GeoJsonCreateInput = {
-  type: $Enums.GeoType
-  coordinates?: Prisma.GeoJsonCreatecoordinatesInput | number[]
+export type StoryCreateNestedOneWithoutTagsInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput
+  connect?: Prisma.StoryWhereUniqueInput
+}
+
+export type StoryUpdateOneRequiredWithoutTagsNestedInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput
+  upsert?: Prisma.StoryUpsertWithoutTagsInput
+  connect?: Prisma.StoryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StoryUpdateToOneWithWhereWithoutTagsInput, Prisma.StoryUpdateWithoutTagsInput>, Prisma.StoryUncheckedUpdateWithoutTagsInput>
 }
 
 export type StoryCreatetagIdsInput = {
@@ -596,8 +682,17 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type StoryUpdatetagIdsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -610,11 +705,6 @@ export type IntFieldUpdateOperationsInput = {
 
 export type EnumLicenseFieldUpdateOperationsInput = {
   set?: $Enums.License
-}
-
-export type StoryUpdatetagIdsInput = {
-  set?: string[]
-  push?: string | string[]
 }
 
 export type StoryCreateNestedManyWithoutAuthorInput = {
@@ -659,41 +749,45 @@ export type StoryUncheckedUpdateManyWithoutAuthorNestedInput = {
   deleteMany?: Prisma.StoryScalarWhereInput | Prisma.StoryScalarWhereInput[]
 }
 
-export type StoryCreateNestedManyWithoutTagsInput = {
-  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput> | Prisma.StoryCreateWithoutTagsInput[] | Prisma.StoryUncheckedCreateWithoutTagsInput[]
-  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput | Prisma.StoryCreateOrConnectWithoutTagsInput[]
+export type StoryCreateNestedManyWithoutTagInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput> | Prisma.StoryCreateWithoutTagInput[] | Prisma.StoryUncheckedCreateWithoutTagInput[]
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagInput | Prisma.StoryCreateOrConnectWithoutTagInput[]
+  createMany?: Prisma.StoryCreateManyTagInputEnvelope
   connect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
 }
 
-export type StoryUncheckedCreateNestedManyWithoutTagsInput = {
-  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput> | Prisma.StoryCreateWithoutTagsInput[] | Prisma.StoryUncheckedCreateWithoutTagsInput[]
-  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput | Prisma.StoryCreateOrConnectWithoutTagsInput[]
+export type StoryUncheckedCreateNestedManyWithoutTagInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput> | Prisma.StoryCreateWithoutTagInput[] | Prisma.StoryUncheckedCreateWithoutTagInput[]
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagInput | Prisma.StoryCreateOrConnectWithoutTagInput[]
+  createMany?: Prisma.StoryCreateManyTagInputEnvelope
   connect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
 }
 
-export type StoryUpdateManyWithoutTagsNestedInput = {
-  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput> | Prisma.StoryCreateWithoutTagsInput[] | Prisma.StoryUncheckedCreateWithoutTagsInput[]
-  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput | Prisma.StoryCreateOrConnectWithoutTagsInput[]
-  upsert?: Prisma.StoryUpsertWithWhereUniqueWithoutTagsInput | Prisma.StoryUpsertWithWhereUniqueWithoutTagsInput[]
+export type StoryUpdateManyWithoutTagNestedInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput> | Prisma.StoryCreateWithoutTagInput[] | Prisma.StoryUncheckedCreateWithoutTagInput[]
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagInput | Prisma.StoryCreateOrConnectWithoutTagInput[]
+  upsert?: Prisma.StoryUpsertWithWhereUniqueWithoutTagInput | Prisma.StoryUpsertWithWhereUniqueWithoutTagInput[]
+  createMany?: Prisma.StoryCreateManyTagInputEnvelope
   set?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   disconnect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   delete?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   connect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
-  update?: Prisma.StoryUpdateWithWhereUniqueWithoutTagsInput | Prisma.StoryUpdateWithWhereUniqueWithoutTagsInput[]
-  updateMany?: Prisma.StoryUpdateManyWithWhereWithoutTagsInput | Prisma.StoryUpdateManyWithWhereWithoutTagsInput[]
+  update?: Prisma.StoryUpdateWithWhereUniqueWithoutTagInput | Prisma.StoryUpdateWithWhereUniqueWithoutTagInput[]
+  updateMany?: Prisma.StoryUpdateManyWithWhereWithoutTagInput | Prisma.StoryUpdateManyWithWhereWithoutTagInput[]
   deleteMany?: Prisma.StoryScalarWhereInput | Prisma.StoryScalarWhereInput[]
 }
 
-export type StoryUncheckedUpdateManyWithoutTagsNestedInput = {
-  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput> | Prisma.StoryCreateWithoutTagsInput[] | Prisma.StoryUncheckedCreateWithoutTagsInput[]
-  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagsInput | Prisma.StoryCreateOrConnectWithoutTagsInput[]
-  upsert?: Prisma.StoryUpsertWithWhereUniqueWithoutTagsInput | Prisma.StoryUpsertWithWhereUniqueWithoutTagsInput[]
+export type StoryUncheckedUpdateManyWithoutTagNestedInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput> | Prisma.StoryCreateWithoutTagInput[] | Prisma.StoryUncheckedCreateWithoutTagInput[]
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutTagInput | Prisma.StoryCreateOrConnectWithoutTagInput[]
+  upsert?: Prisma.StoryUpsertWithWhereUniqueWithoutTagInput | Prisma.StoryUpsertWithWhereUniqueWithoutTagInput[]
+  createMany?: Prisma.StoryCreateManyTagInputEnvelope
   set?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   disconnect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   delete?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
   connect?: Prisma.StoryWhereUniqueInput | Prisma.StoryWhereUniqueInput[]
-  update?: Prisma.StoryUpdateWithWhereUniqueWithoutTagsInput | Prisma.StoryUpdateWithWhereUniqueWithoutTagsInput[]
-  updateMany?: Prisma.StoryUpdateManyWithWhereWithoutTagsInput | Prisma.StoryUpdateManyWithWhereWithoutTagsInput[]
+  update?: Prisma.StoryUpdateWithWhereUniqueWithoutTagInput | Prisma.StoryUpdateWithWhereUniqueWithoutTagInput[]
+  updateMany?: Prisma.StoryUpdateManyWithWhereWithoutTagInput | Prisma.StoryUpdateManyWithWhereWithoutTagInput[]
   deleteMany?: Prisma.StoryScalarWhereInput | Prisma.StoryScalarWhereInput[]
 }
 
@@ -744,7 +838,9 @@ export type StoryCreateWithoutElevationRequestsInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
   featuredImageUrl: string
@@ -752,8 +848,9 @@ export type StoryCreateWithoutElevationRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutStoriesInput
-  tags?: Prisma.TagCreateNestedManyWithoutStoryInput
+  tags?: Prisma.TagsOnStoriesCreateNestedManyWithoutStoryInput
   lab: Prisma.LabCreateNestedOneWithoutStoriesInput
+  Tag?: Prisma.TagCreateNestedOneWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutElevationRequestsInput = {
@@ -762,7 +859,8 @@ export type StoryUncheckedCreateWithoutElevationRequestsInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -771,7 +869,8 @@ export type StoryUncheckedCreateWithoutElevationRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   labId: string
-  tags?: Prisma.TagUncheckedCreateNestedManyWithoutStoryInput
+  tagId?: string | null
+  tags?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutElevationRequestsInput = {
@@ -791,10 +890,13 @@ export type StoryUpdateToOneWithWhereWithoutElevationRequestsInput = {
 }
 
 export type StoryUpdateWithoutElevationRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
@@ -802,16 +904,19 @@ export type StoryUpdateWithoutElevationRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutStoriesNestedInput
-  tags?: Prisma.TagUpdateManyWithoutStoryNestedInput
+  tags?: Prisma.TagsOnStoriesUpdateManyWithoutStoryNestedInput
   lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
+  Tag?: Prisma.TagUpdateOneWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutElevationRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -820,32 +925,38 @@ export type StoryUncheckedUpdateWithoutElevationRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.TagUncheckedUpdateManyWithoutStoryNestedInput
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutStoryNestedInput
 }
 
-export type StoryCreateWithoutAuthorInput = {
+export type StoryCreateWithoutTagsInput = {
   id?: string
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
   featuredImageUrl: string
   license: $Enums.License
   createdAt?: Date | string
   updatedAt?: Date | string
-  tags?: Prisma.TagCreateNestedManyWithoutStoryInput
+  author: Prisma.UserCreateNestedOneWithoutStoriesInput
   elevationRequests?: Prisma.ElevationRequestCreateNestedManyWithoutStoryInput
   lab: Prisma.LabCreateNestedOneWithoutStoriesInput
+  Tag?: Prisma.TagCreateNestedOneWithoutStoryInput
 }
 
-export type StoryUncheckedCreateWithoutAuthorInput = {
+export type StoryUncheckedCreateWithoutTagsInput = {
   id?: string
+  userId: string
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -854,7 +965,103 @@ export type StoryUncheckedCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   labId: string
-  tags?: Prisma.TagUncheckedCreateNestedManyWithoutStoryInput
+  tagId?: string | null
+  elevationRequests?: Prisma.ElevationRequestUncheckedCreateNestedManyWithoutStoryInput
+}
+
+export type StoryCreateOrConnectWithoutTagsInput = {
+  where: Prisma.StoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+}
+
+export type StoryUpsertWithoutTagsInput = {
+  update: Prisma.XOR<Prisma.StoryUpdateWithoutTagsInput, Prisma.StoryUncheckedUpdateWithoutTagsInput>
+  create: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+  where?: Prisma.StoryWhereInput
+}
+
+export type StoryUpdateToOneWithWhereWithoutTagsInput = {
+  where?: Prisma.StoryWhereInput
+  data: Prisma.XOR<Prisma.StoryUpdateWithoutTagsInput, Prisma.StoryUncheckedUpdateWithoutTagsInput>
+}
+
+export type StoryUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutStoriesNestedInput
+  elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
+  lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
+  Tag?: Prisma.TagUpdateOneWithoutStoryNestedInput
+}
+
+export type StoryUncheckedUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  labId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
+}
+
+export type StoryCreateWithoutAuthorInput = {
+  id?: string
+  draft: boolean
+  title: string
+  content: string
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
+  year: number
+  visibleUniverse: boolean
+  featuredImageUrl: string
+  license: $Enums.License
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.TagsOnStoriesCreateNestedManyWithoutStoryInput
+  elevationRequests?: Prisma.ElevationRequestCreateNestedManyWithoutStoryInput
+  lab: Prisma.LabCreateNestedOneWithoutStoriesInput
+  Tag?: Prisma.TagCreateNestedOneWithoutStoryInput
+}
+
+export type StoryUncheckedCreateWithoutAuthorInput = {
+  id?: string
+  draft: boolean
+  title: string
+  content: string
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
+  year: number
+  visibleUniverse: boolean
+  featuredImageUrl: string
+  license: $Enums.License
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  labId: string
+  tagId?: string | null
+  tags?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestUncheckedCreateNestedManyWithoutStoryInput
 }
 
@@ -865,6 +1072,7 @@ export type StoryCreateOrConnectWithoutAuthorInput = {
 
 export type StoryCreateManyAuthorInputEnvelope = {
   data: Prisma.StoryCreateManyAuthorInput | Prisma.StoryCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
 export type StoryUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -892,6 +1100,8 @@ export type StoryScalarWhereInput = {
   draft?: Prisma.BoolFilter<"Story"> | boolean
   title?: Prisma.StringFilter<"Story"> | string
   content?: Prisma.StringFilter<"Story"> | string
+  longitude?: Prisma.FloatFilter<"Story"> | number
+  latitude?: Prisma.FloatFilter<"Story"> | number
   tagIds?: Prisma.StringNullableListFilter<"Story">
   year?: Prisma.IntFilter<"Story"> | number
   visibleUniverse?: Prisma.BoolFilter<"Story"> | boolean
@@ -900,14 +1110,17 @@ export type StoryScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Story"> | Date | string
   labId?: Prisma.StringFilter<"Story"> | string
+  tagId?: Prisma.StringNullableFilter<"Story"> | string | null
 }
 
-export type StoryCreateWithoutTagsInput = {
+export type StoryCreateWithoutTagInput = {
   id?: string
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
   featuredImageUrl: string
@@ -915,17 +1128,19 @@ export type StoryCreateWithoutTagsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutStoriesInput
+  tags?: Prisma.TagsOnStoriesCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestCreateNestedManyWithoutStoryInput
   lab: Prisma.LabCreateNestedOneWithoutStoriesInput
 }
 
-export type StoryUncheckedCreateWithoutTagsInput = {
+export type StoryUncheckedCreateWithoutTagInput = {
   id?: string
   userId: string
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -934,28 +1149,34 @@ export type StoryUncheckedCreateWithoutTagsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   labId: string
+  tags?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestUncheckedCreateNestedManyWithoutStoryInput
 }
 
-export type StoryCreateOrConnectWithoutTagsInput = {
+export type StoryCreateOrConnectWithoutTagInput = {
   where: Prisma.StoryWhereUniqueInput
-  create: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+  create: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput>
 }
 
-export type StoryUpsertWithWhereUniqueWithoutTagsInput = {
-  where: Prisma.StoryWhereUniqueInput
-  update: Prisma.XOR<Prisma.StoryUpdateWithoutTagsInput, Prisma.StoryUncheckedUpdateWithoutTagsInput>
-  create: Prisma.XOR<Prisma.StoryCreateWithoutTagsInput, Prisma.StoryUncheckedCreateWithoutTagsInput>
+export type StoryCreateManyTagInputEnvelope = {
+  data: Prisma.StoryCreateManyTagInput | Prisma.StoryCreateManyTagInput[]
+  skipDuplicates?: boolean
 }
 
-export type StoryUpdateWithWhereUniqueWithoutTagsInput = {
+export type StoryUpsertWithWhereUniqueWithoutTagInput = {
   where: Prisma.StoryWhereUniqueInput
-  data: Prisma.XOR<Prisma.StoryUpdateWithoutTagsInput, Prisma.StoryUncheckedUpdateWithoutTagsInput>
+  update: Prisma.XOR<Prisma.StoryUpdateWithoutTagInput, Prisma.StoryUncheckedUpdateWithoutTagInput>
+  create: Prisma.XOR<Prisma.StoryCreateWithoutTagInput, Prisma.StoryUncheckedCreateWithoutTagInput>
 }
 
-export type StoryUpdateManyWithWhereWithoutTagsInput = {
+export type StoryUpdateWithWhereUniqueWithoutTagInput = {
+  where: Prisma.StoryWhereUniqueInput
+  data: Prisma.XOR<Prisma.StoryUpdateWithoutTagInput, Prisma.StoryUncheckedUpdateWithoutTagInput>
+}
+
+export type StoryUpdateManyWithWhereWithoutTagInput = {
   where: Prisma.StoryScalarWhereInput
-  data: Prisma.XOR<Prisma.StoryUpdateManyMutationInput, Prisma.StoryUncheckedUpdateManyWithoutTagsInput>
+  data: Prisma.XOR<Prisma.StoryUpdateManyMutationInput, Prisma.StoryUncheckedUpdateManyWithoutTagInput>
 }
 
 export type StoryCreateWithoutLabInput = {
@@ -963,7 +1184,9 @@ export type StoryCreateWithoutLabInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
   featuredImageUrl: string
@@ -971,8 +1194,9 @@ export type StoryCreateWithoutLabInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutStoriesInput
-  tags?: Prisma.TagCreateNestedManyWithoutStoryInput
+  tags?: Prisma.TagsOnStoriesCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestCreateNestedManyWithoutStoryInput
+  Tag?: Prisma.TagCreateNestedOneWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutLabInput = {
@@ -981,7 +1205,8 @@ export type StoryUncheckedCreateWithoutLabInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -989,7 +1214,8 @@ export type StoryUncheckedCreateWithoutLabInput = {
   license: $Enums.License
   createdAt?: Date | string
   updatedAt?: Date | string
-  tags?: Prisma.TagUncheckedCreateNestedManyWithoutStoryInput
+  tagId?: string | null
+  tags?: Prisma.TagsOnStoriesUncheckedCreateNestedManyWithoutStoryInput
   elevationRequests?: Prisma.ElevationRequestUncheckedCreateNestedManyWithoutStoryInput
 }
 
@@ -1000,6 +1226,7 @@ export type StoryCreateOrConnectWithoutLabInput = {
 
 export type StoryCreateManyLabInputEnvelope = {
   data: Prisma.StoryCreateManyLabInput | Prisma.StoryCreateManyLabInput[]
+  skipDuplicates?: boolean
 }
 
 export type StoryUpsertWithWhereUniqueWithoutLabInput = {
@@ -1023,7 +1250,85 @@ export type StoryCreateManyAuthorInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
+  tagIds?: Prisma.StoryCreatetagIdsInput | string[]
+  year: number
+  visibleUniverse: boolean
+  featuredImageUrl: string
+  license: $Enums.License
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  labId: string
+  tagId?: string | null
+}
+
+export type StoryUpdateWithoutAuthorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.TagsOnStoriesUpdateManyWithoutStoryNestedInput
+  elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
+  lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
+  Tag?: Prisma.TagUpdateOneWithoutStoryNestedInput
+}
+
+export type StoryUncheckedUpdateWithoutAuthorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  labId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutStoryNestedInput
+  elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
+}
+
+export type StoryUncheckedUpdateManyWithoutAuthorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
+  year?: Prisma.IntFieldUpdateOperationsInput | number
+  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  labId?: Prisma.StringFieldUpdateOperationsInput | string
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type StoryCreateManyTagInput = {
+  id?: string
+  userId: string
+  draft: boolean
+  title: string
+  content: string
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -1034,59 +1339,14 @@ export type StoryCreateManyAuthorInput = {
   labId: string
 }
 
-export type StoryUpdateWithoutAuthorInput = {
+export type StoryUpdateWithoutTagInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tags?: Prisma.TagUpdateManyWithoutStoryNestedInput
-  elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
-  lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
-}
-
-export type StoryUncheckedUpdateWithoutAuthorInput = {
-  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  labId?: Prisma.StringFieldUpdateOperationsInput | string
-  tags?: Prisma.TagUncheckedUpdateManyWithoutStoryNestedInput
-  elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
-}
-
-export type StoryUncheckedUpdateManyWithoutAuthorInput = {
-  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
-  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
-  year?: Prisma.IntFieldUpdateOperationsInput | number
-  visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  labId?: Prisma.StringFieldUpdateOperationsInput | string
-}
-
-export type StoryUpdateWithoutTagsInput = {
-  draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1094,16 +1354,19 @@ export type StoryUpdateWithoutTagsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutStoriesNestedInput
+  tags?: Prisma.TagsOnStoriesUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
   lab?: Prisma.LabUpdateOneRequiredWithoutStoriesNestedInput
 }
 
-export type StoryUncheckedUpdateWithoutTagsInput = {
+export type StoryUncheckedUpdateWithoutTagInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1112,15 +1375,18 @@ export type StoryUncheckedUpdateWithoutTagsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   labId?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
 }
 
-export type StoryUncheckedUpdateManyWithoutTagsInput = {
+export type StoryUncheckedUpdateManyWithoutTagInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1137,7 +1403,8 @@ export type StoryCreateManyLabInput = {
   draft: boolean
   title: string
   content: string
-  location: Prisma.XOR<Prisma.GeoJsonCreateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude: number
+  latitude: number
   tagIds?: Prisma.StoryCreatetagIdsInput | string[]
   year: number
   visibleUniverse: boolean
@@ -1145,13 +1412,17 @@ export type StoryCreateManyLabInput = {
   license: $Enums.License
   createdAt?: Date | string
   updatedAt?: Date | string
+  tagId?: string | null
 }
 
 export type StoryUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featuredImageUrl?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1159,16 +1430,19 @@ export type StoryUpdateWithoutLabInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutStoriesNestedInput
-  tags?: Prisma.TagUpdateManyWithoutStoryNestedInput
+  tags?: Prisma.TagsOnStoriesUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUpdateManyWithoutStoryNestedInput
+  Tag?: Prisma.TagUpdateOneWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1176,16 +1450,19 @@ export type StoryUncheckedUpdateWithoutLabInput = {
   license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  tags?: Prisma.TagUncheckedUpdateManyWithoutStoryNestedInput
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.TagsOnStoriesUncheckedUpdateManyWithoutStoryNestedInput
   elevationRequests?: Prisma.ElevationRequestUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateManyWithoutLabInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   draft?: Prisma.BoolFieldUpdateOperationsInput | boolean
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
-  location?: Prisma.XOR<Prisma.GeoJsonUpdateEnvelopeInput, Prisma.GeoJsonCreateInput>
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   tagIds?: Prisma.StoryUpdatetagIdsInput | string[]
   year?: Prisma.IntFieldUpdateOperationsInput | number
   visibleUniverse?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1193,6 +1470,7 @@ export type StoryUncheckedUpdateManyWithoutLabInput = {
   license?: Prisma.EnumLicenseFieldUpdateOperationsInput | $Enums.License
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tagId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1224,7 +1502,7 @@ export type StoryCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
  * StoryCountOutputType without action
  */
 export type StoryCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TagWhereInput
+  where?: Prisma.TagsOnStoriesWhereInput
 }
 
 /**
@@ -1241,7 +1519,8 @@ export type StorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   draft?: boolean
   title?: boolean
   content?: boolean
-  location?: boolean | Prisma.GeoJsonDefaultArgs<ExtArgs>
+  longitude?: boolean
+  latitude?: boolean
   tagIds?: boolean
   year?: boolean
   visibleUniverse?: boolean
@@ -1250,14 +1529,58 @@ export type StorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   updatedAt?: boolean
   labId?: boolean
+  tagId?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tags?: boolean | Prisma.Story$tagsArgs<ExtArgs>
   elevationRequests?: boolean | Prisma.Story$elevationRequestsArgs<ExtArgs>
   lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
   _count?: boolean | Prisma.StoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["story"]>
 
+export type StorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
+  draft?: boolean
+  title?: boolean
+  content?: boolean
+  longitude?: boolean
+  latitude?: boolean
+  tagIds?: boolean
+  year?: boolean
+  visibleUniverse?: boolean
+  featuredImageUrl?: boolean
+  license?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  labId?: boolean
+  tagId?: boolean
+  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
+}, ExtArgs["result"]["story"]>
 
+export type StorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  userId?: boolean
+  draft?: boolean
+  title?: boolean
+  content?: boolean
+  longitude?: boolean
+  latitude?: boolean
+  tagIds?: boolean
+  year?: boolean
+  visibleUniverse?: boolean
+  featuredImageUrl?: boolean
+  license?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  labId?: boolean
+  tagId?: boolean
+  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
+}, ExtArgs["result"]["story"]>
 
 export type StorySelectScalar = {
   id?: boolean
@@ -1265,6 +1588,8 @@ export type StorySelectScalar = {
   draft?: boolean
   title?: boolean
   content?: boolean
+  longitude?: boolean
+  latitude?: boolean
   tagIds?: boolean
   year?: boolean
   visibleUniverse?: boolean
@@ -1273,24 +1598,37 @@ export type StorySelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   labId?: boolean
+  tagId?: boolean
 }
 
-export type StoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "draft" | "title" | "content" | "location" | "tagIds" | "year" | "visibleUniverse" | "featuredImageUrl" | "license" | "createdAt" | "updatedAt" | "labId", ExtArgs["result"]["story"]>
+export type StoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "draft" | "title" | "content" | "longitude" | "latitude" | "tagIds" | "year" | "visibleUniverse" | "featuredImageUrl" | "license" | "createdAt" | "updatedAt" | "labId" | "tagId", ExtArgs["result"]["story"]>
 export type StoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tags?: boolean | Prisma.Story$tagsArgs<ExtArgs>
   elevationRequests?: boolean | Prisma.Story$elevationRequestsArgs<ExtArgs>
   lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
   _count?: boolean | Prisma.StoryCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type StoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
+}
+export type StoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  lab?: boolean | Prisma.LabDefaultArgs<ExtArgs>
+  Tag?: boolean | Prisma.Story$TagArgs<ExtArgs>
 }
 
 export type $StoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Story"
   objects: {
     author: Prisma.$UserPayload<ExtArgs>
-    tags: Prisma.$TagPayload<ExtArgs>[]
+    tags: Prisma.$TagsOnStoriesPayload<ExtArgs>[]
     elevationRequests: Prisma.$ElevationRequestPayload<ExtArgs>[]
     lab: Prisma.$LabPayload<ExtArgs>
+    Tag: Prisma.$TagPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1298,6 +1636,8 @@ export type $StoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     draft: boolean
     title: string
     content: string
+    longitude: number
+    latitude: number
     tagIds: string[]
     year: number
     visibleUniverse: boolean
@@ -1306,10 +1646,9 @@ export type $StoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     createdAt: Date
     updatedAt: Date
     labId: string
+    tagId: string | null
   }, ExtArgs["result"]["story"]>
-  composites: {
-    location: Prisma.$GeoJsonPayload
-  }
+  composites: {}
 }
 
 export type StoryGetPayload<S extends boolean | null | undefined | StoryDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StoryPayload, S>
@@ -1426,6 +1765,30 @@ export interface StoryDelegate<ExtArgs extends runtime.Types.Extensions.Internal
   createMany<T extends StoryCreateManyArgs>(args?: Prisma.SelectSubset<T, StoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Stories and returns the data saved in the database.
+   * @param {StoryCreateManyAndReturnArgs} args - Arguments to create many Stories.
+   * @example
+   * // Create many Stories
+   * const story = await prisma.story.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Stories and only return the `id`
+   * const storyWithIdOnly = await prisma.story.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends StoryCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Story.
    * @param {StoryDeleteArgs} args - Arguments to delete one Story.
    * @example
@@ -1490,6 +1853,36 @@ export interface StoryDelegate<ExtArgs extends runtime.Types.Extensions.Internal
   updateMany<T extends StoryUpdateManyArgs>(args: Prisma.SelectSubset<T, StoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Stories and returns the data updated in the database.
+   * @param {StoryUpdateManyAndReturnArgs} args - Arguments to update many Stories.
+   * @example
+   * // Update many Stories
+   * const story = await prisma.story.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Stories and only return the `id`
+   * const storyWithIdOnly = await prisma.story.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends StoryUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Story.
    * @param {StoryUpsertArgs} args - Arguments to update or create a Story.
    * @example
@@ -1507,29 +1900,6 @@ export interface StoryDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    */
   upsert<T extends StoryUpsertArgs>(args: Prisma.SelectSubset<T, StoryUpsertArgs<ExtArgs>>): Prisma.Prisma__StoryClient<runtime.Types.Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Stories that matches the filter.
-   * @param {StoryFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const story = await prisma.story.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.StoryFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Story.
-   * @param {StoryAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const story = await prisma.story.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.StoryAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1672,9 +2042,10 @@ readonly fields: StoryFieldRefs;
 export interface Prisma__StoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  tags<T extends Prisma.Story$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tags<T extends Prisma.Story$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagsOnStoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   elevationRequests<T extends Prisma.Story$elevationRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$elevationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ElevationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lab<T extends Prisma.LabDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LabDefaultArgs<ExtArgs>>): Prisma.Prisma__LabClient<runtime.Types.Result.GetResult<Prisma.$LabPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  Tag<T extends Prisma.Story$TagArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$TagArgs<ExtArgs>>): Prisma.Prisma__TagClient<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1709,6 +2080,8 @@ export interface StoryFieldRefs {
   readonly draft: Prisma.FieldRef<"Story", 'Boolean'>
   readonly title: Prisma.FieldRef<"Story", 'String'>
   readonly content: Prisma.FieldRef<"Story", 'String'>
+  readonly longitude: Prisma.FieldRef<"Story", 'Float'>
+  readonly latitude: Prisma.FieldRef<"Story", 'Float'>
   readonly tagIds: Prisma.FieldRef<"Story", 'String[]'>
   readonly year: Prisma.FieldRef<"Story", 'Int'>
   readonly visibleUniverse: Prisma.FieldRef<"Story", 'Boolean'>
@@ -1717,6 +2090,7 @@ export interface StoryFieldRefs {
   readonly createdAt: Prisma.FieldRef<"Story", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Story", 'DateTime'>
   readonly labId: Prisma.FieldRef<"Story", 'String'>
+  readonly tagId: Prisma.FieldRef<"Story", 'String'>
 }
     
 
@@ -1946,6 +2320,30 @@ export type StoryCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * The data used to create many Stories.
    */
   data: Prisma.StoryCreateManyInput | Prisma.StoryCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Story createManyAndReturn
+ */
+export type StoryCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Story
+   */
+  select?: Prisma.StorySelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Story
+   */
+  omit?: Prisma.StoryOmit<ExtArgs> | null
+  /**
+   * The data used to create many Stories.
+   */
+  data: Prisma.StoryCreateManyInput | Prisma.StoryCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoryIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1990,6 +2388,36 @@ export type StoryUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Stories to update.
    */
   limit?: number
+}
+
+/**
+ * Story updateManyAndReturn
+ */
+export type StoryUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Story
+   */
+  select?: Prisma.StorySelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Story
+   */
+  omit?: Prisma.StoryOmit<ExtArgs> | null
+  /**
+   * The data used to update Stories.
+   */
+  data: Prisma.XOR<Prisma.StoryUpdateManyMutationInput, Prisma.StoryUncheckedUpdateManyInput>
+  /**
+   * Filter which Stories to update
+   */
+  where?: Prisma.StoryWhereInput
+  /**
+   * Limit how many Stories to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoryIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -2059,55 +2487,27 @@ export type StoryDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Story findRaw
- */
-export type StoryFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Story aggregateRaw
- */
-export type StoryAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
  * Story.tags
  */
 export type Story$tagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Tag
+   * Select specific fields to fetch from the TagsOnStories
    */
-  select?: Prisma.TagSelect<ExtArgs> | null
+  select?: Prisma.TagsOnStoriesSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Tag
+   * Omit specific fields from the TagsOnStories
    */
-  omit?: Prisma.TagOmit<ExtArgs> | null
+  omit?: Prisma.TagsOnStoriesOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.TagInclude<ExtArgs> | null
-  where?: Prisma.TagWhereInput
-  orderBy?: Prisma.TagOrderByWithRelationInput | Prisma.TagOrderByWithRelationInput[]
-  cursor?: Prisma.TagWhereUniqueInput
+  include?: Prisma.TagsOnStoriesInclude<ExtArgs> | null
+  where?: Prisma.TagsOnStoriesWhereInput
+  orderBy?: Prisma.TagsOnStoriesOrderByWithRelationInput | Prisma.TagsOnStoriesOrderByWithRelationInput[]
+  cursor?: Prisma.TagsOnStoriesWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
+  distinct?: Prisma.TagsOnStoriesScalarFieldEnum | Prisma.TagsOnStoriesScalarFieldEnum[]
 }
 
 /**
@@ -2132,6 +2532,25 @@ export type Story$elevationRequestsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ElevationRequestScalarFieldEnum | Prisma.ElevationRequestScalarFieldEnum[]
+}
+
+/**
+ * Story.Tag
+ */
+export type Story$TagArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Tag
+   */
+  select?: Prisma.TagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Tag
+   */
+  omit?: Prisma.TagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TagInclude<ExtArgs> | null
+  where?: Prisma.TagWhereInput
 }
 
 /**

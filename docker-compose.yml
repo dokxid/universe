@@ -19,6 +19,18 @@ services:
       - mongo
       - garage
 
+  db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    env_file: .env.docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks:
+      - app-network
+
   mongo:
     container_name: mongo
     build:
@@ -29,16 +41,16 @@ services:
       MONGO_REPLICA_HOST: 127.0.0.1
       MONGO_REPLICA_PORT: 27017
       MONGO_COMMAND: "mongosh"
-    volumes:      
+    volumes:
       - ./mongodb/data:/data/db
-    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
     networks:
       - app-network
     ports:
       - "27017:27017"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "mongosh --eval 'try { rs.status() } catch (err) { rs.initiate() }' || exit 1"]
+      test: [ "CMD-SHELL", "mongosh --eval 'try { rs.status() } catch (err) { rs.initiate() }' || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -59,6 +71,8 @@ services:
 
 volumes:
   mongo-data:
+  pgdata:
+
 
 networks:
   app-network:

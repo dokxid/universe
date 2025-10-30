@@ -1,8 +1,7 @@
 import "server-only";
 
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
-
-const prisma = new PrismaClient();
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 
 const includeCountStories = {
     _count: {
@@ -18,13 +17,13 @@ export async function getLab(whereInput: Prisma.LabWhereUniqueInput) {
         });
         if (!lab)
             throw new Error(
-                "Lab not found for input: " + JSON.stringify(whereInput)
+                "Lab not found for input: " + JSON.stringify(whereInput),
             );
         return lab;
     } catch (err) {
         throw new Error(
             "couldn't fetch experience: " +
-                (err instanceof Error ? err.message : "Unknown error")
+                (err instanceof Error ? err.message : "Unknown error"),
         );
     }
 }
@@ -37,7 +36,7 @@ export async function getLabs(whereInput: Prisma.LabWhereInput = {}) {
         });
         if (!labs)
             throw new Error(
-                "Labs not found for input: " + JSON.stringify(whereInput)
+                "Labs not found for input: " + JSON.stringify(whereInput),
             );
         return labs;
     } catch (err) {

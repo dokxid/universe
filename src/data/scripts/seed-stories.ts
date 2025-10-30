@@ -3,7 +3,8 @@
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
 import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
-
+import { UNESCO_TAGS_SEEDS } from "./seeds/unesco-tags-seeds";
+import { TagWhereInput } from "@/generated/prisma/models/Tag";
 
 export async function seedStories(
     labSlug: string,
@@ -27,15 +28,42 @@ export async function seedStories(
         );
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
+            const tags = faker.helpers.uniqueArray(
+                UNESCO_TAGS_SEEDS,
+                faker.number.int({ min: 3, max: 8 }),
+            );
+            const tagIds = await prisma.tag.findMany({
+                where: {
+                    AND: tags.map((tag) => ({
+                        name: tag.name,
+                        theme: tag.theme,
+                        category: tag.category,
+                    })) as TagWhereInput[],
+                },
+                select: { id: true },
+            });
+
             const doc = await test_story_doc(center, labSlug, user?.id);
-            const storyInsertResult = await prisma.lab.update({
-                where: { slug: labSlug },
+            const storyInsertResult = await prisma.story.create({
                 data: {
-                    stories: {
-                        create: doc,
+                    ...doc,
+                    lab: {
+                        connect: { slug: labSlug },
                     },
                 },
             });
+
+            await Promise.all(
+                tagIds.map(async (tag) =>
+                    prisma.tagsOnStories.create({
+                        data: {
+                            storyId: storyInsertResult.id,
+                            tagId: tag.id,
+                        },
+                    }),
+                ),
+            );
+
             console.log(
                 `Inserted story ${storyInsertResult.id} for lab: ${labSlug}`,
             );

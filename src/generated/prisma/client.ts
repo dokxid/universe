@@ -40,8 +40,8 @@ export { Prisma }
 
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node")
-path.join(process.cwd(), "src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-darwin-arm64.dylib.node")
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node")
@@ -52,15 +52,15 @@ path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node")
 path.join(process.cwd(), "src/generated/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 
 /**
- * Model GeoJson
- * 
- */
-export type GeoJson = Prisma.GeoJsonModel
-/**
  * Model ElevationRequest
  * 
  */
 export type ElevationRequest = Prisma.ElevationRequestModel
+/**
+ * Model TagsOnStories
+ * 
+ */
+export type TagsOnStories = Prisma.TagsOnStoriesModel
 /**
  * Model Story
  * 

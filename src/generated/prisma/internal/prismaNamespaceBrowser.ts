@@ -49,6 +49,7 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   ElevationRequest: 'ElevationRequest',
+  TagsOnStories: 'TagsOnStories',
   Story: 'Story',
   User: 'User',
   Tag: 'Tag',
@@ -66,6 +67,16 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  * Enums
  */
 
+export const TransactionIsolationLevel = runtime.makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
+  Serializable: 'Serializable'
+} as const)
+
+export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
 export const ElevationRequestScalarFieldEnum = {
   id: 'id',
   storyId: 'storyId',
@@ -77,12 +88,22 @@ export const ElevationRequestScalarFieldEnum = {
 export type ElevationRequestScalarFieldEnum = (typeof ElevationRequestScalarFieldEnum)[keyof typeof ElevationRequestScalarFieldEnum]
 
 
+export const TagsOnStoriesScalarFieldEnum = {
+  storyId: 'storyId',
+  tagId: 'tagId'
+} as const
+
+export type TagsOnStoriesScalarFieldEnum = (typeof TagsOnStoriesScalarFieldEnum)[keyof typeof TagsOnStoriesScalarFieldEnum]
+
+
 export const StoryScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   draft: 'draft',
   title: 'title',
   content: 'content',
+  longitude: 'longitude',
+  latitude: 'latitude',
   tagIds: 'tagIds',
   year: 'year',
   visibleUniverse: 'visibleUniverse',
@@ -90,7 +111,8 @@ export const StoryScalarFieldEnum = {
   license: 'license',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  labId: 'labId'
+  labId: 'labId',
+  tagId: 'tagId'
 } as const
 
 export type StoryScalarFieldEnum = (typeof StoryScalarFieldEnum)[keyof typeof StoryScalarFieldEnum]
@@ -236,4 +258,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

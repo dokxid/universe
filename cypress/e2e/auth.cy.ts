@@ -22,7 +22,7 @@ describe("Super Admin", () => {
         cy.get("a[href='/universe/login']").should("not.exist");
         cy.get(".h-5 > p.text-xs").should("contain", "Super Admin");
     });
-    it("UserWidget should show correct role for Admin", () => {
+    it("UserWidget should show correct role for Super Admin", () => {
         loginAsSuperAdmin();
         cy.visit("/test/map");
         cy.get("p.text-xs").contains(/^Super Admin$/);

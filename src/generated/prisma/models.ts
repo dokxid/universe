@@ -7,8 +7,8 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/GeoJson'
 export type * from './models/ElevationRequest'
+export type * from './models/TagsOnStories'
 export type * from './models/Story'
 export type * from './models/User'
 export type * from './models/Tag'

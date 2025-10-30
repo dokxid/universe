@@ -1,11 +1,10 @@
 import "server-only";
 
 import { sanitizeToStoryDTO } from "@/data/transformers/story-transformer";
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
+import { Prisma, TagsOnStories } from "@/generated/prisma/client";
 import { StoryModel } from "@/generated/prisma/models";
 import { StoryDTO } from "@/types/dtos";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/data/prisma/connections";
 
 const authorSelectFields: { select: Prisma.UserSelect } = {
     select: {
@@ -33,7 +32,7 @@ export async function getAllStories(
             include: {
                 author: authorSelectFields,
                 lab: labSelectFields,
-                tags: true,
+                tags: { select: { tag: true } },
                 elevationRequests: true,
             },
         });
@@ -56,7 +55,7 @@ export async function queryStory(storyId: string): Promise<StoryDTO> {
             include: {
                 author: authorSelectFields,
                 lab: labSelectFields,
-                tags: true,
+                tags: { select: { tag: true } },
                 elevationRequests: true,
             },
         });
@@ -73,12 +72,23 @@ export async function queryStory(storyId: string): Promise<StoryDTO> {
 
 export async function insertStory(
     storyToInsert: Prisma.StoryCreateInput,
-): Promise<StoryModel> {
+    tags: { id: string }[],
+): Promise<{ result: StoryModel; tagStoryResult: TagsOnStories[] }> {
     try {
         const result = await prisma.story.create({
             data: storyToInsert,
         });
-        return result;
+        const tagStoryResult = await Promise.all(
+            tags.map(async (tag) =>
+                prisma.tagsOnStories.create({
+                    data: {
+                        storyId: result.id,
+                        tagId: tag.id,
+                    },
+                }),
+            ),
+        );
+        return { result, tagStoryResult };
     } catch (err) {
         console.error("Error inserting story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
@@ -96,7 +106,7 @@ export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
             include: {
                 author: authorSelectFields,
                 lab: labSelectFields,
-                tags: true,
+                tags: { select: { tag: true } },
                 elevationRequests: true,
             },
         });
@@ -108,4 +118,28 @@ export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
         console.error("Error getting stories by user:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
+}
+
+export async function connectStoryTags(
+    storyId: string,
+    tags: { id: string }[],
+): Promise<TagsOnStories[]> {
+    const storyTagResult = await Promise.all(
+        tags.map(async (tag) =>
+            prisma.tagsOnStories.upsert({
+                where: {
+                    storyId_tagId: {
+                        storyId: storyId,
+                        tagId: tag.id,
+                    },
+                },
+                create: {
+                    storyId: storyId,
+                    tagId: tag.id,
+                },
+                update: {},
+            }),
+        ),
+    );
+    return storyTagResult;
 }

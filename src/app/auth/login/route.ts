@@ -1,11 +1,9 @@
-import { PrismaClient } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
 import { APIError } from "better-auth";
 import { NextRequest } from "next/server";
 import z from "zod";
-
-const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
     try {

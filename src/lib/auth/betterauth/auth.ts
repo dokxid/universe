@@ -1,13 +1,11 @@
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import { sendEmail } from "@/lib/mail";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { admin } from "better-auth/plugins/admin";
 import { organization } from "better-auth/plugins/organization";
 
-const prisma = new PrismaClient();
-
-const db = prismaAdapter(prisma, { provider: "mongodb" });
+const db = prismaAdapter(prisma, { provider: "postgresql" });
 
 function sendOrganizationInvitation(data: {
     email: string;

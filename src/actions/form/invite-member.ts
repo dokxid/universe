@@ -1,7 +1,7 @@
 "use server";
 
-import { PrismaClient } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import { inviteMemberSchema } from "@/types/form-schemas/invite-member-form-schemas";
 import { APIError } from "better-auth";
 import { headers } from "next/headers";
@@ -18,7 +18,6 @@ export async function inviteMemberAction(formData: FormData) {
                 errors: z.flattenError(validatedData.error),
             };
         }
-        const prisma = new PrismaClient();
         console.log(
             "Inviting member to lab with slug:",
             validatedData.data.slug,

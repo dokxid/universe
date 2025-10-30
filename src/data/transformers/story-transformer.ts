@@ -1,12 +1,12 @@
 import { buildDisplayedName } from "@/data/transformers/user-transformer";
-import { Prisma } from "@/generated/prisma/client";
+import { GeoType, Prisma } from "@/generated/prisma/client";
 import { validateCoordinates } from "@/lib/utils/validate-coordinates";
 import { StoryDTO } from "@/types/dtos";
 
 export async function sanitizeToStoryDTO(
     rawStory: Prisma.StoryModel & {
         author: Prisma.UserModel;
-        tags: Prisma.TagModel[];
+        tags: { tag: Prisma.TagModel }[];
         elevationRequests: Prisma.ElevationRequestModel[];
         lab: Prisma.LabModel;
     },
@@ -18,10 +18,13 @@ export async function sanitizeToStoryDTO(
             content: rawStory.content,
             draft: rawStory.draft,
             location: {
-                type: rawStory.location.type,
-                coordinates: validateCoordinates(rawStory.location.coordinates),
+                type: "Point" as GeoType,
+                coordinates: validateCoordinates([
+                    rawStory.longitude,
+                    rawStory.latitude,
+                ]),
             },
-            tags: rawStory.tags,
+            tags: rawStory.tags.map((tagOnStory) => tagOnStory.tag),
             year: rawStory.year,
             featuredImageUrl: rawStory.featuredImageUrl,
             visibleUniverse: rawStory.visibleUniverse,

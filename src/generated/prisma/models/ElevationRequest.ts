@@ -186,7 +186,7 @@ export type ElevationRequestWhereInput = {
 
 export type ElevationRequestOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  storyId?: Prisma.SortOrder
+  storyId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -207,7 +207,7 @@ export type ElevationRequestWhereUniqueInput = Prisma.AtLeast<{
 
 export type ElevationRequestOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  storyId?: Prisma.SortOrder
+  storyId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -244,6 +244,7 @@ export type ElevationRequestUncheckedCreateInput = {
 }
 
 export type ElevationRequestUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -251,6 +252,7 @@ export type ElevationRequestUpdateInput = {
 }
 
 export type ElevationRequestUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   storyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -266,12 +268,14 @@ export type ElevationRequestCreateManyInput = {
 }
 
 export type ElevationRequestUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ElevationRequestUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   storyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -312,6 +316,10 @@ export type ElevationRequestOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
 export type EnumElevationRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.ElevationRequestStatus
 }
@@ -322,7 +330,6 @@ export type DateTimeFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-  unset?: boolean
 }
 
 export type ElevationRequestCreateNestedManyWithoutStoryInput = {
@@ -388,6 +395,7 @@ export type ElevationRequestCreateOrConnectWithoutStoryInput = {
 
 export type ElevationRequestCreateManyStoryInputEnvelope = {
   data: Prisma.ElevationRequestCreateManyStoryInput | Prisma.ElevationRequestCreateManyStoryInput[]
+  skipDuplicates?: boolean
 }
 
 export type ElevationRequestUpsertWithWhereUniqueWithoutStoryInput = {
@@ -425,18 +433,21 @@ export type ElevationRequestCreateManyStoryInput = {
 }
 
 export type ElevationRequestUpdateWithoutStoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ElevationRequestUncheckedUpdateWithoutStoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ElevationRequestUncheckedUpdateManyWithoutStoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumElevationRequestStatusFieldUpdateOperationsInput | $Enums.ElevationRequestStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,7 +464,23 @@ export type ElevationRequestSelect<ExtArgs extends runtime.Types.Extensions.Inte
   story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
 }, ExtArgs["result"]["elevationRequest"]>
 
+export type ElevationRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  storyId?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
+}, ExtArgs["result"]["elevationRequest"]>
 
+export type ElevationRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  storyId?: boolean
+  status?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+  story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
+}, ExtArgs["result"]["elevationRequest"]>
 
 export type ElevationRequestSelectScalar = {
   id?: boolean
@@ -465,6 +492,12 @@ export type ElevationRequestSelectScalar = {
 
 export type ElevationRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "storyId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["elevationRequest"]>
 export type ElevationRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
+}
+export type ElevationRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
+}
+export type ElevationRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   story?: boolean | Prisma.ElevationRequest$storyArgs<ExtArgs>
 }
 
@@ -597,6 +630,30 @@ export interface ElevationRequestDelegate<ExtArgs extends runtime.Types.Extensio
   createMany<T extends ElevationRequestCreateManyArgs>(args?: Prisma.SelectSubset<T, ElevationRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many ElevationRequests and returns the data saved in the database.
+   * @param {ElevationRequestCreateManyAndReturnArgs} args - Arguments to create many ElevationRequests.
+   * @example
+   * // Create many ElevationRequests
+   * const elevationRequest = await prisma.elevationRequest.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many ElevationRequests and only return the `id`
+   * const elevationRequestWithIdOnly = await prisma.elevationRequest.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends ElevationRequestCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ElevationRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ElevationRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a ElevationRequest.
    * @param {ElevationRequestDeleteArgs} args - Arguments to delete one ElevationRequest.
    * @example
@@ -661,6 +718,36 @@ export interface ElevationRequestDelegate<ExtArgs extends runtime.Types.Extensio
   updateMany<T extends ElevationRequestUpdateManyArgs>(args: Prisma.SelectSubset<T, ElevationRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more ElevationRequests and returns the data updated in the database.
+   * @param {ElevationRequestUpdateManyAndReturnArgs} args - Arguments to update many ElevationRequests.
+   * @example
+   * // Update many ElevationRequests
+   * const elevationRequest = await prisma.elevationRequest.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more ElevationRequests and only return the `id`
+   * const elevationRequestWithIdOnly = await prisma.elevationRequest.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends ElevationRequestUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ElevationRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ElevationRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one ElevationRequest.
    * @param {ElevationRequestUpsertArgs} args - Arguments to update or create a ElevationRequest.
    * @example
@@ -678,29 +765,6 @@ export interface ElevationRequestDelegate<ExtArgs extends runtime.Types.Extensio
    * })
    */
   upsert<T extends ElevationRequestUpsertArgs>(args: Prisma.SelectSubset<T, ElevationRequestUpsertArgs<ExtArgs>>): Prisma.Prisma__ElevationRequestClient<runtime.Types.Result.GetResult<Prisma.$ElevationRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more ElevationRequests that matches the filter.
-   * @param {ElevationRequestFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const elevationRequest = await prisma.elevationRequest.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.ElevationRequestFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a ElevationRequest.
-   * @param {ElevationRequestAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const elevationRequest = await prisma.elevationRequest.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.ElevationRequestAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -1106,6 +1170,30 @@ export type ElevationRequestCreateManyArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many ElevationRequests.
    */
   data: Prisma.ElevationRequestCreateManyInput | Prisma.ElevationRequestCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * ElevationRequest createManyAndReturn
+ */
+export type ElevationRequestCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ElevationRequest
+   */
+  select?: Prisma.ElevationRequestSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the ElevationRequest
+   */
+  omit?: Prisma.ElevationRequestOmit<ExtArgs> | null
+  /**
+   * The data used to create many ElevationRequests.
+   */
+  data: Prisma.ElevationRequestCreateManyInput | Prisma.ElevationRequestCreateManyInput[]
+  skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElevationRequestIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1150,6 +1238,36 @@ export type ElevationRequestUpdateManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many ElevationRequests to update.
    */
   limit?: number
+}
+
+/**
+ * ElevationRequest updateManyAndReturn
+ */
+export type ElevationRequestUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ElevationRequest
+   */
+  select?: Prisma.ElevationRequestSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the ElevationRequest
+   */
+  omit?: Prisma.ElevationRequestOmit<ExtArgs> | null
+  /**
+   * The data used to update ElevationRequests.
+   */
+  data: Prisma.XOR<Prisma.ElevationRequestUpdateManyMutationInput, Prisma.ElevationRequestUncheckedUpdateManyInput>
+  /**
+   * Filter which ElevationRequests to update
+   */
+  where?: Prisma.ElevationRequestWhereInput
+  /**
+   * Limit how many ElevationRequests to update.
+   */
+  limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ElevationRequestIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1216,34 +1334,6 @@ export type ElevationRequestDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many ElevationRequests to delete.
    */
   limit?: number
-}
-
-/**
- * ElevationRequest findRaw
- */
-export type ElevationRequestFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * ElevationRequest aggregateRaw
- */
-export type ElevationRequestAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**

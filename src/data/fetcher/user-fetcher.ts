@@ -1,8 +1,7 @@
 import "server-only";
 
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
-
-const prisma = new PrismaClient();
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 
 const storiesSelectFields: { select: Prisma.StorySelect } = {
     select: {

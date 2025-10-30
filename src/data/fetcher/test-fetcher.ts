@@ -1,9 +1,8 @@
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import * as dotenv from "dotenv";
 
 dotenv.config();
-
-const prisma = new PrismaClient();
 
 export async function getAStory() {
     try {

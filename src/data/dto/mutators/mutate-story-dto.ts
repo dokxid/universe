@@ -3,9 +3,10 @@ import {
     canUserCreateStory,
     canUserEditStoryId,
 } from "@/data/dto/auth/story-permissions";
-import { insertStory } from "@/data/fetcher/story-fetcher";
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
-import { StoryCreateInput } from "@/generated/prisma/models";
+import { connectStoryTags, insertStory } from "@/data/fetcher/story-fetcher";
+import { License } from "@/generated/prisma/client";
+import { StoryCreateWithoutTagsInput } from "@/generated/prisma/models";
+import { prisma } from "@/lib/data/prisma/connections";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -18,8 +19,6 @@ import {
 } from "@/types/form-schemas/story-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
-
-const prisma = new PrismaClient();
 
 export async function submitStoryDTO(formData: FormData) {
     try {
@@ -76,15 +75,10 @@ export async function submitStoryDTO(formData: FormData) {
             author: { connect: { id: userId } },
             content: data.content,
             title: data.title,
-            location: {
-                type: "Point",
-                coordinates: [data.longitude, data.latitude],
-            },
-            tags: {
-                connect: tags.map((tag) => ({ id: tag.id })),
-            },
+            longitude: data.longitude,
+            latitude: data.latitude,
             year: data.year,
-            license: data.license,
+            license: data.license as License,
             featuredImageUrl: path,
             draft: data.draft,
             visibleUniverse: data.universe,
@@ -93,9 +87,9 @@ export async function submitStoryDTO(formData: FormData) {
                 create: [],
             },
             lab: { connect: { slug: data.slug } },
-        } as StoryCreateInput;
+        } satisfies StoryCreateWithoutTagsInput;
 
-        const newStoryId = await insertStory(storyToInsert);
+        const newStoryId = await insertStory(storyToInsert, tags);
         revalidateTag(`stories`);
         return newStoryId;
     } catch (error) {
@@ -229,15 +223,17 @@ export async function editStoryFormSchemaDTO(formData: FormData) {
         const mutation = await prisma.story.update({
             where: { id: result.data.storyId },
             data: {
-                tags: { connect: tags.map((tag) => ({ id: tag.id })) },
                 year: result.data.year,
                 title: result.data.title,
             },
         });
 
+        const storyTagResult = await connectStoryTags(mutation.id, tags);
+
         // revalidate caches
         revalidateTag(`stories`);
         revalidateTag(`stories/${mutation.id}`);
+        return { mutation, storyTagResult };
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
@@ -316,10 +312,7 @@ export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
         const mutation = await prisma.story.update({
             where: { id: result.data.storyId },
             data: {
-                location: {
-                    type: "Point",
-                    coordinates: [result.data.longitude, result.data.latitude],
-                },
+                ...result.data,
             },
         });
 

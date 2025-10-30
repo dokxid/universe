@@ -1,7 +1,4 @@
 import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
-import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
-import { GeoType, Prisma, PrismaClient } from "@/generated/prisma/client";
-import { TagWhereInput } from "@/generated/prisma/models";
 import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
@@ -52,23 +49,8 @@ export const test_story_doc = async (
     labCenter: number[],
     labSlug: string,
     userId: string,
-): Promise<Omit<Prisma.StoryCreateInput, "lab">> => {
+) => {
     const date = faker.date.past({ years: 3 });
-    const tags = faker.helpers.uniqueArray(
-        UNESCO_TAGS_SEEDS,
-        faker.number.int({ min: 3, max: 8 }),
-    );
-    const prisma = new PrismaClient();
-    const tagIds = await prisma.tag.findMany({
-        where: {
-            AND: tags.map((tag) => ({
-                name: tag.name,
-                theme: tag.theme,
-                category: tag.category,
-            })) as TagWhereInput[],
-        },
-        select: { id: true },
-    });
 
     // console.log(
     //     `Creating story for lab ${labSlug} by user ${userId} with tags: `,
@@ -79,24 +61,16 @@ export const test_story_doc = async (
         content: getContent(),
         draft: faker.datatype.boolean(0.2),
         title: faker.lorem.sentence({ min: 3, max: 5 }),
-        location: {
-            type: "Point" as GeoType, // Explicitly cast "Point" to GeoType
-            coordinates: [
-                labCenter[0] + faker.number.float({ min: -0.8, max: 0.8 }),
-                labCenter[1] + faker.number.float({ min: -0.3, max: 0.3 }),
-            ],
-        },
-        tags: {
-            connect: tagIds,
-        },
+        longitude: labCenter[0] + faker.number.float({ min: -0.8, max: 0.8 }),
+        latitude: labCenter[1] + faker.number.float({ min: -0.3, max: 0.3 }),
         year: faker.number.int({ min: 1800, max: 2024 }),
         visibleUniverse: faker.datatype.boolean(),
         featuredImageUrl:
             process.env.LOCAL_UPLOADER === "true"
                 ? await getStoryImageUrl(labSlug)
                 : "https://picsum.photos/seed/" +
-                  faker.string.alphanumeric(10) +
-                  "/800/600",
+                faker.string.alphanumeric(10) +
+                "/800/600",
         elevationRequests: undefined,
         license: faker.helpers.arrayElement(
             Object.values(CC_LICENSES).map((license) => license.code),

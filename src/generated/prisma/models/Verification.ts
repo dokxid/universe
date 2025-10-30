@@ -255,6 +255,7 @@ export type VerificationUncheckedCreateInput = {
 }
 
 export type VerificationUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -263,6 +264,7 @@ export type VerificationUpdateInput = {
 }
 
 export type VerificationUncheckedUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +282,7 @@ export type VerificationCreateManyInput = {
 }
 
 export type VerificationUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -288,6 +291,7 @@ export type VerificationUpdateManyMutationInput = {
 }
 
 export type VerificationUncheckedUpdateManyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   identifier?: Prisma.StringFieldUpdateOperationsInput | string
   value?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -333,7 +337,23 @@ export type VerificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   updatedAt?: boolean
 }, ExtArgs["result"]["verification"]>
 
+export type VerificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  identifier?: boolean
+  value?: boolean
+  expiresAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+}, ExtArgs["result"]["verification"]>
 
+export type VerificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+  id?: boolean
+  identifier?: boolean
+  value?: boolean
+  expiresAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
+}, ExtArgs["result"]["verification"]>
 
 export type VerificationSelectScalar = {
   id?: boolean
@@ -474,6 +494,30 @@ export interface VerificationDelegate<ExtArgs extends runtime.Types.Extensions.I
   createMany<T extends VerificationCreateManyArgs>(args?: Prisma.SelectSubset<T, VerificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Create many Verifications and returns the data saved in the database.
+   * @param {VerificationCreateManyAndReturnArgs} args - Arguments to create many Verifications.
+   * @example
+   * // Create many Verifications
+   * const verification = await prisma.verification.createManyAndReturn({
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Create many Verifications and only return the `id`
+   * const verificationWithIdOnly = await prisma.verification.createManyAndReturn({
+   *   select: { id: true },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  createManyAndReturn<T extends VerificationCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, VerificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Delete a Verification.
    * @param {VerificationDeleteArgs} args - Arguments to delete one Verification.
    * @example
@@ -538,6 +582,36 @@ export interface VerificationDelegate<ExtArgs extends runtime.Types.Extensions.I
   updateMany<T extends VerificationUpdateManyArgs>(args: Prisma.SelectSubset<T, VerificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
+   * Update zero or more Verifications and returns the data updated in the database.
+   * @param {VerificationUpdateManyAndReturnArgs} args - Arguments to update many Verifications.
+   * @example
+   * // Update many Verifications
+   * const verification = await prisma.verification.updateManyAndReturn({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * 
+   * // Update zero or more Verifications and only return the `id`
+   * const verificationWithIdOnly = await prisma.verification.updateManyAndReturn({
+   *   select: { id: true },
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: [
+   *     // ... provide data here
+   *   ]
+   * })
+   * Note, that providing `undefined` is treated as the value not being there.
+   * Read more here: https://pris.ly/d/null-undefined
+   * 
+   */
+  updateManyAndReturn<T extends VerificationUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, VerificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+  /**
    * Create or update one Verification.
    * @param {VerificationUpsertArgs} args - Arguments to update or create a Verification.
    * @example
@@ -555,29 +629,6 @@ export interface VerificationDelegate<ExtArgs extends runtime.Types.Extensions.I
    * })
    */
   upsert<T extends VerificationUpsertArgs>(args: Prisma.SelectSubset<T, VerificationUpsertArgs<ExtArgs>>): Prisma.Prisma__VerificationClient<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-  /**
-   * Find zero or more Verifications that matches the filter.
-   * @param {VerificationFindRawArgs} args - Select which filters you would like to apply.
-   * @example
-   * const verification = await prisma.verification.findRaw({
-   *   filter: { age: { $gt: 25 } }
-   * })
-   */
-  findRaw(args?: Prisma.VerificationFindRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
-
-  /**
-   * Perform aggregation operations on a Verification.
-   * @param {VerificationAggregateRawArgs} args - Select which aggregations you would like to apply.
-   * @example
-   * const verification = await prisma.verification.aggregateRaw({
-   *   pipeline: [
-   *     { $match: { status: "registered" } },
-   *     { $group: { _id: "$country", total: { $sum: 1 } } }
-   *   ]
-   * })
-   */
-  aggregateRaw(args?: Prisma.VerificationAggregateRawArgs): Prisma.PrismaPromise<Prisma.JsonObject>
 
 
   /**
@@ -959,6 +1010,26 @@ export type VerificationCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many Verifications.
    */
   data: Prisma.VerificationCreateManyInput | Prisma.VerificationCreateManyInput[]
+  skipDuplicates?: boolean
+}
+
+/**
+ * Verification createManyAndReturn
+ */
+export type VerificationCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Verification
+   */
+  select?: Prisma.VerificationSelectCreateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Verification
+   */
+  omit?: Prisma.VerificationOmit<ExtArgs> | null
+  /**
+   * The data used to create many Verifications.
+   */
+  data: Prisma.VerificationCreateManyInput | Prisma.VerificationCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -987,6 +1058,32 @@ export type VerificationUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inte
  * Verification updateMany
  */
 export type VerificationUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * The data used to update Verifications.
+   */
+  data: Prisma.XOR<Prisma.VerificationUpdateManyMutationInput, Prisma.VerificationUncheckedUpdateManyInput>
+  /**
+   * Filter which Verifications to update
+   */
+  where?: Prisma.VerificationWhereInput
+  /**
+   * Limit how many Verifications to update.
+   */
+  limit?: number
+}
+
+/**
+ * Verification updateManyAndReturn
+ */
+export type VerificationUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Verification
+   */
+  select?: Prisma.VerificationSelectUpdateManyAndReturn<ExtArgs> | null
+  /**
+   * Omit specific fields from the Verification
+   */
+  omit?: Prisma.VerificationOmit<ExtArgs> | null
   /**
    * The data used to update Verifications.
    */
@@ -1057,34 +1154,6 @@ export type VerificationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many Verifications to delete.
    */
   limit?: number
-}
-
-/**
- * Verification findRaw
- */
-export type VerificationFindRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
-   */
-  filter?: runtime.InputJsonValue
-  /**
-   * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
-}
-
-/**
- * Verification aggregateRaw
- */
-export type VerificationAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
-   */
-  pipeline?: runtime.InputJsonValue[]
-  /**
-   * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
-   */
-  options?: runtime.InputJsonValue
 }
 
 /**
