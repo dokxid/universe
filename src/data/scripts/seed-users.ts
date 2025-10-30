@@ -1,9 +1,9 @@
 import { testMemberDoc } from "@/data/scripts/seeds/user-seeds";
-import { Prisma, PrismaClient, Role } from "@/generated/prisma/client";
+import { Prisma, Role } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import fs from "node:fs/promises";
 
-const prisma = new PrismaClient();
 
 export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
     try {

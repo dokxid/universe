@@ -1,9 +1,8 @@
 "use server";
 
 import { UNESCO_TAGS_SEEDS } from "@/data/scripts/seeds/unesco-tags-seeds";
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 
-const prisma = new PrismaClient();
 
 export async function seedUnescoTags() {
     await prisma.tag.deleteMany({});

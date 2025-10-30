@@ -25,15 +25,18 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY .env.docker .env.production
 COPY . .
 
+# Run prisma generate before building
+RUN yarn prisma generate
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN \
-  if [ -f yarn.lock ]; then yarn run docker-build; \
-  elif [ -f package-lock.json ]; then npm run docker-build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run docker-build; \
+  if [ -f yarn.lock ]; then yarn run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 

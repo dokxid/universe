@@ -5,8 +5,8 @@ import {
 } from "@/data/scripts/seed-experiences";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
-import { seedCypressUsers, seedUsers } from "@/data/scripts/seed-users";
-import { PrismaClient } from "@/generated/prisma/client";
+import { seedUsers } from "@/data/scripts/seed-users";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -42,8 +42,6 @@ const city_centers: { [key: string]: number[] } = {
     luxembourg: [6.1296, 49.8116],
 };
 
-const prisma = new PrismaClient();
-
 export async function seedDatabase(
     numRandomCityCenters: number,
     numStories: number,
@@ -67,7 +65,7 @@ export async function seedDatabase(
         await seedUsers(10, 1);
         // await seedAllStoryImages();
         // await initializeFeaturedLabImages();
-        await seedCypressUsers();
+        // await seedCypressUsers();
         await seedAllStories(numStories);
         await seedElevationRequests();
         console.log("Database seeding completed");

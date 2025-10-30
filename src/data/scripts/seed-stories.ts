@@ -1,10 +1,9 @@
 "use server";
 
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
-const prisma = new PrismaClient();
 
 export async function seedStories(
     labSlug: string,
@@ -28,7 +27,7 @@ export async function seedStories(
         );
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
-            const doc = await test_story_doc(center, labSlug, user.id);
+            const doc = await test_story_doc(center, labSlug, user?.id);
             const storyInsertResult = await prisma.lab.update({
                 where: { slug: labSlug },
                 data: {

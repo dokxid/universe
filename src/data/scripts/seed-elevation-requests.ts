@@ -1,10 +1,8 @@
 "use server";
 
 import { generateElevationRequests } from "@/data/scripts/seeds/elevation-requests-seeds";
-import { PrismaClient } from "@/generated/prisma/client";
 import { StoryWhereInput } from "@/generated/prisma/models";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/data/prisma/connections";
 
 export async function seedElevationRequests(whereInput?: StoryWhereInput) {
     try {

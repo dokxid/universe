@@ -2,8 +2,9 @@ import {
     canUserCreateLab,
     canUserEditLab,
 } from "@/data/dto/auth/lab-permissions";
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -15,8 +16,6 @@ import {
 import { revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 import z from "zod";
-
-const prisma = new PrismaClient();
 
 export async function editLabPictureDTO(formData: FormData) {
     try {

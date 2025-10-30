@@ -1,6 +1,4 @@
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
-import { PrismaClient } from "@/generated/prisma/client";
-import dbConnect from "@/lib/data/mongodb/connections";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
@@ -11,8 +9,8 @@ import {
 import { revalidateTag } from "next/cache";
 import z from "zod";
 import { canEditUser } from "../auth/user-permissions";
+import { prisma } from "@/lib/data/prisma/connections";
 
-const prisma = new PrismaClient();
 
 export async function editDisplayNameFormSchemaDTO(formData: FormData) {
     try {
@@ -37,7 +35,6 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
         }
 
         // update the user's display name in the database
-        await dbConnect();
         const mutate = await prisma.user.update({
             where: { id: result.data.userId },
             data: {

@@ -2,7 +2,6 @@ import "server-only";
 
 import { isUserAdmin } from "@/data/auth";
 import { insertElevationRequest } from "@/data/fetcher/elevation-request-fetcher";
-import dbConnect from "@/lib/data/mongodb/connections";
 import { NewElevationRequestData } from "@/types/dtos";
 import { revalidatePath } from "next/cache";
 
@@ -20,7 +19,6 @@ export async function createElevationRequestDTO(
             requestedAt: new Date(),
             resolvedAt: new Date(),
         };
-        await dbConnect();
 
         await insertElevationRequest(requestToInsert, storyID);
         revalidatePath(`/universe/elevation_requests`);

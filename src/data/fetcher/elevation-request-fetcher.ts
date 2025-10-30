@@ -1,16 +1,14 @@
 import "server-only";
 
-import { Prisma, PrismaClient } from "@/generated/prisma/client";
-import dbConnect from "@/lib/data/mongodb/connections";
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 
-const prisma = new PrismaClient();
 
 export async function insertElevationRequest(
     requestToInsert: Prisma.ElevationRequestCreateInput,
     storyId: string
 ) {
     try {
-        dbConnect();
         const createElevationRequestResult = await prisma.story.update({
             where: { id: storyId },
             data: {

@@ -8,10 +8,9 @@ import {
     test_experiences_doc,
     universe_experience_doc,
 } from "@/data/scripts/seeds/experiences-seeds";
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
-const prisma = new PrismaClient();
 
 export async function seedExperiences(cityCenters: number[][]) {
     await prisma.lab.deleteMany();

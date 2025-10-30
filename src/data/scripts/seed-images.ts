@@ -1,9 +1,8 @@
 "use server";
 
-import { PrismaClient } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
 import fs from "fs";
 
-const prisma = new PrismaClient();
 
 export async function initializeFeaturedLabImages() {
     try {
