@@ -4,7 +4,7 @@ import {
     canUserEditStoryId,
 } from "@/data/dto/auth/story-permissions";
 import { insertStory } from "@/data/fetcher/story-fetcher";
-import { PrismaClient } from "@/generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 import { StoryCreateInput } from "@/generated/prisma/models";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
@@ -89,17 +89,8 @@ export async function submitStoryDTO(formData: FormData) {
             draft: data.draft,
             visibleUniverse: data.universe,
             elevationRequests: {
-                create: [
-                    {
-                        status: "created",
-                    },
-                    // add a pending elevation request if the story has been opted in to be published to the universe
-                    data.universe
-                        ? {
-                              status: "pending",
-                          }
-                        : null,
-                ],
+                // TODO: implement elevation request creation
+                create: [],
             },
             lab: { connect: { slug: data.slug } },
         } as StoryCreateInput;
