@@ -40,5 +40,5 @@ export async function signOutAction() {
     } catch (error) {
         console.error("Failed to sign out:", error);
     }
-    redirect(`http://localhost:3000/universe/`);
+    redirect(process.env.BETTER_AUTH_URL || "/")
 }
