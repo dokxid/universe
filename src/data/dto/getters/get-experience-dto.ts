@@ -18,7 +18,7 @@ export const getLabsDTO = cache(async (): Promise<LabDTO[]> => {
     } catch (err) {
         console.error(
             "Error fetching experiences: " +
-                (err instanceof Error ? err.message : "Unknown error")
+            (err instanceof Error ? err.message : "Unknown error")
         );
         return [];
     }
@@ -37,7 +37,7 @@ export const getPublicLabsDTO = cache(async (): Promise<LabDTO[]> => {
     } catch (err) {
         console.error(
             "Error fetching public labs: " +
-                (err instanceof Error ? err.message : "Unknown error")
+            (err instanceof Error ? err.message : "Unknown error")
         );
         return [];
     }
@@ -53,8 +53,7 @@ export async function getLabDTO(experienceSlug: string): Promise<LabDTO> {
         return sanitizedLab;
     } catch (err) {
         throw new Error(
-            `Error fetching experience ${experienceSlug}: ${
-                err instanceof Error ? err.message : "Unknown error"
+            `Error fetching experience ${experienceSlug}: ${err instanceof Error ? err.message : "Unknown error"
             }`
         );
     }
@@ -70,8 +69,7 @@ export async function getLabByObjectIdDTO(labId: string): Promise<LabDTO> {
         return sanitizedLab;
     } catch (err) {
         throw new Error(
-            `Error fetching lab by ID ${labId}: ${
-                err instanceof Error ? err.message : "Unknown error"
+            `Error fetching lab by ID ${labId}: ${err instanceof Error ? err.message : "Unknown error"
             }`
         );
     }

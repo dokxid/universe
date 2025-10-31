@@ -21,6 +21,7 @@ $garage bucket create universe
 
 # generate keys
 mkdir -p $SCRIPT_DIR/.keys
+$garage key delete universe-app --yes
 $garage key create universe-app | tee $SCRIPT_DIR/.keys/universe-app
 $garage bucket allow \
   --read \

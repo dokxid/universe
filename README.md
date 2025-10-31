@@ -9,8 +9,6 @@ one day i will:
 
 ## 3rd party cloud services that may be needed
 
-- [WorkOS](https://workos.com/) for auth
-    - used rn for just authkit and their hosted login interfaces
 - [MongoDB](https://www.mongodb.com/) for database (self hostable)
 - [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
     - how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)

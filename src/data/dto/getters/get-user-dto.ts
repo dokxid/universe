@@ -38,7 +38,8 @@ export async function getUserDTO(userId: string): Promise<UserDTO | null> {
     try {
         const user = await getUser({ id: userId });
         if (!user) throw new Error("User not found");
-        return sanitizeToUserDTO(user);
+        const sanitizedUser = sanitizeToUserDTO(user);
+        return sanitizedUser;
     } catch (error) {
         console.error("Error fetching user by ID:", error);
         throw new Error(

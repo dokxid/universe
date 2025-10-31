@@ -24,7 +24,7 @@ export async function sanitizeToStoryDTO(
                     rawStory.latitude,
                 ]),
             },
-            tags: rawStory.tags.map((tagOnStory) => tagOnStory.tag),
+            tags: rawStory.tags.map((tags) => tags.tag),
             year: rawStory.year,
             featuredImageUrl: rawStory.featuredImageUrl,
             visibleUniverse: rawStory.visibleUniverse,

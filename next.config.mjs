@@ -1,5 +1,4 @@
 // next.config.mjs
-import DotenvFlow from "dotenv-flow";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -12,16 +11,16 @@ allow more .env files
 reference: https://github.com/vercel/next.js/discussions/25764
 reason why this is even a thing and still to reconsider: https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production#why-is-node_env-considered-an-antipattern 
 */
-DotenvFlow.config({
-    node_env: process.env.APP_ENV || process.env.NODE_ENV || "development",
-});
-const env = {};
-Object.keys(process.env).forEach((key) => {
-    if (key.startsWith("NEXT_PUBLIC_")) {
-        env[key] = process.env[key];
-    }
-});
-console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
+// DotenvFlow.config({
+//     node_env: process.env.APP_ENV || process.env.NODE_ENV || "development",
+// });
+// const env = {};
+// Object.keys(process.env).forEach((key) => {
+//     if (key.startsWith("NEXT_PUBLIC_")) {
+//         env[key] = process.env[key];
+//     }
+// });
+// console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
 
 const config = {
     output: "standalone",

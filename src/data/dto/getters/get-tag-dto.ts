@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getTags, getTagsForLab } from "@/data/fetcher/tag-fetcher";
+import { getTags, getTagsForLab, TagWithCount } from "@/data/fetcher/tag-fetcher";
 import { TagDTO } from "@/types/dtos";
 import { cache } from "react";
 
@@ -44,7 +44,7 @@ export async function getTagByNameDTO(tagName: string): Promise<TagDTO | null> {
 }
 
 export function sanitizeToTagDTO(
-    tag: TagDTO & { _count: { stories: number } },
+    tag: TagWithCount,
 ): TagDTO {
     return {
         ...tag,

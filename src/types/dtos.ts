@@ -102,6 +102,7 @@ export type UserDTO = {
     }[];
     createdAt: Date;
     updatedAt: Date;
+    storyCount: number;
 };
 
 export type ExperienceSignInDTO = {

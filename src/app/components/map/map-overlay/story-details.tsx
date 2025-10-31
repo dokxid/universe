@@ -63,6 +63,8 @@ export function StoryDetails({
         setDrawerOpen(drawerOpenState);
     };
 
+    console.log("Rendering StoryDetails for story:", JSON.stringify(activeStory));
+
     // mobile view
     if (isMobile) {
         return (
@@ -120,9 +122,8 @@ export function StoryDetails({
     return (
         <Card
             ref={cardRef}
-            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
-                navigationState.storyDetailsOpen ? "" : "hidden"
-            }`}
+            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${navigationState.storyDetailsOpen ? "" : "hidden"
+                }`}
         >
             <div
                 className={cn(

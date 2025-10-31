@@ -29,19 +29,18 @@ export async function seedStories(
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
             const tags = faker.helpers.uniqueArray(
-                UNESCO_TAGS_SEEDS,
+                UNESCO_TAGS_SEEDS.map((tag) => tag.name),
                 faker.number.int({ min: 3, max: 8 }),
             );
             const tagIds = await prisma.tag.findMany({
                 where: {
-                    AND: tags.map((tag) => ({
-                        name: tag.name,
-                        theme: tag.theme,
-                        category: tag.category,
-                    })) as TagWhereInput[],
+                    name: {
+                        in: tags
+                    }
                 },
                 select: { id: true },
             });
+            console.log(tagIds)
 
             const doc = await test_story_doc(center, labSlug, user?.id);
             const storyInsertResult = await prisma.story.create({
@@ -57,8 +56,8 @@ export async function seedStories(
                 tagIds.map(async (tag) =>
                     prisma.tagsOnStories.create({
                         data: {
-                            storyId: storyInsertResult.id,
-                            tagId: tag.id,
+                            story: { connect: { id: storyInsertResult.id } },
+                            tag: { connect: { id: tag.id } },
                         },
                     }),
                 ),

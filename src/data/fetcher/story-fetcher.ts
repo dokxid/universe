@@ -32,8 +32,8 @@ export async function getAllStories(
             include: {
                 author: authorSelectFields,
                 lab: labSelectFields,
-                tags: { select: { tag: true } },
                 elevationRequests: true,
+                tags: { select: { tag: true } },
             },
         });
         const sanitizedStories = await Promise.all(
@@ -55,7 +55,9 @@ export async function queryStory(storyId: string): Promise<StoryDTO> {
             include: {
                 author: authorSelectFields,
                 lab: labSelectFields,
-                tags: { select: { tag: true } },
+                tags: {
+                    select: { tag: true }
+                },
                 elevationRequests: true,
             },
         });

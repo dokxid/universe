@@ -1299,15 +1299,13 @@ export const StoryScalarFieldEnum = {
   content: 'content',
   longitude: 'longitude',
   latitude: 'latitude',
-  tagIds: 'tagIds',
   year: 'year',
   visibleUniverse: 'visibleUniverse',
   featuredImageUrl: 'featuredImageUrl',
   license: 'license',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  labId: 'labId',
-  tagId: 'tagId'
+  labId: 'labId'
 } as const
 
 export type StoryScalarFieldEnum = (typeof StoryScalarFieldEnum)[keyof typeof StoryScalarFieldEnum]
@@ -1344,8 +1342,7 @@ export const TagScalarFieldEnum = {
   category: 'category',
   theme: 'theme',
   color: 'color',
-  isUnesco: 'isUnesco',
-  storyId: 'storyId'
+  isUnesco: 'isUnesco'
 } as const
 
 export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]

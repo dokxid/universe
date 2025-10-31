@@ -50,6 +50,7 @@ export async function seedDatabase(
         // tear down in order
         await prisma.invitation.deleteMany({});
         await prisma.elevationRequest.deleteMany({});
+        await prisma.tagsOnStories.deleteMany({});
         await prisma.story.deleteMany({});
         await prisma.lab.deleteMany({});
 

@@ -18,7 +18,7 @@
         "e2e": "cypress open --e2e",
         "e2e:headless": "cypress run --e2e 2>/dev/null",
         "seed:local": "NODE_ENV=development tsx --trace-warnings --env-file=.env.local src/data/scripts/seed-staging-script.ts",
-        "seed:docker": "tsx --env-file=.env.docker src/data/scripts/seed-staging-script.ts",
+        "seed:docker": "dotenv -e .env.docker -- tsx src/data/scripts/seed-staging-script.ts",
         "prepare": "husky",
         "docker-build": "prisma generate && prisma db push && next build"
     },
@@ -88,6 +88,7 @@
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
         "deck.gl": "^9.1.14",
+        "dotenv": "^17.2.3",
         "dotenv-cli": "^11.0.0",
         "eslint-plugin-jest": "^29.0.1",
         "form-data": "^4.0.4",

@@ -2,40 +2,48 @@ import "server-only";
 
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/data/prisma/connections";
+import { UserGetPayload } from "@/generated/prisma/models";
 
-const storiesSelectFields: { select: Prisma.StorySelect } = {
-    select: {
-        id: true,
-        title: true,
-        lab: {
+
+const includeOptions = {
+    include: {
+        stories: {
             select: {
                 id: true,
-                slug: true,
+                title: true,
+                lab: {
+                    select: {
+                        id: true,
+                        slug: true,
+                    },
+                },
             },
         },
-    },
-};
-
-const membersSelectFields: { select: Prisma.MemberSelect } = {
-    select: {
-        role: true,
-        labId: true,
-        lab: {
+        members: {
             select: {
-                slug: true,
+                role: true,
+                labId: true,
+                lab: {
+                    select: {
+                        slug: true,
+                        name: true,
+                    },
+                },
             },
         },
-    },
-};
+        _count: {
+            select: { stories: true }
+        }
+    }
+}
 
-export async function getUser(whereInput: Prisma.UserWhereUniqueInput) {
+export type UserFetched = UserGetPayload<typeof includeOptions>;
+
+export async function getUser(whereInput: Prisma.UserWhereUniqueInput): Promise<UserFetched | null> {
     try {
         const result = await prisma.user.findUnique({
             where: whereInput,
-            include: {
-                stories: storiesSelectFields,
-                members: membersSelectFields,
-            },
+            ...includeOptions,
         });
         return result;
     } catch (err) {
@@ -48,11 +56,7 @@ export async function getUsers(whereInput: Prisma.UserWhereInput) {
     try {
         const result = await prisma.user.findMany({
             where: whereInput,
-            include: {
-                stories: storiesSelectFields,
-                members: membersSelectFields,
-                _count: { select: { stories: true } },
-            },
+            ...includeOptions,
         });
         return result;
     } catch (err) {

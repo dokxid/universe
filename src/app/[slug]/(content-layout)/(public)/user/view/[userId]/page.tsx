@@ -31,6 +31,7 @@ import {
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getStoriesByUserDTO } from "@/data/dto/getters/get-story-dto";
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
@@ -47,13 +48,15 @@ export async function generateStaticParams() {
     }
 }
 
-export default async function AboutPage({
+export default async function UserViewPage({
     params,
 }: {
     params: Promise<{ slug: string; userId: string }>;
 }) {
     const { slug, userId } = await params;
     const user = await getUserDTO(userId);
+    const stories = await getStoriesByUserDTO(userId);
+
     if (!user) {
         return <div>User not found.</div>;
     }
@@ -134,11 +137,10 @@ export default async function AboutPage({
                                     </ContactDescription>
                                     <RowButtonGroup>
                                         <Link
-                                            href={`mailto:${
-                                                user.publicEmail
-                                                    ? user.publicEmail
-                                                    : ""
-                                            }`}
+                                            href={`mailto:${user.publicEmail
+                                                ? user.publicEmail
+                                                : ""
+                                                }`}
                                         >
                                             <Button
                                                 variant={"primary_custom"}
@@ -158,7 +160,7 @@ export default async function AboutPage({
                                         <ContactStoriesLink
                                             href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
-                                                user.stories?.length || 0
+                                                user.storyCount
                                             }
                                         />
                                     </RowButtonGroup>
@@ -175,8 +177,8 @@ export default async function AboutPage({
                             <div
                                 className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full`}
                             >
-                                {user.stories &&
-                                    user.stories.map((story) => (
+                                {stories &&
+                                    stories.map((story) => (
                                         <StoryCard
                                             key={story.id}
                                             story={story}

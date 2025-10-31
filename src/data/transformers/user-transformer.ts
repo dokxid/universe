@@ -1,5 +1,5 @@
-import { Prisma } from "@/generated/prisma/client";
 import { UserDTO } from "@/types/dtos";
+import { UserFetched } from "../fetcher/user-fetcher";
 
 export function buildDisplayedName({
     firstName,
@@ -32,12 +32,7 @@ export function buildDisplayedName({
 }
 
 export function sanitizeToUserDTO(
-    user: Prisma.UserModel & {
-        members: (Prisma.MemberModel & {
-            lab: Prisma.LabModel;
-        })[];
-        stories: Prisma.StoryModel[];
-    },
+    user: UserFetched
 ): UserDTO {
     const userDTO: UserDTO = {
         id: user.id,
@@ -61,6 +56,7 @@ export function sanitizeToUserDTO(
         banReason: user.banReason ?? undefined,
         banned: user.banned ?? undefined,
         superAdmin: user.role === "admin",
+        storyCount: user._count.stories,
     };
     return userDTO;
 }
