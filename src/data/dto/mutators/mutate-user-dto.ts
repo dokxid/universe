@@ -8,13 +8,15 @@ import {
 } from "@/types/form-schemas/user-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
-import { canEditUser } from "../auth/user-permissions";
+import { canEditUser, canKickUserFromLab } from "../auth/user-permissions";
 import { prisma } from "@/lib/data/prisma/connections";
+import { removeLabMember } from "@/lib/auth/betterauth/organization";
+import { getLabDTO } from "../getters/get-experience-dto";
 
 
 export async function editDisplayNameFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -55,7 +57,7 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
 
 export async function editUserDetailsFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -98,7 +100,7 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
 
 export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -146,3 +148,28 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         );
     }
 }
+
+export async function removeUserFromLabDTO(userId: string, slug: string) {
+    try {
+        // check if the user is permitted to remove users in this organization
+        const userToMutate = await getUserDTO(userId);
+        if (!userToMutate) throw new Error("User not found");
+        const isAllowedToRemove = await canKickUserFromLab(userToMutate, slug)
+        if (!isAllowedToRemove)
+            throw new Error("User does not have permission to remove this user from the lab.");
+
+        // remove the user from the lab
+        const lab = await getLabDTO(slug);
+        if (!lab) throw new Error("Lab not found");
+        const mutate = await removeLabMember(userId, lab.id)
+
+        // revalidate caches
+        revalidateTag(`user/${userId}`);
+        return mutate;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+

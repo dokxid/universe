@@ -213,6 +213,7 @@ model Member {
   role      Role
   createdAt DateTime @default(now())
 
+  @@unique([labId, userId])
   @@map("member")
 }
 

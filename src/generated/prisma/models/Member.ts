@@ -197,6 +197,7 @@ export type MemberOrderByWithRelationInput = {
 
 export type MemberWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  labId_userId?: Prisma.MemberLabIdUserIdCompoundUniqueInput
   AND?: Prisma.MemberWhereInput | Prisma.MemberWhereInput[]
   OR?: Prisma.MemberWhereInput[]
   NOT?: Prisma.MemberWhereInput | Prisma.MemberWhereInput[]
@@ -206,7 +207,7 @@ export type MemberWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Member"> | Date | string
   lab?: Prisma.XOR<Prisma.LabScalarRelationFilter, Prisma.LabWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "labId_userId">
 
 export type MemberOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -292,6 +293,11 @@ export type MemberListRelationFilter = {
 
 export type MemberOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type MemberLabIdUserIdCompoundUniqueInput = {
+  labId: string
+  userId: string
 }
 
 export type MemberCountOrderByAggregateInput = {

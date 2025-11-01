@@ -38,8 +38,14 @@ import { UserDTO } from "@/types/dtos";
 import { ChevronDown, Columns3, MoreHorizontal } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getLabSlugFromPathname } from "@/lib/utils/pathname";
+import { removeUserFromLabAction } from "@/actions/mutate/mutate-user";
 
 const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
+    const pathName = usePathname();
+    const slug = getLabSlugFromPathname(pathName);
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -54,33 +60,29 @@ const ManageUsersActionsCell = ({ user }: { user: UserDTO }) => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => {}}
-                        tabIndex={-1}
-                        type="button"
-                    >
-                        View profile
-                    </Button>
+                    <Link href={`/${slug}/user/view/${user.id}`}>
+                        <span>
+                            View profile
+                        </span>
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Removed ${user.firstName} ${user.lastName} from Heritage Lab successfully.`
-                            );
+                    <span
+                        onClick={async () => {
+                            const result = await removeUserFromLabAction(user.id, slug)
+                            if (!result.success) {
+                                toast.error(result.message)
+                                return;
+                            } else {
+                                toast.success(result.message);
+                            }
                         }}
-                        tabIndex={-1}
-                        type="button"
                     >
                         Remove user
-                    </Button>
+                    </span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu >
     );
 };
 
@@ -129,17 +131,9 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
             enableSorting: false,
             enableHiding: false,
         }),
-        columnHelper.accessor("firstName", {
+        columnHelper.accessor("name", {
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="First Name" />
-            ),
-            cell: (info) => (
-                <span className={""}>{info.getValue() || "N/A"}</span>
-            ),
-        }),
-        columnHelper.accessor("lastName", {
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Name" />
+                <DataTableColumnHeader column={column} title="Author" />
             ),
             cell: (info) => (
                 <span className={""}>{info.getValue() || "N/A"}</span>
@@ -197,16 +191,10 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
             <div>
                 <div className="flex items-center py-4 justify-between">
                     <Input
-                        placeholder="Filter users..."
-                        value={
-                            table
-                                .getColumn("firstName")
-                                ?.getFilterValue() as string
-                        }
+                        placeholder="Filter by name..."
                         onChange={(event) =>
                             table
-                                .getColumn("firstName")
-                                ?.setFilterValue(event.target.value)
+                                .getColumn("name")?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />
@@ -323,10 +311,10 @@ export function ManageUsersTable({ data, slug }: DataTableProps) {
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext()
-                                                      )}
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext()
+                                                    )}
                                             </TableHead>
                                         );
                                     })}

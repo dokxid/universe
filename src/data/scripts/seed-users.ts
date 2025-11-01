@@ -36,16 +36,15 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                 for (let i = 0; i < adminPerLab; i++) {
                     const adminDoc: Prisma.UserCreateInput = {
                         ...testMemberDoc(),
-                        members: {
-                            create: [
-                                {
-                                    lab: { connect: { id: lab.id } },
-                                    role: "admin" as Role,
-                                },
-                            ],
-                        },
                     };
-                    await prisma.user.create({ data: adminDoc });
+                    const adminResult = await prisma.user.create({ data: adminDoc });
+                    const addAdminToOrganizationResult = await auth.api.addMember({
+                        body: {
+                            userId: adminResult.id,
+                            role: "admin",
+                            organizationId: lab.id,
+                        }
+                    })
                     console.log(`Inserted test admin for lab: ${lab}`);
                 }
 
@@ -53,16 +52,15 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                 for (let i = 0; i < memberPerLab; i++) {
                     const memberDoc = {
                         ...testMemberDoc(),
-                        members: {
-                            create: [
-                                {
-                                    lab: { connect: { id: lab.id } },
-                                    role: "member" as Role,
-                                },
-                            ],
-                        },
                     };
-                    await prisma.user.create({ data: memberDoc });
+                    const memberResult = await prisma.user.create({ data: memberDoc });
+                    const addMemberToOrganizationResult = await auth.api.addMember({
+                        body: {
+                            userId: memberResult.id,
+                            role: "member",
+                            organizationId: lab.id,
+                        }
+                    })
                     console.log(`Inserted test member for lab: ${lab}`);
                 }
                 console.log(

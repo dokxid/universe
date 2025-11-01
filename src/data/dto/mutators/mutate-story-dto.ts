@@ -22,7 +22,7 @@ import z from "zod";
 
 export async function submitStoryDTO(formData: FormData) {
     try {
-        // check if the user has permission to create a story for the given experience
+        // check if the user is permitted to create a story
         const user = await getCurrentUser();
         if (!user) {
             throw new Error("User must be logged in to create a story.");
@@ -101,6 +101,7 @@ export async function submitStoryDTO(formData: FormData) {
 
 export async function editStoryPictureDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const user = await getCurrentUser();
         if (!user) {
             throw new Error("User must be logged in to edit a story.");
@@ -158,6 +159,7 @@ export async function editStoryPictureDTO(formData: FormData) {
 
 export async function editContentFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
             formData.get("storyId") as string,
         );
@@ -194,6 +196,7 @@ export async function editContentFormSchemaDTO(formData: FormData) {
 
 export async function editStoryFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
             formData.get("storyId") as string,
         );
@@ -245,6 +248,7 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
     formData: FormData,
 ) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
             formData.get("storyId") as string,
         );
@@ -287,6 +291,7 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
 
 export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
             formData.get("storyId") as string,
         );
