@@ -21,6 +21,8 @@ const GUEST_PATHS = [
     "/:slug/signup",
     "/api/files/:key",
     "/auth/accept-invitation/:invitationId",
+    "/:slug/legal/imprint",
+    "/:slug/legal/privacy",
 ];
 
 function addCSPHeaders(response: NextResponse): NextResponse {
@@ -122,6 +124,8 @@ export const config = {
         "/:slug/signup",
         "/:slug/user/view/:userId",
         "/auth/accept-invitation/:invitationId",
+        "/:slug/legal/imprint",
+        "/:slug/legal/privacy",
 
         // account and related paths
         "/:slug/account/user-preferences",

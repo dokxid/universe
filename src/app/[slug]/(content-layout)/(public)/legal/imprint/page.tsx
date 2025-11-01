@@ -1,4 +1,4 @@
-import { ContentLayout, ContentLayoutInner } from "@/app/components/layout/content-layout";
+import { ContentLayout } from "@/app/components/layout/content-layout";
 import {
     Header,
     HeaderContent,
@@ -6,10 +6,9 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { PrivacyPolicyView } from "@/app/components/views/privacy-policy-view";
 import { BookKey } from "lucide-react";
 
-export default async function PrivacyPage() {
+export default async function ImprintPage() {
     return (
         <>
             <ContentLayout>
@@ -18,17 +17,14 @@ export default async function PrivacyPage() {
                         <BookKey size={80} />
                     </HeaderIcon>
                     <HeaderContent>
-                        <HeaderTitle>Privacy Policy</HeaderTitle>
+                        <HeaderTitle>Imprint</HeaderTitle>
                         <HeaderDescription>
-                            Your privacy is important to us. This policy
-                            outlines how we collect, use, and protect your
-                            information.
+                            This imprint provides essential information about
+                            our organization, including legal details and
+                            contact information.
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <ContentLayoutInner>
-                    <PrivacyPolicyView />
-                </ContentLayoutInner>
             </ContentLayout>
         </>
     );
