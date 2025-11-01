@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
-import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
+import { setExploreOpen } from "@/lib/redux/settings/settings-slice";
 import { LabDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { use, useState } from "react";
@@ -63,33 +63,33 @@ function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
 
 export function ExploreSidebar({
     slug,
-    experiencesPromise,
+    labsPromise,
 }: {
     slug: string;
-    experiencesPromise: Promise<LabDTO[]>;
+    labsPromise: Promise<LabDTO[]>;
 }) {
     const isMobile = useIsMobile();
-    const experiences = use(experiencesPromise).filter(
+    const labs = use(labsPromise).filter(
         (exp) => exp.slug !== "universe"
     );
-    const navigationState = useAppSelector((state) => state.navigation);
+    const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useDispatch();
-    const state = navigationState.rightSideBarOpen ? "open" : "closed";
+    const state = settingsState.exploreOpen ? "open" : "closed";
 
     if (slug !== "universe") return null;
-    if (!experiences) return <div>No experiences found.</div>;
+    if (!labs) return <div>No experiences found.</div>;
     if (isMobile) {
         return (
             <Drawer
-                open={navigationState.rightSideBarOpen}
-                onOpenChange={(open) => dispatch(setRightSideBarOpen(open))}
+                open={settingsState.exploreOpen}
+                onOpenChange={(open) => dispatch(setExploreOpen(open))}
             >
                 <DrawerContent>
                     <VisuallyHidden>
                         <DialogTitle>Experiences</DialogTitle>
                     </VisuallyHidden>
                     <div className={"overflow-y-auto p-2"}>
-                        <ExploreSidebarContent labs={experiences} />
+                        <ExploreSidebarContent labs={labs} />
                     </div>
                 </DrawerContent>
             </Drawer>
@@ -101,7 +101,7 @@ export function ExploreSidebar({
             data-state={state}
             className={`bg-sidebar data-[state=closed]:translate-x-[75%] data-[state=open]:translate-x-0 max-w-70 xl:max-w-80 data-[state=open]:w-80 data-[state=closed]:w-0 text-sidebar-foreground transition-transform ease-in-out duration-300 flex h-screen flex-col overflow-hidden`}
         >
-            <ExploreSidebarContent labs={experiences} />
+            <ExploreSidebarContent labs={labs} />
         </div>
     );
 }

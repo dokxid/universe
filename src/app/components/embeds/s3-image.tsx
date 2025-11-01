@@ -5,8 +5,7 @@ import { cn } from "@/lib/utils";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
 
-// maybe this should go in .env, but this is only temporary till i figure out image optimization limits
-const USE_UNOPTIMIZED_IMAGES = true;
+const USE_UNOPTIMIZED_IMAGES = process.env.NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES === "true"
 
 export function ImageElement({
     className,

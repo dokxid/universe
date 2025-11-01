@@ -49,7 +49,7 @@ export default async function MapView({
     }
     // Use cached functions
     const storiesPromise = getStoriesForSlug(slug);
-    const experiencesPromise = getPublicLabsDTO();
+    const labsPromise = getPublicLabsDTO();
     const tagsPromise = getTagsDTO();
 
     return (
@@ -65,7 +65,7 @@ export default async function MapView({
                             <MapPanel
                                 tagsPromise={tagsPromise}
                                 experienceSlug={slug}
-                                experiencesPromise={experiencesPromise}
+                                experiencesPromise={labsPromise}
                                 storiesPromise={storiesPromise}
                             />
                         </Suspense>
@@ -83,7 +83,7 @@ export default async function MapView({
             </div>
             <Suspense fallback={null}>
                 <ExploreSidebar
-                    experiencesPromise={experiencesPromise}
+                    labsPromise={labsPromise}
                     slug={slug}
                 />
             </Suspense>

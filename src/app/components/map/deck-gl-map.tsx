@@ -67,7 +67,7 @@ function MapController({
         [searchParams.get("exp")],
     );
     const mapState = useAppSelector((state) => state.map);
-    const navigationState = useAppSelector((state) => state.navigation);
+    const settingsState = useAppSelector((state) => state.settings);
     const prevStoryCenter = usePrevious(selectedStory?.location.coordinates);
 
     useEffect(() => {
@@ -88,9 +88,9 @@ function MapController({
             zoom = map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
-                : navigationState.rightSideBarOpen
-                  ? new EdgeInsets(0, 0, 0, 0)
-                  : new EdgeInsets(0, 0, 0, 0);
+                : settingsState.exploreOpen
+                    ? new EdgeInsets(0, 0, 0, 0)
+                    : new EdgeInsets(0, 0, 0, 0);
             options = { maxDuration: 0 };
         }
         map.flyTo({
@@ -225,15 +225,15 @@ export function DeckGLMap({
 
     const INITIAL_VIEW_STATE: MapViewState = activeStory
         ? {
-              longitude: activeStory.location.coordinates[0],
-              latitude: activeStory.location.coordinates[1],
-              zoom: 8,
-          }
+            longitude: activeStory.location.coordinates[0],
+            latitude: activeStory.location.coordinates[1],
+            zoom: 8,
+        }
         : {
-              longitude: experience.center.coordinates[0],
-              latitude: experience.center.coordinates[1],
-              zoom: experience.initialZoom,
-          };
+            longitude: experience.center.coordinates[0],
+            latitude: experience.center.coordinates[1],
+            zoom: experience.initialZoom,
+        };
 
     const getSameRouteConnections = (
         connections: TagConnection[],
@@ -380,7 +380,7 @@ export function DeckGLMap({
                     id="mainMap"
                     data-testid="map"
                     initialViewState={INITIAL_VIEW_STATE}
-                    onRender={() => {}}
+                    onRender={() => { }}
                     mapStyle={
                         MAP_TILES[settingsState.mapTiles] ||
                         settingsState.mapTiles

@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setRightSideBarOpen } from "@/lib/redux/navigation/navigation-slice";
+import { setExploreOpen } from "@/lib/redux/settings/settings-slice";
 import { Compass } from "lucide-react";
 
 export function StoryWidgetHolder({ slug }: { slug: string }) {
-    const navigationState = useAppSelector((state) => state.navigation);
+    const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
 
     if (slug !== "universe") {
@@ -31,12 +31,12 @@ export function StoryWidgetHolder({ slug }: { slug: string }) {
             {slug === "universe" && (
                 <Button
                     data-state={
-                        navigationState.rightSideBarOpen ? "open" : "closed"
+                        settingsState.exploreOpen ? "open" : "closed"
                     }
                     onClick={() =>
                         dispatch(
-                            setRightSideBarOpen(
-                                !navigationState.rightSideBarOpen
+                            setExploreOpen(
+                                !settingsState.exploreOpen
                             )
                         )
                     }
