@@ -1,15 +1,21 @@
 "use client";
 
 import { TagList } from "@/app/components/cards/tag-list";
+import { useTags } from "@/lib/swr/tag-hook";
 import { setSelectedTagsParams } from "@/lib/utils/param-setter";
+import { convertTagNamesToTagDTOs } from "@/lib/utils/tags";
 import { X } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export function ActiveFilterInformation() {
+    const { tags, isLoading, isError } = useTags();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const selectedFilterTags = searchParams.get("tags")?.split(",");
     if (!selectedFilterTags || selectedFilterTags.length === 0) {
+        return null;
+    }
+    if (isLoading || isError || !tags) {
         return null;
     }
     return (
@@ -42,7 +48,10 @@ export function ActiveFilterInformation() {
                     Clear Filters
                 </p>
             </div>
-            <TagList tags={selectedFilterTags} variant={"remove"} />
+            <TagList
+                tags={convertTagNamesToTagDTOs(tags, selectedFilterTags)}
+                variant={"remove"}
+            />
         </div>
     );
 }

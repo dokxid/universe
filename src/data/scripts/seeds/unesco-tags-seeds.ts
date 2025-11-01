@@ -1,3 +1,16 @@
+import { Prisma } from "@/generated/prisma/client";
+
+type TagDoc = {
+    name: string;
+    color: string;
+    categories: {
+        name: string;
+        tags: {
+            name: string;
+        }[];
+    }[];
+};
+
 const environment_doc = {
     name: "Environment",
     // catpuccin mocha - green
@@ -567,19 +580,35 @@ const shared_and_contested_heritage_doc = {
     ],
 };
 
-export const UNESCO_TAGS_SEEDS = [
-    environment_doc,
-    religious_practices_doc,
-    trade_and_economic_activity_doc,
-    arts_and_communication_doc,
-    social_structures_and_governance_doc,
-    human_interaction_and_encountering_doc,
-    human_habitation_doc,
-    tradition_doc,
-    science_and_technology_doc,
-    shared_and_contested_heritage_doc,
-];
+function convertTags(doc: TagDoc) {
+    const tags: Prisma.TagCreateInput[] = [];
+    const themeName = doc.name;
+    const themeColor = doc.color;
+    const isUnesco = true;
+    doc.categories.forEach((category) => {
+        const categoryName = category.name;
+        category.tags.forEach((tag) => {
+            tags.push({
+                name: tag.name,
+                theme: themeName,
+                category: categoryName,
+                color: themeColor,
+                isUnesco,
+            });
+        });
+    });
+    return tags;
+}
 
-export const ALL_UNESCO_TAGS = UNESCO_TAGS_SEEDS.flatMap((theme) =>
-    theme.categories.flatMap((category) => category.tags.map((tag) => tag.name))
-);
+export const UNESCO_TAGS_SEEDS: Prisma.TagCreateInput[] = [
+    ...convertTags(environment_doc),
+    ...convertTags(religious_practices_doc),
+    ...convertTags(trade_and_economic_activity_doc),
+    ...convertTags(arts_and_communication_doc),
+    ...convertTags(social_structures_and_governance_doc),
+    ...convertTags(human_interaction_and_encountering_doc),
+    ...convertTags(human_habitation_doc),
+    ...convertTags(tradition_doc),
+    ...convertTags(science_and_technology_doc),
+    ...convertTags(shared_and_contested_heritage_doc),
+];

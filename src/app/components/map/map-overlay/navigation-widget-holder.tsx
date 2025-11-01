@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTagsForLabDTO } from "@/data/dto/getters/get-tag-dto";
+import { getUniqueTagDTOsForLab } from "@/data/dto/getters/get-tag-dto";
 import { Suspense } from "react";
 
 export async function NavigationWidgetHolder({ slug }: { slug: string }) {
-    const tagsPromise = getTagsForLabDTO(slug);
+    const tagsPromise = getUniqueTagDTOsForLab(slug);
 
     return (
         <div className={"flex flex-col gap-3"}>

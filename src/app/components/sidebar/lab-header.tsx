@@ -1,23 +1,19 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LabHeader({
-    experience,
-}: {
-    experience: ExperienceDTO;
-}) {
+export default function LabHeader({ experience }: { experience: LabDTO }) {
     return (
         <SidebarHeader className="flex flex-col items-start px-0 py-0 gap-0">
             <AspectRatio ratio={16 / 9} className="relative w-full">
                 <Image
                     key={experience.slug}
-                    src={experience.featuredImageUrl}
-                    alt={experience.title}
+                    src={experience.logo || "/default-lab-banner.jpg"}
+                    alt={experience.name}
                     width={400}
                     height={225}
                     className="object-cover w-full h-full rounded-none"
@@ -39,7 +35,7 @@ export default function LabHeader({
                             }
                             href={`/${experience.slug}/map`}
                         >
-                            {experience.title}
+                            {experience.name}
                         </Link>
                         {/* <CopyLinkClipboard link={experience.slug} /> */}
                     </h3>

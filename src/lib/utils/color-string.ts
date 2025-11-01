@@ -1,4 +1,4 @@
-import { UnescoTagDTO } from "@/types/dtos";
+import { TagDTO } from "@/types/dtos";
 
 export function colorStringValidator(color: string): boolean {
     const hexColorRegex = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
@@ -25,7 +25,7 @@ export function stringToArrayColor(str: string): [number, number, number] {
 }
 
 export const getTagColor = (
-    allTags: UnescoTagDTO[],
+    allTags: TagDTO[],
     tag: string
 ): [number, number, number] => {
     const foundTag = allTags.find((t) => t.name === tag);

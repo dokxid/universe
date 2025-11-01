@@ -30,16 +30,17 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
+import { getStoriesByUserDTO } from "@/data/dto/getters/get-story-dto";
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
+        const labs = await getLabsDTO();
+        return labs.map((lab) => ({
+            slug: lab.slug,
         }));
     } catch (error) {
         console.error("Error generating static params:", error);
@@ -47,13 +48,15 @@ export async function generateStaticParams() {
     }
 }
 
-export default async function AboutPage({
+export default async function UserViewPage({
     params,
 }: {
-    params: { slug: string; userId: string };
+    params: Promise<{ slug: string; userId: string }>;
 }) {
     const { slug, userId } = await params;
     const user = await getUserDTO(userId);
+    const stories = await getStoriesByUserDTO(userId);
+
     if (!user) {
         return <div>User not found.</div>;
     }
@@ -77,7 +80,7 @@ export default async function AboutPage({
                         <div className={"form-box w-full"}>
                             <ContactCard>
                                 <ContactImage
-                                    href={`/${slug}/user/view/${user._id}`}
+                                    href={`/${slug}/user/view/${user.id}`}
                                 >
                                     {user.profilePictureUrl ? (
                                         <ImageElement
@@ -101,14 +104,7 @@ export default async function AboutPage({
                                 </ContactImage>
                                 <ContactCardContent>
                                     <ContactNameRole>
-                                        <ContactName>
-                                            {user.displayName
-                                                ? user.displayName
-                                                : user.firstName &&
-                                                  user.lastName
-                                                ? `${user.firstName} ${user.lastName}`
-                                                : "Anonymous"}
-                                        </ContactName>
+                                        <ContactName>{user.name}</ContactName>
                                         <ContactRole>
                                             {user.position || "Not specified"}
                                         </ContactRole>
@@ -141,11 +137,10 @@ export default async function AboutPage({
                                     </ContactDescription>
                                     <RowButtonGroup>
                                         <Link
-                                            href={`mailto:${
-                                                user.publicEmail
-                                                    ? user.publicEmail
-                                                    : ""
-                                            }`}
+                                            href={`mailto:${user.publicEmail
+                                                ? user.publicEmail
+                                                : ""
+                                                }`}
                                         >
                                             <Button
                                                 variant={"primary_custom"}
@@ -163,9 +158,9 @@ export default async function AboutPage({
                                             </Button>
                                         </Link>
                                         <ContactStoriesLink
-                                            href={`/${slug}/user/view/${user._id}#stories`}
+                                            href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
-                                                user.stories?.length || 0
+                                                user.storyCount
                                             }
                                         />
                                     </RowButtonGroup>
@@ -182,10 +177,10 @@ export default async function AboutPage({
                             <div
                                 className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full`}
                             >
-                                {user.stories &&
-                                    user.stories.map((story) => (
+                                {stories &&
+                                    stories.map((story) => (
                                         <StoryCard
-                                            key={story._id}
+                                            key={story.id}
                                             story={story}
                                         />
                                     ))}

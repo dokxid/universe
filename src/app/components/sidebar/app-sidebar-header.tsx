@@ -2,14 +2,10 @@
 
 import LabHeader from "@/app/components/sidebar/lab-header";
 import { UniverseHeader } from "@/app/components/sidebar/universe-header";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { useParams } from "next/navigation";
 
-export function AppSidebarHeader({
-    experience,
-}: {
-    experience: ExperienceDTO;
-}) {
+export function AppSidebarHeader({ experience }: { experience: LabDTO }) {
     const { slug } = useParams<{ slug: string }>();
     if (!experience) {
         console.error("No experience found for slug:", slug);

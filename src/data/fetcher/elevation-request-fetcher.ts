@@ -1,26 +1,23 @@
 import "server-only";
 
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { NewElevationRequestData } from "@/types/dtos";
-import mongoose from "mongoose";
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/data/prisma/connections";
+
 
 export async function insertElevationRequest(
-    slug: string,
-    requestToInsert: NewElevationRequestData,
-    storyId: mongoose.Types.ObjectId
+    requestToInsert: Prisma.ElevationRequestCreateInput,
+    storyId: string
 ) {
     try {
-        dbConnect();
-        await ExperienceModel.findOneAndUpdate(
-            { slug: slug, "stories._id": storyId },
-            {
-                $push: {
-                    "stories.$.elevation_requests": requestToInsert,
+        const createElevationRequestResult = await prisma.story.update({
+            where: { id: storyId },
+            data: {
+                elevationRequests: {
+                    create: requestToInsert,
                 },
             },
-            { safe: true, upsert: false }
-        ).exec();
+        });
+        return createElevationRequestResult;
     } catch (err) {
         console.error("Error inserting elevation request:", err);
         throw err; // Re-throw to propagate the error

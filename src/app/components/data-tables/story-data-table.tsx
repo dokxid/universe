@@ -64,7 +64,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
     const table = useReactTable({
         data: dataFetched,
         columns,
-        getRowId: (row) => row._id,
+        getRowId: (row) => row.id,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

@@ -14,7 +14,7 @@ import {
     addSelectedTagParam,
     setSelectedStoryIdParams,
 } from "@/lib/utils/param-setter";
-import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { LabDTO, StoryPinDTO, TagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,
@@ -55,8 +55,8 @@ function MapController({
     currentExperience,
     selectedStory,
 }: {
-    currentExperience: ExperienceDTO;
-    selectedStory: StoryDTO | null;
+    currentExperience: LabDTO;
+    selectedStory: StoryPinDTO | null;
 }) {
     const { mainMap: map } = useMap();
     const isMobile = useIsMobile();
@@ -64,10 +64,10 @@ function MapController({
     const experience = useMemo(
         () => searchParams.get("exp"),
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [searchParams.get("exp")]
+        [searchParams.get("exp")],
     );
     const mapState = useAppSelector((state) => state.map);
-    const navigationState = useAppSelector((state) => state.navigation);
+    const settingsState = useAppSelector((state) => state.settings);
     const prevStoryCenter = usePrevious(selectedStory?.location.coordinates);
 
     useEffect(() => {
@@ -88,9 +88,9 @@ function MapController({
             zoom = map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
-                : navigationState.rightSideBarOpen
-                ? new EdgeInsets(0, 0, 0, 0)
-                : new EdgeInsets(0, 0, 0, 0);
+                : settingsState.exploreOpen
+                    ? new EdgeInsets(0, 0, 0, 0)
+                    : new EdgeInsets(0, 0, 0, 0);
             options = { maxDuration: 0 };
         }
         map.flyTo({
@@ -138,13 +138,13 @@ function MapController({
 export function DeckGLMap({
     tags,
     stories,
-    experiences,
-    experienceSlug,
+    labs,
+    labSlug,
 }: {
-    tags: UnescoTagDTO[];
-    stories: StoryDTO[];
-    experiences: ExperienceDTO[];
-    experienceSlug: string;
+    tags: TagDTO[];
+    stories: StoryPinDTO[];
+    labs: LabDTO[];
+    labSlug: string;
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
@@ -159,31 +159,31 @@ export function DeckGLMap({
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
-    const [activeStory, setActiveStory] = useState<StoryDTO | null>(
-        stories.find((story) => story._id === searchParams.get("story")) || null
+    const [activeStory, setActiveStory] = useState<StoryPinDTO | null>(
+        stories.find((story) => story.id === searchParams.get("story")) || null,
     );
     const [connections, setConnections] = useState<TagConnection[]>([]);
     const dispatch = useAppDispatch();
 
     // set correct experience
     const experience = useMemo(() => {
-        if (experienceSlug !== "universe") {
-            return experiences.find(
-                (exp) => exp.slug === experienceSlug
-            ) as ExperienceDTO;
+        if (labSlug !== "universe") {
+            return labs.find(
+                (exp) => exp.slug === labSlug,
+            ) as LabDTO;
         }
         const experienceToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
-        return experiences.find(
-            (exp) => exp.slug === experienceToShow
-        ) as ExperienceDTO;
-    }, [experienceSlug, experiences, searchParams]);
+        return labs.find(
+            (exp) => exp.slug === experienceToShow,
+        ) as LabDTO;
+    }, [labSlug, labs, searchParams]);
 
     const storiesFiltered = useMemo(() => {
         if (selectedFilterTags === null) return stories;
         return stories.filter((story) =>
-            story.tags.some((tag) => selectedFilterTags.includes(tag))
+            story.tags.some((tag) => selectedFilterTags.includes(tag.name)),
         );
     }, [selectedFilterTags, stories]);
 
@@ -193,8 +193,8 @@ export function DeckGLMap({
         } else {
             setActiveStory(
                 stories.find(
-                    (story) => story._id === searchParams.get("story")
-                ) || null
+                    (story) => story.id === searchParams.get("story"),
+                ) || null,
             );
         }
     }, [searchParams, stories]);
@@ -207,15 +207,15 @@ export function DeckGLMap({
         }
         setArcHeight(1.2);
         const storiesExceptActive = storiesFiltered.filter(
-            (story) => story._id !== activeStory?._id
+            (story) => story.id !== activeStory?.id,
         );
         const tagFilters = selectedFilterTags
             ? selectedFilterTags.split(",")
-            : activeStory.tags;
+            : activeStory.tags.map((tag) => tag.name);
         const storiesToUse = [activeStory, ...storiesExceptActive];
         const connectionsSanitized = getTaggedConnectionDTO(
             storiesToUse,
-            tagFilters
+            tagFilters,
         );
         setTimeout(() => {
             setArcHeight(connectionsSanitized.length > 0 ? 1.2 : 0.6);
@@ -225,19 +225,19 @@ export function DeckGLMap({
 
     const INITIAL_VIEW_STATE: MapViewState = activeStory
         ? {
-              longitude: activeStory.location.coordinates[0],
-              latitude: activeStory.location.coordinates[1],
-              zoom: 8,
-          }
+            longitude: activeStory.location.coordinates[0],
+            latitude: activeStory.location.coordinates[1],
+            zoom: 8,
+        }
         : {
-              longitude: experience.center.coordinates[0],
-              latitude: experience.center.coordinates[1],
-              zoom: experience.initialZoom,
-          };
+            longitude: experience.center.coordinates[0],
+            latitude: experience.center.coordinates[1],
+            zoom: experience.initialZoom,
+        };
 
     const getSameRouteConnections = (
         connections: TagConnection[],
-        connection: TagConnection
+        connection: TagConnection,
     ) => {
         const sameRouteConnections = connections.filter(
             (conn) =>
@@ -248,7 +248,7 @@ export function DeckGLMap({
                 (conn.from[0] === connection.to[0] &&
                     conn.from[1] === connection.to[1] &&
                     conn.to[0] === connection.from[0] &&
-                    conn.to[1] === connection.from[1])
+                    conn.to[1] === connection.from[1]),
         );
         return sameRouteConnections;
     };
@@ -256,12 +256,12 @@ export function DeckGLMap({
     const getArcHeight = (
         connection: TagConnection,
         index: number,
-        connections: TagConnection[]
+        connections: TagConnection[],
     ) => {
         // Find all connections between the same two points
         const sameRouteConnections = getSameRouteConnections(
             connections,
-            connection
+            connection,
         );
 
         if (sameRouteConnections.length === 1) {
@@ -275,7 +275,7 @@ export function DeckGLMap({
 
         // Create alternating heights above and below the base
         const offset = (arcIndex - (totalArcs - 1) / 2) * heightVariation;
-        return Math.max(0.1, arcHeight + offset);
+        return Math.max(0.1, arcHeight + offset * index);
     };
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
@@ -285,9 +285,9 @@ export function DeckGLMap({
         setCtxMenuOpen(true);
     };
 
-    const handleStorySelection = (story: StoryDTO) => {
+    const handleStorySelection = (story: StoryPinDTO) => {
         setActiveStory(story);
-        setSelectedStoryIdParams(pathname, searchParams, story._id);
+        setSelectedStoryIdParams(pathname, searchParams, story.id);
     };
 
     const layers: LayersList = useMemo(
@@ -346,7 +346,7 @@ export function DeckGLMap({
                     addSelectedTagParam(
                         pathname,
                         searchParams,
-                        info.object?.tag
+                        info.object?.tag,
                     );
                     return true;
                 },
@@ -361,7 +361,7 @@ export function DeckGLMap({
             }),
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [connections, arcHeight] // Re-create layers when connections change
+        [connections, arcHeight], // Re-create layers when connections change
     );
 
     return (
@@ -378,8 +378,9 @@ export function DeckGLMap({
                 <Map
                     reuseMaps={true}
                     id="mainMap"
+                    data-testid="map"
                     initialViewState={INITIAL_VIEW_STATE}
-                    onRender={() => {}}
+                    onRender={() => { }}
                     mapStyle={
                         MAP_TILES[settingsState.mapTiles] ||
                         settingsState.mapTiles
@@ -413,8 +414,8 @@ export function DeckGLMap({
                             }}
                         >
                             <CustomMarker
-                                story={story}
-                                isActive={activeStory?._id === story._id}
+                                storyId={story.id}
+                                isActive={activeStory?.id === story.id}
                             />
                         </Marker>
                     ))}
@@ -427,7 +428,7 @@ export function DeckGLMap({
                                 setSelectedStoryIdParams(
                                     pathname,
                                     searchParams,
-                                    ""
+                                    "",
                                 );
                                 dispatch(triggerZoomOut());
                             }
@@ -450,16 +451,16 @@ export function DeckGLMap({
                                 <div className={"pt-2"}>
                                     <p className={"text-xs font-mono"}>
                                         {`from: [${hoverInfo.object.from[0].toFixed(
-                                            2
+                                            2,
                                         )}, ${hoverInfo.object.from[1].toFixed(
-                                            2
+                                            2,
                                         )}]`}
                                     </p>
                                     <p className={"text-xs font-mono"}>
                                         {`to: [${hoverInfo.object.to[0].toFixed(
-                                            2
+                                            2,
                                         )}, ${hoverInfo.object.to[1].toFixed(
-                                            2
+                                            2,
                                         )}]`}
                                     </p>
                                     <p className={"text-xs font-mono"}>

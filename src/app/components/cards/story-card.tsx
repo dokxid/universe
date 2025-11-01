@@ -8,14 +8,14 @@ import Link from "next/link";
 export function StoryCard({ story }: { story: StoryDTO }) {
     return (
         <Link
-            key={story._id}
+            key={story.id}
             href={buildStoryLink(story)}
             prefetch={false}
             className="flex flex-row items-center w-full gap-2"
             data-testid={"story-card-link"}
         >
             <Card
-                key={story._id}
+                key={story.id}
                 className={`w-full mx-auto py-0 flex-col shadow-none rounded-md overflow-hidden gap-0 group`}
             >
                 <div className="overflow-hidden relative">
@@ -44,7 +44,7 @@ export function StoryCard({ story }: { story: StoryDTO }) {
                                     {story.title}
                                 </h1>
                                 <p className="text-sm text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
-                                    by {story.authorName}
+                                    by {story.author.name}
                                 </p>
                                 <p className="text-xs text-muted-foreground group-hover:text-white group-hover:font-semibold truncate">
                                     published:{" "}

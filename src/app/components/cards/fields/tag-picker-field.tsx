@@ -1,11 +1,11 @@
 import { TagPickerForm } from "@/app/components/selectors/tag-picker";
-import { UnescoTagDTO } from "@/types/dtos";
+import { TagDTO } from "@/types/dtos";
 import { use } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 
 interface TagPickerProps extends ControllerRenderProps {
-    availableTagsPromise?: Promise<UnescoTagDTO[]>;
-    availableTags?: UnescoTagDTO[];
+    availableTagsPromise?: Promise<TagDTO[]>;
+    availableTags?: TagDTO[];
 }
 
 export function TagPickerField(props: TagPickerProps) {
@@ -21,7 +21,7 @@ export function TagPickerField(props: TagPickerProps) {
         );
     }
 
-    let allTags: UnescoTagDTO[] = [];
+    let allTags: TagDTO[] = [];
     if (availableTags) {
         allTags = availableTags;
     } else if (availableTagsPromise) {

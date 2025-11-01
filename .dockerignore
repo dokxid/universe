@@ -1,2 +1,7 @@
 .env*.local
 .env.production
+dist
+.next
+garage/meta
+garage/data
+mongodb/data

@@ -43,7 +43,7 @@ export function StoryDetails({
         } else {
             setActiveStory(
                 stories.find(
-                    (story) => story._id === searchParams.get("story")
+                    (story) => story.id === searchParams.get("story")
                 ) || null
             );
         }
@@ -84,9 +84,9 @@ export function StoryDetails({
                         <Link
                             href={
                                 "/" +
-                                activeStory.experience +
+                                activeStory.lab.slug +
                                 "/stories/view/" +
-                                activeStory._id
+                                activeStory.id
                             }
                             className={
                                 "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
@@ -120,9 +120,8 @@ export function StoryDetails({
     return (
         <Card
             ref={cardRef}
-            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
-                navigationState.storyDetailsOpen ? "" : "hidden"
-            }`}
+            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${navigationState.storyDetailsOpen ? "" : "hidden"
+                }`}
         >
             <div
                 className={cn(
@@ -146,9 +145,9 @@ export function StoryDetails({
             <Link
                 href={
                     "/" +
-                    activeStory.experience +
+                    activeStory.lab.slug +
                     "/stories/view/" +
-                    activeStory._id
+                    activeStory.id
                 }
                 className={
                     "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden relative"

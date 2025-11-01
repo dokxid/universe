@@ -6,8 +6,8 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const user = await getCurrentUser();
-    const permissionToView = await isUserSuperAdmin(user);
+    await getCurrentUser();
+    const permissionToView = await isUserSuperAdmin();
     if (!permissionToView) {
         return notFound();
     }

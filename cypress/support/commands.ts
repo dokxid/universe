@@ -58,14 +58,14 @@ export function loginAsSuperAdmin() {
         () => {
             cy.visit("/universe/login");
             enterCredentials(
-                Cypress.env("superadmin_username"),
-                Cypress.env("superadmin_password")
+                Cypress.env("superadmin_email"),
+                Cypress.env("superadmin_password"),
             );
-            cy.url({ timeout: 10000 }).should("not.include", "/login");
+            cy.url({ timeout: 10000 }).should("not.include", "/universe/login");
         },
         {
             validate: isLoggedIn,
-        }
+        },
     );
 }
 
@@ -75,30 +75,30 @@ export function loginAsAdmin() {
         () => {
             cy.visit("/test/login");
             enterCredentials(
-                Cypress.env("admin_username"),
-                Cypress.env("admin_password")
+                Cypress.env("admin_email"),
+                Cypress.env("admin_password"),
             );
-            cy.url({ timeout: 10000 }).should("not.include", "/login");
+            cy.url({ timeout: 10000 }).should("not.include", "/test/login");
         },
         {
             validate: isLoggedIn,
-        }
+        },
     );
 }
 
-export function loginAsEditor() {
+export function loginAsMember() {
     cy.session(
-        "editor",
+        "member",
         () => {
             cy.visit("/test/login");
             enterCredentials(
-                Cypress.env("editor_username"),
-                Cypress.env("editor_password")
+                Cypress.env("member_email"),
+                Cypress.env("member_password"),
             );
-            cy.url({ timeout: 10000 }).should("not.include", "/login");
+            cy.url({ timeout: 10000 }).should("not.include", "/test/login");
         },
         {
             validate: isLoggedIn,
-        }
+        },
     );
 }

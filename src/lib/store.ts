@@ -1,4 +1,4 @@
-import { experiencesSlice } from "@/lib/redux/experiences/experiences-slice";
+import { labSlice } from "@/lib/redux/lab/lab-slice";
 import { navigationSlice } from "@/lib/redux/navigation/navigation-slice";
 import { settingsSlice } from "@/lib/redux/settings/settings-slice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -32,7 +32,7 @@ export const store = configureStore({
         settings: persistedSettingsReducer,
         addStoryDialog: addStorySlice.reducer,
         map: mapSlice.reducer,
-        experiences: experiencesSlice.reducer,
+        experiences: labSlice.reducer,
         navigation: navigationSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>

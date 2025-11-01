@@ -1,15 +1,14 @@
 import { StoryHoverCardContent } from "@/app/components/map/map-overlay/story-hover-card-content";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
-import { StoryDTO } from "@/types/dtos";
 import { Hexagon } from "lucide-react";
 import { memo } from "react";
 
 function CustomMarker({
-    story,
+    storyId,
     isActive,
 }: {
-    story: StoryDTO;
+    storyId: string;
     isActive: boolean;
 }) {
     return (
@@ -29,7 +28,7 @@ function CustomMarker({
                     stroke={"#111"}
                 />
             </HoverCardTrigger>
-            <StoryHoverCardContent story={story} />
+            <StoryHoverCardContent storyId={storyId} />
         </HoverCard>
     );
 }

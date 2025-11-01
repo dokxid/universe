@@ -20,7 +20,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { StoryDTO, UnescoTagDTOWithCount } from "@/types/dtos";
+import { convertTagNamesToTagDTOs } from "@/lib/utils/tags";
+import { StoryDTO, TagDTO } from "@/types/dtos";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -56,11 +57,12 @@ export function StoryCollection({
     tagsPromise,
 }: {
     storiesPromise: Promise<StoryDTO[]>;
-    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
+    tagsPromise: Promise<TagDTO[]>;
 }) {
     const [titleFilter, setTitleFilter] = useState("");
     const [sorting, setSorting] = useState<"asc" | "desc">("desc");
     const stories = use(storiesPromise);
+    const tags = use(tagsPromise);
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const searchParams = useSearchParams();
@@ -96,7 +98,7 @@ export function StoryCollection({
         );
         if (selectedFilterTags !== null) {
             filteredStories = filteredStories.filter((story) =>
-                story.tags.some((tag) => selectedFilterTags.includes(tag))
+                story.tags.some((tag) => selectedFilterTags.includes(tag.name))
             );
         }
         if (sorting === "asc") {
@@ -214,7 +216,10 @@ export function StoryCollection({
                                     ):
                                 </p>
                                 <TagList
-                                    tags={selectedFilterTags}
+                                    tags={convertTagNamesToTagDTOs(
+                                        tags,
+                                        selectedFilterTags
+                                    )}
                                     variant={"remove"}
                                 />
                             </div>
@@ -262,7 +267,7 @@ export function StoryCollection({
                                 >
                                     {rowStories.map((story) => (
                                         <StoryCard
-                                            key={story._id}
+                                            key={story.id}
                                             story={story}
                                         />
                                     ))}

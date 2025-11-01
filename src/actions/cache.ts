@@ -1,12 +1,11 @@
 "use server";
 
-import { getCurrentUser, isUserSuperAdmin } from "@/data/auth";
+import { isUserSuperAdmin } from "@/data/auth";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function triggerRevalidateTagAction(tag: string) {
     try {
-        const user = await getCurrentUser();
-        const isSuperAdmin = await isUserSuperAdmin(user);
+        const isSuperAdmin = await isUserSuperAdmin();
 
         if (!isSuperAdmin) {
             throw new Error("Unauthorized");
@@ -20,8 +19,7 @@ export async function triggerRevalidateTagAction(tag: string) {
 
 export async function triggerRevalidatePathAction(path: string) {
     try {
-        const user = await getCurrentUser();
-        const isSuperAdmin = await isUserSuperAdmin(user);
+        const isSuperAdmin = await isUserSuperAdmin();
 
         if (!isSuperAdmin) {
             throw new Error("Unauthorized");
