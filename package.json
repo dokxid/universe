@@ -4,8 +4,6 @@
     "private": true,
     "scripts": {
         "dev": "next dev --turbopack",
-        "dev:staging": "APP_ENV=staging next dev --turbopack",
-        "dev:no_turbopack": "next dev",
         "dev:https": "next dev --turbopack --experimental-https",
         "build": "next build --turbopack",
         "start": "next start",
