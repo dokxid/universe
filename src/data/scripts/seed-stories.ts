@@ -4,7 +4,6 @@ import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
 import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 import { UNESCO_TAGS_SEEDS } from "./seeds/unesco-tags-seeds";
-import { TagWhereInput } from "@/generated/prisma/models/Tag";
 
 export async function seedStories(
     labSlug: string,

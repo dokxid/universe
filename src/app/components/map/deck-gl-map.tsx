@@ -14,7 +14,7 @@ import {
     addSelectedTagParam,
     setSelectedStoryIdParams,
 } from "@/lib/utils/param-setter";
-import { LabDTO, StoryDTO, TagDTO } from "@/types/dtos";
+import { LabDTO, StoryPinDTO, TagDTO } from "@/types/dtos";
 import {
     DeckProps,
     LayersList,
@@ -56,7 +56,7 @@ function MapController({
     selectedStory,
 }: {
     currentExperience: LabDTO;
-    selectedStory: StoryDTO | null;
+    selectedStory: StoryPinDTO | null;
 }) {
     const { mainMap: map } = useMap();
     const isMobile = useIsMobile();
@@ -138,13 +138,13 @@ function MapController({
 export function DeckGLMap({
     tags,
     stories,
-    experiences,
-    experienceSlug,
+    labs,
+    labSlug,
 }: {
     tags: TagDTO[];
-    stories: StoryDTO[];
-    experiences: LabDTO[];
-    experienceSlug: string;
+    stories: StoryPinDTO[];
+    labs: LabDTO[];
+    labSlug: string;
 }) {
     // global state management stuff
     const settingsState = useAppSelector((state) => state.settings);
@@ -159,7 +159,7 @@ export function DeckGLMap({
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
-    const [activeStory, setActiveStory] = useState<StoryDTO | null>(
+    const [activeStory, setActiveStory] = useState<StoryPinDTO | null>(
         stories.find((story) => story.id === searchParams.get("story")) || null,
     );
     const [connections, setConnections] = useState<TagConnection[]>([]);
@@ -167,18 +167,18 @@ export function DeckGLMap({
 
     // set correct experience
     const experience = useMemo(() => {
-        if (experienceSlug !== "universe") {
-            return experiences.find(
-                (exp) => exp.slug === experienceSlug,
+        if (labSlug !== "universe") {
+            return labs.find(
+                (exp) => exp.slug === labSlug,
             ) as LabDTO;
         }
         const experienceToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
-        return experiences.find(
+        return labs.find(
             (exp) => exp.slug === experienceToShow,
         ) as LabDTO;
-    }, [experienceSlug, experiences, searchParams]);
+    }, [labSlug, labs, searchParams]);
 
     const storiesFiltered = useMemo(() => {
         if (selectedFilterTags === null) return stories;
@@ -275,7 +275,7 @@ export function DeckGLMap({
 
         // Create alternating heights above and below the base
         const offset = (arcIndex - (totalArcs - 1) / 2) * heightVariation;
-        return Math.max(0.1, arcHeight + offset);
+        return Math.max(0.1, arcHeight + offset * index);
     };
 
     const handleContextMenu = (e: MapLayerMouseEvent) => {
@@ -285,7 +285,7 @@ export function DeckGLMap({
         setCtxMenuOpen(true);
     };
 
-    const handleStorySelection = (story: StoryDTO) => {
+    const handleStorySelection = (story: StoryPinDTO) => {
         setActiveStory(story);
         setSelectedStoryIdParams(pathname, searchParams, story.id);
     };
@@ -414,7 +414,7 @@ export function DeckGLMap({
                             }}
                         >
                             <CustomMarker
-                                story={story}
+                                storyId={story.id}
                                 isActive={activeStory?.id === story.id}
                             />
                         </Marker>

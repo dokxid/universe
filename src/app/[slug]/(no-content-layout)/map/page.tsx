@@ -8,8 +8,7 @@ import {
     getPublicLabsDTO,
 } from "@/data/dto/getters/get-experience-dto";
 import {
-    getAllPublicStoriesDTO,
-    getLabPublicStoriesDTO,
+    getAllPublicStoryPinsDTO, getLabPublicStoryPinsDTO
 } from "@/data/dto/getters/get-story-dto";
 import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { redirect } from "next/navigation";
@@ -29,11 +28,11 @@ export async function generateStaticParams() {
     }
 }
 
-async function getStoriesForSlug(slug: string) {
+async function getStoryPinsForSlug(slug: string) {
     if (slug === "universe") {
-        return getAllPublicStoriesDTO();
+        return getAllPublicStoryPinsDTO();
     } else {
-        return getLabPublicStoriesDTO(slug);
+        return getLabPublicStoryPinsDTO(slug);
     }
 }
 
@@ -48,7 +47,7 @@ export default async function MapView({
         redirect("/universe");
     }
     // Use cached functions
-    const storiesPromise = getStoriesForSlug(slug);
+    const storiesPromise = getStoryPinsForSlug(slug);
     const labsPromise = getPublicLabsDTO();
     const tagsPromise = getTagsDTO();
 
@@ -64,8 +63,8 @@ export default async function MapView({
                         >
                             <MapPanel
                                 tagsPromise={tagsPromise}
-                                experienceSlug={slug}
-                                experiencesPromise={labsPromise}
+                                labSlug={slug}
+                                labPromise={labsPromise}
                                 storiesPromise={storiesPromise}
                             />
                         </Suspense>

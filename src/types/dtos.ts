@@ -37,6 +37,14 @@ export type NewElevationRequestData = {
     resolvedAt?: Date;
 };
 
+export type StoryPinDTO = {
+    id: string;
+    location: SanitizedGeoJson;
+    tags: TagModel[];
+    year: number;
+    labSlug: string;
+}
+
 export type StoryDTO = {
     id: string;
     content: string;

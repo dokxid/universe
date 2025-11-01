@@ -1,6 +1,5 @@
 import { getCurrentUser, isUserAdmin, isUserSuperAdmin } from "@/data/auth";
 import { UserDTO } from "@/types/dtos";
-import { getUserDTO } from "../getters/get-user-dto";
 
 export async function canEditUser(userDTO: UserDTO): Promise<boolean> {
     const user = await getCurrentUser();

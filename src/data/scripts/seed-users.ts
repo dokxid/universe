@@ -1,5 +1,5 @@
 import { testMemberDoc } from "@/data/scripts/seeds/user-seeds";
-import { Prisma, Role } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth/betterauth/auth";
 import { prisma } from "@/lib/data/prisma/connections";
 import fs from "node:fs/promises";
@@ -45,7 +45,7 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                             organizationId: lab.id,
                         }
                     })
-                    console.log(`Inserted test admin for lab: ${lab}`);
+                    console.log(`Inserted test admin with id: ${addAdminToOrganizationResult?.id} for lab: ${lab}`);
                 }
 
                 // insert members
@@ -61,7 +61,7 @@ export async function seedUsers(memberPerLab = 10, adminPerLab = 1) {
                             organizationId: lab.id,
                         }
                     })
-                    console.log(`Inserted test member for lab: ${lab}`);
+                    console.log(`Inserted test member with id: ${addMemberToOrganizationResult?.id} for lab: ${lab}`);
                 }
                 console.log(
                     `Inserted ${adminPerLab} admins and ${memberPerLab} members for lab: ${lab}`,

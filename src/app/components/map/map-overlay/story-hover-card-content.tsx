@@ -4,13 +4,17 @@ import { TagList } from "@/app/components/cards/tag-list";
 import { HostedImage } from "@/app/components/embeds/s3-image";
 import { StoryAuthorHeaderMapView } from "@/app/components/layout/story-author-details";
 import { HoverCardContent } from "@/components/ui/hover-card";
+import { useStory } from "@/lib/swr/story-hook";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
-import { StoryDTO } from "@/types/dtos";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export function StoryHoverCardContent({ story }: { story: StoryDTO }) {
+export function StoryHoverCardContent({ storyId }: { storyId: string }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const { story, isLoading, isError } = useStory(storyId);
+    if (isLoading || isError || !story) {
+        return null;
+    }
     return (
         <HoverCardContent className={"p-0 border-none bg-transparent"}>
             <div

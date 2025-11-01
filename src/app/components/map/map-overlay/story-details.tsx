@@ -63,8 +63,6 @@ export function StoryDetails({
         setDrawerOpen(drawerOpenState);
     };
 
-    console.log("Rendering StoryDetails for story:", JSON.stringify(activeStory));
-
     // mobile view
     if (isMobile) {
         return (

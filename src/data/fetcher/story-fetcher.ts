@@ -1,9 +1,9 @@
 import "server-only";
 
-import { sanitizeToStoryDTO } from "@/data/transformers/story-transformer";
+import { sanitizeToStoryDTO, sanitizeToStoryPinDTO } from "@/data/transformers/story-transformer";
 import { Prisma, TagsOnStories } from "@/generated/prisma/client";
-import { StoryModel } from "@/generated/prisma/models";
-import { StoryDTO } from "@/types/dtos";
+import { StoryInclude, StoryModel, StorySelect } from "@/generated/prisma/models";
+import { StoryDTO, StoryPinDTO } from "@/types/dtos";
 import { prisma } from "@/lib/data/prisma/connections";
 
 const authorSelectFields: { select: Prisma.UserSelect } = {
@@ -23,21 +23,48 @@ const labSelectFields: { select: Prisma.LabSelect } = {
     },
 };
 
+export async function getAllStoryPins(
+    whereInput?: Prisma.StoryWhereInput,
+): Promise<StoryPinDTO[]> {
+    try {
+        const pinSelectFields = {
+            id: true,
+            longitude: true,
+            latitude: true,
+            year: true,
+            lab: { select: { slug: true } },
+            tags: { select: { tag: true } },
+        } satisfies StorySelect;
+        const allStories = await prisma.story.findMany({
+            where: whereInput,
+            select: pinSelectFields
+        })
+        const sanitizedStories = await Promise.all(
+            allStories.map((story) => sanitizeToStoryPinDTO(story))
+        )
+        return sanitizedStories;
+    } catch (err) {
+        console.error("Error getting all stories:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
+
 export async function getAllStories(
     whereInput?: Prisma.StoryWhereInput,
 ): Promise<StoryDTO[]> {
     try {
+        const storyIncludeFields = {
+            author: { select: authorSelectFields.select },
+            lab: { select: labSelectFields.select },
+            elevationRequests: true,
+            tags: { select: { tag: true } },
+        } satisfies StoryInclude;
         const allStories = await prisma.story.findMany({
             where: whereInput,
-            include: {
-                author: authorSelectFields,
-                lab: labSelectFields,
-                elevationRequests: true,
-                tags: { select: { tag: true } },
-            },
-        });
+            include: storyIncludeFields
+        })
         const sanitizedStories = await Promise.all(
-            allStories.map((story) => sanitizeToStoryDTO(story)),
+            allStories.map((story) => sanitizeToStoryDTO(story))
         );
         return sanitizedStories;
     } catch (err) {
