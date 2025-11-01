@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
     getLabsDTO,
     getPublicLabsDTO,
-} from "@/data/dto/getters/get-experience-dto";
+} from "@/data/dto/getters/get-lab-dto";
 import {
     getAllPublicStoryPinsDTO, getLabPublicStoryPinsDTO
 } from "@/data/dto/getters/get-story-dto";
@@ -18,9 +18,9 @@ export const experimental_ppr = true;
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getLabsDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
+        const labs = await getLabsDTO();
+        return labs.map((lab) => ({
+            slug: lab.slug,
         }));
     } catch (error) {
         console.error("Error generating static params:", error);

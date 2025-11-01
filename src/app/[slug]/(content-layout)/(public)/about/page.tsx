@@ -1,5 +1,5 @@
-import LabView from "@/app/components/views/experience-view";
-import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import LabView from "@/app/components/views/lab-view";
+import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 
 export async function generateStaticParams() {
     try {
@@ -13,7 +13,7 @@ export async function generateStaticParams() {
     }
 }
 
-export default async function ExperiencesPage({
+export default async function AboutLabPage({
     params,
 }: {
     params: Promise<{ slug: string }>;

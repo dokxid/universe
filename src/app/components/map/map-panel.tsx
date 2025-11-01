@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/hooks";
-import { setCurrentExperience } from "@/lib/redux/experiences/experiences-slice";
+import { setCurrentLab } from "@/lib/redux/lab/lab-slice";
 import { LabDTO, StoryPinDTO, TagDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
@@ -27,7 +27,7 @@ export function MapPanel({
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(setCurrentExperience(labSlug));
+        dispatch(setCurrentLab(labSlug));
     }, [dispatch, labSlug]);
 
     return (

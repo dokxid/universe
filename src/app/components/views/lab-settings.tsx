@@ -41,7 +41,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import { z } from "zod";
 
-export function TeamSettings({
+export function LabSettings({
     slug,
     labSerialized,
 }: {

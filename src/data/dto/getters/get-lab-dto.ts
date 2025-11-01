@@ -43,17 +43,17 @@ export const getPublicLabsDTO = cache(async (): Promise<LabDTO[]> => {
     }
 });
 
-export async function getLabDTO(experienceSlug: string): Promise<LabDTO> {
+export async function getLabDTO(labSlug: string): Promise<LabDTO> {
     try {
-        const lab = await getLab({ slug: experienceSlug });
+        const lab = await getLab({ slug: labSlug });
         if (!lab) {
-            throw new Error(`Lab not found for ID: ${experienceSlug}`);
+            throw new Error(`Lab not found for ID: ${labSlug}`);
         }
         const sanitizedLab = sanitizeToLabDTO(lab);
         return sanitizedLab;
     } catch (err) {
         throw new Error(
-            `Error fetching experience ${experienceSlug}: ${err instanceof Error ? err.message : "Unknown error"
+            `Error fetching experience ${labSlug}: ${err instanceof Error ? err.message : "Unknown error"
             }`
         );
     }

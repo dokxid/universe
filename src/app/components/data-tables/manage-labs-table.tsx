@@ -39,7 +39,7 @@ import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 
-const ManageExperiencesActionsCell = ({ lab }: { lab: LabDTO }) => {
+const ManageLabsActionsCell = ({ lab }: { lab: LabDTO }) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -62,7 +62,7 @@ const ManageExperiencesActionsCell = ({ lab }: { lab: LabDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {}}
+                        onClick={() => { }}
                         tabIndex={-1}
                         type="button"
                     >
@@ -73,7 +73,7 @@ const ManageExperiencesActionsCell = ({ lab }: { lab: LabDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {}}
+                        onClick={() => { }}
                         tabIndex={-1}
                         type="button"
                     >
@@ -104,7 +104,7 @@ interface DataTableProps {
     data: string; // JSON stringified array of TData
 }
 
-export function ManageExperiencesTable({ data }: DataTableProps) {
+export function ManageLabsTable({ data }: DataTableProps) {
     const [rowSelection, setRowSelection] = React.useState({});
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] =
@@ -192,8 +192,8 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
         columnHelper.display({
             id: "actions",
             cell: ({ row }) => {
-                const experience = row.original;
-                return <ManageExperiencesActionsCell lab={experience} />;
+                const lab = row.original;
+                return <ManageLabsActionsCell lab={lab} />;
             },
         }),
     ];
@@ -352,10 +352,10 @@ export function ManageExperiencesTable({ data }: DataTableProps) {
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext(),
-                                                      )}
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext(),
+                                                    )}
                                             </TableHead>
                                         );
                                     })}

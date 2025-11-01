@@ -10,15 +10,15 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getLabsDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
+        const labs = await getLabsDTO();
+        return labs.map((lab) => ({
+            slug: lab.slug,
         }));
     } catch (error) {
         console.error("Error generating static params:", error);

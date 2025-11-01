@@ -1,4 +1,4 @@
-import { getLabAction, getLabsAction } from "@/actions/get-experience";
+import { getLabAction, getLabsAction } from "@/actions/get-lab";
 import useSWR from "swr";
 
 const labsFetcher = async () => {

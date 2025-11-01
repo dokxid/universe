@@ -1,4 +1,4 @@
-import { ManageExperiencesTable } from "@/app/components/data-tables/manage-experiences-table";
+import { ManageLabsTable } from "@/app/components/data-tables/manage-labs-table";
 import { ContentLayout } from "@/app/components/layout/content-layout";
 import {
     Header,
@@ -7,7 +7,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { Earth } from "lucide-react";
 
 export default async function Page() {
@@ -28,7 +28,7 @@ export default async function Page() {
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <ManageExperiencesTable data={data} />
+                <ManageLabsTable data={data} />
             </ContentLayout>
         </>
     );

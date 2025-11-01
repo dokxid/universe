@@ -1,6 +1,6 @@
 "use server";
 
-import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { LabDTO } from "@/types/dtos";
 
 export async function getLabsAction(): Promise<LabDTO[]> {

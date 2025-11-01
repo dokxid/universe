@@ -6,7 +6,7 @@ import { UserWidgetHolder } from "@/app/components/sidebar/user-widget-holder";
 import { LabSidebarSkeleton } from "@/components/skeletons/lab-sidebar-skeleton";
 import { UniverseSidebarSkeleton } from "@/components/skeletons/universe-sidebar-skeleton";
 import { Sidebar, SidebarFooter } from "@/components/ui/sidebar";
-import { useLab } from "@/lib/swr/experiences-hook";
+import { useLab } from "@/lib/swr/labs-hook";
 import { getLabSlugFromPathname } from "@/lib/utils/pathname";
 import { usePathname } from "next/navigation";
 

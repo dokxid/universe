@@ -1,13 +1,13 @@
-import { ExperienceCard } from "@/app/components/cards/experience-card";
+import { LabCard } from "@/app/components/cards/experience-card";
 import { ListLabsSkeleton } from "@/components/skeletons/list-experiences-skeleton";
 import { Separator } from "@/components/ui/separator";
-import { getPublicLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getPublicLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { LabDTO } from "@/types/dtos";
 
-export async function ExperiencesGallery() {
-    const experiences = await getPublicLabsDTO();
-    const sanitizedExperiences = experiences.filter(
-        (exp) => exp.slug !== "universe"
+export async function LabGallery() {
+    const labs = await getPublicLabsDTO();
+    const sanitizedExperiences = labs.filter(
+        (lab) => lab.slug !== "universe"
     );
     if (!sanitizedExperiences) return <div>No experiences found.</div>;
 
@@ -23,10 +23,10 @@ export async function ExperiencesGallery() {
                 </article>
                 <Separator className={"my-8"}></Separator>
                 <div className="grid grid-flow-row-dense max-w-6xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-                    {sanitizedExperiences.map((experience: LabDTO) => (
-                        <ExperienceCard
-                            key={experience.slug}
-                            experience={experience}
+                    {sanitizedExperiences.map((lab: LabDTO) => (
+                        <LabCard
+                            key={lab.slug}
+                            lab={lab}
                         />
                     ))}
                     {Array.from({ length: 16 }).map((_, index) => (

@@ -30,7 +30,7 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { getLabsDTO } from "@/data/dto/getters/get-experience-dto";
+import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { getStoriesByUserDTO } from "@/data/dto/getters/get-story-dto";
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
 import { Contact, Globe, Inbox, LinkIcon, Mail, Phone } from "lucide-react";
@@ -38,9 +38,9 @@ import Link from "next/link";
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getLabsDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
+        const labs = await getLabsDTO();
+        return labs.map((lab) => ({
+            slug: lab.slug,
         }));
     } catch (error) {
         console.error("Error generating static params:", error);

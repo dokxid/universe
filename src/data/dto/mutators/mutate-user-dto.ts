@@ -11,7 +11,7 @@ import z from "zod";
 import { canEditUser, canKickUserFromLab } from "../auth/user-permissions";
 import { prisma } from "@/lib/data/prisma/connections";
 import { removeLabMember } from "@/lib/auth/betterauth/organization";
-import { getLabDTO } from "../getters/get-experience-dto";
+import { getLabDTO } from "../getters/get-lab-dto";
 
 
 export async function editDisplayNameFormSchemaDTO(formData: FormData) {
