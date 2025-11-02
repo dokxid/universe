@@ -76,7 +76,7 @@ export function UserWidgetAuthorized({
                             "h-5 translate-y-0 group-hover/user:-translate-y-5 transition-all duration-100 ease-in-out"
                         }
                     >
-                        <p className={"text-xs"}>{role}</p>
+                        <p aria-label={"User Role"} className={"text-xs"}>{role}</p>
                         <SignOutButton className={""} />
                     </div>
                 </div>

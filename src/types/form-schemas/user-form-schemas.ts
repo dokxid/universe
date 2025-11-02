@@ -8,7 +8,7 @@ export const editUserDisplayNameFormSchema = z.object({
         .min(2, "Display name must be at least 2 characters."),
     firstName: z.string().min(2, "First name must be at least 2 characters."),
     lastName: z.string().min(2, "Last name must be at least 2 characters."),
-});export const editUserDetailsFormSchema = z.object({
+}); export const editUserDetailsFormSchema = z.object({
     userId: z.string().min(1, "User ID is required."),
     publicEmail: z
         .union([z.email(), z.literal("")])
@@ -38,3 +38,6 @@ export const editUserProfilePictureFormSchema = z.object({
         ),
 });
 
+export const inviteSuperAdminFormSchema = z.object({
+    email: z.email("Please enter a valid email address."),
+});

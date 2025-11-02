@@ -1,5 +1,6 @@
 "use client";
 
+import { resetPasswordAction } from "@/actions/form/auth";
 import {
     SettingsBoxContent,
     SettingsBoxFormElement,
@@ -7,7 +8,6 @@ import {
     SettingsFormTitle,
 } from "@/app/components/layout/content-layout";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
     FormControl,
@@ -16,77 +16,60 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { handleAPIFormErrors } from "@/lib/utils/form-error-handling";
+import { handleFormErrors } from "@/lib/utils/form-error-handling";
 import { getLabSlugFromPathname } from "@/lib/utils/pathname";
-import { loginFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { resetPasswordFormSchema } from "@/types/form-schemas/auth-form-schemas";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { mutate } from "swr";
 import z from "zod";
 
-export function LoginForm() {
+export function ResetPasswordForm() {
     const pathname = usePathname();
     const slug = getLabSlugFromPathname(pathname);
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
     const router = useRouter();
 
-    const form = useForm<z.infer<typeof loginFormSchema>>({
+    const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
         defaultValues: {
-            email: "",
             password: "",
-            slug: slug || "",
+            confirmPassword: "",
+            token: token || "",
         },
     });
 
-    async function onSubmit(data: z.infer<typeof loginFormSchema>) {
-        const formData = new FormData();
-        formData.append("email", data.email);
-        formData.append("password", data.password);
-        formData.append("rememberMe", String(data.rememberMe));
-        formData.append("slug", data.slug);
-        const response = await fetch("/auth/login", {
-            method: "POST",
-            body: formData,
-        });
-        const result = await response.json();
-        console.log("Login result:", result);
-        if (result.redirect) {
-            mutate("currentUser");
-            mutate(["userRoles", data.slug]);
-            toast.success("Signed in successfully!");
-            router.push(result.url || `/${data.slug}/map`);
+    async function onSubmit(data: z.infer<typeof resetPasswordFormSchema>) {
+        try {
+            const formData = new FormData();
+            formData.append("password", data.password);
+            formData.append("confirmPassword", data.confirmPassword);
+            formData.append("token", data.token);
+            const result = await resetPasswordAction(formData);
+            if (result?.success) {
+                toast.success("Reset passwords successfully!");
+                router.push(`/${slug}/login`);
+                return;
+            }
+            if (result?.error) {
+                handleFormErrors(result, form);
+            }
+        } catch (error) {
+            toast.error(
+                error instanceof Error ? error.message : "Unknown error",
+            );
         }
-        handleAPIFormErrors(result, form);
     }
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <SettingsFormTitle>Login to your account</SettingsFormTitle>
+                <SettingsFormTitle>Reset your password</SettingsFormTitle>
                 <SettingsFormDescription>
-                    Enter your email below to login to your account
+                    Enter your email and new password to reset your password.
                 </SettingsFormDescription>
                 <SettingsBoxContent>
-                    <FormField
-                        control={form.control}
-                        name={"email"}
-                        render={({ field }) => (
-                            <SettingsBoxFormElement>
-                                <FormLabel className="flex shrink-0">
-                                    Email
-                                </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="Enter your email..."
-                                        type="text"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </SettingsBoxFormElement>
-                        )}
-                    />
                     <FormField
                         control={form.control}
                         name={"password"}
@@ -108,42 +91,21 @@ export function LoginForm() {
                     />
                     <FormField
                         control={form.control}
-                        name={"slug"}
+                        name={"confirmPassword"}
                         render={({ field }) => (
                             <SettingsBoxFormElement>
                                 <FormLabel className="flex shrink-0 justify-between">
-                                    Lab
+                                    Confirm password
                                 </FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={true}
-                                        type="text"
+                                        placeholder="Enter your password..."
+                                        type="password"
                                         {...field}
                                     />
                                 </FormControl>
                                 <FormMessage />
                             </SettingsBoxFormElement>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="rememberMe"
-                        render={({ field }) => (
-                            <>
-                                <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                    <FormControl>
-                                        <Checkbox
-                                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary cursor-pointer"
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <p className="ml-1 text-sm select-none">
-                                        Remember me
-                                    </p>
-                                </label>
-                                <FormMessage />
-                            </>
                         )}
                     />
                     <SettingsBoxFormElement>

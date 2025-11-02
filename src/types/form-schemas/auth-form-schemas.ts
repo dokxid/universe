@@ -20,6 +20,19 @@ export const loginFormSchema = z.object({
     rememberMe: z.coerce.boolean().optional(),
 });
 
+export const resetPasswordFormSchema = z.object({
+    password: z.string().min(8).max(100),
+    confirmPassword: z.string().min(8).max(100),
+    token: z.string().min(1),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+})
+
+export const changePasswordFormSchema = z.object({
+    password: z.string().min(8).max(100),
+    newPassword: z.string().min(8).max(100),
+})
+
 // Form schema for creating a new user (admin use only)
 export const createUserFormSchema = z.object({
     email: z.email("Invalid email address."),

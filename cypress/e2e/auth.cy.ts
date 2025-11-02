@@ -25,7 +25,7 @@ describe("Super Admin", () => {
     it("UserWidget should show correct role for Super Admin", () => {
         loginAsSuperAdmin();
         cy.visit("/test/map");
-        cy.get("p.text-xs").contains(/^Super Admin$/);
+        cy.get("[aria-label='User Role']").contains(/^Super Admin$/);
     });
 });
 
@@ -34,7 +34,7 @@ describe("Admin", () => {
         loginAsAdmin();
         cy.visit("/test/map");
         cy.get("a[href='/test/login']").should("not.exist");
-        cy.get(".h-5 > p.text-xs").should("contain", "Admin");
+        cy.get("[aria-label='User Role']").should("contain", "Admin");
     });
     it("UserWidget should show correct role for Admin", () => {
         loginAsAdmin();
@@ -58,7 +58,7 @@ describe("Member", () => {
     it("UserWidget should show correct role for Member", () => {
         loginAsMember();
         cy.visit("/test/map");
-        cy.get("p.text-xs").contains(/^Editor$/);
+        cy.get("[aria-label='User Role']").contains(/^Editor$/);
     });
     it("Member should not see super admin features", () => {
         loginAsMember();

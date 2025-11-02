@@ -16,9 +16,7 @@ function sendOrganizationInvitation(data: {
 }) {
     const { email, invitedByUsername, invitedByEmail, teamName, inviteLink } =
         data;
-
     const subject = `Invitation to join the lab "${teamName}"`;
-
     const body = `
         <p>Hi,</p>
         <p>${invitedByUsername} (${invitedByEmail}) has invited you to join the lab "<strong>${teamName}</strong>".</p>
@@ -27,8 +25,28 @@ function sendOrganizationInvitation(data: {
         <p>If you did not expect this invitation, you can safely ignore this email.</p>
         <p>Best regards,<br/>The Universe Team</p>
     `;
-
     // Here you would integrate with your email sending service
+    sendEmail({
+        to: email,
+        subject,
+        html: body,
+    });
+}
+
+function sendPasswordResetEmail(data: {
+    email: string;
+    resetLink: string;
+}) {
+    const { email, resetLink } = data;
+    const subject = "Password Reset Request";
+    const body = `
+        <p>Hi,</p>
+        <p>We received a request to reset your password.</p>
+        <p>Click the link below to reset your password:</p>
+        <p><a href="${resetLink}">Reset Password</a></p>
+        <p>If you did not request a password reset, you can safely ignore this email.</p>
+        <p>Best regards,<br/>The Universe Team</p>
+    `;
     sendEmail({
         to: email,
         subject,
@@ -119,6 +137,12 @@ export const auth = betterAuth({
     database: db,
     emailAndPassword: {
         enabled: true,
+        sendResetPassword: async ({ user, url }) => {
+            sendPasswordResetEmail({
+                email: user.email,
+                resetLink: url,
+            });
+        },
     },
     advanced: {
         database: {

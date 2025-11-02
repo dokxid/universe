@@ -4,6 +4,7 @@ import {
     triggerRevalidatePathAction,
     triggerRevalidateTagAction,
 } from "@/actions/cache";
+import { inviteSuperAdminAction } from "@/actions/form/invite-member";
 import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
 import {
     SettingsBoxContent,
@@ -16,12 +17,17 @@ import {
     SettingsLayout,
 } from "@/app/components/layout/content-layout";
 import { Button } from "@/components/ui/button";
+import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { handleFormErrors } from "@/lib/utils/form-error-handling";
+import { inviteSuperAdminFormSchema } from "@/types/form-schemas/user-form-schemas";
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import z from "zod";
 
 export function DebugSettings() {
     const location = faker.location.city();
@@ -42,6 +48,30 @@ export function DebugSettings() {
         "org_01K6FWE14DZBT1Q17JFC75JN72",
     );
     const [experienceStories, setExperienceStories] = useState<number>(40);
+
+    const inviteSuperAdminForm = useForm<z.infer<typeof inviteSuperAdminFormSchema>>({
+        defaultValues: {
+            email: "",
+        },
+    });
+
+    const onInviteSuperAdminFormSubmit = async (data: z.infer<typeof inviteSuperAdminFormSchema>) => {
+        try {
+            const formData = new FormData();
+            formData.append("email", data.email);
+            const result = await inviteSuperAdminAction(formData);
+            if (result?.success) {
+                toast.success(`Invited ${data.email} successfully!`);
+                return;
+            }
+            if (result?.error) {
+                handleFormErrors(result, inviteSuperAdminForm);
+            }
+        } catch (error) {
+            toast.error("Failed to invite super admin");
+            console.error(error);
+        }
+    }
 
     return (
         <SettingsLayout>
@@ -126,46 +156,34 @@ export function DebugSettings() {
             <SettingsFormBox>
                 <SettingsFormTitle>Create user</SettingsFormTitle>
                 <SettingsFormDescription>
-                    create a new user in the authentication system.
+                    invite a new super admin in the authentication system.
                 </SettingsFormDescription>
                 <SettingsBoxContent>
-                    <SettingsBoxForm>
-                        <SettingsBoxFormElement>
-                            <Label className={""}>Email</Label>
-                            <Input
-                                className={"max-w-full"}
-                                placeholder="Email"
-                                type="email"
-                                value={""}
-                                onChange={() => { }}
-                            />
-                        </SettingsBoxFormElement>
-                        <SettingsBoxFormElement>
-                            <Label className={""}>Password</Label>
-                            <Input
-                                className={"max-w-full"}
-                                placeholder="Password"
-                                type="password"
-                                value={""}
-                                onChange={() => { }}
-                            />
-                        </SettingsBoxFormElement>
-                        <SettingsBoxFormElement>
-                            <Label className={""}>Name</Label>
-                            <Input
-                                className={"max-w-full"}
-                                placeholder="Name"
-                                type="text"
-                                value={""}
-                                onChange={() => { }}
-                            />
-                        </SettingsBoxFormElement>
-                    </SettingsBoxForm>
-                    <SettingsFormButtonGroup>
-                        <Button disabled={true} className={"w-full md:w-fit"}>
-                            Create User
-                        </Button>
-                    </SettingsFormButtonGroup>
+                    <Form {...inviteSuperAdminForm}>
+                        <form onSubmit={inviteSuperAdminForm.handleSubmit(onInviteSuperAdminFormSubmit)}>
+                            <SettingsBoxForm>
+                                <FormField
+                                    control={inviteSuperAdminForm.control}
+                                    name={"email"}
+                                    render={({ field }) => (
+                                        <SettingsBoxFormElement>
+                                            <Label className={""}>Email</Label>
+                                            <Input
+                                                className={"max-w-full"}
+                                                placeholder="Email"
+                                                type="email"
+                                                {...field}
+                                            />
+                                        </SettingsBoxFormElement>
+                                    )} />
+                                <SettingsFormButtonGroup>
+                                    <Button className={"w-full md:w-fit"}>
+                                        Create User
+                                    </Button>
+                                </SettingsFormButtonGroup>
+                            </SettingsBoxForm>
+                        </form>
+                    </Form>
                 </SettingsBoxContent>
             </SettingsFormBox>
             <SettingsFormBox>

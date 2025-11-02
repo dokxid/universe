@@ -19,10 +19,12 @@ const GUEST_PATHS = [
     "/:slug/login",
     "/:slug/user/view/:userId",
     "/:slug/signup",
+    "/:slug/reset-password",
     "/api/files/:key",
     "/auth/accept-invitation/:invitationId",
     "/:slug/legal/imprint",
     "/:slug/legal/privacy",
+    "/api/auth/reset-password/:token",
 ];
 
 function addCSPHeaders(response: NextResponse): NextResponse {
@@ -108,6 +110,7 @@ export const config = {
     matcher: [
         // public apis
         "/api/files/:key",
+        "/api/auth/reset-password/:token",
 
         // public paths
         "/:slug/",
@@ -129,6 +132,7 @@ export const config = {
 
         // account and related paths
         "/:slug/account/user-preferences",
+        "/:slug/reset-password",
 
         // editor+ paths
         "/:slug/stories/create",

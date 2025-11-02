@@ -27,3 +27,23 @@ export async function canKickUserFromLab(userToMutate: UserDTO, labSlug: string)
         return false;
     }
 }
+
+export async function canInviteMembersToLab(labSlug: string): Promise<boolean> {
+    if (await isUserSuperAdmin()) return true;
+    if (await isUserAdmin(labSlug)) return true;
+    return false;
+}
+
+export async function canInviteSuperAdmins(): Promise<boolean> {
+    if (await isUserSuperAdmin()) return true;
+    return false;
+}
+
+export async function canUserChangePassword(userDTO: UserDTO): Promise<boolean> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser)
+        throw new Error("Not logged in");
+    if (await isUserSuperAdmin()) return true;
+    if (currentUser.id === userDTO.id) return true;
+    return false;
+}

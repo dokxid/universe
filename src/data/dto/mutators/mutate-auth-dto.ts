@@ -1,7 +1,8 @@
 "use server";
 
 import { auth } from "@/lib/auth/betterauth/auth";
-import { signUpFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { changePasswordFormSchema, resetPasswordFormSchema, signUpFormSchema } from "@/types/form-schemas/auth-form-schemas";
+import { headers } from "next/headers";
 import z from "zod";
 
 export const signUpDTO = async (formData: FormData) => {
@@ -30,3 +31,51 @@ export const signUpDTO = async (formData: FormData) => {
         );
     }
 };
+
+export const resetPasswordDTO = async (formData: FormData) => {
+    try {
+        const data = Object.fromEntries(formData);
+        const result = resetPasswordFormSchema.safeParse(data);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+        const validatedData = result.data;
+        const apiResponse = await auth.api.resetPassword({
+            body: {
+                newPassword: validatedData.password,
+                token: validatedData.token,
+            },
+        });
+        console.log("reset password email sent: ", apiResponse);
+        return { success: true, error: null };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
+
+export const changePasswordDTO = async (formData: FormData) => {
+    try {
+        const data = Object.fromEntries(formData);
+        const result = changePasswordFormSchema.safeParse(data);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+        const validatedData = result.data;
+        const apiResponse = await auth.api.changePassword({
+            body: {
+                currentPassword: validatedData.password,
+                newPassword: validatedData.newPassword,
+                revokeOtherSessions: true,
+            },
+            headers: await headers(),
+        });
+        console.log("password updated: ", apiResponse);
+        return { success: true, error: null, response: apiResponse };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
