@@ -14,15 +14,7 @@ export async function getStoryAction(
         throw new Error("Failed to fetch lab data");
     }
 }
-export async function getAllPublicStoriesAction(): Promise<StoryDTO[] | null> {
-    try {
-        const story = await getAllPublicStoriesDTO();
-        return story;
-    } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
-    }
-}
+
 export async function getAllLabStoriesAction(
     slug: string
 ): Promise<StoryDTO[] | null> {

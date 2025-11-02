@@ -1,4 +1,4 @@
-import { getAllLabStoriesAction, getAllPublicStoriesAction, getStoryAction } from "@/actions/get-story";
+import { getAllLabStoriesAction, getStoryAction } from "@/actions/get-story";
 import useSWR from "swr";
 
 const storyFetcher = async (storyId: string) => {
@@ -6,9 +6,6 @@ const storyFetcher = async (storyId: string) => {
 };
 const labStoriesFetcher = async (slug: string) => {
     return await getAllLabStoriesAction(slug);
-};
-const allStoriesFetcher = async () => {
-    return await getAllPublicStoriesAction()
 };
 
 export function useStory(storyId: string) {
@@ -25,17 +22,6 @@ export function useStory(storyId: string) {
 export function useLabPublicStories(slug: string) {
     const { data, error, isLoading } = useSWR("stories", () =>
         labStoriesFetcher(slug),
-    );
-    return {
-        stories: data,
-        isLoading,
-        isError: error,
-    };
-}
-
-export function useAllPublicStories() {
-    const { data, error, isLoading } = useSWR("stories", () =>
-        allStoriesFetcher(),
     );
     return {
         stories: data,
