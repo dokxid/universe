@@ -1,5 +1,5 @@
 {
-    "name": "hl-universe",
+    "name": "universe",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -9,16 +9,17 @@
         "start": "next start",
         "lint": "tsc --noEmit && eslint .",
         "prisma": "yarn prisma:generate && yarn prisma:push",
-        "prisma:generate": "dotenv -e .env.docker -- prisma generate",
-        "prisma:push": "dotenv -e .env.docker -- prisma db push",
+        "prisma:generate": "dotenv -e .env -- prisma generate",
+        "prisma:push": "dotenv -e .env -- prisma db push",
         "test": "TS_NODE_PROJECT=tsconfig.json jest",
-        "e2e:seed": "dotenv -e .env.docker -- tsx src/data/scripts/seed-e2e-script.ts",
+        "e2e:seed": "dotenv -e .env -- tsx src/data/scripts/seed-e2e-script.ts",
         "e2e": "cypress open --e2e",
         "e2e:headless": "cypress run --e2e 2>/dev/null",
-        "seed:local": "NODE_ENV=development tsx --trace-warnings --env-file=.env.local src/data/scripts/seed-staging-script.ts",
-        "seed:docker": "dotenv -e .env.docker -- tsx src/data/scripts/seed-staging-script.ts",
+        "seed:local": "tsx --env-file=.env src/data/scripts/seed-staging-script.ts",
+        "seed:docker": "tsx src/data/scripts/seed-staging-script.ts",
         "prepare": "husky",
-        "docker-build": "prisma generate && prisma db push && next build"
+        "docker-build": "prisma generate && prisma db push && next build",
+        "docker:prisma": "prisma generate && prisma db push"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.888.0",

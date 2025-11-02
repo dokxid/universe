@@ -19,3 +19,13 @@
 - **Validation**: Use Zod schemas for all form validation (see `src/types/form-schemas/`)
 - **Components**: Functional components with TypeScript, use Radix UI + Tailwind with `cn()` utility
 - **Testing**: Jest for unit tests (describe/test blocks), Cypress for E2E, place tests in `__tests__/` dir
+
+## Docker & Deployment
+- **Runtime Database Setup**: Use `docker-entrypoint.sh` to run `prisma db push` at container startup
+  - The entrypoint script runs before the application starts
+  - This ensures the database schema is synced when the database is actually available
+- **Docker Commands**:
+  - Build: `docker-compose build`
+  - Run: `docker-compose up`
+  - Run detached: `docker-compose up -d`
+

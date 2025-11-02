@@ -2,11 +2,9 @@ services:
   app:
     container_name: universe-app
     restart: always
-    environment:
-      - DATABASE_URL=mongodb://mongo:27017/universe-staging
-      - MONGODB_URI=mongodb://mongo:27017
-      - MONGODB_DBNAME=universe-production
-      - DOCKER=true
+    env_file:
+      - path: ./.env
+        required: true
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,45 +13,22 @@ services:
     networks:
       - app-network
     depends_on:
-      - mongo
+      - postgres
       - garage
 
-  db:
+  postgres:
     image: postgres
     container_name: postgres
     restart: always
-    env_file: .env.docker
+    env_file:
+      - path: ./.env
+        required: true
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql
     networks:
       - app-network
-
-  mongo:
-    container_name: mongo
-    build:
-      context: ./mongodb
-      args:
-        MONGO_VERSION: 8
-    environment:
-      MONGO_REPLICA_HOST: 127.0.0.1
-      MONGO_REPLICA_PORT: 27017
-      MONGO_COMMAND: "mongosh"
-    volumes:
-      - ./mongodb/data:/data/db
-    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
-    networks:
-      - app-network
-    ports:
-      - "27017:27017"
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "mongosh --eval 'try { rs.status() } catch (err) { rs.initiate() }' || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
 
   garage:
     container_name: garage
@@ -71,7 +46,6 @@ services:
 volumes:
   mongo-data:
   pgdata:
-
 
 networks:
   app-network:
