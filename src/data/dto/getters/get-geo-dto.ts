@@ -1,15 +1,15 @@
 import { getLineStringFromLocations } from "@/lib/utils/geo";
-import { StoryPinDTO } from "@/types/dtos";
+import { StoryPinDTO, TagDTO } from "@/types/dtos";
 
 export type TaggedLineConnectionStringDTO = {
-    tag: string;
+    tag: TagDTO;
     lineStrings: GeoJSON.LineString[];
 };
 
-type TaggedConnectionDTO = {
+export type TaggedConnectionDTO = {
     from: [longitude: number, latitude: number];
     to: [longitude: number, latitude: number];
-    tag: string;
+    tag: TagDTO;
 };
 
 export function getTagLines(stories: StoryPinDTO[]): GeoJSON.LineString[] {
@@ -25,12 +25,12 @@ export function getTagLines(stories: StoryPinDTO[]): GeoJSON.LineString[] {
 
 export function getTagLineStrings(
     stories: StoryPinDTO[],
-    tags: string[]
+    tags: TagDTO[]
 ): TaggedLineConnectionStringDTO[] {
     const allConnections: TaggedLineConnectionStringDTO[] = [];
     for (const tag of tags) {
         const filteredStories = stories.filter(
-            (story) => story.tags && story.tags.map((t) => t.name).includes(tag)
+            (story) => story.tags && story.tags.map((t) => t.name).includes(tag.name)
         );
         const tagLines = getTagLines(filteredStories);
         allConnections.push({
@@ -43,7 +43,7 @@ export function getTagLineStrings(
 
 export function getTaggedConnectionDTO(
     stories: StoryPinDTO[],
-    tags: string[]
+    tags: TagDTO[]
 ): TaggedConnectionDTO[] {
     const lineStrings: TaggedLineConnectionStringDTO[] = getTagLineStrings(
         stories,

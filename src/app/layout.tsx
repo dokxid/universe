@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { SWRConfig } from "swr";
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -15,6 +16,13 @@ export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
+
+const options = {
+    refreshInerval: 3000,
+    dedupingInterval: 2000,
+    revalidateOnFocus: false,
+};
+
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
@@ -22,7 +30,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <link rel="icon" href="/img/favicon.ico" sizes="any" />
             </head>
             <body className={"antialiased"}>
-                <main>
+                <main><SWRConfig value={options}>
                     <StoreProvider>
                         <TooltipProvider>
                             <ThemeProvider
@@ -37,7 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                                 </SidebarLayout>
                             </ThemeProvider>
                         </TooltipProvider>
-                    </StoreProvider>
+                    </StoreProvider></SWRConfig>
                 </main>
             </body>
         </html>

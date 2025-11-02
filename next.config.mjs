@@ -1,10 +1,13 @@
-// next.config.mjs
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import * as dotenv from "dotenv";
 
 // Get __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+dotenv.config(); // Load the environment variables
+console.log(`The connection URL is ${process.env.DATABASE_URL}`);
 
 /*  
 allow more .env files

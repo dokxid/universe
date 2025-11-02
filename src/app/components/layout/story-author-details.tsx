@@ -31,8 +31,7 @@ export function StoryAuthorDetails({
     return (
         <div
             className={cn(
-                `flex flex-row items-center mb-1 justify-between ${
-                    sticky ? "sticky" : ""
+                `flex flex-row items-center mb-1 justify-between ${sticky ? "sticky" : ""
                 } py-4 top-0 transition-all duration-200`,
                 className,
             )}
@@ -100,8 +99,7 @@ export function StoryAuthorEditDetails({
     return (
         <div
             className={cn(
-                `flex flex-row items-center mb-1 justify-between ${
-                    sticky ? "sticky" : ""
+                `flex flex-row items-center mb-1 justify-between ${sticky ? "sticky" : ""
                 } py-4 top-0 transition-all duration-200`,
                 className,
             )}
@@ -216,6 +214,7 @@ export function StoryAuthorHeaderMapView({
             <div className={"flex flex-row items-center gap-3"}>
                 {profilePictureVisible && (
                     <Link
+                        prefetch={false}
                         className={
                             "cursor-pointer hover:brightness-80 transition-all duration-100"
                         }
@@ -223,6 +222,7 @@ export function StoryAuthorHeaderMapView({
                     >
                         <Avatar>
                             <AvatarImage
+                                loading={"lazy"}
                                 className={"object-cover"}
                                 src={
                                     story.author.profilePictureUrl || undefined
@@ -236,14 +236,14 @@ export function StoryAuthorHeaderMapView({
                 )}
                 <article className={"flex flex-col text-left gap-1"}>
                     <Link
+                        prefetch={false}
                         href={
                             "/" + story.lab.slug + "/stories/view/" + story.id
                         }
                     >
                         <h3
-                            className={`font-semibold line-clamp-${lines} leading-none overflow-hidden ${
-                                forceWhiteText ? "" : "link-external"
-                            }`}
+                            className={`font-semibold line-clamp-${lines} leading-none overflow-hidden ${forceWhiteText ? "" : "link-external"
+                                }`}
                         >
                             {story.title}
                         </h3>
@@ -251,11 +251,11 @@ export function StoryAuthorHeaderMapView({
                     <p className={"text-sm text-muted-foreground"}>
                         {"by "}
                         <Link
-                            className={`hover:underline cursor-pointer ${
-                                forceWhiteText
-                                    ? "arrow-external"
-                                    : "link-external"
-                            }`}
+                            prefetch={false}
+                            className={`hover:underline cursor-pointer ${forceWhiteText
+                                ? "arrow-external"
+                                : "link-external"
+                                }`}
                             href={`/${story.lab.slug}/user/view/${story.author.id}`}
                         >
                             {story.author.name}

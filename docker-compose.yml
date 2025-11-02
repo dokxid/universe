@@ -1,34 +1,137 @@
 services:
-  app:
-    container_name: universe-app
+  app-production:
+    container_name: universe-production
     restart: always
     env_file:
-      - path: ./.env
+      - path: .env.production
         required: true
+    environment:
+      - DOCKER=1
+      - HUSKY=0
+      - EMAIL_MODE=email
+      - AWS_REGION=garage
+      - AWS_BUCKET_NAME=universe-production
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES=${NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_ADMIN_EMAIL=${BETTER_AUTH_ADMIN_EMAIL}
+      - BETTER_AUTH_ADMIN_PASSWORD=${BETTER_AUTH_ADMIN_PASSWORD}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - AWS_S3_ENDPOINT=${AWS_S3_ENDPOINT}
+      - AWS_S3_BUCKET_URL=${AWS_S3_BUCKET_URL}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_ACCESS_SECRET_KEY=${AWS_ACCESS_SECRET_KEY}
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./.env.production:/app/.env
     ports:
-      - "4000:3000"
+      - "3005:3000"
     networks:
-      - app-network
+      - app-network-production
     depends_on:
-      - postgres
+      - db-production
       - garage
 
-  postgres:
-    image: postgres
-    container_name: postgres
+  app-staging:
+    container_name: universe-staging
     restart: always
     env_file:
-      - path: ./.env
+      - path: .env.staging
         required: true
+    environment:
+      - DOCKER=1
+      - HUSKY=0
+      - EMAIL_MODE=email
+      - AWS_REGION=garage
+      - AWS_BUCKET_NAME=universe-staging
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES=${NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_ADMIN_EMAIL=${BETTER_AUTH_ADMIN_EMAIL}
+      - BETTER_AUTH_ADMIN_PASSWORD=${BETTER_AUTH_ADMIN_PASSWORD}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - AWS_S3_ENDPOINT=${AWS_S3_ENDPOINT}
+      - AWS_S3_BUCKET_URL=${AWS_S3_BUCKET_URL}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_ACCESS_SECRET_KEY=${AWS_ACCESS_SECRET_KEY}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./.env.staging:/app/.env
+    ports:
+      - "3004:3000"
+    networks:
+      - app-network-staging
+    depends_on:
+      - db-staging
+      - garage
+
+  db-production:
+    image: postgres
+    container_name: postgres-production
+    restart: always
+    env_file:
+      - path: .env.production
+        required: true
+    environment:
+      - POSTGRES_DB=universe-production
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata-staging:/var/lib/postgresql
+    networks:
+      - app-network-production
+
+  db-staging:
+    image: postgres
+    container_name: postgres-staging
+    restart: always
+    env_file:
+      - path: .env.staging
+        required: true
+    environment:
+      - POSTGRES_DB=universe-staging
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-staging:/var/lib/postgresql
+    networks:
+      - app-network-staging
+
+  db-local:
+    image: postgres
+    container_name: postgres-local
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - POSTGRES_DB=universe-local
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql
+      - pgdata-local:/var/lib/postgresql
     networks:
-      - app-network
+      - app-network-local
 
   garage:
     container_name: garage
@@ -36,7 +139,9 @@ services:
     ports:
       - "3900:3900"
     networks:
-      - app-network
+      - app-network-production
+      - app-network-staging
+      - app-network-local
     restart: unless-stopped
     volumes:
       - ./garage/garage.toml:/etc/garage.toml
@@ -44,9 +149,14 @@ services:
       - ./garage/data:/var/lib/garage/data
 
 volumes:
-  mongo-data:
-  pgdata:
+  pgdata-production:
+  pgdata-staging:
+  pgdata-local:
 
 networks:
-  app-network:
+  app-network-production:
+    driver: bridge
+  app-network-staging:
+    driver: bridge
+  app-network-local:
     driver: bridge

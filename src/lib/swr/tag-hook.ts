@@ -2,7 +2,7 @@
 
 import { getTagByNameAction, getTagsAction } from "@/actions/get-tag";
 import { TagDTO } from "@/types/dtos";
-import useSWR from "swr";
+import useSWRImmutable from 'swr/immutable'
 
 const tagByNameFetcher = async (tagName: string): Promise<TagDTO | null> => {
     return await getTagByNameAction(tagName);
@@ -12,7 +12,7 @@ const tagsFetcher = async (): Promise<TagDTO[] | null> => {
 };
 
 export function useTags() {
-    const { data, error, isLoading } = useSWR("all-tags", () => tagsFetcher());
+    const { data, error, isLoading } = useSWRImmutable("all-tags", () => tagsFetcher());
     return {
         tags: data,
         isLoading,
@@ -21,7 +21,7 @@ export function useTags() {
 }
 
 export function useTag(name: string) {
-    const { data, error, isLoading } = useSWR(["tag", name], async () =>
+    const { data, error, isLoading } = useSWRImmutable(["tag", name], async () =>
         tagByNameFetcher(name)
     );
     return {

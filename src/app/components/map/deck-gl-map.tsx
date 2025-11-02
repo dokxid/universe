@@ -1,6 +1,6 @@
 import CustomMarker from "@/app/components/map/custom-marker";
 import { MapContextMenu } from "@/app/components/map/map-context-menu";
-import { getTaggedConnectionDTO } from "@/data/dto/getters/get-geo-dto";
+import { getTaggedConnectionDTO, TaggedConnectionDTO } from "@/data/dto/getters/get-geo-dto";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePrevious } from "@/hooks/use-previous";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -9,7 +9,7 @@ import {
     MAP_TILES,
     setDescriptorOpen,
 } from "@/lib/redux/settings/settings-slice";
-import { getTagColor } from "@/lib/utils/color-string";
+import { stringToArrayColor } from "@/lib/utils/color-string";
 import {
     addSelectedTagParam,
     setSelectedStoryIdParams,
@@ -34,12 +34,6 @@ import {
     useControl,
     useMap,
 } from "react-map-gl/maplibre";
-
-type TagConnection = {
-    from: [longitude: number, latitude: number];
-    to: [longitude: number, latitude: number];
-    tag: string;
-};
 
 function DeckGLOverlay(props: DeckProps) {
     const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -155,28 +149,28 @@ export function DeckGLMap({
 
     // react state stuff
     const [arcHeight, setArcHeight] = useState(0);
-    const [hoverInfo, setHoverInfo] = useState<PickingInfo<TagConnection>>();
+    const [hoverInfo, setHoverInfo] = useState<PickingInfo<TaggedConnectionDTO>>();
     const [coords, setCoords] = useState<{ x: number; y: number } | null>(null);
     const [ptrLngLat, setPtrLngLat] = useState<[number, number] | null>(null);
     const [ctxMenuOpen, setCtxMenuOpen] = useState(false);
     const [activeStory, setActiveStory] = useState<StoryPinDTO | null>(
         stories.find((story) => story.id === searchParams.get("story")) || null,
     );
-    const [connections, setConnections] = useState<TagConnection[]>([]);
+    const [connections, setConnections] = useState<TaggedConnectionDTO[]>([]);
     const dispatch = useAppDispatch();
 
-    // set correct experience
-    const experience = useMemo(() => {
+    // set correct lab
+    const lab = useMemo(() => {
         if (labSlug !== "universe") {
             return labs.find(
                 (exp) => exp.slug === labSlug,
             ) as LabDTO;
         }
-        const experienceToShow = searchParams.get("exp")
+        const labToShow = searchParams.get("exp")
             ? searchParams.get("exp")
             : "universe";
         return labs.find(
-            (exp) => exp.slug === experienceToShow,
+            (exp) => exp.slug === labToShow,
         ) as LabDTO;
     }, [labSlug, labs, searchParams]);
 
@@ -210,8 +204,8 @@ export function DeckGLMap({
             (story) => story.id !== activeStory?.id,
         );
         const tagFilters = selectedFilterTags
-            ? selectedFilterTags.split(",")
-            : activeStory.tags.map((tag) => tag.name);
+            ? selectedFilterTags.split(",").map((tag) => tags.find((t) => t.name === tag) as TagDTO)
+            : activeStory.tags
         const storiesToUse = [activeStory, ...storiesExceptActive];
         const connectionsSanitized = getTaggedConnectionDTO(
             storiesToUse,
@@ -221,7 +215,7 @@ export function DeckGLMap({
             setArcHeight(connectionsSanitized.length > 0 ? 1.2 : 0.6);
         }, 100);
         setConnections(connectionsSanitized);
-    }, [activeStory, selectedFilterTags, storiesFiltered]);
+    }, [activeStory, selectedFilterTags, storiesFiltered, tags]);
 
     const INITIAL_VIEW_STATE: MapViewState = activeStory
         ? {
@@ -230,14 +224,14 @@ export function DeckGLMap({
             zoom: 8,
         }
         : {
-            longitude: experience.center.coordinates[0],
-            latitude: experience.center.coordinates[1],
-            zoom: experience.initialZoom,
+            longitude: lab.center.coordinates[0],
+            latitude: lab.center.coordinates[1],
+            zoom: lab.initialZoom,
         };
 
     const getSameRouteConnections = (
-        connections: TagConnection[],
-        connection: TagConnection,
+        connections: TaggedConnectionDTO[],
+        connection: TaggedConnectionDTO,
     ) => {
         const sameRouteConnections = connections.filter(
             (conn) =>
@@ -254,9 +248,9 @@ export function DeckGLMap({
     };
 
     const getArcHeight = (
-        connection: TagConnection,
+        connection: TaggedConnectionDTO,
         index: number,
-        connections: TagConnection[],
+        connections: TaggedConnectionDTO[],
     ) => {
         // Find all connections between the same two points
         const sameRouteConnections = getSameRouteConnections(
@@ -334,10 +328,10 @@ export function DeckGLMap({
                 id: "arcs",
                 data: connections,
                 greatCircle: true,
-                getSourcePosition: (d: TagConnection) => d.from,
-                getTargetPosition: (d: TagConnection) => d.to,
-                getSourceColor: (d: TagConnection) => getTagColor(tags, d.tag),
-                getTargetColor: (d: TagConnection) => getTagColor(tags, d.tag),
+                getSourcePosition: (d: TaggedConnectionDTO) => d.from,
+                getTargetPosition: (d: TaggedConnectionDTO) => d.to,
+                getSourceColor: (d: TaggedConnectionDTO) => stringToArrayColor(d.tag.color),
+                getTargetColor: (d: TaggedConnectionDTO) => stringToArrayColor(d.tag.color),
                 getWidth: 3,
                 widthMinPixels: 3,
                 pickable: true,
@@ -350,7 +344,7 @@ export function DeckGLMap({
                     );
                     return true;
                 },
-                getHeight: (d: TagConnection & { index: number }) =>
+                getHeight: (d: TaggedConnectionDTO & { index: number }) =>
                     getArcHeight(d, d.index, connections),
                 transitions: {
                     getHeight: {
@@ -395,7 +389,7 @@ export function DeckGLMap({
                     projection={settingsState.globeView ? "globe" : "mercator"}
                 >
                     <MapController
-                        currentExperience={experience}
+                        currentExperience={lab}
                         selectedStory={activeStory}
                     />
                     <AttributionControl

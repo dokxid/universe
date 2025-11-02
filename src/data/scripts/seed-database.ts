@@ -6,7 +6,6 @@ import {
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
-import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -47,25 +46,14 @@ export async function seedDatabase(
     numStories: number,
 ) {
     try {
-        // tear down in order
-        await prisma.invitation.deleteMany({});
-        await prisma.elevationRequest.deleteMany({});
-        await prisma.tagsOnStories.deleteMany({});
-        await prisma.story.deleteMany({});
-        await prisma.lab.deleteMany({});
-
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,
             numRandomCityCenters,
         );
 
-        // await deleteUploadsFolder();
-        await seedUnescoTags();
         await seedExperiences(randomCityCenters);
         await seedUsers(10, 1);
-        // await seedAllStoryImages();
-        // await initializeFeaturedLabImages();
         // await seedCypressUsers();
         await seedAllStories(numStories);
         await seedElevationRequests();
@@ -78,7 +66,9 @@ export async function seedDatabase(
 
 export async function initDatabase() {
     try {
+        console.log("seeding tags");
         await seedUnescoTags();
+        console.log("seeding universe experience");
         await seedUniverseLab();
     } catch (error) {
         console.error("Error during database initialization:", error);

@@ -1,6 +1,7 @@
 import { StoryHoverCardContent } from "@/app/components/map/map-overlay/story-hover-card-content";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { cn } from "@/lib/utils";
+import { HoverCardPortal } from "@radix-ui/react-hover-card";
 import { Hexagon } from "lucide-react";
 import { memo } from "react";
 
@@ -28,7 +29,9 @@ function CustomMarker({
                     stroke={"#111"}
                 />
             </HoverCardTrigger>
-            <StoryHoverCardContent storyId={storyId} />
+            <HoverCardPortal>
+                <StoryHoverCardContent storyId={storyId} />
+            </HoverCardPortal>
         </HoverCard>
     );
 }

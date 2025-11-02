@@ -5,11 +5,13 @@ export async function seedStagingScript(
     numStories: number,
 ) {
     try {
+        console.log("step 2: seeding...");
         await seedDatabase(numRandomCityCenters, numStories);
-        fetch("http://localhost:3000/api/revalidate-all");
+        console.log("Database seeding completed successfully... disconnecting");
         process.exit(0);
     } catch (error) {
         console.error("Error during database seeding:", error);
+        process.exit(1);
     }
 }
 

@@ -10,7 +10,6 @@ import {
 import {
     getAllPublicStoryPinsDTO, getLabPublicStoryPinsDTO
 } from "@/data/dto/getters/get-story-dto";
-import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -49,7 +48,6 @@ export default async function MapView({
     // Use cached functions
     const storiesPromise = getStoryPinsForSlug(slug);
     const labsPromise = getPublicLabsDTO();
-    const tagsPromise = getTagsDTO();
 
     return (
         <div className="relative w-screen h-screen flex">
@@ -62,7 +60,6 @@ export default async function MapView({
                             fallback={<Skeleton className="w-full h-full" />}
                         >
                             <MapPanel
-                                tagsPromise={tagsPromise}
                                 labSlug={slug}
                                 labPromise={labsPromise}
                                 storiesPromise={storiesPromise}

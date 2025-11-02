@@ -2,7 +2,7 @@
 
 import { useAppDispatch } from "@/lib/hooks";
 import { setCurrentLab } from "@/lib/redux/lab/lab-slice";
-import { LabDTO, StoryPinDTO, TagDTO } from "@/types/dtos";
+import { LabDTO, StoryPinDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
 
@@ -12,12 +12,10 @@ const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
 });
 
 export function MapPanel({
-    tagsPromise,
     storiesPromise,
     labPromise,
     labSlug,
 }: {
-    tagsPromise: Promise<TagDTO[]>;
     storiesPromise: Promise<StoryPinDTO[]>;
     labPromise: Promise<LabDTO[]>;
     labSlug: string;
@@ -32,7 +30,6 @@ export function MapPanel({
 
     return (
         <MapWrapper
-            tagsPromise={tagsPromise}
             stories={stories}
             labs={labs}
             labSlug={labSlug}

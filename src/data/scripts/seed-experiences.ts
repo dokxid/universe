@@ -13,7 +13,6 @@ import { faker } from "@faker-js/faker";
 
 
 export async function seedExperiences(cityCenters: number[][]) {
-    await prisma.lab.deleteMany();
 
     // seed stock experiences
     const result_stock_experiences = await prisma.lab.createMany({
@@ -44,7 +43,6 @@ export async function seedExperiences(cityCenters: number[][]) {
         })
     );
 
-    await seedUniverseLab();
     console.log("Experiences seeded successfully");
 }
 
