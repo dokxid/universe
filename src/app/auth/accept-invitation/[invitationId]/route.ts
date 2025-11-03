@@ -10,8 +10,7 @@ export async function GET(
         const { invitationId } = await params;
         const invitation = await getInvitationDTO(invitationId);
         const slug = invitation.lab.slug;
-        const returnUrl = req.nextUrl.clone();
-        returnUrl.pathname = `/${slug}/invitation/${invitationId}`;
+        const returnUrl = new URL(`/${slug}/invitation/${invitationId}`, process.env.BETTER_AUTH_URL!);
 
         if (!slug) {
             return notFound();
