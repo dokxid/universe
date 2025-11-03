@@ -59,7 +59,7 @@ export const auth = betterAuth({
         admin({}),
         organization({
             async sendInvitationEmail(data) {
-                const inviteLink = `http://localhost:3000/auth/accept-invitation/${data.id}`;
+                const inviteLink = `${process.env.BETTER_AUTH_URL}/auth/accept-invitation/${data.id}`;
                 sendOrganizationInvitation({
                     email: data.email,
                     invitedByUsername: data.inviter.user.name,
