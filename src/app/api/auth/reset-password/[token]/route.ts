@@ -6,7 +6,7 @@ export async function GET(
 ) {
     try {
         const { token } = await params;
-        const returnUrl = new URL("/auth/reset-password", process.env.BETTER_AUTH_URL!);
+        const returnUrl = new URL("/universe/reset-password", process.env.BETTER_AUTH_URL!);
         returnUrl.searchParams.set("token", token);
         return NextResponse.redirect(returnUrl);
     } catch (error) {
