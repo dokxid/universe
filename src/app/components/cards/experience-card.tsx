@@ -5,6 +5,7 @@ import { LabDTO } from "@/types/dtos";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { HostedImage, S3Image } from "../embeds/s3-image";
 
 export function LabCard({ lab }: { lab: LabDTO }) {
     const url = `/${lab.slug}/map`;
@@ -24,11 +25,9 @@ export function LabCard({ lab }: { lab: LabDTO }) {
                     <AspectRatio ratio={16 / 9}>
                         {lab.logo ? (
                             <Suspense fallback={<ListLabsSkeleton />}>
-                                <Image
-                                    src={lab.logo}
+                                <HostedImage
+                                    fileName={lab.logo}
                                     alt={lab.name}
-                                    fill={true}
-                                    sizes="(min-width: 768px) 50vw, 100vw"
                                     className="group-hover:opacity-75 transition-translate duration-100 object-cover group-hover:-translate-y-10"
                                 />
                             </Suspense>
