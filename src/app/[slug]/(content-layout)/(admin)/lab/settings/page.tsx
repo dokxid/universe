@@ -10,20 +10,8 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { LabSettings } from "@/app/components/views/lab-settings";
-import { getLabDTO, getLabsDTO } from "@/data/dto/getters/get-lab-dto";
+import { getLabDTO } from "@/data/dto/getters/get-lab-dto";
 import { Settings } from "lucide-react";
-
-export async function generateStaticParams() {
-    try {
-        const labs = await getLabsDTO();
-        return labs.map((lab) => ({
-            slug: lab.slug,
-        }));
-    } catch (error) {
-        console.error("Error generating static params:", error);
-        return [];
-    }
-}
 
 export default async function Page({
     params,
