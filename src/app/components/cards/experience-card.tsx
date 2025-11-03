@@ -2,10 +2,9 @@ import { ListLabsSkeleton } from "@/components/skeletons/list-experiences-skelet
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { LabDTO } from "@/types/dtos";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { HostedImage, S3Image } from "../embeds/s3-image";
+import { HostedImage } from "../embeds/s3-image";
 
 export function LabCard({ lab }: { lab: LabDTO }) {
     const url = `/${lab.slug}/map`;

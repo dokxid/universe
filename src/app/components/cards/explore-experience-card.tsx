@@ -6,6 +6,7 @@ import { LabDTO } from "@/types/dtos";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { HostedImage } from "../embeds/s3-image";
 
 export function ExploreLabCard({ lab }: { lab: LabDTO }) {
     const searchParams = useSearchParams();
@@ -18,21 +19,18 @@ export function ExploreLabCard({ lab }: { lab: LabDTO }) {
             }
             key={lab.slug}
             data-testid={`explore-lab-card-${lab.slug}`}
-            className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group cursor-pointer ${
-                lab.slug === selectedLab
-                    ? "bg-secondary text-secondary-foreground"
-                    : ""
-            }`}
+            className={`w-full mx-auto py-0 flex-col hover:bg-accent shadow-none gap-0 h-60 group cursor-pointer ${lab.slug === selectedLab
+                ? "bg-secondary text-secondary-foreground"
+                : ""
+                }`}
         >
             <div className="overflow-hidden rounded-t-md group-hover:h-6 shrink">
                 <AspectRatio ratio={16 / 9}>
                     {lab.logo ? (
                         <Suspense fallback={<ListLabsSkeleton />}>
-                            <Image
-                                src={lab.logo}
+                            <HostedImage
+                                fileName={lab.logo}
                                 alt={lab.name}
-                                fill={true}
-                                sizes="(min-width: 768px) 50vw, 100vw"
                                 className="group-hover:opacity-75 transition-translate duration-100 object-cover group-hover:-translate-y-10"
                             />
                         </Suspense>
