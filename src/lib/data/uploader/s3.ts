@@ -140,6 +140,12 @@ export async function getSignedS3URL(name: string): Promise<string> {
             Key: name,
         });
         const signedUrl = await getSignedUrl(client, command);
+        if (signedUrl.startsWith("http://garage:3900")) {
+            return signedUrl.replace(
+                "http://garage:3900",
+                process.env.GARAGE_PUBLIC_URL || "http://localhost:3900"
+            );
+        }
         return signedUrl;
     } catch (error) {
         console.error(
