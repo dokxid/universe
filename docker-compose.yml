@@ -93,7 +93,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - pgdata-staging:/var/lib/postgresql
+      - pgdata-production:/var/lib/postgresql
     networks:
       - app-network-production
 
