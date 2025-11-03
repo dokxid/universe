@@ -6,9 +6,8 @@ export async function GET(
 ) {
     try {
         const { token } = await params;
-        const returnUrl = req.nextUrl.clone();
+        const returnUrl = new URL("/auth/accept-invitation", process.env.BETTER_AUTH_URL!);
         returnUrl.searchParams.set("token", token);
-        returnUrl.pathname = `/universe/reset-password`;
         return NextResponse.redirect(returnUrl);
     } catch (error) {
         console.log("Error accepting invitation:", error);
