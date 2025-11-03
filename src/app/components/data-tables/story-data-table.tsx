@@ -44,7 +44,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = React.useState({});
-    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [sorting, setSorting] = React.useState<SortingState>([{ id: "updatedAt", desc: true }]);
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({
             title: true,
@@ -52,8 +52,8 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
             draft: true,
             visible_universe: true,
             latest_elevation_request: true,
-            createdAt: true,
-            updatedAt: false,
+            createdAt: false,
+            updatedAt: true,
         });
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
@@ -87,9 +87,6 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                 <div className="flex items-center py-4 justify-between">
                     <Input
                         placeholder="Filter stories..."
-                        value={
-                            table.getColumn("title")?.getFilterValue() as string
-                        }
                         onChange={(event) =>
                             table
                                 .getColumn("title")
@@ -116,11 +113,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                         variant="ghost"
                                         className="w-full justify-start"
                                         onClick={() => {
-                                            const selectedIds =
-                                                Object.keys(rowSelection);
-                                            toast.success(
-                                                `Elevation for ${selectedIds.length} stories have been requested`
-                                            );
+                                            toast.info("Feature coming soon!")
                                         }}
                                         tabIndex={-1}
                                         type="button"
@@ -133,11 +126,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                         variant="ghost"
                                         className="w-full justify-start"
                                         onClick={() => {
-                                            const selectedIds =
-                                                Object.keys(rowSelection);
-                                            toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Draft.`
-                                            );
+                                            toast.info("Feature coming soon!")
                                         }}
                                         tabIndex={-1}
                                         type="button"
@@ -150,11 +139,7 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                         variant="ghost"
                                         className="w-full justify-start"
                                         onClick={() => {
-                                            const selectedIds =
-                                                Object.keys(rowSelection);
-                                            toast.success(
-                                                `Updating Visibility for ${selectedIds.length} stories to: Map.`
-                                            );
+                                            toast.info("Feature coming soon!")
                                         }}
                                         tabIndex={-1}
                                         type="button"
@@ -209,10 +194,10 @@ export function StoryDataTable<TData extends StoryDTO, TValue>({
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                          header.column
-                                                              .columnDef.header,
-                                                          header.getContext()
-                                                      )}
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext()
+                                                    )}
                                             </TableHead>
                                         );
                                     })}

@@ -39,7 +39,6 @@ export async function seedStories(
                 },
                 select: { id: true },
             });
-            console.log(tagIds)
 
             const doc = await test_story_doc(center, labSlug, user?.id);
             const storyInsertResult = await prisma.story.create({
@@ -47,6 +46,11 @@ export async function seedStories(
                     ...doc,
                     lab: {
                         connect: { slug: labSlug },
+                    },
+                    elevationRequests: {
+                        create: [
+                            { status: "created", createdAt: faker.date.between({ from: new Date(2020, 0, 1), to: new Date(2021, 0, 1) }) },
+                        ],
                     },
                 },
             });
@@ -61,6 +65,7 @@ export async function seedStories(
                     }),
                 ),
             );
+
 
             console.log(
                 `Inserted story ${storyInsertResult.id} for lab: ${labSlug}`,

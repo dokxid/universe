@@ -6,6 +6,7 @@ import {
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
+import { auth } from "@/lib/auth/betterauth/auth";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -70,6 +71,14 @@ export async function initDatabase() {
         await seedUnescoTags();
         console.log("seeding universe experience");
         await seedUniverseLab();
+        await auth.api.createUser({
+            body: {
+                email: process.env.BETTER_AUTH_ADMIN_EMAIL!,
+                password: process.env.BETTER_AUTH_ADMIN_PASSWORD!,
+                name: "Super Admin",
+                role: "admin",
+            },
+        });
     } catch (error) {
         console.error("Error during database initialization:", error);
         throw error;

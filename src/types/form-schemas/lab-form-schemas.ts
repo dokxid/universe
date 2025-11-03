@@ -8,9 +8,6 @@ export const editLabAppearanceSchema = z.object({
     lab: z.string().min(1, "Lab slug is required."),
     title: z.string().min(2, "Title must be at least 2 characters."),
     subtitle: z.string().min(2, "Subtitle must be at least 2 characters."),
-    description: z
-        .string()
-        .min(10, "Description must be at least 10 characters."),
     subdomain: z
         .string()
         .min(3, "Subdomain must be at least 3 characters.")
@@ -18,6 +15,11 @@ export const editLabAppearanceSchema = z.object({
             /^[a-zA-Z0-9-]+$/,
             "Subdomain can only contain letters, numbers, and hyphens."
         ),
+});
+
+export const editLabContentSchema = z.object({
+    lab: z.string().min(1, "Lab slug is required."),
+    content: z.string().min(10, "Content must be at least 10 characters."),
 });
 
 export const editLabImageFormSchema = z.object({

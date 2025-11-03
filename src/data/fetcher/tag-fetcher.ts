@@ -6,7 +6,9 @@ import "server-only";
 const includeOptions = {
     include: {
         _count: {
-            select: { stories: true },
+            select: {
+                stories: true,
+            },
         },
     }
 }
@@ -15,7 +17,10 @@ export type TagWithCount = TagGetPayload<typeof includeOptions>;
 
 export const getTags = cache(async (): Promise<TagWithCount[]> => {
     try {
-        const result = await prisma.tag.findMany(includeOptions);
+        const result = await prisma.tag.findMany({
+            where: { stories: { some: { story: { draft: false } } } },
+            ...includeOptions
+        });
         return result;
     } catch (error) {
         console.error("Error fetching tags:", error);
@@ -27,7 +32,16 @@ export const getTagsForLab = cache(async (slug: string) => {
     try {
         const result = await prisma.tag.findMany({
             where: {
-                stories: { some: { story: { lab: { slug: slug } } } },
+                stories: {
+                    some: {
+                        story: {
+                            AND: {
+                                lab: { slug: slug },
+                                draft: false,
+                            }
+                        }
+                    }
+                },
             },
             ...includeOptions,
         });

@@ -77,12 +77,10 @@ export async function getLabPrivateStoriesDTO(
             throw new Error("Unauthorized");
         }
         if (await isUserSuperAdmin()) {
-            const stories = await getAllStories();
-            return stories.filter(
-                async (story) => await canUserViewStory(story)
-            );
+            const stories = await getAllStories({ lab: { slug: labSlug } });
+            return stories
         } else if (await isUserMember(user, labSlug)) {
-            const stories = await getAllStories();
+            const stories = await getAllStories({ lab: { slug: labSlug } });
             return stories.filter(
                 async (story) => await canUserViewStory(story)
             );

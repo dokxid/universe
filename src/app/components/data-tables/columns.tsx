@@ -1,5 +1,6 @@
 "use client";
 
+import { setDraftAction, setVisibilityAction } from "@/actions/mutate/mutate-story";
 import { submitElevationRequestAction } from "@/actions/submit-elevation-request";
 import { DataTableColumnHeader } from "@/app/components/data-tables/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
@@ -32,10 +33,7 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
 
-    const handlePendingElevationRequest = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
+    const handlePendingElevationRequest = async () => {
         try {
             const result = await submitElevationRequestAction(
                 story.id,
@@ -43,6 +41,42 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                 "pending",
             );
             toast.success("Elevation request completed: " + result);
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    const handleToggleDraft = async () => {
+        try {
+            const result = await setDraftAction(
+                story.id,
+                !story.draft
+            );
+            if (result.success) {
+                toast.success(`Story visibility updated to ${story.draft ? "public" : "draft"}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    const handleToggleVisibility = async () => {
+        try {
+            const result = await setVisibilityAction(
+                story.id,
+                !story.visibleUniverse
+            );
+            if (result.success) {
+                toast.success(`Story visibility updated to ${story.visibleUniverse ? "lab" : "visibility"}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
         } catch (error) {
             toast.error("Error submitting elevation request: " + error);
         }
@@ -79,30 +113,22 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Updating Visibility for story ${story.title} to: Draft.`,
-                            );
-                        }}
+                        onClick={handleToggleDraft}
                         tabIndex={-1}
                         type="button"
                     >
-                        Set as draft
+                        Set to {story.draft ? "public" : "draft"}
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Updating Visibility for story ${story.title} to: Public.`,
-                            );
-                        }}
+                        onClick={handleToggleVisibility}
                         tabIndex={-1}
                         type="button"
                     >
-                        Set as public
+                        Set to {story.visibleUniverse ? "Lab" : "Universe"}
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -151,14 +177,14 @@ export const manageStoryColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Title" />
         ),
-        cell: (info) => <span className={""}>{info.getValue()}</span>,
+        cell: (info) => <Link href={`/${info.row.original.lab.slug}/stories/view/${info.row.original.id}`}>{info.getValue()}</Link>,
     }),
     columnHelper.accessor((row) => row.author.name, {
         id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
-        cell: (info) => info.getValue(),
+        cell: (info) => <Link href={`${info.row.original.lab.slug}/user/view/${info.row.original.author.id}`}>{info.getValue()}</Link>,
     }),
     columnHelper.accessor("draft", {
         header: ({ column }) => (

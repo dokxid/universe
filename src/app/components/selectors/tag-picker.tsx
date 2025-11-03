@@ -99,9 +99,8 @@ export function TagPickerForm({
                 </div>
             )}
             <div
-                className={`col-span-12 col-start-auto space-y-0 items-start ${
-                    className || ""
-                }`}
+                className={`col-span-12 col-start-auto space-y-0 items-start ${className || ""
+                    }`}
             >
                 {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
                 <Popover
@@ -212,7 +211,7 @@ export function TagPickerFilter({
             setInputTags(tagObjects);
             setInputTagStrings(tagObjects.map((tag) => tag.name));
         }
-    }, [availableTags, selectedTags]);
+    }, [availableTags, selectedTags, searchParams]);
 
     useEffect(() => {
         if (tagParams.length > 0 && availableTags) {
@@ -250,9 +249,8 @@ export function TagPickerFilter({
 
     return (
         <div
-            className={`col-span-12 col-start-auto space-y-0 items-start ${
-                className || ""
-            }`}
+            className={`col-span-12 col-start-auto space-y-0 items-start ${className || ""
+                }`}
         >
             {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
             <Popover

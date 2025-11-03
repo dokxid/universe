@@ -10,6 +10,7 @@ import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
     createLabFormSchema,
     editLabAppearanceSchema,
+    editLabContentSchema,
     editLabImageFormSchema,
     editVisibilityFormSchema,
 } from "@/types/form-schemas/lab-form-schemas";
@@ -131,7 +132,6 @@ export async function editLabAppearanceDTO(formData: FormData) {
             data: {
                 name: data.title,
                 subtitle: data.subtitle,
-                content: data.description,
                 slug: data.subdomain,
             },
         });
@@ -152,6 +152,44 @@ export async function editLabAppearanceDTO(formData: FormData) {
     }
 }
 
+export async function editLabContentDTO(formData: FormData) {
+    try {
+        // check permissions of user
+        const isAllowedToEdit = await canUserEditLab(
+            formData.get("lab") as string,
+        );
+        if (!isAllowedToEdit) {
+            throw new Error("User is not allowed to edit this lab");
+        }
+
+        // validate form data
+        const rawData = Object.fromEntries(formData.entries());
+        const result = editLabContentSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(z.flattenError(result.error)));
+        }
+        const data = result.data;
+
+        // update database
+        const mutate = await prisma.lab.update({
+            where: { slug: data.lab },
+            data: {
+                content: data.content,
+            },
+        });
+        if (!mutate) {
+            throw new Error("No changes made.");
+        }
+
+        // revalidate cache
+        revalidateTag(`labs/${mutate.slug}`);
+        return { success: true, error: undefined };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
 export async function createLabDTO(formData: FormData) {
     try {
         // check permissions of user

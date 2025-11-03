@@ -136,7 +136,7 @@ export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
                 author: authorSelectFields,
                 lab: labSelectFields,
                 tags: { select: { tag: true } },
-                elevationRequests: true,
+                elevationRequests: { orderBy: { createdAt: "desc" } },
             },
         });
         const sanitizedStories = await Promise.all(

@@ -64,14 +64,13 @@ export const test_story_doc = async (
         longitude: labCenter[0] + faker.number.float({ min: -0.8, max: 0.8 }),
         latitude: labCenter[1] + faker.number.float({ min: -0.3, max: 0.3 }),
         year: faker.number.int({ min: 1800, max: 2024 }),
-        visibleUniverse: faker.datatype.boolean(),
+        visibleUniverse: false,
         featuredImageUrl:
             process.env.LOCAL_UPLOADER === "true"
                 ? await getStoryImageUrl(labSlug)
                 : "https://picsum.photos/seed/" +
                 faker.string.alphanumeric(10) +
                 "/800/600",
-        elevationRequests: undefined,
         license: faker.helpers.arrayElement(
             Object.values(CC_LICENSES).map((license) => license.code),
         ),
