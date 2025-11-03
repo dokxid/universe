@@ -82,22 +82,20 @@ export async function uploadFile(file: File, prefix?: string): Promise<string> {
                 ContentLength: file.size,
             })
         );
-        const url = `${
-            process.env.BASE_URL ||
-            process.env.VERCEL_URL ||
+        const url = `${process.env.BETTER_AUTH_URL ||
             "http://localhost:3000"
-        }/api/files/${key}`;
+            }/api/files/${key}`;
         return url;
     } catch (error) {
         console.error(
             `Failed to upload ${file.name}:`,
             error instanceof AggregateError
                 ? error.errors
-                      .map((e) => (e instanceof Error ? e.message : e))
-                      .join(", ")
+                    .map((e) => (e instanceof Error ? e.message : e))
+                    .join(", ")
                 : error instanceof Error
-                ? error.message
-                : error
+                    ? error.message
+                    : error
         );
         throw error;
     }
@@ -119,11 +117,9 @@ export async function uploadFileToPublicS3(file: File): Promise<string> {
                 ContentLength: file.size,
             })
         );
-        const url = `${
-            process.env.BASE_URL ||
-            process.env.VERCEL_URL ||
+        const url = `${process.env.BETTER_AUTH_URL ||
             "http://localhost:3000"
-        }/api/files/${key}`;
+            }/api/files/${key}`;
         console.log("File uploaded to:", url);
         return url;
     } catch (error) {
