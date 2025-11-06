@@ -10,21 +10,9 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
-export async function generateStaticParams() {
-    try {
-        const labs = await getLabsDTO();
-        return labs.map((lab) => ({
-            slug: lab.slug,
-        }));
-    } catch (error) {
-        console.error("Error generating static params:", error);
-        return [];
-    }
-}
 
 export default async function Page({
     params,
