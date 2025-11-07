@@ -21,7 +21,7 @@ export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
 
 export async function getAllPublicStoryPinsDTO(): Promise<StoryPinDTO[]> {
     try {
-        const nonDraftStoryPins = await getAllStoryPins({ draft: false });
+        const nonDraftStoryPins = await getAllStoryPins({ draft: false, visibleUniverse: true });
         return nonDraftStoryPins;
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : "Unknown error");
