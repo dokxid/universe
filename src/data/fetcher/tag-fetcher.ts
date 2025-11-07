@@ -10,16 +10,15 @@ const includeOptions = {
                 stories: true,
             },
         },
-    }
-}
+    },
+};
 
 export type TagWithCount = TagGetPayload<typeof includeOptions>;
 
 export const getTags = cache(async (): Promise<TagWithCount[]> => {
     try {
         const result = await prisma.tag.findMany({
-            where: { stories: { some: { story: { draft: false } } } },
-            ...includeOptions
+            ...includeOptions,
         });
         return result;
     } catch (error) {
@@ -38,9 +37,9 @@ export const getTagsForLab = cache(async (slug: string) => {
                             AND: {
                                 lab: { slug: slug },
                                 draft: false,
-                            }
-                        }
-                    }
+                            },
+                        },
+                    },
                 },
             },
             ...includeOptions,
