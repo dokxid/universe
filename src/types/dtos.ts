@@ -113,11 +113,6 @@ export type UserDTO = {
     storyCount: number;
 };
 
-export type ExperienceSignInDTO = {
-    organizationId?: string;
-    connectionId?: string;
-};
-
 export type TagDTO = {
     theme?: string | null;
     category?: string | null;

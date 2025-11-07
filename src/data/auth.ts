@@ -39,15 +39,15 @@ const PERMISSIONS_AUTHOR: Permissions[] = ["edit_story"];
 const PERMISSIONS_MEMBER: Permissions[] = ["add_story"];
 
 /**
- * Gets the permissions for a user, depending on their role in the experience.
+ * Gets the permissions for a user, depending on their role in the lab.
  * @param user - the current user
- * @param experienceSlug - the lab to check against (else admin would work for any lab)
+ * @param labSlug - the lab to check against (else admin would work for any lab)
  * @param storyId - the story to check edit permissions for (optional)
- * @returns the permissions the user has for the given experience and story
+ * @returns the permissions the user has for the given lab and story
  */
 export const getPermissionsByUser = async (
     user: UserDTO | null,
-    experienceSlug: string,
+    labSlug: string,
     storyId?: string,
 ): Promise<Permissions[]> => {
     const permissions: Permissions[] = [];
@@ -59,18 +59,18 @@ export const getPermissionsByUser = async (
         // case user is superadmin: all permissions
         permissions.push(...PERMISSIONS_SUPERADMIN);
         return permissions;
-    } else if (await isUserAdmin(experienceSlug)) {
-        // case user is admin of experience: manage users, add and edit stories
+    } else if (await isUserAdmin(labSlug)) {
+        // case user is admin of lab: manage users, add and edit stories
         permissions.push(...PERMISSIONS_ADMIN);
         return permissions;
-    } else if (await isUserMember(user, experienceSlug)) {
-        // case user is member of experience: add story, edit story if storyId provided and user can edit it
+    } else if (await isUserMember(user, labSlug)) {
+        // case user is member of lab: add story, edit story if storyId provided and user can edit it
         if (storyId && (await canUserEditStoryId(storyId)))
             permissions.push(...PERMISSIONS_AUTHOR);
         permissions.push(...PERMISSIONS_MEMBER);
     }
 
-    // case when user is not member of experience: no permissions
+    // case when user is not member of lab: no permissions
     return permissions;
 };
 
@@ -97,15 +97,15 @@ export const getCurrentUser = async (
 
 export async function isUserMember(
     viewer: UserDTO,
-    experienceSlug: string,
+    labSlug: string,
 ): Promise<boolean> {
     try {
         if (!viewer) return false;
         if (await isUserSuperAdmin()) return true;
-        if (experienceSlug === "universe") return false;
+        if (labSlug === "universe") return false;
         const userRelation = await getUserLabRelationBySlug(
             viewer,
-            experienceSlug,
+            labSlug,
         );
         return userRelation.isMember;
     } catch {
@@ -113,14 +113,14 @@ export async function isUserMember(
     }
 }
 
-export async function isUserAdmin(experienceSlug: string): Promise<boolean> {
+export async function isUserAdmin(labSlug: string): Promise<boolean> {
     try {
         const viewer = await getCurrentUser(false);
         if (!viewer) return false;
-        if (experienceSlug === "universe") return false;
+        if (labSlug === "universe") return false;
         const userRelation = await getUserLabRelationBySlug(
             viewer,
-            experienceSlug,
+            labSlug,
         );
         return userRelation.isAdmin;
     } catch {
@@ -133,18 +133,18 @@ export async function isUserSuperAdmin(): Promise<boolean> {
         const user = await getCurrentUser(false);
         return user?.superAdmin || false;
     } catch (err) {
-        console.error("Error fetching user experience relation:", err);
+        console.error("Error fetching user lab relation:", err);
         throw err;
     }
 }
 
 export async function isUserPartOfOrganization(
     user: UserDTO | null,
-    experienceSlug: string,
+    labSlug: string,
 ) {
     try {
         if (!user) return false;
-        const isMember = await isUserMember(user, experienceSlug);
+        const isMember = await isUserMember(user, labSlug);
         return isMember;
     } catch {
         return false;
@@ -170,7 +170,7 @@ async function getUserLabRelationBySlug(
             isAdmin: role === UserRole.admin,
         };
     } catch (err) {
-        console.error("Error fetching user experience relation:", err);
+        console.error("Error fetching user lab relation:", err);
         throw err;
     }
 }

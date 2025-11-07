@@ -35,7 +35,7 @@ describe("Layout Features", () => {
         cy.visit("/universe/map");
         cy.contains("Explore").should("exist");
     });
-    it("experience selector can change search params", () => {
+    it("lab selector can change search params", () => {
         cy.visit("/universe/map");
         cy.get('[data-testid="explore-lab-card-test"]').click();
         cy.url().should("include", "?exp=test");

@@ -1,7 +1,7 @@
 "use server";
 
 import { startSeedingDatabase } from "@/data/scripts/seed-database-server";
-import { seedOneExperience } from "@/data/scripts/seed-experiences";
+import { seedOneLab } from "@/data/scripts/seed-labs";
 import { revalidateTag } from "next/cache";
 
 export async function seedDatabaseAction(
@@ -16,7 +16,7 @@ export async function seedDatabaseAction(
     }
 }
 
-export async function seedOneExperienceAction(
+export async function seedOneLabAction(
     center: number[],
     title: string,
     slug: string,
@@ -24,10 +24,10 @@ export async function seedOneExperienceAction(
     subtitle: string,
     initialZoom: number,
     organizationId: string,
-    experienceStories: number
+    labStories: number
 ) {
     try {
-        await seedOneExperience(
+        await seedOneLab(
             center,
             title,
             slug,
@@ -35,12 +35,12 @@ export async function seedOneExperienceAction(
             subtitle,
             initialZoom,
             organizationId,
-            experienceStories
+            labStories
         );
-        revalidateTag("experiences");
+        revalidateTag("labs");
         revalidateTag("stories");
     } catch (error) {
-        console.error("Error during seeding single experience:", error);
+        console.error("Error during seeding single lab:", error);
         throw error;
     }
 }

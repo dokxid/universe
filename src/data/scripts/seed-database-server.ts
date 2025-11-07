@@ -15,7 +15,7 @@ export async function startSeedingDatabase(
     ) {
         throw new Error(
             "Seeding can only be run on a test database. Current DB: " +
-                process.env.MONGODB_DBNAME
+            process.env.MONGODB_DBNAME
         );
     }
     try {
@@ -23,7 +23,7 @@ export async function startSeedingDatabase(
             throw new Error("Only super admins can seed the database");
         }
         await seedDatabase(numStories, numRandomCityCenters);
-        revalidateTag("experiences");
+        revalidateTag("labs");
         revalidateTag("stories");
         revalidateTag("tags");
     } catch (error) {

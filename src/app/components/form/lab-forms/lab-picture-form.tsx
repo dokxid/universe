@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import z from "zod";
 
-export function LabPictureForm({ experience }: { experience: LabDTO }) {
+export function LabPictureForm({ lab }: { lab: LabDTO }) {
     const slug = getLabSlugFromPathname(usePathname());
     const editLabPictureForm = useForm({
         resolver: zodResolver(editLabImageFormSchema),
@@ -105,10 +105,10 @@ export function LabPictureForm({ experience }: { experience: LabDTO }) {
                                     >
                                         <HostedImage
                                             fileName={
-                                                experience.logo ||
+                                                lab.logo ||
                                                 "/default-lab-banner.jpg"
                                             }
-                                            alt={experience.name}
+                                            alt={lab.name}
                                         />
                                     </AspectRatio>
                                 </SettingsBoxFormElement>

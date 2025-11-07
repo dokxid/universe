@@ -23,7 +23,7 @@ export async function seedStories(
             },
         });
         console.log(
-            `Found ${users.length} users for experience slug: ${labSlug}`,
+            `Found ${users.length} users for lab slug: ${labSlug}`,
         );
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
@@ -72,7 +72,7 @@ export async function seedStories(
             );
         }
         console.log(
-            `Inserted ${numStories} stories for experience: ${labSlug}`,
+            `Inserted ${numStories} stories for lab: ${labSlug}`,
         );
     } catch (err) {
         console.error("Error inserting story:", err);
@@ -81,16 +81,16 @@ export async function seedStories(
 
 export async function seedAllStories(numStories: number = 40) {
     try {
-        const allExperiences = await prisma.lab.findMany();
+        const allLabs = await prisma.lab.findMany();
         await Promise.all(
-            allExperiences.map(async (experience) => {
+            allLabs.map(async (lab) => {
                 await seedStories(
-                    experience.slug,
-                    [experience.lngCenter, experience.latCenter],
+                    lab.slug,
+                    [lab.lngCenter, lab.latCenter],
                     numStories,
                 );
                 console.log(
-                    `Seeded ${numStories} stories for experience: ${experience.slug}`,
+                    `Seeded ${numStories} stories for lab: ${lab.slug}`,
                 );
             }),
         );

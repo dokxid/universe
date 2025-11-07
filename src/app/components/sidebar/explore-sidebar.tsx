@@ -1,6 +1,6 @@
 "use client";
 
-import { ExploreLabCard } from "@/app/components/cards/explore-experience-card";
+import { ExploreLabCard } from "@/app/components/cards/explore-lab-card";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,9 @@ import { use, useState } from "react";
 import { useDispatch } from "react-redux";
 
 function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
-    const [experiencesSearchTerm, setExperiencesSearchTerm] = useState("");
-    const filteredExperiences = labs.filter((lab) =>
-        lab.name.toLowerCase().includes(experiencesSearchTerm.toLowerCase())
+    const [labsSearchTerm, setLabsSearchTerm] = useState("");
+    const filteredLabs = labs.filter((lab) =>
+        lab.name.toLowerCase().includes(labsSearchTerm.toLowerCase())
     );
 
     return (
@@ -41,19 +41,19 @@ function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
             </article>
             <Separator className="w-full my-2" />
             <div className={"w-full flex flex-col gap-3"}>
-                <Label htmlFor="Search experiences">
-                    Search experiences ({filteredExperiences.length})
+                <Label htmlFor="Search labs">
+                    Search labs ({filteredLabs.length})
                 </Label>
                 <Input
-                    value={experiencesSearchTerm}
-                    onChange={(e) => setExperiencesSearchTerm(e.target.value)}
+                    value={labsSearchTerm}
+                    onChange={(e) => setLabsSearchTerm(e.target.value)}
                     type="text"
-                    placeholder="Search experiences..."
+                    placeholder="Search labs..."
                     className={"bg-input"}
                 />
             </div>
             <div className="grid grid-flow-row-dense grid-cols-1 gap-5 w-full">
-                {filteredExperiences.map((lab: LabDTO) => (
+                {filteredLabs.map((lab: LabDTO) => (
                     <ExploreLabCard key={lab.slug} lab={lab} />
                 ))}
             </div>
@@ -77,7 +77,7 @@ export function ExploreSidebar({
     const state = settingsState.exploreOpen ? "open" : "closed";
 
     if (slug !== "universe") return null;
-    if (!labs) return <div>No experiences found.</div>;
+    if (!labs) return <div>No labs found.</div>;
     if (isMobile) {
         return (
             <Drawer
@@ -86,7 +86,7 @@ export function ExploreSidebar({
             >
                 <DrawerContent>
                     <VisuallyHidden>
-                        <DialogTitle>Experiences</DialogTitle>
+                        <DialogTitle>labs</DialogTitle>
                     </VisuallyHidden>
                     <div className={"overflow-y-auto p-2"}>
                         <ExploreSidebarContent labs={labs} />

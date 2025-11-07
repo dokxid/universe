@@ -36,13 +36,13 @@ export function ImageElement({
 }
 
 export function S3Image({
-    experience,
+    lab,
     fileName,
     className,
     internal = true,
     alt,
 }: {
-    experience: string;
+    lab: string;
     fileName: string | null;
     className?: string;
     link?: boolean;
@@ -50,7 +50,7 @@ export function S3Image({
     alt?: string;
 }) {
     const { imageUrl, isError, isLoading } = useImageURL(
-        experience,
+        lab,
         fileName || "",
     );
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;

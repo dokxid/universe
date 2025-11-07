@@ -22,8 +22,8 @@ export async function getLab(whereInput: Prisma.LabWhereUniqueInput) {
         return lab;
     } catch (err) {
         throw new Error(
-            "couldn't fetch experience: " +
-                (err instanceof Error ? err.message : "Unknown error"),
+            "couldn't fetch lab: " +
+            (err instanceof Error ? err.message : "Unknown error"),
         );
     }
 }

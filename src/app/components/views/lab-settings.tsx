@@ -93,7 +93,7 @@ export function LabSettings({
                 formData
             );
             if (result?.success) {
-                toast.success("Experience updated successfully!");
+                toast.success("Lab updated successfully!");
                 mutate(["labs", slug]);
                 if (redirect) router.push(redirect);
             }
@@ -170,8 +170,8 @@ export function LabSettings({
                 handleFormErrors(result, contentForm);
             }
         } catch (error) {
-            console.error("Error updating experience content:", error);
-            toast.error("Failed to update experience content.");
+            console.error("Error updating lab content:", error);
+            toast.error("Failed to update lab content.");
         }
     }
 
@@ -207,7 +207,7 @@ export function LabSettings({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience title
+                                                    Lab title
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -225,7 +225,7 @@ export function LabSettings({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience subtitle
+                                                    Lab subtitle
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -243,7 +243,7 @@ export function LabSettings({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience subdomain
+                                                    Lab subdomain
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -340,7 +340,7 @@ export function LabSettings({
                     </form>
                 </Form>
                 <DebugListObject data={contentForm.watch()} />
-                <LabPictureForm experience={lab} />
+                <LabPictureForm lab={lab} />
                 <SettingsFormBox>
                     <SettingsFormTitle>Change visibility?</SettingsFormTitle>
                     <SettingsFormDescription>
@@ -374,15 +374,14 @@ export function LabSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms">
                                                                 Should this
-                                                                experience be
+                                                                lab be
                                                                 listed publicly?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 be listed on our
-                                                                experiences
-                                                                page.
+                                                                featured labs page.
                                                             </p>
                                                         </div>
                                                     </div>
@@ -394,16 +393,16 @@ export function LabSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms">
                                                                 Should this
-                                                                experience only
+                                                                lab only
                                                                 be available
                                                                 through a link?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 be <b>not</b>{" "}
                                                                 listed on our
-                                                                experiences
+                                                                featured labs
                                                                 page.
                                                             </p>
                                                         </div>
@@ -416,12 +415,12 @@ export function LabSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms-2">
                                                                 Should this
-                                                                experience be
+                                                                lab be
                                                                 private?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 only visible to
                                                                 team members.
                                                             </p>
@@ -454,9 +453,9 @@ export function LabSettings({
                 </SettingsFormBox>
 
                 <SettingsFormBox>
-                    <SettingsFormTitle>Delete experience?</SettingsFormTitle>
+                    <SettingsFormTitle>Delete lab?</SettingsFormTitle>
                     <SettingsFormDescription>
-                        Deleting your experience is permanent and cannot be
+                        Deleting your lab is permanent and cannot be
                         undone.
                     </SettingsFormDescription>
                     <SettingsBoxContent>
@@ -466,7 +465,7 @@ export function LabSettings({
                                 className={"w-fit"}
                                 disabled
                             >
-                                Delete experience
+                                Delete lab
                             </Button>
                         </SettingsFormButtonGroup>
                     </SettingsBoxContent>

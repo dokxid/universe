@@ -46,16 +46,16 @@ function DeckGLOverlay(props: DeckProps) {
     the dependency array, as it would cause infinite loops and break functionality.
 */
 function MapController({
-    currentExperience,
+    currentLab,
     selectedStory,
 }: {
-    currentExperience: LabDTO;
+    currentLab: LabDTO;
     selectedStory: StoryPinDTO | null;
 }) {
     const { mainMap: map } = useMap();
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
-    const experience = useMemo(
+    const lab = useMemo(
         () => searchParams.get("exp"),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [searchParams.get("exp")],
@@ -78,7 +78,7 @@ function MapController({
                 : new EdgeInsets(0, 0, 0, 450);
         } else {
             // case: story -> !story
-            center = prevStoryCenter || currentExperience.center.coordinates;
+            center = prevStoryCenter || currentLab.center.coordinates;
             zoom = map.getZoom();
             edgeInsets = isMobile
                 ? new EdgeInsets(0, 0, 0, 0)
@@ -98,8 +98,8 @@ function MapController({
 
     useEffect(() => {
         if (!map) return;
-        const center = currentExperience.center.coordinates;
-        const zoom = currentExperience.initialZoom;
+        const center = currentLab.center.coordinates;
+        const zoom = currentLab.initialZoom;
         const edgeInsets = new EdgeInsets(0, 0, 0, 0);
         map.flyTo({
             center,
@@ -107,7 +107,7 @@ function MapController({
             padding: edgeInsets,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [experience]);
+    }, [lab]);
 
     useEffect(() => {
         if (!map) return;
@@ -389,7 +389,7 @@ export function DeckGLMap({
                     projection={settingsState.globeView ? "globe" : "mercator"}
                 >
                     <MapController
-                        currentExperience={lab}
+                        currentLab={lab}
                         selectedStory={activeStory}
                     />
                     <AttributionControl

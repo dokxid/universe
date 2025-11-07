@@ -28,9 +28,9 @@ import Link from "next/link";
 
 // this runs slow as heck on vercel so im deactivating this for now
 // export async function generateStaticParams() {
-//     const experiences = await getExperiencesDTO();
-//     return experiences.map((experience) => ({
-//         slug: experience.slug,
+//     const labs = await getLabsDTO();
+//     return labs.map((lab) => ({
+//         slug: lab.slug,
 //     }));
 // }
 
@@ -126,11 +126,10 @@ export default async function AboutPage({
                                     </ContactDescription>
                                     <RowButtonGroup>
                                         <Link
-                                            href={`mailto:${
-                                                user.publicEmail
-                                                    ? user.publicEmail
-                                                    : ""
-                                            }`}
+                                            href={`mailto:${user.publicEmail
+                                                ? user.publicEmail
+                                                : ""
+                                                }`}
                                         >
                                             <Button
                                                 variant={"primary_custom"}

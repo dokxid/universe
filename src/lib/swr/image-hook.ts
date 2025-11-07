@@ -1,13 +1,13 @@
 import { getImageURLAction } from "@/actions/get-image-url";
 import useSWR from "swr";
 
-const imageURLFetcher = async ([experience, fileName]: [string, string]) => {
-    return await getImageURLAction(experience, fileName);
+const imageURLFetcher = async ([lab, fileName]: [string, string]) => {
+    return await getImageURLAction(lab, fileName);
 };
 
-export function useImageURL(experience: string, fileName: string) {
+export function useImageURL(lab: string, fileName: string) {
     const { data, error, isLoading } = useSWR(
-        [experience, fileName],
+        [lab, fileName],
         imageURLFetcher,
         {
             // Cache the result and revalidate infrequently

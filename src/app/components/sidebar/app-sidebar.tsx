@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 export function AppSidebar() {
     const pathname = usePathname();
     const slug = getLabSlugFromPathname(pathname);
-    const { lab: experience, isLoading, isError } = useLab(slug);
+    const { lab, isLoading, isError } = useLab(slug);
     if (!slug) {
         return null;
     }
@@ -25,15 +25,15 @@ export function AppSidebar() {
         );
     }
     if (isError) {
-        return <div>Could not fetch experiences</div>;
+        return <div>Could not fetch Heritage Labs</div>;
     }
-    if (!experience) {
+    if (!lab) {
         return <div>No lab found</div>;
     }
 
     return (
         <Sidebar variant={"sidebar"} sidebarBorder={false} className={"p-0"}>
-            <AppSidebarHeader experience={experience} />
+            <AppSidebarHeader lab={lab} />
             <AppSidebarContent />
             <SidebarFooter className={"px-4 py-3"}>
                 <UserWidgetHolder />

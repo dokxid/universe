@@ -1,12 +1,12 @@
-import { ListLabsSkeleton } from "@/components/skeletons/list-experiences-skeleton";
+import { ListLabsSkeleton } from "@/components/skeletons/list-labs-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { setSelectedLabParams } from "@/lib/utils/param-setter";
 import { LabDTO } from "@/types/dtos";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { HostedImage } from "../embeds/s3-image";
+import parse from "html-react-parser";
 
 export function ExploreLabCard({ lab }: { lab: LabDTO }) {
     const searchParams = useSearchParams();
@@ -52,13 +52,9 @@ export function ExploreLabCard({ lab }: { lab: LabDTO }) {
                         <h3 className="text-sm text-muted-foreground line-clamp-1 group-hover:line-clamp-2">
                             {lab.subtitle}
                         </h3>
-                        <p
-                            className={
-                                "text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4"
-                            }
-                        >
-                            {lab.content}
-                        </p>
+                        <div className="prose-sm dark:prose-invert prose-headings:mb-2 text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4">
+                            {parse(lab.content)}
+                        </div>
                     </div>
                     {/* <div className="shrink-0 ml-2">
                         <ChevronRight className="size-4" />

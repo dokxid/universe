@@ -1,8 +1,8 @@
 import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
 import {
-    seedExperiences,
+    seedLabs,
     seedUniverseLab,
-} from "@/data/scripts/seed-experiences";
+} from "@/data/scripts/seed-labs";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
@@ -53,7 +53,7 @@ export async function seedDatabase(
             numRandomCityCenters,
         );
 
-        await seedExperiences(randomCityCenters);
+        await seedLabs(randomCityCenters);
         await seedUsers(10, 1);
         // await seedCypressUsers();
         await seedAllStories(numStories);
@@ -69,7 +69,7 @@ export async function initDatabase() {
     try {
         console.log("seeding tags");
         await seedUnescoTags();
-        console.log("seeding universe experience");
+        console.log("seeding universe lab");
         await seedUniverseLab();
         await auth.api.createUser({
             body: {

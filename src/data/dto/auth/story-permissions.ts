@@ -35,12 +35,12 @@ export async function canUserViewStory(story: StoryDTO) {
     }
     return false;
 }
-export async function canUserCreateStory(experienceSlug: string) {
+export async function canUserCreateStory(labSlug: string) {
     const user = await getCurrentUser();
     if (!user) return false;
-    if (experienceSlug === "universe") return false;
+    if (labSlug === "universe") return false;
     if (await isUserSuperAdmin()) return true;
-    return isUserPartOfOrganization(user, experienceSlug);
+    return isUserPartOfOrganization(user, labSlug);
 }
 export async function canUserEditStory(story: StoryDTO) {
     if (await isUserSuperAdmin()) return true;

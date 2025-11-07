@@ -1,6 +1,6 @@
 "use client";
 
-import { ExperiencesList } from "@/app/components/sidebar/experiences-list";
+import { LabsList } from "@/app/components/sidebar/labs-list";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -19,9 +19,9 @@ import { LabDTO } from "@/types/dtos";
 import { ChevronsUpDownIcon } from "lucide-react";
 import { redirect, useSearchParams } from "next/navigation";
 import React from "react";
-import CurrentExperienceDescriptor from "./current-experience-descriptor";
+import CurrentLabDescriptor from "./current-lab-descriptor";
 
-export function CurrentExperienceSelector({
+export function CurrentLabSelector({
     labs,
     className,
 }: {
@@ -48,20 +48,20 @@ export function CurrentExperienceSelector({
                         role={"combobox"}
                         aria-expanded={open}
                         className={"justify-between min-h-20 w-full"}
-                        aria-label={"Experience Selector"}
+                        aria-label={"Lab Selector"}
                     >
-                        <CurrentExperienceDescriptor lab={lab} />
+                        <CurrentLabDescriptor lab={lab} />
                         <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </div>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
                 <Command>
-                    <CommandInput placeholder="Search experience..." />
+                    <CommandInput placeholder="Search labs..." />
                     <CommandList>
-                        <CommandEmpty>No experience found.</CommandEmpty>
+                        <CommandEmpty>No lab found.</CommandEmpty>
                         <CommandGroup>
-                            <ExperiencesList
+                            <LabsList
                                 labs={safeData}
                                 currentLab={lab}
                                 setOpen={setOpen}

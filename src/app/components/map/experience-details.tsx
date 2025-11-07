@@ -9,19 +9,19 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { use, useEffect } from "react";
 
-const EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT = "l";
+const LAB_DETAILS_KEYBOARD_SHORTCUT = "l";
 
-type ExperienceDescriptorProps = {
+type LabDescriptorProps = {
     slug: string;
     visible?: boolean;
     labsPromise: Promise<LabDTO[]>;
 };
 
-export function ExperienceDetails({
+export function LabDetails({
     slug,
     visible = true,
     labsPromise,
-}: ExperienceDescriptorProps) {
+}: LabDescriptorProps) {
     const labs = use(labsPromise);
     const settingsState = useAppSelector((state) => state.settings);
     const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ export function ExperienceDetails({
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (
-                event.key === EXPERIENCE_DETAILS_KEYBOARD_SHORTCUT &&
+                event.key === LAB_DETAILS_KEYBOARD_SHORTCUT &&
                 (event.metaKey || event.ctrlKey)
             ) {
                 event.preventDefault();

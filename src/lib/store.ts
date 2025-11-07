@@ -32,7 +32,7 @@ export const store = configureStore({
         settings: persistedSettingsReducer,
         addStoryDialog: addStorySlice.reducer,
         map: mapSlice.reducer,
-        experiences: labSlice.reducer,
+        labs: labSlice.reducer,
         navigation: navigationSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>

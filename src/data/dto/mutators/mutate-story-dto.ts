@@ -30,7 +30,7 @@ export async function submitStoryDTO(formData: FormData) {
         const userId = user.id;
         if (!(await canUserCreateStory(formData.get("slug") as string))) {
             throw new Error(
-                "User does not have permission to create a story for this experience.",
+                "User does not have permission to create a story for this lab.",
             );
         }
 

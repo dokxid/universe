@@ -5,7 +5,7 @@ import {
     triggerRevalidateTagAction,
 } from "@/actions/cache";
 import { inviteSuperAdminAction } from "@/actions/form/invite-member";
-import { seedDatabaseAction, seedOneExperienceAction } from "@/actions/seed";
+import { seedDatabaseAction, seedOneLabAction } from "@/actions/seed";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -47,7 +47,7 @@ export function DebugSettings() {
     const [organizationId, setOrganizationId] = useState<string>(
         "org_01K6FWE14DZBT1Q17JFC75JN72",
     );
-    const [experienceStories, setExperienceStories] = useState<number>(40);
+    const [labStories, setLabStories] = useState<number>(40);
 
     const inviteSuperAdminForm = useForm<z.infer<typeof inviteSuperAdminFormSchema>>({
         defaultValues: {
@@ -91,7 +91,7 @@ export function DebugSettings() {
                                         "/[slug]/stories",
                                     );
                                     triggerRevalidatePathAction(
-                                        "/[slug]/experiences",
+                                        "/[slug]/labs",
                                     );
                                     triggerRevalidatePathAction(
                                         "/[slug]/users",
@@ -115,7 +115,7 @@ export function DebugSettings() {
                             onClick={() => {
                                 try {
                                     triggerRevalidateTagAction(
-                                        "experiences",
+                                        "labs",
                                     ).then(() => {
                                         toast.success(
                                             "Heritage Lab revalidation successful",
@@ -190,7 +190,7 @@ export function DebugSettings() {
                 <SettingsFormTitle>Reset Database</SettingsFormTitle>
                 <SettingsFormDescription>
                     Reset and seed the entire database with the stock Heritage
-                    Lab data and add a new test experience under /test/map with
+                    Lab data and add a new test labs under /test/map with
                     the given amount of random generated stories.
                 </SettingsFormDescription>
                 <SettingsBoxContent>
@@ -198,7 +198,7 @@ export function DebugSettings() {
                         <SettingsBoxFormElement>
                             <Label className={""}>
                                 Number of random cities to create in test
-                                experience
+                                lab
                             </Label>
                             <Input
                                 className={"max-w-full"}
@@ -215,7 +215,7 @@ export function DebugSettings() {
                         </SettingsBoxFormElement>
                         <SettingsBoxFormElement>
                             <Label className={""}>
-                                Number of stories to create in test experience
+                                Number of stories to create in test lab
                             </Label>
                             <Input
                                 className={"max-w-full"}
@@ -255,7 +255,7 @@ export function DebugSettings() {
                 </SettingsBoxContent>
             </SettingsFormBox>
             <SettingsFormBox>
-                <SettingsFormTitle>Seed new experience</SettingsFormTitle>
+                <SettingsFormTitle>Seed new Lab</SettingsFormTitle>
                 <SettingsFormDescription>
                     First, create a new organization in the WorkOS Dashboard,
                     and then generate a new Heritage Lab with this form. You can
@@ -377,12 +377,12 @@ export function DebugSettings() {
                                 className={"w-full"}
                                 placeholder="Number of stories"
                                 type="number"
-                                value={experienceStories}
+                                value={labStories}
                                 min={1}
                                 max={1000}
                                 step={1}
                                 onChange={(e) =>
-                                    setExperienceStories(Number(e.target.value))
+                                    setLabStories(Number(e.target.value))
                                 }
                             />
                         </div>
@@ -391,7 +391,7 @@ export function DebugSettings() {
                         <Button
                             onClick={() => {
                                 try {
-                                    seedOneExperienceAction(
+                                    seedOneLabAction(
                                         [longitude, latitude],
                                         title,
                                         slug,
@@ -399,18 +399,18 @@ export function DebugSettings() {
                                         subtitle,
                                         initialZoom,
                                         organizationId,
-                                        experienceStories,
+                                        labStories,
                                     );
                                     toast.success(
-                                        "Experience seeding successful",
+                                        "Lab seeding successful",
                                     );
                                 } catch (error) {
-                                    toast.error("Experience seeding failed");
+                                    toast.error("Lab seeding failed");
                                     console.error(error);
                                 }
                             }}
                         >
-                            Seed experience
+                            Seed Lab
                         </Button>
                     </SettingsFormButtonGroup>
                 </SettingsBoxContent>

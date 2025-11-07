@@ -258,10 +258,9 @@ export function StoryCollection({
                                     key={virtualRow.key}
                                     className={`absolute grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
                                     style={{
-                                        transform: `translateY(${
-                                            virtualRow.start +
+                                        transform: `translateY(${virtualRow.start +
                                             24 * virtualRow.index
-                                        }px)`,
+                                            }px)`,
                                         height: `${virtualRow.size}px`,
                                     }}
                                 >
@@ -275,17 +274,6 @@ export function StoryCollection({
                             );
                         })}
                     </div>
-                    {/* {filteredStories.map((story) => (
-                    <StoryCard key={story._id} story={story} />
-                    ))}
-                    {filteredStories.length === 0 && (
-                        <>
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                        </>
-                    )} */}
                 </div>
             </div>
         </div>

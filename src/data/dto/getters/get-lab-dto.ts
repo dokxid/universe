@@ -1,7 +1,7 @@
 import "server-only";
 
-import { getLab, getLabs } from "@/data/fetcher/experience-fetcher";
-import { sanitizeToLabDTO } from "@/data/transformers/experience-transformer";
+import { getLab, getLabs } from "@/data/fetcher/lab-fetcher";
+import { sanitizeToLabDTO } from "@/data/transformers/lab-transformer";
 import { LabDTO } from "@/types/dtos";
 import { cache } from "react";
 
@@ -17,7 +17,7 @@ export const getLabsDTO = cache(async (): Promise<LabDTO[]> => {
         return sanitizedLabs;
     } catch (err) {
         console.error(
-            "Error fetching experiences: " +
+            "Error fetching labs: " +
             (err instanceof Error ? err.message : "Unknown error")
         );
         return [];
@@ -53,7 +53,7 @@ export async function getLabDTO(labSlug: string): Promise<LabDTO> {
         return sanitizedLab;
     } catch (err) {
         throw new Error(
-            `Error fetching experience ${labSlug}: ${err instanceof Error ? err.message : "Unknown error"
+            `Error fetching lab ${labSlug}: ${err instanceof Error ? err.message : "Unknown error"
             }`
         );
     }

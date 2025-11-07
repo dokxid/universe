@@ -1,10 +1,11 @@
-import { ListLabsSkeleton } from "@/components/skeletons/list-experiences-skeleton";
+import { ListLabsSkeleton } from "@/components/skeletons/list-labs-skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card } from "@/components/ui/card";
 import { LabDTO } from "@/types/dtos";
 import Link from "next/link";
 import { Suspense } from "react";
 import { HostedImage } from "../embeds/s3-image";
+import parse from "html-react-parser";
 
 export function LabCard({ lab }: { lab: LabDTO }) {
     const url = `/${lab.slug}/map`;
@@ -48,13 +49,9 @@ export function LabCard({ lab }: { lab: LabDTO }) {
                             <h3 className="text-sm text-muted-foreground line-clamp-1 group-hover:line-clamp-2">
                                 {lab.subtitle}
                             </h3>
-                            <p
-                                className={
-                                    "text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4"
-                                }
-                            >
-                                {lab.content}
-                            </p>
+                            <div className="prose-sm dark:prose-invert prose-headings:mb-2 text-xs text-muted-foreground line-clamp-1 group-hover:line-clamp-6 mt-0.5 group-hover:mt-4">
+                                {parse(lab.content)}
+                            </div>
                         </div>
                         {/* <div className="shrink-0 ml-2">
                         <ChevronRight className="size-4" />

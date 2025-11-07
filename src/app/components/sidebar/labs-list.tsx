@@ -5,7 +5,7 @@ import { CheckIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
-export function ExperiencesList({
+export function LabsList({
     setOpen,
     labs,
     currentLab,

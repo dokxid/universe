@@ -5,17 +5,17 @@ import { UniverseHeader } from "@/app/components/sidebar/universe-header";
 import { LabDTO } from "@/types/dtos";
 import { useParams } from "next/navigation";
 
-export function AppSidebarHeader({ experience }: { experience: LabDTO }) {
+export function AppSidebarHeader({ lab }: { lab: LabDTO }) {
     const { slug } = useParams<{ slug: string }>();
-    if (!experience) {
-        console.error("No experience found for slug:", slug);
+    if (!lab) {
+        console.error("No lab found for slug:", slug);
         return <UniverseHeader />;
     }
 
     return (
         <>
             {slug === "universe" && <UniverseHeader />}
-            {slug !== "universe" && <LabHeader experience={experience} />}
+            {slug !== "universe" && <LabHeader lab={lab} />}
         </>
     );
 }
