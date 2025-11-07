@@ -100,13 +100,23 @@ yarn magic, or any other pacman u like, you know the drill
 ```bash
 git clone https://github.com/dokxid/universe.git
 cd universe
-yarn install
+bun install
+cp .env.example .env
+./generate_secret.sh  # this will set the cookie password
 ```
 
 make sure to copy the .env.example to make ur own one for development
 
+for production:
 ```bash
-cp .env.docker.example .env.docker
+cp .env.production.example .env.production
+vim .env.production
+```
+
+for staging:
+```bash
+cp .env.staging.example .env.staging
+vim .env.staging
 ```
 
 and fill it out with the things mentioned in the comments in that file
@@ -115,8 +125,7 @@ and fill it out with the things mentioned in the comments in that file
 
 ```sh
 # enter your desired storage size and node name
-cp garage/.env.example garage/.env
-vim garage/.env
+vim .env
 # generate the config toml out of the .env and start service
 ./garage/generate-garage-config.sh
 docker compose up -d garage
@@ -128,16 +137,17 @@ docker compose up -d garage
 
 ```sh
 # idk why i cant use other .envs yet
-docker compose up -d mongo
+docker compose up -d db-production
+docker compose up -d db-staging
 vim .env  # enter database_url: mongodb://localhost:27017/<db_name>
-yarn prisma:generate
-yarn prisma:push
-yarn seed:docker  # init the database
+bun prisma:generate
+bun prisma:push
+bun seed:docker  # init the database
 ```
 
 ## setup universe app
 
 ```sh
-docker compose build --no-cache
-docker compose up -d
+docker compose up -d app-production --build
+docker compose up -d app-staging --build
 ```
