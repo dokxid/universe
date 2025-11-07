@@ -7,6 +7,7 @@ import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
 import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -67,10 +68,21 @@ export async function seedDatabase(
 
 export async function initDatabase() {
     try {
+        await deleteAllData();
         console.log("seeding tags");
         await seedUnescoTags();
         console.log("seeding universe lab");
         await seedUniverseLab();
+        await createSuperAdminUser()
+        return { success: true, error: null };
+    } catch (error) {
+        console.error("Error during database initialization:", error);
+        throw error;
+    }
+}
+
+export async function createSuperAdminUser() {
+    try {
         await auth.api.createUser({
             body: {
                 email: process.env.BETTER_AUTH_ADMIN_EMAIL!,
@@ -79,8 +91,29 @@ export async function initDatabase() {
                 role: "admin",
             },
         });
+        console.log("Super admin user created");
     } catch (error) {
-        console.error("Error during database initialization:", error);
+        console.error("Error during super admin user creation:", error);
+        throw error;
+    }
+}
+
+export async function deleteAllData() {
+    try {
+        await prisma.account.deleteMany({});
+        await prisma.elevationRequest.deleteMany({});
+        await prisma.invitation.deleteMany({});
+        await prisma.tagsOnStories.deleteMany({});
+        await prisma.story.deleteMany({});
+        await prisma.lab.deleteMany({});
+        await prisma.member.deleteMany({});
+        await prisma.session.deleteMany({});
+        await prisma.tag.deleteMany({});
+        await prisma.user.deleteMany({});
+        await prisma.verification.deleteMany({});
+        console.log("cleared existing data");
+    } catch (error) {
+        console.error("Error during deleting all data:", error);
         throw error;
     }
 }

@@ -5,7 +5,7 @@ import {
     triggerRevalidateTagAction,
 } from "@/actions/cache";
 import { inviteSuperAdminAction } from "@/actions/form/invite-member";
-import { seedDatabaseAction, seedOneLabAction } from "@/actions/seed";
+import { initDatabaseAction, seedDatabaseAction, seedOneLabAction } from "@/actions/seed";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
@@ -187,11 +187,12 @@ export function DebugSettings() {
                 </SettingsBoxContent>
             </SettingsFormBox>
             <SettingsFormBox>
-                <SettingsFormTitle>Reset Database</SettingsFormTitle>
+                <SettingsFormTitle>Seed / Reset Database</SettingsFormTitle>
                 <SettingsFormDescription>
                     Reset and seed the entire database with the stock Heritage
                     Lab data and add a new test labs under /test/map with
                     the given amount of random generated stories.
+                    <br /><br /><b>PREPARE WITH CAUTION</b>
                 </SettingsFormDescription>
                 <SettingsBoxContent>
                     <SettingsBoxForm>
@@ -234,22 +235,54 @@ export function DebugSettings() {
                     <SettingsFormButtonGroup>
                         <Button
                             variant={"destructive"}
-                            onClick={() => {
+                            onClick={async () => {
                                 try {
-                                    seedDatabaseAction(
+                                    const result = await seedDatabaseAction(
                                         numCityCenters,
                                         numStories,
                                     );
-                                    toast.success(
-                                        "Database seeding successful",
-                                    );
+                                    if (result?.success) {
+                                        toast.success(
+                                            "Database seeding successful",
+                                        );
+                                    }
+                                    if (result?.error) {
+                                        toast.error(
+                                            "Database seeding failed: " +
+                                            result.error,
+                                        );
+                                    }
                                 } catch (error) {
                                     toast.error("Database seeding failed");
                                     console.error(error);
                                 }
                             }}
                         >
-                            Reset entire database
+                            Seed Database
+                        </Button>
+                        <Button
+                            variant={"destructive"}
+                            onClick={async () => {
+                                try {
+                                    const result = await initDatabaseAction()
+                                    if (result?.success) {
+                                        toast.success(
+                                            "Database initialization successful",
+                                        );
+                                    }
+                                    if (result?.error) {
+                                        toast.error(
+                                            "Database initialization failed: " +
+                                            result.error,
+                                        );
+                                    }
+                                } catch (error) {
+                                    toast.error("Database seeding failed");
+                                    console.error(error);
+                                }
+                            }}
+                        >
+                            Reset Database to Minimal State
                         </Button>
                     </SettingsFormButtonGroup>
                 </SettingsBoxContent>
