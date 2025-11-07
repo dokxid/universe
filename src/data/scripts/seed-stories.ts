@@ -44,9 +44,6 @@ export async function seedStories(
             const storyInsertResult = await prisma.story.create({
                 data: {
                     ...doc,
-                    lab: {
-                        connect: { slug: labSlug },
-                    },
                     elevationRequests: {
                         create: [
                             { status: "created", createdAt: faker.date.between({ from: new Date(2020, 0, 1), to: new Date(2021, 0, 1) }) },

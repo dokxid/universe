@@ -25,7 +25,7 @@ export async function startSeedingDatabase(
             throw new Error("Only super admins can seed the database");
         }
         await initDatabase();
-        await seedDatabase(numStories, numRandomCityCenters);
+        await seedDatabase(numRandomCityCenters, numStories);
         revalidateTag("labs");
         revalidateTag("stories");
         revalidateTag("tags");

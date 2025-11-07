@@ -1,4 +1,5 @@
 import { getStoryImageUrl } from "@/data/scripts/seeds/image-url-seeds";
+import { StoryCreateInput } from "@/generated/prisma/models";
 import { CC_LICENSES } from "@/types/dtos";
 import { faker } from "@faker-js/faker";
 
@@ -49,7 +50,7 @@ export const test_story_doc = async (
     labCenter: number[],
     labSlug: string,
     userId: string,
-) => {
+): Promise<StoryCreateInput> => {
     const date = faker.date.past({ years: 3 });
 
     // console.log(
@@ -76,6 +77,9 @@ export const test_story_doc = async (
         ),
         createdAt: date,
         updatedAt: faker.date.between({ from: date, to: new Date() }),
+        lab: {
+            connect: { slug: labSlug },
+        },
     };
     return doc;
 };
