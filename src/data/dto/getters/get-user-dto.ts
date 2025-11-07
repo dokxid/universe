@@ -1,14 +1,19 @@
 import "server-only";
 
-import { getUser, getUsers } from "@/data/fetcher/user-fetcher";
+import { getUser, getUsers, UserFetched } from "@/data/fetcher/user-fetcher";
 import { sanitizeToUserDTO } from "@/data/transformers/user-transformer";
 import { UserDTO } from "@/types/dtos";
 
 export async function getUsersByLabDTO(labSlug: string): Promise<UserDTO[]> {
     try {
-        const users = await getUsers({
-            members: { some: { lab: { slug: labSlug } } },
-        });
+        let users: UserFetched[] = [];
+        if (labSlug === "universe") {
+            users = await getUsers({ role: "admin" });
+        } else {
+            users = await getUsers({
+                members: { some: { lab: { slug: labSlug } } },
+            });
+        }
         if (!users) return [];
         return users.map((user) => sanitizeToUserDTO(user));
     } catch (error) {
