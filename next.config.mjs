@@ -7,13 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config(); // Load the environment variables
-const connectionString = `
-    postgresql://
-    ${process.env.POSTGRES_USER}:
-    ${process.env.POSTGRES_PASSWORD}@
-    ${process.env.POSTGRES_HOST}/
-    ${process.env.POSTGRES_DB}
-`;
+const connectionString = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}/${process.env.POSTGRES_DB}`;
 console.log(`The connection URL is ${connectionString}`);
 
 /*  

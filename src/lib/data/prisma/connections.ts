@@ -1,13 +1,7 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from '@prisma/adapter-pg'
 
-const connectionString = `
-    postgresql://
-    ${process.env.POSTGRES_USER}:
-    ${process.env.POSTGRES_PASSWORD}@
-    ${process.env.POSTGRES_HOST}/
-    ${process.env.POSTGRES_DB}
-`
+const connectionString = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}/${process.env.POSTGRES_DB}`
 
 console.log("Postgres connection string: ", connectionString)
 
