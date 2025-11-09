@@ -1,4 +1,4 @@
-import { StoryInclude, StoryWhereInput, TagGetPayload, TagInclude } from "@/generated/prisma/models";
+import { StoryWhereInput, TagGetPayload, TagInclude } from "@/generated/prisma/models";
 import { prisma } from "@/lib/data/prisma/connections";
 import { cache } from "react";
 import "server-only";

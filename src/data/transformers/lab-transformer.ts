@@ -1,4 +1,3 @@
-import { Prisma } from "@/generated/prisma/client";
 import { validateCoordinates } from "@/lib/utils/validate-coordinates";
 import { LabDTO } from "@/types/dtos";
 import { LabWithCount, LabWithDetails } from "../fetcher/lab-fetcher";

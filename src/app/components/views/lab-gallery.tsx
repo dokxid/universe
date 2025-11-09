@@ -1,5 +1,4 @@
 import { LabCard } from "@/app/components/cards/lab-card";
-import { ListLabsSkeleton } from "@/components/skeletons/list-labs-skeleton";
 import { Separator } from "@/components/ui/separator";
 import { getPublicLabsDTO } from "@/data/dto/getters/get-lab-dto";
 import { LabDTO } from "@/types/dtos";
