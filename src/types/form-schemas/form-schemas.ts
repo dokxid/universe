@@ -1,4 +1,4 @@
-export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 export const LAB_VISIBILITY_OPTIONS = [
     "public",
     "unlisted",
