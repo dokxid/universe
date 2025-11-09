@@ -12,7 +12,7 @@ import { StoryDTO, StoryPinDTO } from "@/types/dtos";
 
 export async function getAllPublicStoriesDTO(): Promise<StoryDTO[]> {
     try {
-        const nonDraftStories = await getAllStories({ draft: false });
+        const nonDraftStories = await getAllStories({ draft: false, visibleUniverse: true });
         return nonDraftStories;
     } catch (err) {
         throw new Error(err instanceof Error ? err.message : "Unknown error");
