@@ -32,6 +32,10 @@ const config = {
                 loaders: ["@svgr/webpack"],
                 as: "*.ts",
             },
+            "*.md": {
+                loaders: ["raw-loader"],
+                as: "*.js",
+            },
         },
         resolveAlias: {
             "maplibre-gl-css": "maplibre-gl/dist/maplibre-gl.css",
