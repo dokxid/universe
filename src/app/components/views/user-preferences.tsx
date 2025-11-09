@@ -94,7 +94,7 @@ export function UserPreferences() {
             userId: user.id || "",
             firstName: user.firstName || "",
             lastName: user.lastName || "",
-            displayName: user.displayName || "",
+            displayName: user.name || "",
         });
         profilePictureForm.reset({
             userId: user.id || "",
@@ -525,17 +525,17 @@ export function UserPreferences() {
                                                             }
                                                         >
                                                             {user.firstName &&
-                                                            user.lastName
+                                                                user.lastName
                                                                 ? user.firstName
-                                                                      ?.charAt(
-                                                                          0
-                                                                      )
-                                                                      .toUpperCase() +
-                                                                  user.lastName
-                                                                      ?.charAt(
-                                                                          0
-                                                                      )
-                                                                      .toUpperCase()
+                                                                    ?.charAt(
+                                                                        0
+                                                                    )
+                                                                    .toUpperCase() +
+                                                                user.lastName
+                                                                    ?.charAt(
+                                                                        0
+                                                                    )
+                                                                    .toUpperCase()
                                                                 : "N/A"}
                                                         </AvatarFallback>
                                                     )}

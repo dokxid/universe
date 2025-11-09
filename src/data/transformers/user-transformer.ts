@@ -38,6 +38,8 @@ export function sanitizeToUserDTO(
         id: user.id,
         email: user.email,
         name: buildDisplayedName(user),
+        firstName: user.firstName ?? undefined,
+        lastName: user.familyName ?? undefined,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         labs: user.members.map((member) => ({
