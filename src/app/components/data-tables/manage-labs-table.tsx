@@ -173,7 +173,7 @@ export function ManageLabsTable({ data }: DataTableProps) {
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
     const dataFetched = React.useMemo(
-        () => JSON.parse(data) as LabDTO[],
+        () => (JSON.parse(data) as LabDTO[]).filter((lab) => lab.slug !== "universe"),
         [data],
     );
 
