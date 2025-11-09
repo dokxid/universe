@@ -17,8 +17,8 @@
         "e2e:seed": "dotenv -e .env -- tsx src/data/scripts/seed-e2e-script.ts",
         "e2e": "cypress open --e2e",
         "e2e:headless": "cypress run --e2e 2>/dev/null",
-        "init:staging": "POSTGRES_HOST=localhost:5433 bunx prisma migrate reset && bunx dotenv -e .env -- tsx src/data/scripts/seed-staging-script.ts",
-        "init:production": "POSTGRES_HOST=localhost:5434 bunx prisma migrate reset",
+        "init:staging": "bunx prisma migrate reset && bunx dotenv -e .env -- tsx src/data/scripts/seed-staging-script.ts",
+        "init:production": "bunx prisma migrate reset",
         "prepare": "husky",
         "docker-build": "prisma generate && prisma migrate deploy && next build",
         "docker:prisma": "prisma generate && prisma migrate deploy"
