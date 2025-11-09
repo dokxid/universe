@@ -74,8 +74,6 @@ services:
         required: true
     environment:
       - POSTGRES_DB=universe-production
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
@@ -92,8 +90,6 @@ services:
         required: true
     environment:
       - POSTGRES_DB=universe-staging
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -110,8 +106,6 @@ services:
         required: true
     environment:
       - POSTGRES_DB=universe-local
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
