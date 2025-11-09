@@ -1,6 +1,6 @@
 "use server";
 
-import { getTagByNameDTO, getTagsDTO } from "@/data/dto/getters/get-tag-dto";
+import { getTagByNameDTO, getAllTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { TagDTO } from "@/types/dtos";
 
 export async function getTagByNameAction(
@@ -18,7 +18,7 @@ export async function getTagByNameAction(
 }
 export async function getTagsAction(): Promise<TagDTO[]> {
     try {
-        return await getTagsDTO();
+        return await getAllTagsDTO();
     } catch (error) {
         console.error({
             message: `Error fetching all tags`,

@@ -252,6 +252,14 @@ export function TagPickerFilter({
             className={`col-span-12 col-start-auto space-y-0 items-start ${className || ""
                 }`}
         >
+            <TagList
+                tags={convertTagNamesToTagDTOs(
+                    availableTags,
+                    inputTagStrings
+                )}
+                variant={"remove"}
+            />
+
             {showLabel && <p className={"text-sm font-medium"}>Tags</p>}
             <Popover
                 open={tagPickerOpen}
@@ -270,13 +278,6 @@ export function TagPickerFilter({
                             <PlusIcon />
                         </Toggle>
                     </PopoverTrigger>
-                    <TagList
-                        tags={convertTagNamesToTagDTOs(
-                            availableTags,
-                            inputTagStrings
-                        )}
-                        variant={"remove"}
-                    />
                 </div>
                 <PopoverContent className="p-2">
                     <Command>

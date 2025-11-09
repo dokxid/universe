@@ -10,7 +10,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
+import { getAllTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
 
@@ -20,7 +20,7 @@ export default async function Page({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const tagsPromise = getTagsDTO();
+    const tagsPromise = getAllTagsDTO();
 
     return (
         <ContentLayout>

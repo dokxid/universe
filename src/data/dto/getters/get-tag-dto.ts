@@ -5,7 +5,7 @@ import { TagDTO } from "@/types/dtos";
 import { cache } from "react";
 
 // flattened tags for easier access
-export const getTagsDTO = cache(async (): Promise<TagDTO[]> => {
+export const getAllTagsDTO = cache(async (): Promise<TagDTO[]> => {
     try {
         const tags = await getTags();
         const sanitizedTags = tags.map((tag) => sanitizeToTagDTO(tag));
@@ -31,7 +31,7 @@ export const getUniqueTagDTOsForLab = cache(
 
 export async function getTagByNameDTO(tagName: string): Promise<TagDTO | null> {
     try {
-        const tags = await getTagsDTO();
+        const tags = await getAllTagsDTO();
         const foundTag = tags.find((t) => t.name === tagName);
         if (!foundTag) {
             throw new Error("Tag not found: " + tagName);
