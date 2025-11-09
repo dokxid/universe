@@ -324,3 +324,30 @@ const inviteAdminToLab = async (labId: string, adminEmail: string) => {
         );
     }
 };
+
+export const removeLabDTO = async (slug: string) => {
+    try {
+        // check permissions of user
+        const isAllowedToEdit = await canUserEditLab(slug);
+        if (!isAllowedToEdit) {
+            throw new Error("User is not allowed to remove this lab");
+        }
+
+        // delete lab from database
+        const mutate = await prisma.lab.delete({
+            where: { slug },
+        });
+        if (!mutate) {
+            throw new Error("Failed to remove lab.");
+        }
+
+        // revalidate cache
+        revalidateTag(`labs/${slug}`);
+        revalidateTag(`labs`);
+        return { success: true, error: null };
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}

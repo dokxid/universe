@@ -1,13 +1,14 @@
 import "server-only";
 
-import { getLab, getLabs } from "@/data/fetcher/lab-fetcher";
-import { sanitizeToLabDTO } from "@/data/transformers/lab-transformer";
+import { getLab, getLabsDetails, getLabs, LabWithCount, LabWithDetails } from "@/data/fetcher/lab-fetcher";
+import { sanitizeToLabDetailsDTO, sanitizeToLabDTO } from "@/data/transformers/lab-transformer";
 import { LabDTO } from "@/types/dtos";
 import { cache } from "react";
+import { isUserSuperAdmin } from "@/data/auth";
 
 export const getLabsDTO = cache(async (): Promise<LabDTO[]> => {
     try {
-        const labs = await getLabs();
+        const labs = await getLabs() as LabWithCount[];
         if (!labs) {
             return [];
         }
@@ -23,6 +24,28 @@ export const getLabsDTO = cache(async (): Promise<LabDTO[]> => {
         return [];
     }
 });
+
+export async function getLabsDetailsDTO(): Promise<LabDTO[]> {
+    try {
+        // check permissions
+        const permissions = await isUserSuperAdmin();
+        if (!permissions) {
+            throw new Error("Insufficient permissions to fetch lab details");
+        }
+        const labs = await getLabsDetails() as LabWithDetails[];
+        if (!labs) {
+            return [];
+        }
+        const sanitizedLabs: LabDTO[] = labs.map((lab) =>
+            sanitizeToLabDetailsDTO(lab)
+        );
+        return sanitizedLabs;
+    } catch (err) {
+        throw new Error(
+            `Error fetching labs: ${err instanceof Error ? err.message : "Unknown error"}`
+        );
+    }
+}
 
 export const getPublicLabsDTO = cache(async (): Promise<LabDTO[]> => {
     try {
@@ -53,8 +76,7 @@ export async function getLabDTO(labSlug: string): Promise<LabDTO> {
         return sanitizedLab;
     } catch (err) {
         throw new Error(
-            `Error fetching lab ${labSlug}: ${err instanceof Error ? err.message : "Unknown error"
-            }`
+            `Error fetching lab ${labSlug}: ${err instanceof Error ? err.message : "Unknown error"}`
         );
     }
 }

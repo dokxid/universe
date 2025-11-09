@@ -330,7 +330,7 @@ export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
     }
 }
 
-export async function setDraftDTO(storyId: string, draft: boolean) {
+export async function setStoryDraftDTO(storyId: string, draft: boolean) {
     try {
         // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(storyId);
@@ -359,7 +359,7 @@ export async function setDraftDTO(storyId: string, draft: boolean) {
     }
 }
 
-export async function setVisibilityDTO(storyId: string, visibility: boolean) {
+export async function setStoryVisibilityDTO(storyId: string, visibility: boolean) {
     try {
         // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(storyId);

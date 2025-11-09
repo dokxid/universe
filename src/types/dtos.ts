@@ -17,6 +17,8 @@ export type LabDTO = {
     slug: string;
     center: SanitizedGeoJson;
     amountStories: number;
+    amountMembers: number;
+    amountUniverseStories?: number;
     initialZoom: number;
     name: string;
     subtitle: string;

@@ -38,8 +38,45 @@ import { ChevronDown, Columns3, MoreHorizontal, UserPlus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
+import { LabVisibility } from "@/generated/prisma/enums";
+import { removeLabAction, setLabVisibilityAction } from "@/actions/mutate/mutate-lab";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
 
 const ManageLabsActionsCell = ({ lab }: { lab: LabDTO }) => {
+    const handleSetVisibility = async (visibility: LabVisibility) => {
+        try {
+            const result = await setLabVisibilityAction(
+                lab.slug,
+                visibility
+            );
+            if (result.success) {
+                toast.success(`Lab visibility updated to ${visibility}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error changing lab visibility: " + error);
+        }
+    };
+    const handleRemoveLab = async () => {
+        try {
+            const result = await removeLabAction(
+                lab.slug,
+            );
+            if (result.success) {
+                toast.success(`Lab successfully removed`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error removing lab: " + error);
+        }
+    };
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -73,27 +110,62 @@ const ManageLabsActionsCell = ({ lab }: { lab: LabDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => { }}
+                        onClick={() => handleSetVisibility(LabVisibility.public)}
                         tabIndex={-1}
                         type="button"
                     >
-                        Set visibility
+                        Set visibility to public
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Removed ${lab.name} from Heritage Lab successfully.`,
-                            );
-                        }}
+                        onClick={() => handleSetVisibility(LabVisibility.unlisted)}
                         tabIndex={-1}
                         type="button"
                     >
-                        Remove Lab
+                        Set visibility to unlisted
                     </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => handleSetVisibility(LabVisibility.private)}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set visibility to private
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="w-full justify-start p-2 text-destructive"
+                                tabIndex={-1}
+                                type="button"
+                            >
+                                Remove Lab
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete the lab
+                                    and remove their stories from our servers.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction className={"bg-destructive text-secondary"} onClick={() => handleRemoveLab()}>Remove Lab</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -169,12 +241,38 @@ export function ManageLabsTable({ data }: DataTableProps) {
             ),
         }),
         columnHelper.accessor((row) => row.amountStories, {
-            id: "storiesCount",
+            id: "labStoryCount",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Stories" />
+                <DataTableColumnHeader column={column} title="Stories - Lab" />
             ),
             cell: (info) => (
                 <Link href={`/${info.row.original.slug}/stories`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || 0}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor((row) => row.amountUniverseStories, {
+            id: "universeStoryCount",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Stories - Universe" />
+            ),
+            cell: (info) => (
+                <Link href={`/universe/map?exp=${info.row.original.slug}`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || 0}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor((row) => row.amountMembers, {
+            id: "memberCount",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Members" />
+            ),
+            cell: (info) => (
+                <Link href={`/${info.row.original.slug}/contact`}>
                     <span className={"hover:underline"}>
                         {info.getValue() || 0}
                     </span>

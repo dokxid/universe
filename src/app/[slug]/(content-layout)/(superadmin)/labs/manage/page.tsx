@@ -7,11 +7,11 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getLabsDTO } from "@/data/dto/getters/get-lab-dto";
+import { getLabsDetailsDTO } from "@/data/dto/getters/get-lab-dto";
 import { Earth } from "lucide-react";
 
 export default async function Page() {
-    const data = JSON.stringify(await getLabsDTO());
+    const data = JSON.stringify(await getLabsDetailsDTO());
 
     return (
         <>
