@@ -29,9 +29,6 @@ export async function LabGallery() {
                             lab={lab}
                         />
                     ))}
-                    {Array.from({ length: 16 }).map((_, index) => (
-                        <ListLabsSkeleton key={index} />
-                    ))}
                 </div>
             </div>
         </div>
