@@ -1,6 +1,6 @@
 "use server"
 
-import { removeUserFromLabDTO } from "@/data/dto/mutators/mutate-user-dto";
+import { removeUserDTO, removeUserFromLabDTO } from "@/data/dto/mutators/mutate-user-dto";
 
 export const removeUserFromLabAction = async (userId: string, labSlug: string) => {
     try {
@@ -10,5 +10,16 @@ export const removeUserFromLabAction = async (userId: string, labSlug: string) =
     } catch (error) {
         console.error("Error removing user:", error);
         return { success: false, message: error instanceof Error ? error.message : "Unknown error" }
+    }
+}
+
+export const removeUserAction = async (formData: FormData) => {
+    try {
+        const result = await removeUserDTO(formData);
+        if (!result) throw new Error("Failed to remove user");
+        return { success: true, error: null }
+    } catch (error) {
+        console.error("Error removing user:", error);
+        return { success: false, error: error instanceof Error ? error.message : "Unknown error" }
     }
 }

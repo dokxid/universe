@@ -5,6 +5,7 @@ import {
     editUserDetailsFormSchema,
     editUserDisplayNameFormSchema,
     editUserProfilePictureFormSchema,
+    removeUserFormSchema,
 } from "@/types/form-schemas/user-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
@@ -142,6 +143,39 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
 
         // revalidate caches
         revalidateTag(`users/${mutate.id}`);
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function removeUserDTO(formData: FormData) {
+    try {
+        // preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const result = removeUserFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(result.error.flatten()));
+        }
+        const data = result.data;
+
+        // check if the user is permitted to remove this user
+        const userToMutate = await getUserDTO(data.userId);
+        if (!userToMutate) throw new Error("User not found");
+        const isAllowedToRemove = await canEditUser(userToMutate)
+        if (!isAllowedToRemove)
+            throw new Error("User does not have permission to remove this user.");
+
+
+        // remove the user
+        const mutate = await prisma.user.delete({
+            where: { id: data.userId },
+        });
+
+        // revalidate caches
+        revalidateTag(`user/${data.userId}`);
+        return mutate;
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"

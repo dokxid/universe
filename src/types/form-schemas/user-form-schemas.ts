@@ -41,3 +41,7 @@ export const editUserProfilePictureFormSchema = z.object({
 export const inviteSuperAdminFormSchema = z.object({
     email: z.email("Please enter a valid email address."),
 });
+
+export const removeUserFormSchema = z.object({
+    userId: z.string().min(1, "User ID is required."),
+});

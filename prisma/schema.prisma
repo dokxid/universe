@@ -75,7 +75,7 @@ model TagsOnStories {
 
 model Story {
   id                String             @id @default(uuid())
-  author            User               @relation(fields: [userId], references: [id])
+  author            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   draft             Boolean
   title             String
