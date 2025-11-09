@@ -99,17 +99,6 @@ const ManageLabsActionsCell = ({ lab }: { lab: LabDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => { }}
-                        tabIndex={-1}
-                        type="button"
-                    >
-                        Copy organization ID
-                    </Button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start"
                         onClick={() => handleSetVisibility(LabVisibility.public)}
                         tabIndex={-1}
                         type="button"

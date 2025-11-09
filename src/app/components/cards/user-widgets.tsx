@@ -43,6 +43,7 @@ export function UserWidgetAuthorized({
     if (isError || !user) {
         return <UserWidgetNoAuth slug={slug} />;
     }
+    const slugUser = user.labs.pop()?.slug || "universe";
     return (
         <div
             className={
@@ -50,7 +51,7 @@ export function UserWidgetAuthorized({
             }
         >
             <Link
-                href={`/profile`}
+                href={`/${slugUser}/user/view/${user.id}`}
                 className={
                     "cursor-pointer hover:brightness-80 transition-all duration-100"
                 }
@@ -65,7 +66,7 @@ export function UserWidgetAuthorized({
             </Link>
             <div className={"text-sm flex flex-col grow"}>
                 <Link
-                    href={`/user/view/${user.id}`}
+                    href={`/${slugUser}/user/view/${user.id}`}
                     className={"font-semibold hover:underline line-clamp-1"}
                 >
                     {user.name}
