@@ -44,7 +44,7 @@ const config = {
         ppr: "incremental",
         globalNotFound: true,
         serverActions: {
-            bodySizeLimit: "2mb",
+            bodySizeLimit: "5mb",
         },
     },
 
