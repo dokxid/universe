@@ -13,27 +13,12 @@ services:
       # postgres related fields
       - POSTGRES_HOST=postgres-production:5432
       - POSTGRES_DB=universe-production
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       # betterauth related fields
-      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
-      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_ADMIN_EMAIL=${BETTER_AUTH_ADMIN_EMAIL}
-      - BETTER_AUTH_ADMIN_PASSWORD=${BETTER_AUTH_ADMIN_PASSWORD}
       # email related fields
       - EMAIL_MODE=email
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USER=${EMAIL_USER}
-      - EMAIL_PASS=${EMAIL_PASS}
-      - EMAIL_FROM=${EMAIL_FROM}
       # garage related fields
       - AWS_REGION=garage
       - AWS_BUCKET_NAME=universe-production
-      - AWS_S3_ENDPOINT=${AWS_S3_ENDPOINT}
-      - AWS_S3_BUCKET_URL=${AWS_S3_BUCKET_URL}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     build:
       context: .
       dockerfile: Dockerfile
@@ -61,28 +46,12 @@ services:
       # postgres related fields
       - POSTGRES_HOST=postgres-staging:5432
       - POSTGRES_DB=universe-staging
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_HOST=${POSTGRES_HOST}
       # betterauth related fields
-      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
-      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_ADMIN_EMAIL=${BETTER_AUTH_ADMIN_EMAIL}
-      - BETTER_AUTH_ADMIN_PASSWORD=${BETTER_AUTH_ADMIN_PASSWORD}
       # email related fields
       - EMAIL_MODE=email
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USER=${EMAIL_USER}
-      - EMAIL_PASS=${EMAIL_PASS}
-      - EMAIL_FROM=${EMAIL_FROM}
       # garage related fields
       - AWS_REGION=garage
       - AWS_BUCKET_NAME=universe-staging
-      - AWS_S3_ENDPOINT=${AWS_S3_ENDPOINT}
-      - AWS_S3_BUCKET_URL=${AWS_S3_BUCKET_URL}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     build:
       context: .
       dockerfile: Dockerfile
