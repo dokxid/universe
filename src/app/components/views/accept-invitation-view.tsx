@@ -67,7 +67,7 @@ export function AcceptInvitationView({
                 <CardHeader>
                     <CardTitle>Accept Invitation</CardTitle>
                     <CardDescription>
-                        You have been by{" "}
+                        You have been invited by{" "}
                         <Link
                             href={`/${invitation.lab.slug}/user/view/${invitation.inviter.id}`}
                             className={"link-internal font-bold"}
