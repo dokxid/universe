@@ -1,13 +1,13 @@
 # Agent Guidelines for universe
 
 ## Build & Test Commands
-- **Build**: `yarn build` (uses Next.js with Turbopack)
-- **Dev**: `yarn dev` (with Turbopack hot reload)
-- **Lint**: `yarn lint` (runs TypeScript check + ESLint)
-- **Test**: `yarn test` (runs Jest)
-- **Single test**: `yarn test <test-file-path>` (e.g., `yarn test __tests__/colorStringValidator.test.js`)
-- **E2E tests**: `yarn e2e` (Cypress interactive), `yarn e2e:headless` (CI mode)
-- **Prisma**: `yarn prisma` (generates client + pushes schema to DB)
+- **Build**: `bun build` (uses Next.js with Turbopack)
+- **Dev**: `bun dev` (with Turbopack hot reload)
+- **Lint**: `bun lint` (runs TypeScript check + ESLint)
+- **Test**: `bun test` (runs Jest)
+- **Single test**: `bun test <test-file-path>` (e.g., `yarn test __tests__/colorStringValidator.test.js`)
+- **E2E tests**: `bun e2e` (Cypress interactive), `yarn e2e:headless` (CI mode)
+- **Prisma**: `bun prisma` (generates client + pushes schema to DB)
 
 ## Code Style
 - **Formatting**: 4 spaces (never tabs), LF line endings, Prettier with tabWidth=4

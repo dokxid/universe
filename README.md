@@ -2,16 +2,15 @@
 
 one day i will:
 
-- [ ] clean up this rushed readme.md
+- [x] clean up this rushed readme.md
 - [ ] make a github organization for heritage lab
 
 # setting up for development
 
 ## 3rd party cloud services that may be needed
 
-- [MongoDB](https://www.mongodb.com/) for database (self hostable)
+- [PostgreSQL](https://www.postgresql.org/) for database (self hostable)
 - [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
-    - how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
 
 ## installing dependencies
 
@@ -20,24 +19,68 @@ yarn magic, or any other pacman u like, you know the drill
 ```bash
 git clone https://github.com/dokxid/universe.git
 cd universe
-yarn install
+bun install
 ```
 
 make sure to copy the .env.example to make ur own one for development
 
 ```bash
 # in repo folder ofc
-cp .env.example .env.local
+cp .env.example .env
+# these are needed for the generate config script, TODO: either generate with the generate secrets script or make them optional
+cp .env.production.example .env.production
+cp .env.staging.example .env.staging
 ```
 
 and fill it out with the things mentioned in the comments in that file
 
+## setting up database and garage for local development
+
+### setup garage
+
+this will be used for all environments:
+ - local -> bucket: universe-local
+ - staging -> bucket: universe-staging
+ - production -> bucket: universe-production
+
+```sh
+# enter your desired storage size and node name
+vim .env
+# generate the config toml out of the .env and start service
+./garage/generate-garage-config.sh
+docker compose up -d garage
+# generate the access key next needs and inser them into .env
+./garage/setup-garage.sh
+```
+
+### setup postgresql and initial seeding
+
+make sure that `POSTGRES_HOST` and `POSTGRES_DB` are set, to initialize the initial super admin to login.
+
+```sh
+docker compose up -d db-local
+# the following environment variables should be in the .env already, but just to make sure they contain:
+# POSTGRES_HOST=localhost:5432
+# POSTGRES_DB=universe-local
+vim .env
+# generates prisma client and deploys migrations
+bun docker:prisma
+```
+
 ## seeding database
 
-before u seed, make sure to fill out the mongodb section in the .env file, so the seeder knows, where to seed the data. ~~also make sure ure not accidentally seeding production~~
+### seed database
 
-> [!NOTE]
-> if you seed with this script, while the app is running, just be aware that the caches havent been revalidated yet, either revalidate manually or just seed within the app; we just need to seed it initially to get on the site without any bugs
+there are two different seeding scripts, one meant for testing features, and one meant for the actual deployment (minimal state):
+
+make sure that `BETTER_AUTH_ADMIN_EMAIL` and `BETTER_AUTH_ADMIN_PASSWORD` are set, to initialize the initial super admin to login.
+
+```sh
+# seeds database to a minimal state, creates super admin user
+bun init:production
+# seeds database with test data, creates super admin user
+bun init:staging
+```
 
 ### seeding cypress users for e2e testing
 
@@ -55,7 +98,7 @@ and fill out the credentials you wanna use for testing
 you did it!!
 
 ```bash
-yarn dev
+bun dev
 ```
 
 > [!NOTE]
@@ -69,59 +112,70 @@ yarn dev
 ### for running automated tests
 
 ```bash
-yarn test
-yarn e2e:headless
-yarn component:headless # we dont have any tests for this
+bun test
+bun e2e:headless
 ```
 
 ### cypress gui
 
 ```bash
-yarn e2e
+bun e2e
 ```
 
 ## working with remote development
 
 remember to forward these ports (if not modified):
 
-| port  | service                               |
-| ----- | ------------------------------------- |
-| 3000  | next.js server                        |
-| 3900  | garage s3 api port                    |
-| 9443  | portainer to manage docker containers |
-| 27017 | mongoDB                               |
+| port  | service                                       |
+| ----- | --------------------------------------------- |
+| 3000  | next.js server                                |
+| 3900  | garage s3 api port                            |
+| 5432  | postgresql default port                       |
+| 5433  | postgresql staging docker port  (on host)     |
+| 5434  | postgresql production docker port (on host)   |
 
 # deployment via docker
 
+this will contain repeating elements from the local development section, but keep in mind, that this is meant as a checklist when deploying.
+
 ## workspace setup
 
-yarn magic, or any other pacman u like, you know the drill
+bun magic, or any other pacman u like, you know the drill
 
 ```bash
+# clone the repo
 git clone https://github.com/dokxid/universe.git
 cd universe
+# install the needed dependencies
 bun install
+# copy the .env files for environment variable secrets
 cp .env.example .env
-./generate_secret.sh  # this will set the cookie password
+cp .env.production.example .env.production
+cp .env.staging.example .env.staging
+# this will set the individual cookie passwords for all environments
+./generate_secret.sh
 ```
 
 make sure to copy the .env.example to make ur own one for development
 
 for production:
 ```bash
-cp .env.production.example .env.production
 vim .env.production
 ```
 
 for staging:
 ```bash
-cp .env.staging.example .env.staging
 vim .env.staging
 ```
 
 and fill it out with the things mentioned in the comments in that file
 
 ## setup garage
+
+this will be used for all environments:
+ - local -> bucket: universe-local
+ - staging -> bucket: universe-staging
+ - production -> bucket: universe-production
 
 ```sh
 # enter your desired storage size and node name
@@ -133,21 +187,49 @@ docker compose up -d garage
 ./garage/setup-garage.sh
 ```
 
-## setup mongodb and initial seeding
+## setup postgresql and initial seeding
 
+for production:
 ```sh
-# idk why i cant use other .envs yet
 docker compose up -d db-production
-docker compose up -d db-staging
-vim .env  # enter database_url: mongodb://localhost:27017/<db_name>
-bun prisma:generate
-bun prisma:push
-bun seed:docker  # init the database
+# change POSTGRES_HOST and POSTGRES_DB to connect to the right database
+# POSTGRES_HOST=localhost:5434
+# POSTGRES_DB=universe-production
+vim .env
+# generates prisma client and deploys migrations
+bun docker:prisma
+# seeds database to a minimal state, creates super admin user
+bun init:production
 ```
 
-## setup universe app
+for staging:
+```sh
+docker compose up -d db-staging
+# change POSTGRES_HOST and POSTGRES_DB to connect to the right database, i.e.:
+# POSTGRES_HOST=localhost:5433
+# POSTGRES_DB=universe-staging
+vim .env
+# generates prisma client and deploys migrations
+bun docker:prisma
+# seeds database with test data, creates super admin user
+bun init:staging
+```
 
+## setup universe app / redeploy changes
+
+for production:
 ```sh
 docker compose up -d app-production --build
+```
+
+for staging:
+```sh
 docker compose up -d app-staging --build
+```
+
+if for some reason, you need to build it from scratch with no build cache:
+```sh
+docker compose build app-production --no-cache
+# or
+docker compose build app-staging --no-cache
 ```
