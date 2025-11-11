@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
 export const MAP_TILES = {
     "Alidade Smooth Dark":
         "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json",
@@ -13,6 +15,7 @@ export const MAP_TILES = {
 export interface SettingsState {
     mapTiles: keyof typeof MAP_TILES;
     descriptorOpen: boolean;
+    exploreOpen: boolean;
     globeView: boolean;
     markerProjection?: "viewport" | "map";
     debug?: boolean;
@@ -21,6 +24,7 @@ export interface SettingsState {
 const initialState: SettingsState = {
     mapTiles: "Alidade Smooth",
     descriptorOpen: true,
+    exploreOpen: isMobile ? false : true,
     globeView: false,
     markerProjection: "viewport",
     debug: false,
@@ -35,6 +39,9 @@ export const settingsSlice = createSlice({
         },
         setDescriptorOpen: (state, action) => {
             state.descriptorOpen = action.payload;
+        },
+        setExploreOpen: (state, action) => {
+            state.exploreOpen = action.payload;
         },
         setGlobeView: (state, action) => {
             state.globeView = action.payload;
@@ -51,6 +58,7 @@ export const settingsSlice = createSlice({
 export const {
     setMapTiles,
     setDescriptorOpen,
+    setExploreOpen,
     setGlobeView,
     setMarkerProjection,
     setDebug,

@@ -4,14 +4,12 @@ import { AppSidebar } from "@/app/components/sidebar/app-sidebar";
 import { ExploreSidebar } from "@/app/components/sidebar/explore-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-    getExperiencesDTO,
+    getLabsDTO,
     getPublicLabsDTO,
-} from "@/data/dto/getters/get-experience-dto";
+} from "@/data/dto/getters/get-lab-dto";
 import {
-    getAllPublicStoriesDTO,
-    getLabPublicStoriesDTO,
+    getAllPublicStoryPinsDTO, getLabPublicStoryPinsDTO
 } from "@/data/dto/getters/get-story-dto";
-import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -19,9 +17,9 @@ export const experimental_ppr = true;
 
 export async function generateStaticParams() {
     try {
-        const experiences = await getExperiencesDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
+        const labs = await getLabsDTO();
+        return labs.map((lab) => ({
+            slug: lab.slug,
         }));
     } catch (error) {
         console.error("Error generating static params:", error);
@@ -29,11 +27,11 @@ export async function generateStaticParams() {
     }
 }
 
-async function getStoriesForSlug(slug: string) {
+async function getStoryPinsForSlug(slug: string) {
     if (slug === "universe") {
-        return getAllPublicStoriesDTO();
+        return getAllPublicStoryPinsDTO();
     } else {
-        return getLabPublicStoriesDTO(slug);
+        return getLabPublicStoryPinsDTO(slug);
     }
 }
 
@@ -48,9 +46,8 @@ export default async function MapView({
         redirect("/universe");
     }
     // Use cached functions
-    const storiesPromise = getStoriesForSlug(slug);
-    const experiencesPromise = getPublicLabsDTO();
-    const tagsPromise = getTagsDTO();
+    const storiesPromise = getStoryPinsForSlug(slug);
+    const labsPromise = getPublicLabsDTO();
 
     return (
         <div className="relative w-screen h-screen flex">
@@ -63,9 +60,8 @@ export default async function MapView({
                             fallback={<Skeleton className="w-full h-full" />}
                         >
                             <MapPanel
-                                tagsPromise={tagsPromise}
-                                experienceSlug={slug}
-                                experiencesPromise={experiencesPromise}
+                                labSlug={slug}
+                                labPromise={labsPromise}
                                 storiesPromise={storiesPromise}
                             />
                         </Suspense>
@@ -83,7 +79,7 @@ export default async function MapView({
             </div>
             <Suspense fallback={null}>
                 <ExploreSidebar
-                    experiencesPromise={experiencesPromise}
+                    labsPromise={labsPromise}
                     slug={slug}
                 />
             </Suspense>

@@ -4,7 +4,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Load environment variables from .env file
-[ ! -f "$SCRIPT_DIR/.env" ] || source "$SCRIPT_DIR/.env"
+[ ! -f "$SCRIPT_DIR/../.env.docker" ] || source "$SCRIPT_DIR/../.env.docker"
 
 cat > $SCRIPT_DIR/garage.toml <<EOF
 metadata_dir = "/tmp/meta"
@@ -35,3 +35,5 @@ api_bind_addr = "[::]:${PORT_ADMIN}"
 admin_token = "$(openssl rand -base64 32)"
 metrics_token = "$(openssl rand -base64 32)"
 EOF
+
+echo "generated garage.toml configuration file: $SCRIPT_DIR/garage.toml"

@@ -9,7 +9,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import CreateLabView from "@/app/components/views/create-lab-view";
+import LabsCreateView from "@/app/components/views/labs-create-view";
 import { Earth } from "lucide-react";
 
 export default async function CreateLab() {
@@ -27,7 +27,7 @@ export default async function CreateLab() {
                 </HeaderContent>
             </Header>
             <ContentLayoutInner>
-                <CreateLabView />
+                <LabsCreateView />
             </ContentLayoutInner>
         </ContentLayout>
     );

@@ -1,4 +1,3 @@
-import { elevationRequestsColumns } from "@/app/components/data-tables/columns";
 import { ElevationRequestsTable } from "@/app/components/data-tables/elevation-requests-data-table";
 import { ContentLayout } from "@/app/components/layout/content-layout";
 import {
@@ -9,11 +8,13 @@ import {
     HeaderTitle,
 } from "@/app/components/layout/header";
 import { getLabPrivateStoriesDTO } from "@/data/dto/getters/get-story-dto";
-import { StoryDTO } from "@/types/dtos";
-import { ColumnDef } from "@tanstack/react-table";
 import { Grid2X2Check } from "lucide-react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
     const { slug } = await params;
     const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
@@ -32,15 +33,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
-                <ElevationRequestsTable
-                    columns={
-                        elevationRequestsColumns as ColumnDef<
-                            StoryDTO,
-                            unknown
-                        >[]
-                    }
-                    data={data}
-                />
+                <ElevationRequestsTable data={data} />
             </ContentLayout>
         </>
     );

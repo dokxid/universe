@@ -1,6 +1,6 @@
 import {
     loginAsAdmin,
-    loginAsEditor,
+    loginAsMember,
     loginAsSuperAdmin,
 } from "../support/commands";
 
@@ -22,6 +22,11 @@ describe("Super Admin", () => {
         cy.get("a[href='/universe/login']").should("not.exist");
         cy.get(".h-5 > p.text-xs").should("contain", "Super Admin");
     });
+    it("UserWidget should show correct role for Super Admin", () => {
+        loginAsSuperAdmin();
+        cy.visit("/test/map");
+        cy.get("[aria-label='User Role']").contains(/^Super Admin$/);
+    });
 });
 
 describe("Admin", () => {
@@ -29,7 +34,12 @@ describe("Admin", () => {
         loginAsAdmin();
         cy.visit("/test/map");
         cy.get("a[href='/test/login']").should("not.exist");
-        cy.get(".h-5 > p.text-xs").should("contain", "Admin");
+        cy.get("[aria-label='User Role']").should("contain", "Admin");
+    });
+    it("UserWidget should show correct role for Admin", () => {
+        loginAsAdmin();
+        cy.visit("/test/map");
+        cy.get("p.text-xs").contains(/^Admin$/);
     });
     it("Admin should not see super admin features", () => {
         loginAsAdmin();
@@ -38,20 +48,25 @@ describe("Admin", () => {
     });
 });
 
-describe("Editor", () => {
-    it("can login as Editor", () => {
-        loginAsEditor();
+describe("Member", () => {
+    it("can login as Member", () => {
+        loginAsMember();
         cy.visit("/test/map");
         cy.get("a[href='/test/login']").should("not.exist");
         cy.get(".h-5 > p.text-xs").should("contain", "Editor");
     });
-    it("Editor should not see super admin features", () => {
-        loginAsEditor();
+    it("UserWidget should show correct role for Member", () => {
+        loginAsMember();
+        cy.visit("/test/map");
+        cy.get("[aria-label='User Role']").contains(/^Editor$/);
+    });
+    it("Member should not see super admin features", () => {
+        loginAsMember();
         cy.visit("/test/map");
         cy.get("a[href='/universe/labs/manage']").should("not.exist");
     });
-    it("Editor should not see admin features", () => {
-        loginAsEditor();
+    it("Member should not see admin features", () => {
+        loginAsMember();
         cy.visit("/test/map");
         cy.get("a[href='/test/lab/settings']").should("not.exist");
     });
@@ -62,10 +77,8 @@ describe("Permissions", () => {
         cy.request({ url: "/test/stories/create", followRedirect: false }).then(
             (response) => {
                 expect(response.status).to.eq(307);
-                expect(response.redirectedToUrl).to.include(
-                    "https://api.workos.com"
-                );
-            }
+                expect(response.redirectedToUrl).to.include("/test/login");
+            },
         );
     });
 });

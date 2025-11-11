@@ -99,7 +99,7 @@ export default function StoryTextEditorForm({ story }: { story: StoryDTO }) {
                     <input
                         type={"hidden"}
                         {...editContentForm.register("storyId")}
-                        defaultValue={story._id}
+                        defaultValue={story.id}
                     />
                     <SettingsBoxFormElement className={"mt-4"}>
                         <SettingsFormButtonGroup>

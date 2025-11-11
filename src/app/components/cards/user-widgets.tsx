@@ -43,6 +43,7 @@ export function UserWidgetAuthorized({
     if (isError || !user) {
         return <UserWidgetNoAuth slug={slug} />;
     }
+    const slugUser = user.labs.pop()?.slug || "universe";
     return (
         <div
             className={
@@ -50,7 +51,7 @@ export function UserWidgetAuthorized({
             }
         >
             <Link
-                href={`/${user.labs?.[0].slug}/profile`}
+                href={`/${slugUser}/user/view/${user.id}`}
                 className={
                     "cursor-pointer hover:brightness-80 transition-all duration-100"
                 }
@@ -60,26 +61,15 @@ export function UserWidgetAuthorized({
                         className={"object-cover"}
                         src={user.profilePictureUrl || undefined}
                     ></AvatarImage>
-                    <AvatarFallback>
-                        {(user.displayName
-                            ? user.displayName
-                            : user.firstName || user.lastName
-                            ? `${user.firstName || ""} ${user.lastName || ""}`
-                            : "Anonymous"
-                        ).charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
             </Link>
             <div className={"text-sm flex flex-col grow"}>
                 <Link
-                    href={`/${user.labs?.[0].slug}/user/view/${user._id}`}
+                    href={`/${slugUser}/user/view/${user.id}`}
                     className={"font-semibold hover:underline line-clamp-1"}
                 >
-                    {user.displayName
-                        ? user.displayName
-                        : user.firstName || user.lastName
-                        ? `${user.firstName || ""} ${user.lastName || ""}`
-                        : "Anonymous"}
+                    {user.name}
                 </Link>
                 <div className="overflow-hidden w-full">
                     <div
@@ -87,7 +77,7 @@ export function UserWidgetAuthorized({
                             "h-5 translate-y-0 group-hover/user:-translate-y-5 transition-all duration-100 ease-in-out"
                         }
                     >
-                        <p className={"text-xs"}>{role}</p>
+                        <p aria-label={"User Role"} className={"text-xs"}>{role}</p>
                         <SignOutButton className={""} />
                     </div>
                 </div>

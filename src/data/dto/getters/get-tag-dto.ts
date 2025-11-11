@@ -1,60 +1,53 @@
 import "server-only";
 
-import { getLabPublicStoriesDTO } from "@/data/dto/getters/get-story-dto";
-import {
-    flattenedTags,
-    sanitizeUNESCOTag,
-} from "@/data/transformers/tag-transformer";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { UNESCOTagModel } from "@/lib/data/mongodb/models/unesco-tag-model";
-import {
-    UnescoTagDTO,
-    UnescoTagDTOWithCount,
-    UnescoTagTheme,
-} from "@/types/dtos";
+import { getTags, getTagsForLab, TagWithCount } from "@/data/fetcher/tag-fetcher";
+import { TagDTO } from "@/types/dtos";
 import { cache } from "react";
 
-const getTags = cache(async (): Promise<UnescoTagTheme[]> => {
+// flattened tags for easier access
+export const getAllTagsDTO = cache(async (): Promise<TagDTO[]> => {
     try {
-        await dbConnect();
-        const fetchedUNESCOTags = (await UNESCOTagModel.find({})
-            .lean()
-            .exec()) as unknown as UnescoTagTheme[];
-        return fetchedUNESCOTags.map(sanitizeUNESCOTag);
+        const tags = await getTags();
+        const sanitizedTags = tags.map((tag) => sanitizeToTagDTO(tag));
+        return sanitizedTags;
     } catch (error) {
-        console.error("Error fetching tags:", error);
+        console.error("Error fetching tags DTO:", error);
         throw error;
     }
 });
 
-// flattened tags for easier access
-export const getTagsDTO = cache(async (): Promise<UnescoTagDTO[]> => {
-    const tagThemes = await getTags();
-    const tags = flattenedTags(tagThemes);
-    return tags;
-});
-
-export const getTagsForLabDTO = cache(
-    async (labSlug: string): Promise<UnescoTagDTOWithCount[]> => {
-        const tagThemes = await getTags();
-        const stories = await getLabPublicStoriesDTO(labSlug);
-        const storyTagNames = stories.flatMap((story) => story.tags || []);
-        const tags = flattenedTags(tagThemes);
-        const labTags = tags.filter((tag) => storyTagNames.includes(tag.name));
-        return labTags.map((tag) => ({
-            ...tag,
-            count: storyTagNames.filter((name) => name === tag.name).length,
-        }));
-    }
+export const getUniqueTagDTOsForLab = cache(
+    async (slug: string): Promise<TagDTO[]> => {
+        try {
+            const tags = await getTagsForLab(slug);
+            const sanitizedTags = tags.map((tag) => sanitizeToTagDTO(tag));
+            return sanitizedTags;
+        } catch (error) {
+            console.error("Error fetching unique tags for lab:", error);
+            throw error;
+        }
+    },
 );
 
-export async function getTagsByNameDTO(
-    tagNames: string[]
-): Promise<UnescoTagDTO[]> {
-    const tags = await getTagsDTO();
-    const foundTags = tags.filter((t) => tagNames.includes(t.name));
-    if (foundTags.length === 0) {
-        throw new Error("Tags not found: " + tagNames.join(", "));
+export async function getTagByNameDTO(tagName: string): Promise<TagDTO | null> {
+    try {
+        const tags = await getAllTagsDTO();
+        const foundTag = tags.find((t) => t.name === tagName);
+        if (!foundTag) {
+            throw new Error("Tag not found: " + tagName);
+        }
+        return foundTag;
+    } catch (error) {
+        console.error(`Error fetching tag by name: ${tagName}`, error);
+        throw error;
     }
-    return foundTags;
+}
+
+export function sanitizeToTagDTO(
+    tag: TagWithCount,
+): TagDTO {
+    return {
+        ...tag,
+        count: tag._count.stories,
+    };
 }

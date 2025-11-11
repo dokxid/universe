@@ -1,6 +1,6 @@
-import { UnescoTagDTO } from "@/types/dtos";
+import { TagDTO } from "@/types/dtos";
 
-export const findDuplicateTags = (tags: UnescoTagDTO[]) => {
+export const findDuplicateTags = (tags: TagDTO[]) => {
     const tagNames = tags.map((t) => t.name);
     const duplicates = duplicatesStr(tagNames);
     console.log("Duplicate tags:", duplicates);

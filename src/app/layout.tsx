@@ -2,15 +2,11 @@ import { ThemeProvider } from "@/app/components/providers/theme-provider";
 import { SidebarLayout } from "@/app/components/sidebar/sidebar-wrapper";
 import StoreProvider from "@/app/store-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import {
-    AuthKitProvider,
-    Impersonation,
-} from "@workos-inc/authkit-nextjs/components";
 import type { Metadata } from "next";
 import React from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { SWRConfig } from "swr";
 
 type RootLayoutProps = {
     children: React.ReactNode;
@@ -20,6 +16,13 @@ export const metadata: Metadata = {
     title: "Heritage Lab Universe",
     description: "Explore cultures, their history and stories",
 };
+
+const options = {
+    refreshInterval: 3000,
+    dedupingInterval: 2000,
+    revalidateOnFocus: false,
+};
+
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
@@ -27,26 +30,22 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <link rel="icon" href="/img/favicon.ico" sizes="any" />
             </head>
             <body className={"antialiased"}>
-                <main>
-                    <AuthKitProvider>
-                        <StoreProvider>
-                            <TooltipProvider>
-                                <ThemeProvider
-                                    attribute="class"
-                                    defaultTheme="system"
-                                    enableSystem
-                                    disableTransitionOnChange
-                                >
-                                    <SidebarLayout>
-                                        <Impersonation />
-                                        {children}
-                                        <Toaster />
-                                        <SpeedInsights />
-                                    </SidebarLayout>
-                                </ThemeProvider>
-                            </TooltipProvider>
-                        </StoreProvider>
-                    </AuthKitProvider>
+                <main><SWRConfig value={options}>
+                    <StoreProvider>
+                        <TooltipProvider>
+                            <ThemeProvider
+                                attribute="class"
+                                defaultTheme="system"
+                                enableSystem
+                                disableTransitionOnChange
+                            >
+                                <SidebarLayout>
+                                    {children}
+                                    <Toaster />
+                                </SidebarLayout>
+                            </ThemeProvider>
+                        </TooltipProvider>
+                    </StoreProvider></SWRConfig>
                 </main>
             </body>
         </html>

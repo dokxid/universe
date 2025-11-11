@@ -9,24 +9,21 @@ import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAppSelector } from "@/lib/hooks";
+import { useLabPublicStories } from "@/lib/swr/story-hook";
 import { cn } from "@/lib/utils";
 import { setSelectedStoryIdParams } from "@/lib/utils/param-setter";
+import { getLabSlugFromPathname } from "@/lib/utils/pathname";
 import { StoryDTO } from "@/types/dtos";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import parse from "html-react-parser";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function StoryDetails({
-    slug,
-    storiesPromise,
-}: {
-    slug: string;
-    storiesPromise: Promise<StoryDTO[]>;
-}) {
+export function StoryDetails() {
     const pathname = usePathname();
+    const slug = getLabSlugFromPathname(pathname);
     const isMobile = useIsMobile();
     const searchParams = useSearchParams();
     const navigationState = useAppSelector((state) => state.navigation);
@@ -34,34 +31,33 @@ export function StoryDetails({
         navigationState.storyDetailsOpen
     );
     const cardRef = useRef<HTMLDivElement>(null);
+    const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
     const [activeStory, setActiveStory] = useState<StoryDTO | null>(null);
-    const stories = use(storiesPromise);
+    const { stories, isLoading, isError } = useLabPublicStories(slug);
 
     useEffect(() => {
-        if (searchParams.get("story") === "") {
-            setActiveStory(null);
-        } else {
-            setActiveStory(
-                stories.find(
-                    (story) => story._id === searchParams.get("story")
-                ) || null
-            );
-        }
-    }, [searchParams, stories]);
+        const storyIdParam = searchParams.get("story");
+        setActiveStoryId(storyIdParam);
+    }, [searchParams]);
 
     useEffect(() => {
+        if (!stories) return;
+        if (activeStoryId) setDrawerOpen(true);
         cardRef.current?.scrollTo(0, 0);
-    }, [activeStory]);
-
-    useEffect(() => {
-        if (activeStory) setDrawerOpen(true);
-    }, [activeStory]);
-
-    if (!activeStory) return null;
+        setActiveStory((stories as StoryDTO[]).find((story) => story.id === activeStoryId) || null);
+    }, [activeStoryId, stories]);
 
     const handleMobileDrawerChange = (drawerOpenState: boolean) => {
         setDrawerOpen(drawerOpenState);
     };
+
+    if (isLoading) {
+        return null;
+    }
+
+    if (isError || !activeStoryId || !activeStory) {
+        return null;
+    }
 
     // mobile view
     if (isMobile) {
@@ -77,16 +73,16 @@ export function StoryDetails({
                         }
                     >
                         <StoryAuthorHeaderMapView
-                            slug={slug}
                             story={activeStory}
                             className={"bg-background z-1"}
                         />
                         <Link
+                            prefetch={false}
                             href={
                                 "/" +
-                                activeStory.experience +
+                                activeStory.lab.slug +
                                 "/stories/view/" +
-                                activeStory._id
+                                activeStory.id
                             }
                             className={
                                 "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden"
@@ -120,9 +116,8 @@ export function StoryDetails({
     return (
         <Card
             ref={cardRef}
-            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${
-                navigationState.storyDetailsOpen ? "" : "hidden"
-            }`}
+            className={`relative gap-3 max-w-[40svh] max-h-full lg:w-md xl:w-xl pointer-events-auto overflow-y-auto rounded-md border-0 p-0 overscroll-none scroll ${navigationState.storyDetailsOpen ? "" : "hidden"
+                }`}
         >
             <div
                 className={cn(
@@ -146,9 +141,9 @@ export function StoryDetails({
             <Link
                 href={
                     "/" +
-                    activeStory.experience +
+                    activeStory.lab.slug +
                     "/stories/view/" +
-                    activeStory._id
+                    activeStory.id
                 }
                 className={
                     "w-full hover:brightness-75 shrink-0 transition-all duration-200 hover:cursor-pointer overflow-hidden relative"

@@ -14,35 +14,37 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Newspaper } from "lucide-react";
 import { Suspense } from "react";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
     const { slug } = await params;
     const data = JSON.stringify(await getLabPrivateStoriesDTO(slug));
 
     return (
-        <>
-            <ContentLayout>
-                <Header>
-                    <HeaderIcon>
-                        <Newspaper size={80} />
-                    </HeaderIcon>
-                    <HeaderContent>
-                        <HeaderTitle>Manage Lab Stories</HeaderTitle>
-                        <HeaderDescription>
-                            Manage the stories in your lab. You can add, remove,
-                            or modify story details as needed. Or publish them
-                            on the Universe for the world to see!
-                        </HeaderDescription>
-                    </HeaderContent>
-                </Header>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <StoryDataTable
-                        columns={
-                            manageStoryColumns as ColumnDef<StoryDTO, unknown>[]
-                        }
-                        data={data}
-                    />
-                </Suspense>
-            </ContentLayout>
-        </>
+        <ContentLayout>
+            <Header>
+                <HeaderIcon>
+                    <Newspaper size={80} />
+                </HeaderIcon>
+                <HeaderContent>
+                    <HeaderTitle>Manage Lab Stories</HeaderTitle>
+                    <HeaderDescription>
+                        Manage the stories in your lab. You can add, remove,
+                        or modify story details as needed. Or publish them
+                        on the Universe for the world to see!
+                    </HeaderDescription>
+                </HeaderContent>
+            </Header>
+            <Suspense fallback={<div>Loading...</div>}>
+                <StoryDataTable
+                    columns={
+                        manageStoryColumns as ColumnDef<StoryDTO, unknown>[]
+                    }
+                    data={data}
+                />
+            </Suspense>
+        </ContentLayout>
     );
 }

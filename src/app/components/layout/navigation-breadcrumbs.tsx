@@ -15,7 +15,7 @@ export const pathFeatures = new Map<string, string>([
     ["stories", "Story collection"],
     ["team", "Team"],
     ["about", "About"],
-    ["experiences", "Heritage Labs"],
+    ["labs", "Heritage Labs"],
     ["map-settings", "Map settings"],
     ["user-preferences", "User preferences"],
     ["debug-settings", "Debug settings"],

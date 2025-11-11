@@ -1,4 +1,4 @@
-import { ContentLayout } from "@/app/components/layout/content-layout";
+import { ContentLayout, ContentLayoutInner } from "@/app/components/layout/content-layout";
 import {
     Header,
     HeaderContent,
@@ -6,6 +6,7 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
+import { PrivacyPolicyView } from "@/app/components/views/privacy-policy-view";
 import { BookKey } from "lucide-react";
 
 export default async function PrivacyPage() {
@@ -25,6 +26,9 @@ export default async function PrivacyPage() {
                         </HeaderDescription>
                     </HeaderContent>
                 </Header>
+                <ContentLayoutInner>
+                    <PrivacyPolicyView />
+                </ContentLayoutInner>
             </ContentLayout>
         </>
     );

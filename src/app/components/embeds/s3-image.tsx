@@ -5,8 +5,7 @@ import { cn } from "@/lib/utils";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
 import Image from "next/image";
 
-// maybe this should go in .env, but this is only temporary till i figure out image optimization limits
-const USE_UNOPTIMIZED_IMAGES = true;
+const USE_UNOPTIMIZED_IMAGES = process.env.NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES === "true"
 
 export function ImageElement({
     className,
@@ -15,7 +14,7 @@ export function ImageElement({
     alt,
 }: {
     className?: string;
-    src: string;
+    src: string | null;
     internal?: boolean;
     alt?: string;
 }) {
@@ -23,7 +22,7 @@ export function ImageElement({
     return (
         <div className={"relative w-full h-full aspect-video"}>
             <Image
-                src={src}
+                src={src ?? "/img/image-placeholder.jpg"}
                 alt={alt || "Image"}
                 fill
                 sizes="(min-width: 808px) 50vw, 100vw"
@@ -37,20 +36,23 @@ export function ImageElement({
 }
 
 export function S3Image({
-    experience,
+    lab,
     fileName,
     className,
     internal = true,
     alt,
 }: {
-    experience: string;
-    fileName: string;
+    lab: string;
+    fileName: string | null;
     className?: string;
     link?: boolean;
     internal?: boolean;
     alt?: string;
 }) {
-    const { imageUrl, isError, isLoading } = useImageURL(experience, fileName);
+    const { imageUrl, isError, isLoading } = useImageURL(
+        lab,
+        fileName || "",
+    );
     if (isLoading) return <Skeleton className={"w-full h-full aspect-video"} />;
     if (isError) return <p>Error loading image</p>;
     if (!imageUrl) return <p>No image available</p>;
@@ -71,7 +73,7 @@ export function HostedImage({
     internal = true,
     alt,
 }: {
-    fileName: string;
+    fileName: string | null;
     className?: string;
     internal?: boolean;
     alt?: string;

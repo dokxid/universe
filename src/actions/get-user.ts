@@ -1,16 +1,13 @@
 "use server";
 
 import {
-    getCurrentUserOptional,
+    getCurrentUser,
     getPermissionsByUser,
     Permissions,
     Role,
 } from "@/data/auth";
-import {
-    getUserDTO,
-    getUserFromWorkOSIdDTO,
-} from "@/data/dto/getters/get-user-dto";
-import { UserDTO } from "@/lib/data/mongodb/models/user-model";
+import { getUserDTO } from "@/data/dto/getters/get-user-dto";
+import { UserDTO } from "@/types/dtos";
 
 export async function getUserAction(userId: string): Promise<UserDTO | null> {
     try {
@@ -22,11 +19,13 @@ export async function getUserAction(userId: string): Promise<UserDTO | null> {
     }
 }
 
-export async function getCurrentUserAction(): Promise<UserDTO | null> {
+export async function getCurrentUserAction(
+    ensureLoggedIn = true,
+): Promise<UserDTO | null> {
     try {
-        const userWorkOS = await getCurrentUserOptional();
-        if (!userWorkOS) return null;
-        const user = await getUserFromWorkOSIdDTO(userWorkOS.id);
+        const currentUser = await getCurrentUser(ensureLoggedIn);
+        if (!currentUser) return null;
+        const user = await getUserDTO(currentUser.id);
         return user;
     } catch (error) {
         console.error("Error fetching lab:", error);
@@ -34,11 +33,11 @@ export async function getCurrentUserAction(): Promise<UserDTO | null> {
     }
 }
 
-export async function getUserFromWorkOSIdAction(
-    userId: string
+export async function getUserFromIdAction(
+    userId: string,
 ): Promise<UserDTO | null> {
     try {
-        const user = await getUserFromWorkOSIdDTO(userId);
+        const user = await getUserDTO(userId);
         return user;
     } catch (error) {
         console.error("Error fetching lab:", error);
@@ -49,10 +48,10 @@ export async function getUserFromWorkOSIdAction(
 export async function getUserPermissionAction(
     labSlug: string,
     permission: Permissions,
-    storyId?: string
+    storyId?: string,
 ): Promise<boolean> {
     try {
-        const user = await getCurrentUserOptional();
+        const user = await getCurrentUser(false);
         const permissions = await getPermissionsByUser(user, labSlug, storyId);
         return permissions.includes(permission);
     } catch (error) {
@@ -63,7 +62,7 @@ export async function getUserPermissionAction(
 
 export async function getUserRoleAction(labSlug: string): Promise<Role> {
     try {
-        const user = await getCurrentUserOptional();
+        const user = await getCurrentUser(false);
         if (!user) return "guest";
         const permissions = await getPermissionsByUser(user, labSlug);
         if (permissions.includes("superadmin")) return "superadmin";

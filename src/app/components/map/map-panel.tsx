@@ -1,8 +1,8 @@
 "use client";
 
 import { useAppDispatch } from "@/lib/hooks";
-import { setCurrentExperience } from "@/lib/redux/experiences/experiences-slice";
-import { ExperienceDTO, StoryDTO, UnescoTagDTO } from "@/types/dtos";
+import { setCurrentLab } from "@/lib/redux/lab/lab-slice";
+import { LabDTO, StoryPinDTO } from "@/types/dtos";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
 
@@ -12,30 +12,27 @@ const MapWrapper = dynamic(() => import("@/app/components/map/map"), {
 });
 
 export function MapPanel({
-    tagsPromise,
     storiesPromise,
-    experiencesPromise,
-    experienceSlug,
+    labPromise,
+    labSlug,
 }: {
-    tagsPromise: Promise<UnescoTagDTO[]>;
-    storiesPromise: Promise<StoryDTO[]>;
-    experiencesPromise: Promise<ExperienceDTO[]>;
-    experienceSlug: string;
+    storiesPromise: Promise<StoryPinDTO[]>;
+    labPromise: Promise<LabDTO[]>;
+    labSlug: string;
 }) {
-    const experiences = use(experiencesPromise);
+    const labs = use(labPromise);
     const stories = use(storiesPromise);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(setCurrentExperience(experienceSlug));
-    }, [dispatch, experienceSlug]);
+        dispatch(setCurrentLab(labSlug));
+    }, [dispatch, labSlug]);
 
     return (
         <MapWrapper
-            tagsPromise={tagsPromise}
             stories={stories}
-            experiences={experiences}
-            experienceSlug={experienceSlug}
+            labs={labs}
+            labSlug={labSlug}
         />
     );
 }

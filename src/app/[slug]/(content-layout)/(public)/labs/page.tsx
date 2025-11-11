@@ -1,7 +1,7 @@
-import { ExperiencesGallery } from "@/app/components/views/experiences-gallery";
+import { LabGallery } from "@/app/components/views/lab-gallery";
 
 export const experimental_ppr = true;
 
-export default async function ExperiencesPage() {
-    return <ExperiencesGallery />;
+export default async function LabGalleryPage() {
+    return <LabGallery />;
 }

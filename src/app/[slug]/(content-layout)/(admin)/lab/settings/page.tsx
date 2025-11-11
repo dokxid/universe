@@ -9,24 +9,9 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { TeamSettings } from "@/app/components/views/lab-settings";
-import {
-    getExperienceDTO,
-    getExperiencesDTO,
-} from "@/data/dto/getters/get-experience-dto";
+import { LabSettings } from "@/app/components/views/lab-settings";
+import { getLabDTO } from "@/data/dto/getters/get-lab-dto";
 import { Settings } from "lucide-react";
-
-export async function generateStaticParams() {
-    try {
-        const experiences = await getExperiencesDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
-        }));
-    } catch (error) {
-        console.error("Error generating static params:", error);
-        return [];
-    }
-}
 
 export default async function Page({
     params,
@@ -34,7 +19,7 @@ export default async function Page({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const experience = JSON.stringify(await getExperienceDTO(slug));
+    const lab = JSON.stringify(await getLabDTO(slug));
     return (
         <>
             <ContentLayout>
@@ -50,10 +35,7 @@ export default async function Page({
                     </HeaderContent>
                 </Header>
                 <ContentLayoutInner>
-                    <TeamSettings
-                        slug={slug}
-                        experienceSerialized={experience}
-                    />
+                    <LabSettings slug={slug} labSerialized={lab} />
                 </ContentLayoutInner>
             </ContentLayout>
         </>

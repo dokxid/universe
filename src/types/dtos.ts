@@ -1,31 +1,30 @@
-export type Experience = {
-    _id: string;
-    __v: number;
-    slug: string;
-    center: { coordinates: [number, number] };
-    initialZoom: number;
-    title: string;
-    subtitle: string;
-    content: string;
-    featuredImageUrl: string;
-    stories: Story[];
-    organizationId: string;
-    connectionId?: string;
-    visibility: "public" | "unlisted" | "private";
+import {
+    ElevationRequestStatus,
+    GeoType,
+    LabVisibility,
+    License,
+    Role,
+} from "@/generated/prisma/enums";
+import { ElevationRequestModel, TagModel } from "@/generated/prisma/models";
+
+export type SanitizedGeoJson = {
+    type: GeoType;
+    coordinates: [number, number];
 };
 
-export type ExperienceDTO = {
-    _id: string;
+export type LabDTO = {
+    id: string;
     slug: string;
-    center: { coordinates: [number, number] };
+    center: SanitizedGeoJson;
     amountStories: number;
+    amountMembers: number;
+    amountUniverseStories?: number;
     initialZoom: number;
-    title: string;
+    name: string;
     subtitle: string;
     content: string;
-    featuredImageUrl: string;
-    organizationId: string;
-    visibility: "public" | "unlisted" | "private";
+    logo?: string | null;
+    visibility: LabVisibility;
 };
 
 export type Tag = {
@@ -34,87 +33,96 @@ export type Tag = {
     unesco_tag: boolean;
 };
 
-export type Story = {
-    _id: string;
-    author: string;
+export type NewElevationRequestData = {
+    status: ElevationRequestStatus;
+    requestedAt: Date;
+    resolvedAt?: Date;
+};
+
+export type StoryPinDTO = {
+    id: string;
+    location: SanitizedGeoJson;
+    tags: TagModel[];
+    year: number;
+    labSlug: string;
+}
+
+export type StoryDTO = {
+    id: string;
     content: string;
     draft: boolean;
     title: string;
-    location: { type: string; coordinates: [number, number] };
-    tags: string[];
+    location: SanitizedGeoJson;
+    tags: TagModel[];
     year: number;
     featuredImageUrl: string;
     visibleUniverse: boolean;
-    elevationRequests: ElevationRequest[];
+    elevationRequests: ElevationRequestModel[];
     license: CreativeCommonsLicense;
     createdAt: Date;
     updatedAt: Date;
-};
-
-export type NewElevationRequestData = {
-    status: "pending" | "approved" | "rejected" | "created";
-    requestedAt: Date;
-    resolvedAt?: Date;
-};
-
-export type ElevationRequest = {
-    _id: string;
-    requestedAt: Date;
-    resolvedAt?: Date;
-    status: "pending" | "approved" | "rejected" | "created";
-};
-
-export type NewStoryData = Omit<Story, "_id" | "elevation_requests"> & {
-    elevationRequests: NewElevationRequestData[];
-};
-
-export interface StoryDTO extends Story {
-    authorName: string;
-    authorProfilePictureUrl?: string;
-    experience: string;
-}
-
-export type ImageURL = {
-    url: string;
-};
-
-export type ExperienceSignInDTO = {
-    organizationId?: string;
-    connectionId?: string;
-};
-
-export type UnescoTagTheme = {
-    _id: string;
-    name: string;
-    color: string;
-    categories: {
-        _id: string;
+    author: {
+        id: string;
         name: string;
-        tags: { _id: string; name: string }[];
-    }[];
-};
-
-export type UnescoTagThemeDTO = {
-    _id: string;
-    name: string;
-    color: string;
-    categories: {
-        _id: string;
+        profilePictureUrl?: string;
+    };
+    lab: {
+        id: string;
         name: string;
-        tags: { _id: string; name: string }[];
-    }[];
+        slug: string;
+    };
 };
 
-export type UnescoTagDTO = {
-    theme: string;
-    category: string;
+export type InvitationDTO = {
+    id: string;
+    inviter: { name: string; id: string };
+    email: string;
+    lab: {
+        id: string;
+        name: string;
+        slug: string;
+        logo: string | null;
+    };
+    role: Role;
+};
+
+export type UserDTO = {
+    id: string;
+    email: string;
+    stories?: StoryDTO[];
     name: string;
-    _id: string;
-    color: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string;
+    profilePictureUrl?: string;
+    position?: string;
+    publicEmail?: string;
+    phoneNumber?: string;
+    website?: string;
+    description?: string;
+    superAdmin?: boolean;
+    banned?: boolean;
+    banReason?: string;
+    banExpires?: Date;
+    labs: {
+        id: string;
+        slug: string;
+        name: string;
+        role: Role;
+    }[];
+    createdAt: Date;
+    updatedAt: Date;
+    storyCount: number;
 };
 
-export type UnescoTagDTOWithCount = UnescoTagDTO & {
-    count: number;
+export type TagDTO = {
+    theme?: string | null;
+    category?: string | null;
+    name: string;
+    id: string;
+    color: string;
+    isUnesco: boolean;
+    count?: number;
 };
 
 export type CreativeCommonsLicenseDetailed = {
@@ -128,17 +136,14 @@ export type CreativeCommonsLicenseDetailed = {
 
 export type CreativeCommonsLicense =
     | "CC0" // Public Domain Dedication
-    | "CC BY" // Attribution
-    | "CC BY-SA" // Attribution-ShareAlike
-    | "CC BY-NC" // Attribution-NonCommercial
-    | "CC BY-NC-SA" // Attribution-NonCommercial-ShareAlike
-    | "CC BY-ND" // Attribution-NoDerivatives
-    | "CC BY-NC-ND"; // Attribution-NonCommercial-NoDerivatives
+    | "CC_BY" // Attribution
+    | "CC_BY_SA" // Attribution-ShareAlike
+    | "CC_BY_NC" // Attribution-NonCommercial
+    | "CC_BY_NC_SA" // Attribution-NonCommercial-ShareAlike
+    | "CC_BY_ND" // Attribution-NoDerivatives
+    | "CC_BY_NC_ND"; // Attribution-NonCommercial-NoDerivatives
 
-export const CC_LICENSES: Record<
-    CreativeCommonsLicense,
-    CreativeCommonsLicenseDetailed
-> = {
+export const CC_LICENSES: Record<License, CreativeCommonsLicenseDetailed> = {
     CC0: {
         code: "CC0",
         name: "Public Domain Dedication",
@@ -147,48 +152,48 @@ export const CC_LICENSES: Record<
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY": {
-        code: "CC BY",
+    CC_BY: {
+        code: "CC_BY",
         name: "Attribution",
         url: "https://creativecommons.org/licenses/by/4.0/",
         commercial: true,
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY-SA": {
-        code: "CC BY-SA",
+    CC_BY_SA: {
+        code: "CC_BY_SA",
         name: "Attribution-ShareAlike",
         url: "https://creativecommons.org/licenses/by-sa/4.0/",
         commercial: true,
         derivatives: true,
         shareAlike: true,
     },
-    "CC BY-NC": {
-        code: "CC BY-NC",
+    CC_BY_NC: {
+        code: "CC_BY_NC",
         name: "Attribution-NonCommercial",
         url: "https://creativecommons.org/licenses/by-nc/4.0/",
         commercial: false,
         derivatives: true,
         shareAlike: false,
     },
-    "CC BY-NC-SA": {
-        code: "CC BY-NC-SA",
+    CC_BY_NC_SA: {
+        code: "CC_BY_NC_SA",
         name: "Attribution-NonCommercial-ShareAlike",
         url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
         commercial: false,
         derivatives: true,
         shareAlike: true,
     },
-    "CC BY-ND": {
-        code: "CC BY-ND",
+    CC_BY_ND: {
+        code: "CC_BY_ND",
         name: "Attribution-NoDerivatives",
         url: "https://creativecommons.org/licenses/by-nd/4.0/",
         commercial: true,
         derivatives: false,
         shareAlike: false,
     },
-    "CC BY-NC-ND": {
-        code: "CC BY-NC-ND",
+    CC_BY_NC_ND: {
+        code: "CC_BY_NC_ND",
         name: "Attribution-NonCommercial-NoDerivatives",
         url: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
         commercial: false,

@@ -10,21 +10,9 @@ import {
     HeaderIcon,
     HeaderTitle,
 } from "@/app/components/layout/header";
-import { getExperiencesDTO } from "@/data/dto/getters/get-experience-dto";
-import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
+import { getAllTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { Newspaper } from "lucide-react";
 
-export async function generateStaticParams() {
-    try {
-        const experiences = await getExperiencesDTO();
-        return experiences.map((experience) => ({
-            slug: experience.slug,
-        }));
-    } catch (error) {
-        console.error("Error generating static params:", error);
-        return [];
-    }
-}
 
 export default async function Page({
     params,
@@ -32,7 +20,7 @@ export default async function Page({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const tagsPromise = getTagsDTO();
+    const tagsPromise = getAllTagsDTO();
 
     return (
         <ContentLayout>

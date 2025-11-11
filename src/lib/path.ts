@@ -1,9 +1,9 @@
 import { StoryDTO } from "@/types/dtos";
 
 export function buildStoryLink(story: StoryDTO) {
-    return `/${story.experience}/stories/view/${story._id}`;
+    return `/${story.lab.slug}/stories/view/${story.id}`;
 }
 
-export function buildExperienceLink(experienceSlug: string) {
-    return `/${experienceSlug}/map`;
+export function buildLabLink(labSlug: string) {
+    return `/${labSlug}/map`;
 }

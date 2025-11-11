@@ -1,7 +1,7 @@
 import StoryEdit from "@/app/components/views/edit-story-view";
 import { canUserEditStoryId } from "@/data/dto/auth/story-permissions";
 import { getStoryDTO } from "@/data/dto/getters/get-story-dto";
-import { getTagsDTO } from "@/data/dto/getters/get-tag-dto";
+import { getAllTagsDTO } from "@/data/dto/getters/get-tag-dto";
 import { notFound } from "next/navigation";
 
 export default async function StoryDetails({
@@ -16,7 +16,7 @@ export default async function StoryDetails({
     }
 
     const story = await getStoryDTO(storyId);
-    const allTags = await getTagsDTO();
+    const allTags = await getAllTagsDTO();
 
     return <StoryEdit story={story} allTags={allTags} />;
 }

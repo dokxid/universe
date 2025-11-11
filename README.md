@@ -2,19 +2,16 @@
 
 one day i will:
 
--   [ ] clean up this rushed readme.md
--   [ ] make a github organization for heritage lab
+- [ ] clean up this rushed readme.md
+- [ ] make a github organization for heritage lab
 
 # setting up for development
 
 ## 3rd party cloud services that may be needed
 
--   [WorkOS](https://workos.com/) for auth
-    -   used rn for just authkit and their hosted login interfaces
--   [MongoDB](https://www.mongodb.com/) for database (self hostable)
--   [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
-    -   how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
-    -   in the .env file u will see a `LOCAL_UPLOADER=` line, that will circumvent the garage s3 bucket setup for now. but its still useful for testing production
+- [MongoDB](https://www.mongodb.com/) for database (self hostable)
+- [Garage](https://garagehq.deuxfleurs.fr/) for self hostable AWS S3 compatible object storage
+    - how to set it up: [garage config repo](https://github.com/dokxid/garage-configuration-universe)
 
 ## installing dependencies
 
@@ -39,16 +36,19 @@ and fill it out with the things mentioned in the comments in that file
 
 before u seed, make sure to fill out the mongodb section in the .env file, so the seeder knows, where to seed the data. ~~also make sure ure not accidentally seeding production~~
 
-a script is included for seeding databases, you have to include ur own images for now though for the stories:
-
-```bash
-# copy image folder for our seeder
-cp /path/to/image/folder ./src/data/scripts/seeds/images
-yarn seed
-```
-
 > [!NOTE]
 > if you seed with this script, while the app is running, just be aware that the caches havent been revalidated yet, either revalidate manually or just seed within the app; we just need to seed it initially to get on the site without any bugs
+
+### seeding cypress users for e2e testing
+
+```bash
+cp cypress.env.json.example cypress.env.json
+```
+
+and fill out the credentials you wanna use for testing
+
+> [!NOTE]
+> they will be added without email verification, but make sure its an email u have access for if you wanna try email stuff.
 
 ## running the server (finally)
 
@@ -100,13 +100,23 @@ yarn magic, or any other pacman u like, you know the drill
 ```bash
 git clone https://github.com/dokxid/universe.git
 cd universe
-yarn install
+bun install
+cp .env.example .env
+./generate_secret.sh  # this will set the cookie password
 ```
 
 make sure to copy the .env.example to make ur own one for development
 
+for production:
 ```bash
-cp .env.docker.example .env.docker
+cp .env.production.example .env.production
+vim .env.production
+```
+
+for staging:
+```bash
+cp .env.staging.example .env.staging
+vim .env.staging
 ```
 
 and fill it out with the things mentioned in the comments in that file
@@ -115,8 +125,7 @@ and fill it out with the things mentioned in the comments in that file
 
 ```sh
 # enter your desired storage size and node name
-cp garage/.env.example garage/.env
-vim garage/.env
+vim .env
 # generate the config toml out of the .env and start service
 ./garage/generate-garage-config.sh
 docker compose up -d garage
@@ -127,13 +136,18 @@ docker compose up -d garage
 ## setup mongodb and initial seeding
 
 ```sh
-docker compose up -d mongo
-yarn seed:docker  # init the database
+# idk why i cant use other .envs yet
+docker compose up -d db-production
+docker compose up -d db-staging
+vim .env  # enter database_url: mongodb://localhost:27017/<db_name>
+bun prisma:generate
+bun prisma:push
+bun seed:docker  # init the database
 ```
 
 ## setup universe app
 
 ```sh
-docker compose build --no-cache
-docker compose up -d
+docker compose up -d app-production --build
+docker compose up -d app-staging --build
 ```

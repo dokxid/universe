@@ -2,24 +2,16 @@ import { seedDatabase } from "@/data/scripts/seed-database";
 
 export async function seedStagingScript(
     numRandomCityCenters: number,
-    numStories: number
+    numStories: number,
 ) {
-    // ensure we are running on a test database
-    if (
-        process.env.MONGODB_DBNAME !== "test" &&
-        process.env.MONGODB_DBNAME !== "universe-staging"
-    ) {
-        throw new Error(
-            "Seeding can only be run on a test database. Current DB: " +
-                process.env.MONGODB_DBNAME
-        );
-    }
     try {
+        console.log("step 2: seeding...");
         await seedDatabase(numRandomCityCenters, numStories);
-        fetch("http://localhost:3000/api/revalidate-all");
+        console.log("Database seeding completed successfully... disconnecting");
         process.exit(0);
     } catch (error) {
         console.error("Error during database seeding:", error);
+        process.exit(1);
     }
 }
 

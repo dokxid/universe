@@ -28,16 +28,16 @@ import Link from "next/link";
 
 // this runs slow as heck on vercel so im deactivating this for now
 // export async function generateStaticParams() {
-//     const experiences = await getExperiencesDTO();
-//     return experiences.map((experience) => ({
-//         slug: experience.slug,
+//     const labs = await getLabsDTO();
+//     return labs.map((lab) => ({
+//         slug: lab.slug,
 //     }));
 // }
 
 export default async function AboutPage({
     params,
 }: {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
     const users = await getUsersByLabDTO(slug);
@@ -65,7 +65,7 @@ export default async function AboutPage({
                         {users.map((user, index) => (
                             <ContactCard key={index}>
                                 <ContactImage
-                                    href={`/${slug}/user/view/${user._id}`}
+                                    href={`/${slug}/user/view/${user.id}`}
                                 >
                                     {user.profilePictureUrl ? (
                                         <ImageElement
@@ -90,14 +90,9 @@ export default async function AboutPage({
                                 <ContactCardContent>
                                     <ContactNameRole>
                                         <ContactName
-                                            href={`/${slug}/user/view/${user._id}`}
+                                            href={`/${slug}/user/view/${user.id}`}
                                         >
-                                            {user.displayName
-                                                ? user.displayName
-                                                : user.firstName &&
-                                                  user.lastName
-                                                ? `${user.firstName} ${user.lastName}`
-                                                : "Anonymous"}
+                                            {user.name}
                                         </ContactName>
                                         <ContactRole>
                                             {user.position || "Not specified"}
@@ -131,11 +126,10 @@ export default async function AboutPage({
                                     </ContactDescription>
                                     <RowButtonGroup>
                                         <Link
-                                            href={`mailto:${
-                                                user.publicEmail
-                                                    ? user.publicEmail
-                                                    : ""
-                                            }`}
+                                            href={`mailto:${user.publicEmail
+                                                ? user.publicEmail
+                                                : ""
+                                                }`}
                                         >
                                             <Button
                                                 variant={"primary_custom"}
@@ -153,7 +147,7 @@ export default async function AboutPage({
                                             </Button>
                                         </Link>
                                         <ContactStoriesLink
-                                            href={`/${slug}/user/view/${user._id}#stories`}
+                                            href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
                                                 user.stories?.length || 0
                                             }

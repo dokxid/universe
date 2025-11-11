@@ -1,29 +1,18 @@
 "use client";
 
-import { getTagsAction, getTagsByNameAction } from "@/actions/get-tag";
-import { UnescoTagDTO } from "@/types/dtos";
-import useSWR from "swr";
+import { getTagByNameAction, getTagsAction } from "@/actions/get-tag";
+import { TagDTO } from "@/types/dtos";
+import useSWRImmutable from 'swr/immutable'
 
-const tagByNameFetcher = async (
-    tagNames: string[]
-): Promise<UnescoTagDTO[] | null> => {
-    return await getTagsByNameAction(tagNames);
+const tagByNameFetcher = async (tagName: string): Promise<TagDTO | null> => {
+    return await getTagByNameAction(tagName);
 };
-const tagsFetcher = async (): Promise<UnescoTagDTO[] | null> => {
+const tagsFetcher = async (): Promise<TagDTO[] | null> => {
     return await getTagsAction();
 };
 
-export function useTagsByName(tagNames: string[]) {
-    const { data, error, isLoading } = useSWR(["tags", tagNames], () =>
-        tagByNameFetcher(tagNames)
-    );
-    if (tagNames === null) {
-        return {
-            tags: null,
-            isLoading: false,
-            isError: true,
-        };
-    }
+export function useTags() {
+    const { data, error, isLoading } = useSWRImmutable("all-tags", () => tagsFetcher());
     return {
         tags: data,
         isLoading,
@@ -31,10 +20,12 @@ export function useTagsByName(tagNames: string[]) {
     };
 }
 
-export function useTags() {
-    const { data, error, isLoading } = useSWR("all-tags", () => tagsFetcher());
+export function useTag(name: string) {
+    const { data, error, isLoading } = useSWRImmutable(["tag", name], async () =>
+        tagByNameFetcher(name)
+    );
     return {
-        tags: data,
+        tag: data,
         isLoading,
         isError: error,
     };

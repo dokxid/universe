@@ -2,12 +2,14 @@
 
 import {
     editLabAppearanceAction,
+    editLabContentAction,
     editLabVisibilityAction,
 } from "@/actions/form/labs";
 import { LabPictureForm } from "@/app/components/form/lab-forms/lab-picture-form";
 import {
     SettingsBoxContent,
     SettingsBoxForm,
+    SettingsBoxFormElement,
     SettingsFormBox,
     SettingsFormButtonGroup,
     SettingsFormDescription,
@@ -26,11 +28,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MinimalTiptapEditor } from "@/components/ui/minimal-tiptap";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { ExperienceDTO } from "@/types/dtos";
+import { handleFormErrors } from "@/lib/utils/form-error-handling";
+import { LabDTO } from "@/types/dtos";
 import { LAB_VISIBILITY_OPTIONS } from "@/types/form-schemas/form-schemas";
 import {
+    editLabContentSchema,
     editLabAppearanceSchema,
     editVisibilityFormSchema,
 } from "@/types/form-schemas/lab-form-schemas";
@@ -40,31 +44,41 @@ import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { mutate } from "swr";
 import { z } from "zod";
+import { DebugListObject } from "../cards/debug-list-object";
 
-export function TeamSettings({
+export function LabSettings({
     slug,
-    experienceSerialized,
+    labSerialized,
 }: {
     slug: string;
-    experienceSerialized: string;
+    labSerialized: string;
 }) {
-    const experience = JSON.parse(experienceSerialized) as ExperienceDTO;
+    const lab = JSON.parse(labSerialized) as LabDTO;
     const router = useRouter();
+
     const labAppearanceForm = useForm({
         resolver: zodResolver(editLabAppearanceSchema),
         defaultValues: {
             lab: slug,
-            title: experience.title || "",
-            subtitle: experience.subtitle || "",
-            description: experience.content || "",
+            title: lab.name || "",
+            subtitle: lab.subtitle || "",
             subdomain: slug,
         },
     });
+
     const visibilityForm = useForm({
         resolver: zodResolver(editVisibilityFormSchema),
         defaultValues: {
             lab: slug,
-            visibility: experience.visibility as LAB_VISIBILITY_OPTIONS,
+            visibility: lab.visibility as LAB_VISIBILITY_OPTIONS,
+        },
+    });
+
+    const contentForm = useForm({
+        resolver: zodResolver(editLabContentSchema),
+        defaultValues: {
+            lab: slug,
+            content: lab.content || "",
         },
     });
 
@@ -74,13 +88,12 @@ export function TeamSettings({
             formData.append("lab", slug);
             formData.append("title", data.title);
             formData.append("subtitle", data.subtitle);
-            formData.append("description", data.description);
             formData.append("subdomain", data.subdomain);
             const { result, redirect } = await editLabAppearanceAction(
                 formData
             );
             if (result?.success) {
-                toast.success("Experience updated successfully!");
+                toast.success("Lab updated successfully!");
                 mutate(["labs", slug]);
                 if (redirect) router.push(redirect);
             }
@@ -142,6 +155,32 @@ export function TeamSettings({
         }
     };
 
+    const onContentSubmit = async (data: FieldValues) => {
+        try {
+            const formData = new FormData();
+            formData.append("lab", slug);
+            formData.append("content", data.content);
+            console.log("Submitting content form data:", data);
+            const result = await editLabContentAction(formData);
+            if (result?.success) {
+                toast.success("Lab content updated successfully!");
+                mutate(["labs", slug]);
+            }
+            if (result?.error) {
+                handleFormErrors(result, contentForm);
+            }
+        } catch (error) {
+            console.error("Error updating lab content:", error);
+            toast.error("Failed to update lab content.");
+        }
+    }
+
+    const onContentReset = () => {
+        contentForm.reset({
+            content: lab.content || "",
+        });
+    }
+
     return (
         <>
             <SettingsLayout>
@@ -168,7 +207,7 @@ export function TeamSettings({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience title
+                                                    Lab title
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -186,7 +225,7 @@ export function TeamSettings({
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience subtitle
+                                                    Lab subtitle
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -200,30 +239,11 @@ export function TeamSettings({
                                     />
                                     <FormField
                                         control={labAppearanceForm.control}
-                                        name="description"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    Experience description
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        rows={10}
-                                                        placeholder="Enter your description..."
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={labAppearanceForm.control}
                                         name="subdomain"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>
-                                                    Experience subdomain
+                                                    Lab subdomain
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input
@@ -264,7 +284,63 @@ export function TeamSettings({
                         </form>
                     </Form>
                 </SettingsFormBox>
-                <LabPictureForm experience={experience} />
+                <Form {...contentForm}>
+                    <form
+                        onSubmit={contentForm.handleSubmit(onContentSubmit)}
+                        onReset={onContentReset}
+                        className="w-full"
+                    >
+                        <SettingsBoxContent>
+                            <SettingsBoxFormElement>
+                                <FormField
+                                    name="content"
+                                    control={contentForm.control}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <MinimalTiptapEditor
+                                                    output="html"
+                                                    editorContentClassName={
+                                                        "w-full prose p-5 dark:prose-invert max-w-full overflow-y-auto self-start my-10"
+                                                    }
+                                                    className={
+                                                        "prose-content min-w-full w-full max-h-[80svh]"
+                                                    }
+                                                    placeholder={"enter your content here"}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </SettingsBoxFormElement>
+                            <SettingsBoxFormElement>
+                                <SettingsFormButtonGroup className="">
+                                    <Button
+                                        variant={"default"}
+                                        className={"w-fit"}
+                                        type={"submit"}
+                                        onClick={() => {
+                                            console.log("Submitting content form with data:", contentForm.getValues());
+                                        }}
+                                    >
+                                        Apply
+                                    </Button>
+                                    <Button
+                                        variant={"ghost"}
+                                        className={"w-fit"}
+                                        type={"reset"}
+                                    >
+                                        Reset
+                                    </Button>
+                                </SettingsFormButtonGroup>
+                            </SettingsBoxFormElement>
+                        </SettingsBoxContent>
+                    </form>
+                </Form>
+                <DebugListObject data={contentForm.watch()} />
+                <LabPictureForm lab={lab} />
                 <SettingsFormBox>
                     <SettingsFormTitle>Change visibility?</SettingsFormTitle>
                     <SettingsFormDescription>
@@ -298,15 +374,14 @@ export function TeamSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms">
                                                                 Should this
-                                                                experience be
+                                                                lab be
                                                                 listed publicly?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 be listed on our
-                                                                experiences
-                                                                page.
+                                                                featured labs page.
                                                             </p>
                                                         </div>
                                                     </div>
@@ -318,16 +393,16 @@ export function TeamSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms">
                                                                 Should this
-                                                                experience only
+                                                                lab only
                                                                 be available
                                                                 through a link?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 be <b>not</b>{" "}
                                                                 listed on our
-                                                                experiences
+                                                                featured labs
                                                                 page.
                                                             </p>
                                                         </div>
@@ -340,12 +415,12 @@ export function TeamSettings({
                                                         <div className="grid gap-2">
                                                             <Label htmlFor="terms-2">
                                                                 Should this
-                                                                experience be
+                                                                lab be
                                                                 private?
                                                             </Label>
                                                             <p className="text-muted-foreground text-sm">
                                                                 This will make
-                                                                your experience
+                                                                your lab
                                                                 only visible to
                                                                 team members.
                                                             </p>
@@ -378,9 +453,9 @@ export function TeamSettings({
                 </SettingsFormBox>
 
                 <SettingsFormBox>
-                    <SettingsFormTitle>Delete experience?</SettingsFormTitle>
+                    <SettingsFormTitle>Delete lab?</SettingsFormTitle>
                     <SettingsFormDescription>
-                        Deleting your experience is permanent and cannot be
+                        Deleting your lab is permanent and cannot be
                         undone.
                     </SettingsFormDescription>
                     <SettingsBoxContent>
@@ -390,12 +465,12 @@ export function TeamSettings({
                                 className={"w-fit"}
                                 disabled
                             >
-                                Delete experience
+                                Delete lab
                             </Button>
                         </SettingsFormButtonGroup>
                     </SettingsBoxContent>
                 </SettingsFormBox>
-            </SettingsLayout>
+            </SettingsLayout >
         </>
     );
 }

@@ -1,7 +1,8 @@
 "use server";
 
+import { initDatabase } from "@/data/scripts/seed-database";
 import { startSeedingDatabase } from "@/data/scripts/seed-database-server";
-import { seedOneExperience } from "@/data/scripts/seed-experiences";
+import { seedOneLab } from "@/data/scripts/seed-labs";
 import { revalidateTag } from "next/cache";
 
 export async function seedDatabaseAction(
@@ -9,14 +10,37 @@ export async function seedDatabaseAction(
     numStories: number
 ) {
     try {
-        await startSeedingDatabase(numRandomCityCenters, numStories);
+        const result = await startSeedingDatabase(numRandomCityCenters, numStories);
+        if (!result) {
+            return { success: false, error: "Seeding failed" };
+        }
+        revalidateTag("labs");
+        revalidateTag("stories");
+        revalidateTag("tags");
+        return result;
     } catch (error) {
         console.error("Error during database seeding:", error);
-        throw error;
+        return { success: false, error };
     }
 }
 
-export async function seedOneExperienceAction(
+export async function initDatabaseAction() {
+    try {
+        const result = await initDatabase();
+        if (!result) {
+            return { success: false, error: "Initialization failed" };
+        }
+        revalidateTag("labs");
+        revalidateTag("stories");
+        revalidateTag("tags");
+        return result;
+    } catch (error) {
+        console.error("Error during database initialization:", error);
+        return { success: false, error };
+    }
+}
+
+export async function seedOneLabAction(
     center: number[],
     title: string,
     slug: string,
@@ -24,10 +48,10 @@ export async function seedOneExperienceAction(
     subtitle: string,
     initialZoom: number,
     organizationId: string,
-    experienceStories: number
+    labStories: number
 ) {
     try {
-        await seedOneExperience(
+        await seedOneLab(
             center,
             title,
             slug,
@@ -35,12 +59,12 @@ export async function seedOneExperienceAction(
             subtitle,
             initialZoom,
             organizationId,
-            experienceStories
+            labStories
         );
-        revalidateTag("experiences");
+        revalidateTag("labs");
         revalidateTag("stories");
     } catch (error) {
-        console.error("Error during seeding single experience:", error);
+        console.error("Error during seeding single lab:", error);
         throw error;
     }
 }

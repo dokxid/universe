@@ -1,86 +1,98 @@
 import "server-only";
 
-import { getExperiences } from "@/data/fetcher/experience-fetcher";
-import { sanitizeExperience } from "@/data/transformers/experience-transformer";
-import { fetchAndMapAuthorsForStoryDTO } from "@/data/transformers/story-transformer";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { Experience, NewStoryData, StoryDTO } from "@/types/dtos";
-import mongoose from "mongoose";
+import { sanitizeToStoryDTO, sanitizeToStoryPinDTO } from "@/data/transformers/story-transformer";
+import { Prisma, TagsOnStories } from "@/generated/prisma/client";
+import { StoryInclude, StoryModel, StorySelect } from "@/generated/prisma/models";
+import { StoryDTO, StoryPinDTO } from "@/types/dtos";
+import { prisma } from "@/lib/data/prisma/connections";
 
-export async function sanitizeLabStories(lab: Experience): Promise<StoryDTO[]> {
+const authorSelectFields: { select: Prisma.UserSelect } = {
+    select: {
+        id: true,
+        displayName: true,
+        firstName: true,
+        familyName: true,
+        profilePictureUrl: true,
+    },
+};
+
+const labSelectFields: { select: Prisma.LabSelect } = {
+    select: {
+        id: true,
+        slug: true,
+    },
+};
+
+export async function getAllStoryPins(
+    whereInput?: Prisma.StoryWhereInput,
+): Promise<StoryPinDTO[]> {
     try {
-        if (!lab.stories || lab.stories.length === 0) {
-            return [];
-        }
-        const stories = lab.stories.flatMap((story) => ({
-            ...story,
-            experience: lab.slug,
-        })) as StoryDTO[];
-        const sanitizedStories = await fetchAndMapAuthorsForStoryDTO(stories);
+        const pinSelectFields = {
+            id: true,
+            longitude: true,
+            latitude: true,
+            year: true,
+            lab: { select: { slug: true } },
+            tags: { select: { tag: true } },
+        } satisfies StorySelect;
+        const allStories = await prisma.story.findMany({
+            where: whereInput,
+            select: pinSelectFields
+        })
+        const sanitizedStories = await Promise.all(
+            allStories.map((story) => sanitizeToStoryPinDTO(story))
+        )
         return sanitizedStories;
-    } catch (error) {
-        console.error("Error sanitizing lab stories:", error);
-        throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
-        );
-    }
-}
-
-export async function getAllStories(): Promise<StoryDTO[]> {
-    try {
-        const experiences = await getExperiences();
-        const allSanitizedStories: StoryDTO[] = [];
-
-        for (const experience of experiences) {
-            const sanitizedStories = await sanitizeLabStories(experience);
-            allSanitizedStories.push(...sanitizedStories);
-        }
-
-        return allSanitizedStories;
     } catch (err) {
         console.error("Error getting all stories:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
 }
 
-export async function queryStory(
-    storyId: mongoose.Types.ObjectId
-): Promise<StoryDTO> {
+export async function getAllStories(
+    whereInput?: Prisma.StoryWhereInput,
+): Promise<StoryDTO[]> {
     try {
-        // get lab with found stories, and detect if no story was found
-        await dbConnect();
-        const labWithFoundStories = await ExperienceModel.findOne({
-            "stories._id": storyId,
-        }).exec();
-        if (!labWithFoundStories) {
-            throw new Error("Story not found");
-        }
-        const sanitizedLabWithFoundStories =
-            sanitizeExperience(labWithFoundStories);
-        if (!sanitizedLabWithFoundStories) {
-            throw new Error("Story not found");
-        }
-
-        // Find the specific story by ID instead of taking the first one
-        const queriedStory = sanitizedLabWithFoundStories.stories.find(
-            (story) => story._id === storyId.toString()
+        const storyIncludeFields = {
+            author: { select: authorSelectFields.select },
+            lab: { select: labSelectFields.select },
+            elevationRequests: true,
+            tags: { select: { tag: true } },
+        } satisfies StoryInclude;
+        const allStories = await prisma.story.findMany({
+            where: whereInput,
+            include: storyIncludeFields
+        })
+        const sanitizedStories = await Promise.all(
+            allStories.map((story) => sanitizeToStoryDTO(story))
         );
+        return sanitizedStories;
+    } catch (err) {
+        console.error("Error getting all stories:", err);
+        throw new Error(err instanceof Error ? err.message : "Unknown error");
+    }
+}
 
-        if (!queriedStory) {
-            throw new Error("Story not found in sanitized stories");
+export async function queryStory(storyId: string): Promise<StoryDTO> {
+    try {
+        const story = await prisma.story.findUnique({
+            where: {
+                id: storyId,
+            },
+            include: {
+                author: authorSelectFields,
+                lab: labSelectFields,
+                tags: {
+                    select: { tag: true }
+                },
+                elevationRequests: true,
+            },
+        });
+        if (!story) {
+            throw new Error("Story not found");
         }
-
-        // add experience slug and author name to story dto
-        const storyDTO = {
-            ...queriedStory,
-            experience: sanitizedLabWithFoundStories.slug,
-            authorName: "", // will be populated in fetchAndMapAuthorsForStoryDTO
-        };
-
-        const storyWithAuthor = await fetchAndMapAuthorsForStoryDTO([storyDTO]);
-
-        return storyWithAuthor[0];
+        const sanitizedStory = await sanitizeToStoryDTO(story);
+        return sanitizedStory;
     } catch (err) {
         console.error("Error querying story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
@@ -88,32 +100,24 @@ export async function queryStory(
 }
 
 export async function insertStory(
-    storyToInsert: NewStoryData,
-    slug: string
-): Promise<string> {
+    storyToInsert: Prisma.StoryCreateInput,
+    tags: { id: string }[],
+): Promise<{ result: StoryModel; tagStoryResult: TagsOnStories[] }> {
     try {
-        await dbConnect();
-        const result = await ExperienceModel.findOneAndUpdate(
-            { slug: slug },
-            { $push: { stories: storyToInsert } },
-            { new: true, upsert: false } // Return the updated document
-        ).exec();
-
-        if (!result) {
-            throw new Error("Inserted lab not found");
-        }
-
-        // Get the last story (the one we just pushed)
-        const insertedStory = result.stories[result.stories.length - 1];
-
-        if (!insertedStory || !insertedStory._id) {
-            throw new Error("Failed to insert story");
-        }
-
-        const storyId = insertedStory._id.toString();
-        console.log("Inserted story ID:", storyId);
-
-        return storyId;
+        const result = await prisma.story.create({
+            data: storyToInsert,
+        });
+        const tagStoryResult = await Promise.all(
+            tags.map(async (tag) =>
+                prisma.tagsOnStories.create({
+                    data: {
+                        storyId: result.id,
+                        tagId: tag.id,
+                    },
+                }),
+            ),
+        );
+        return { result, tagStoryResult };
     } catch (err) {
         console.error("Error inserting story:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
@@ -122,22 +126,49 @@ export async function insertStory(
 
 export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
     try {
-        await dbConnect();
-        const labs = await getExperiences();
-        const allSanitizedStories: StoryDTO[] = [];
-
-        for (const lab of labs) {
-            const sanitizedStories = await sanitizeLabStories(lab);
-            allSanitizedStories.push(...sanitizedStories);
-        }
-
-        const storiesByUser = allSanitizedStories.filter(
-            (story) => story.author === String(userId)
+        const result = await prisma.story.findMany({
+            where: {
+                author: {
+                    id: userId,
+                },
+            },
+            include: {
+                author: authorSelectFields,
+                lab: labSelectFields,
+                tags: { select: { tag: true } },
+                elevationRequests: { orderBy: { createdAt: "desc" } },
+            },
+        });
+        const sanitizedStories = await Promise.all(
+            result.map((story) => sanitizeToStoryDTO(story)),
         );
-
-        return storiesByUser;
+        return sanitizedStories;
     } catch (err) {
         console.error("Error getting stories by user:", err);
         throw new Error(err instanceof Error ? err.message : "Unknown error");
     }
+}
+
+export async function connectStoryTags(
+    storyId: string,
+    tags: { id: string }[],
+): Promise<TagsOnStories[]> {
+    const storyTagResult = await Promise.all(
+        tags.map(async (tag) =>
+            prisma.tagsOnStories.upsert({
+                where: {
+                    storyId_tagId: {
+                        storyId: storyId,
+                        tagId: tag.id,
+                    },
+                },
+                create: {
+                    storyId: storyId,
+                    tagId: tag.id,
+                },
+                update: {},
+            }),
+        ),
+    );
+    return storyTagResult;
 }

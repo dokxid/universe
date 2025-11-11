@@ -1,5 +1,6 @@
 "use client";
 
+import { setDraftAction, setVisibilityAction } from "@/actions/mutate/mutate-story";
 import { submitElevationRequestAction } from "@/actions/submit-elevation-request";
 import { DataTableColumnHeader } from "@/app/components/data-tables/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCurrentUser } from "@/lib/swr/user-hook";
 import { StoryDTO } from "@/types/dtos";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import {
     Map,
     MapPinCheckInside,
@@ -30,116 +29,16 @@ import { toast } from "sonner";
 
 const columnHelper = createColumnHelper<StoryDTO>();
 
-const ElevationRequestsActionsCell = ({ story }: { story: StoryDTO }) => {
-    const pathname = usePathname();
-    const slug = pathname.split("/")[1];
-    const { user: initialUser, isLoading, isError } = useCurrentUser();
-    if (isLoading) return <div>Loading...</div>;
-    if (!initialUser) return <div>Please log in to request elevation.</div>;
-    if (isError) return <div>Error loading user data.</div>;
-
-    const handleRejectedElevationRequest = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        try {
-            await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "rejected"
-            );
-            toast.success("Elevation request set to: rejected");
-        } catch (error) {
-            toast.error("Error submitting elevation request: " + error);
-        }
-    };
-
-    const handleApprovedElevationRequest = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        try {
-            await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "approved"
-            );
-            toast.success("Elevation request set to: approved");
-        } catch (error) {
-            toast.error("Error submitting elevation request: " + error);
-        }
-    };
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuLabel>
-                    <p className={"font-bold"}>Actions</p>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                    <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
-                            Story page
-                        </Link>
-                    </Button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
-                            Elevation history
-                        </Link>
-                    </Button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={handleApprovedElevationRequest}
-                        tabIndex={-1}
-                        type="button"
-                    >
-                        Approve elevation
-                    </Button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={handleRejectedElevationRequest}
-                        tabIndex={-1}
-                        type="button"
-                    >
-                        Reject elevation
-                    </Button>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
-};
-
 const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
-    const { user, loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <div>Please log in to request elevation.</div>;
 
-    const handlePendingElevationRequest = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
+    const handlePendingElevationRequest = async () => {
         try {
             const result = await submitElevationRequestAction(
-                story._id,
-                story.experience,
-                "pending"
+                story.id,
+                story.lab.slug,
+                "pending",
             );
             toast.success("Elevation request completed: " + result);
         } catch (error) {
@@ -147,6 +46,42 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
         }
     };
 
+    const handleToggleDraft = async () => {
+        try {
+            const result = await setDraftAction(
+                story.id,
+                !story.draft
+            );
+            if (result.success) {
+                toast.success(`Story visibility updated to ${story.draft ? "public" : "draft"}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
+    const handleToggleVisibility = async () => {
+        try {
+            const result = await setVisibilityAction(
+                story.id,
+                !story.visibleUniverse
+            );
+            if (result.success) {
+                toast.success(`Story visibility updated to ${story.visibleUniverse ? "lab" : "visibility"}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error submitting elevation request: " + error);
+        }
+    };
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -162,14 +97,14 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/view/${story._id}`}>
+                        <Link href={`/${slug}/stories/view/${story.id}`}>
                             View story
                         </Link>
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button variant={"ghost"} className="w-full justify-start">
-                        <Link href={`/${slug}/stories/edit/${story._id}`}>
+                        <Link href={`/${slug}/stories/edit/${story.id}`}>
                             Edit story
                         </Link>
                     </Button>
@@ -178,30 +113,22 @@ const ManageStoriesActionsCell = ({ story }: { story: StoryDTO }) => {
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Updating Visibility for story ${story.title} to: Draft.`
-                            );
-                        }}
+                        onClick={handleToggleDraft}
                         tabIndex={-1}
                         type="button"
                     >
-                        Set as draft
+                        Set to {story.draft ? "public" : "draft"}
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => {
-                            toast.success(
-                                `Updating Visibility for story ${story.title} to: Public.`
-                            );
-                        }}
+                        onClick={handleToggleVisibility}
                         tabIndex={-1}
                         type="button"
                     >
-                        Set as public
+                        Set to {story.visibleUniverse ? "Lab" : "Universe"}
                     </Button>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -250,13 +177,14 @@ export const manageStoryColumns = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Title" />
         ),
-        cell: (info) => <span className={""}>{info.getValue()}</span>,
+        cell: (info) => <Link href={`/${info.row.original.lab.slug}/stories/view/${info.row.original.id}`}>{info.getValue()}</Link>,
     }),
-    columnHelper.accessor("authorName", {
+    columnHelper.accessor((row) => row.author.name, {
+        id: "authorName",
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title="Author" />
         ),
-        cell: (info) => info.getValue(),
+        cell: (info) => <Link href={`${info.row.original.lab.slug}/user/view/${info.row.original.author.id}`}>{info.getValue()}</Link>,
     }),
     columnHelper.accessor("draft", {
         header: ({ column }) => (
@@ -360,7 +288,7 @@ export const manageStoryColumns = [
                     );
                 }
             },
-        }
+        },
     ),
     columnHelper.accessor("createdAt", {
         header: ({ column }) => (
@@ -391,200 +319,6 @@ export const manageStoryColumns = [
         cell: ({ row }) => {
             const story = row.original;
             return <ManageStoriesActionsCell story={story} />;
-        },
-    }),
-];
-
-export const elevationRequestsColumns = [
-    columnHelper.display({
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) =>
-                    table.toggleAllPageRowsSelected(!!value)
-                }
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                className={"mr-2"}
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    }),
-    columnHelper.accessor("title", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Title" />
-        ),
-        cell: (info) => <span className={""}>{info.getValue()}</span>,
-    }),
-    columnHelper.accessor("authorName", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Author" />
-        ),
-        cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("draft", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Draft" />
-        ),
-        cell: (info) => (
-            <Badge
-                className={
-                    info.getValue()
-                        ? "bg-secondary text-secondary-foreground"
-                        : "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
-                }
-            >
-                <span
-                    className={
-                        "font-semibold w-15 flex justify-center items-center"
-                    }
-                >
-                    {info.getValue() ? (
-                        <PencilLine size={16} className={"inline-block mr-1"} />
-                    ) : (
-                        <MapPinCheckInside
-                            size={16}
-                            className={"inline-block mr-1"}
-                        />
-                    )}
-                    {info.getValue() ? "draft" : "public"}
-                </span>
-            </Badge>
-        ),
-    }),
-    columnHelper.accessor("visibleUniverse", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="On Level" />
-        ),
-        cell: (info) => (
-            <Badge
-                className={
-                    info.getValue()
-                        ? "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
-                        : "bg-secondary text-secondary-foreground"
-                }
-            >
-                <span
-                    className={
-                        "font-semibold w-15 flex justify-center items-center"
-                    }
-                >
-                    {info.getValue() ? (
-                        <Orbit size={16} className={"inline-block mr-1"} />
-                    ) : (
-                        <Map size={16} className={"inline-block mr-1"} />
-                    )}
-                    {info.getValue() ? "public" : "lab"}
-                </span>
-            </Badge>
-        ),
-    }),
-    columnHelper.accessor(
-        (row) => {
-            const lastRequest =
-                row.elevationRequests?.[row.elevationRequests.length - 1];
-            return lastRequest?.status ?? "pending";
-        },
-        {
-            id: "latest_elevation_request",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Status" />
-            ),
-            cell: (info) => {
-                if (info.getValue() === "approved") {
-                    return (
-                        <Badge
-                            className={
-                                "bg-green-400 text-secondary-foreground dark:text-primary-foreground"
-                            }
-                        >
-                            <span className={"font-semibold"}>
-                                {info.getValue()}
-                            </span>
-                        </Badge>
-                    );
-                } else if (info.getValue() === "rejected") {
-                    return (
-                        <Badge
-                            className={
-                                "bg-red-400 text-secondary-foreground dark:text-primary-foreground"
-                            }
-                        >
-                            <span className={"font-semibold"}>
-                                {info.getValue()}
-                            </span>
-                        </Badge>
-                    );
-                } else {
-                    return (
-                        <Badge className={"bg-accent text-accent-foreground"}>
-                            <span className={"font-semibold"}>
-                                {info.getValue()}
-                            </span>
-                        </Badge>
-                    );
-                }
-            },
-        }
-    ),
-    columnHelper.accessor(
-        (row) => {
-            const lastRequest =
-                row.elevationRequests?.[row.elevationRequests.length - 1];
-            return lastRequest?.requestedAt ?? new Date().toISOString();
-        },
-        {
-            id: "requested_at",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Requested At" />
-            ),
-            cell: (info) => (
-                <span suppressHydrationWarning>
-                    {new Date(info.getValue()).toLocaleDateString()}
-                </span>
-            ),
-        }
-    ),
-    columnHelper.accessor("createdAt", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="created at" />
-        ),
-        cell: (info) => {
-            return (
-                <span suppressHydrationWarning>
-                    {new Date(info.getValue()).toLocaleDateString()}
-                </span>
-            );
-        },
-    }),
-    columnHelper.accessor("updatedAt", {
-        header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Updated At" />
-        ),
-        cell: (info) => {
-            return (
-                <span suppressHydrationWarning>
-                    {new Date(info.getValue()).toLocaleDateString()}
-                </span>
-            );
-        },
-    }),
-    columnHelper.display({
-        id: "actions",
-        cell: ({ row }) => {
-            const story = row.original;
-            return <ElevationRequestsActionsCell story={story} />;
         },
     }),
 ];

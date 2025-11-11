@@ -1,16 +1,13 @@
-import { seedAllElevationRequests } from "@/data/scripts/seed-elevation-requests";
+import { seedElevationRequests } from "@/data/scripts/seed-elevation-requests";
 import {
-    seedExperiences,
+    seedLabs,
     seedUniverseLab,
-} from "@/data/scripts/seed-experiences";
-import {
-    deleteUploadsFolder,
-    initializeFeaturedLabImages,
-    seedAllStoryImages,
-} from "@/data/scripts/seed-images";
+} from "@/data/scripts/seed-labs";
 import { seedAllStories } from "@/data/scripts/seed-stories";
 import { seedUnescoTags } from "@/data/scripts/seed-unesco";
 import { seedUsers } from "@/data/scripts/seed-users";
+import { auth } from "@/lib/auth/betterauth/auth";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
 
 // in lat, lon
@@ -48,22 +45,20 @@ const city_centers: { [key: string]: number[] } = {
 
 export async function seedDatabase(
     numRandomCityCenters: number,
-    numStories: number
+    numStories: number,
 ) {
     try {
         const cities = Object.values(city_centers);
         const randomCityCenters = faker.helpers.arrayElements(
             cities,
-            numRandomCityCenters
+            numRandomCityCenters,
         );
-        await deleteUploadsFolder();
-        await seedUnescoTags();
-        await seedExperiences(randomCityCenters);
+
+        await seedLabs(randomCityCenters);
         await seedUsers(10, 1);
-        await seedAllStoryImages();
-        await initializeFeaturedLabImages();
+        // await seedCypressUsers();
         await seedAllStories(numStories);
-        await seedAllElevationRequests();
+        await seedElevationRequests();
         console.log("Database seeding completed");
     } catch (error) {
         console.error("Error during database seeding:", error);
@@ -73,10 +68,52 @@ export async function seedDatabase(
 
 export async function initDatabase() {
     try {
+        await deleteAllData();
+        console.log("seeding tags");
         await seedUnescoTags();
+        console.log("seeding universe lab");
         await seedUniverseLab();
+        await createSuperAdminUser()
+        return { success: true, error: null };
     } catch (error) {
         console.error("Error during database initialization:", error);
+        throw error;
+    }
+}
+
+export async function createSuperAdminUser() {
+    try {
+        await auth.api.createUser({
+            body: {
+                email: process.env.BETTER_AUTH_ADMIN_EMAIL!,
+                password: process.env.BETTER_AUTH_ADMIN_PASSWORD!,
+                name: "Super Admin",
+                role: "admin",
+            },
+        });
+        console.log("Super admin user created");
+    } catch (error) {
+        console.error("Error during super admin user creation:", error);
+        throw error;
+    }
+}
+
+export async function deleteAllData() {
+    try {
+        await prisma.account.deleteMany({});
+        await prisma.elevationRequest.deleteMany({});
+        await prisma.invitation.deleteMany({});
+        await prisma.tagsOnStories.deleteMany({});
+        await prisma.story.deleteMany({});
+        await prisma.lab.deleteMany({});
+        await prisma.member.deleteMany({});
+        await prisma.session.deleteMany({});
+        await prisma.tag.deleteMany({});
+        await prisma.user.deleteMany({});
+        await prisma.verification.deleteMany({});
+        console.log("cleared existing data");
+    } catch (error) {
+        console.error("Error during deleting all data:", error);
         throw error;
     }
 }

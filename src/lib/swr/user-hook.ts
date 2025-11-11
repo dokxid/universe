@@ -11,14 +11,14 @@ const userFetcher = async (slug: string) => {
     return await getUserAction(slug);
 };
 
-const getCurrentUserFetcher = async () => {
-    return await getCurrentUserAction();
+const getCurrentUserFetcher = async (ensureLoggedIn = true) => {
+    return await getCurrentUserAction(ensureLoggedIn);
 };
 
 const userPermissionFetcher = async (
     labSlug: string,
     permission: Permissions,
-    storyId?: string
+    storyId?: string,
 ) => {
     return await getUserPermissionAction(labSlug, permission, storyId);
 };
@@ -30,7 +30,7 @@ const userRoleFetcher = async (labSlug: string): Promise<Role> => {
 
 export function useUser(userId: string) {
     const { data, error, isLoading } = useSWR(["user", userId], () =>
-        userFetcher(userId)
+        userFetcher(userId),
     );
     return {
         user: data,
@@ -39,9 +39,11 @@ export function useUser(userId: string) {
     };
 }
 
-export function useCurrentUser() {
-    const { data, error, isLoading } = useSWR("currentUser", () =>
-        getCurrentUserFetcher()
+export function useCurrentUser(ensureLoggedIn = true) {
+    const { data, error, isLoading } = useSWR(
+        "currentUser",
+        () => getCurrentUserFetcher(ensureLoggedIn),
+        { revalidateOnMount: true },
     );
     return {
         user: data,
@@ -53,7 +55,7 @@ export function useCurrentUser() {
 export function useAllowedToAddStory(labSlug: string) {
     const { data, error, isLoading } = useSWR(
         ["userCanAddStory", labSlug],
-        () => userPermissionFetcher(labSlug, "add_story")
+        () => userPermissionFetcher(labSlug, "add_story"),
     );
     return {
         allowedToAddStory: data,
@@ -65,7 +67,7 @@ export function useAllowedToAddStory(labSlug: string) {
 export function useAllowedToEditStory(labSlug: string, storyId: string) {
     const { data, error, isLoading } = useSWR(
         ["userCanEditStory", labSlug, storyId],
-        () => userPermissionFetcher(labSlug, "edit_story", storyId)
+        () => userPermissionFetcher(labSlug, "edit_story", storyId),
     );
     return {
         allowedToEditStory: data,
@@ -77,7 +79,7 @@ export function useAllowedToEditStory(labSlug: string, storyId: string) {
 export function useAllowedToManageUsers(labSlug: string) {
     const { data, error, isLoading } = useSWR(
         ["userCanManageUsers", labSlug],
-        () => userPermissionFetcher(labSlug, "manage_users")
+        () => userPermissionFetcher(labSlug, "manage_users"),
     );
     return {
         allowedToManageUsers: data,
@@ -89,7 +91,7 @@ export function useAllowedToManageUsers(labSlug: string) {
 export function useAllowedToSuperAdmin(labSlug: string) {
     const { data, error, isLoading } = useSWR(
         ["userIsSuperAdmin", labSlug],
-        () => userPermissionFetcher(labSlug, "superadmin")
+        () => userPermissionFetcher(labSlug, "superadmin"),
     );
     return {
         allowedToSuperAdmin: data,
@@ -104,7 +106,8 @@ export function useGetRoleInLab(labSlug: string) {
         async () => {
             const role = await userRoleFetcher(labSlug);
             return role;
-        }
+        },
+        { revalidateOnMount: true },
     );
     return {
         roleInLab: data,

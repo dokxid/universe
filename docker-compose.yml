@@ -1,32 +1,117 @@
 services:
-  app:
-    container_name: universe-app
+  app-production:
+    container_name: universe-production
     restart: always
+    env_file:
+      - path: .env.production
+        required: true
     environment:
-      - MONGODB_URI=mongodb://mongo:27017
-      - MONGODB_DBNAME=universe-production
-      - DOCKER=true
+      - DOCKER=1
+      - HUSKY=0
+      # nextjs related fields
+      - NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES=false
+      # postgres related fields
+      - POSTGRES_HOST=postgres-production:5432
+      - POSTGRES_DB=universe-production
+      # betterauth related fields
+      # email related fields
+      - EMAIL_MODE=email
+      # garage related fields
+      - AWS_REGION=garage
+      - AWS_BUCKET_NAME=universe-production
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./.env.production:/app/.env
     ports:
-      - "4000:3000"
+      - "3005:3000"
     networks:
-      - app-network
+      - app-network-production
     depends_on:
-      - mongo
+      - db-production
       - garage
 
-  mongo:
-    container_name: mongo
-    image: mongo
+  app-staging:
+    container_name: universe-staging
     restart: always
+    env_file:
+      - path: .env.staging
+        required: true
+    environment:
+      - DOCKER=1
+      - HUSKY=0
+      # nextjs related fields
+      - NEXT_PUBLIC_USE_UNOPTIMIZED_IMAGES=false
+      # postgres related fields
+      - POSTGRES_HOST=postgres-staging:5432
+      - POSTGRES_DB=universe-staging
+      # betterauth related fields
+      # email related fields
+      - EMAIL_MODE=email
+      # garage related fields
+      - AWS_REGION=garage
+      - AWS_BUCKET_NAME=universe-staging
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - ./mongodb:/data/db
+      - ./.env.staging:/app/.env
     ports:
-      - "28017:27017"
+      - "3004:3000"
     networks:
-      - app-network
+      - app-network-staging
+    depends_on:
+      - db-staging
+      - garage
+
+  db-production:
+    image: postgres
+    container_name: postgres-production
+    restart: always
+    env_file:
+      - path: .env.production
+        required: true
+    environment:
+      - POSTGRES_DB=universe-production
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata-production:/var/lib/postgresql
+    networks:
+      - app-network-production
+
+  db-staging:
+    image: postgres
+    container_name: postgres-staging
+    restart: always
+    env_file:
+      - path: .env.staging
+        required: true
+    environment:
+      - POSTGRES_DB=universe-staging
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-staging:/var/lib/postgresql
+    networks:
+      - app-network-staging
+
+  db-local:
+    image: postgres
+    container_name: postgres-local
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - POSTGRES_DB=universe-local
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-local:/var/lib/postgresql
+    networks:
+      - app-network-local
 
   garage:
     container_name: garage
@@ -34,7 +119,9 @@ services:
     ports:
       - "3900:3900"
     networks:
-      - app-network
+      - app-network-production
+      - app-network-staging
+      - app-network-local
     restart: unless-stopped
     volumes:
       - ./garage/garage.toml:/etc/garage.toml
@@ -42,8 +129,14 @@ services:
       - ./garage/data:/var/lib/garage/data
 
 volumes:
-  mongo-data:
+  pgdata-production:
+  pgdata-staging:
+  pgdata-local:
 
 networks:
-  app-network:
+  app-network-production:
+    driver: bridge
+  app-network-staging:
+    driver: bridge
+  app-network-local:
     driver: bridge

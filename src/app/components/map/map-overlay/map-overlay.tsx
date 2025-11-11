@@ -2,11 +2,9 @@ import { MapWidgetHolder } from "@/app/components/map/map-overlay/map-widget-hol
 import { NavigationWidgetHolder } from "@/app/components/map/map-overlay/navigation-widget-holder";
 import { StoryDetails } from "@/app/components/map/map-overlay/story-details";
 import { StoryWidgetHolder } from "@/app/components/map/map-overlay/story-widget-holder";
-import { getAllPublicStoriesDTO } from "@/data/dto/getters/get-story-dto";
 import { Suspense } from "react";
 
 export async function MapOverlay({ slug }: { slug: string }) {
-    const storiesPromise = getAllPublicStoriesDTO();
 
     return (
         <div className={"relative w-full h-full p-4"}>
@@ -27,10 +25,7 @@ export async function MapOverlay({ slug }: { slug: string }) {
                             <StoryWidgetHolder slug={slug} />
                         </Suspense>
                         <Suspense>
-                            <StoryDetails
-                                slug={slug}
-                                storiesPromise={storiesPromise}
-                            />
+                            <StoryDetails />
                         </Suspense>
                     </div>
                 </div>

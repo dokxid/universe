@@ -1,40 +1,40 @@
-// next.config.mjs
-import DotenvFlow from "dotenv-flow";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import * as dotenv from "dotenv";
 
 // Get __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+dotenv.config(); // Load the environment variables
 
 /*  
 allow more .env files
 reference: https://github.com/vercel/next.js/discussions/25764
 reason why this is even a thing and still to reconsider: https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production#why-is-node_env-considered-an-antipattern 
 */
-DotenvFlow.config({
-    node_env: process.env.APP_ENV || process.env.NODE_ENV || "development",
-});
-const env = {};
-Object.keys(process.env).forEach((key) => {
-    if (key.startsWith("NEXT_PUBLIC_")) {
-        env[key] = process.env[key];
-    }
-});
-console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
-
-// check if docker
-const isDocker =
-    process.env.DOCKER === "true" ||
-    process.env.MONGODB_URI?.includes("mongo:");
+// DotenvFlow.config({
+//     node_env: process.env.APP_ENV || process.env.NODE_ENV || "development",
+// });
+// const env = {};
+// Object.keys(process.env).forEach((key) => {
+//     if (key.startsWith("NEXT_PUBLIC_")) {
+//         env[key] = process.env[key];
+//     }
+// });
+// console.log("loaded .env file: " + JSON.stringify(process.env.APP_ENV));
 
 const config = {
-    output: isDocker ? "standalone" : undefined,
+    output: "standalone",
     turbopack: {
         rules: {
             "*.svg": {
                 loaders: ["@svgr/webpack"],
                 as: "*.ts",
+            },
+            "*.md": {
+                loaders: ["raw-loader"],
+                as: "*.js",
             },
         },
         resolveAlias: {
@@ -48,7 +48,7 @@ const config = {
         ppr: "incremental",
         globalNotFound: true,
         serverActions: {
-            bodySizeLimit: "2mb",
+            bodySizeLimit: "5mb",
         },
     },
 

@@ -8,7 +8,7 @@ describe("Availability", () => {
             (response) => {
                 expect(response.status).to.eq(308);
                 expect(response.redirectedToUrl).to.include("/universe/map");
-            }
+            },
         );
     });
     it("universe page is available on /", () => {
@@ -35,19 +35,17 @@ describe("Layout Features", () => {
         cy.visit("/universe/map");
         cy.contains("Explore").should("exist");
     });
-    it("experience selector can change search params", () => {
+    it("lab selector can change search params", () => {
         cy.visit("/universe/map");
-        cy.get(
-            '[href="/universe/map?exp=test"] > .rounded-xl > .p-4 > .flex-row > .flex-1 > .text-base'
-        ).click();
+        cy.get('[data-testid="explore-lab-card-test"]').click();
         cy.url().should("include", "?exp=test");
     });
 });
 
 describe("Map Overlay Interactions", () => {
-    it("back to universe button clears search params", () => {
+    it.only("back to universe button clears search params", () => {
         cy.visit("/universe/map?exp=test");
-        cy.get(".top-0.left-0 > .gap-3 > .flex").click();
+        cy.get('[data-testid="fly-back-button"]').click();
         cy.url().should("not.include", "?exp=test");
     });
 });

@@ -1,2 +1,31 @@
-.env*.local
-.env.production
+# from https://github.com/vercel/next.js/blob/canary/examples/with-docker/.dockerignore
+node_modules
+npm-debug.log
+README.md
+Dockerfile
+Dockerfile.bun
+.dockerignore
+.next
+.git
+.gitignore
+
+# ignore env files used for local development except docker
+*.example
+.env*
+
+# ignore other services' folders
+garage
+cypress
+__tests__
+
+# ignore ide/cicd folders
+.husky
+.github/workflows
+.swc
+.vscode
+.idea
+.prettierrc
+.releaserc
+AGENTS.md
+README.md
+tsconfig.tsbuildinfo

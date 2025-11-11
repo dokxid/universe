@@ -1,145 +1,64 @@
-import { getSlugFromOrganizationIdDTO } from "@/data/dto/getters/get-experience-dto";
-import { getStoriesByUserDTO } from "@/data/dto/getters/get-story-dto";
-import { getUserRoleFromOrganizationId } from "@/data/fetcher/user-fetcher";
-import { InsertUserDTO, UserDTO } from "@/lib/data/mongodb/models/user-model";
-import { User } from "@workos-inc/node";
+import { UserDTO } from "@/types/dtos";
+import { UserFetched } from "../fetcher/user-fetcher";
 
-export async function sanitizeOrganizationMembers(
-    organizationId: string,
-    users: User[]
-): Promise<InsertUserDTO[] | null> {
-    try {
-        const slug = await getSlugFromOrganizationIdDTO(organizationId);
-        if (!slug) {
-            throw new Error(
-                `Could not find slug for organization ID: ${organizationId}`
-            );
-        }
-        const sanitizedUsers = await Promise.all(
-            users.map(async (user) => {
-                const role = await getUserRoleFromOrganizationId(
-                    user.id,
-                    organizationId
-                );
-                const sanitizedUser: InsertUserDTO = {
-                    externalId: user.id,
-                    labs: [{ organizationId, slug, role }],
-                    email: user.email,
-                    firstName: user.firstName || undefined,
-                    lastName: user.lastName || undefined,
-                    profilePictureUrl: user.profilePictureUrl || undefined,
-                    createdAt: new Date(user.createdAt),
-                    updatedAt: new Date(user.updatedAt),
-                };
-                return sanitizedUser;
-            })
-        );
-        return sanitizedUsers;
-    } catch (err) {
-        console.error("Error sanitizing user:", err);
-        return null;
+export function buildDisplayedName({
+    firstName,
+    displayName,
+    familyName,
+}: {
+    firstName?: string | null;
+    displayName?: string | null;
+    familyName?: string | null;
+}): string {
+    // case 1: displayName exists
+    if (displayName) {
+        return displayName.trim().length > 0 ? displayName : "Anonymous User";
     }
-}
-
-export async function sanitizeSingleUser(
-    organizationId: string,
-    user: User
-): Promise<InsertUserDTO | null> {
-    try {
-        const role = await getUserRoleFromOrganizationId(
-            user.id,
-            organizationId
-        );
-        const slug = await getSlugFromOrganizationIdDTO(organizationId);
-        if (!slug) {
-            throw new Error(
-                `Could not find slug for organization ID: ${organizationId}`
-            );
-        }
-        const sanitizedUser: InsertUserDTO = {
-            externalId: user.id,
-            labs: [{ organizationId, slug, role }],
-            email: user.email,
-            firstName: user.firstName || undefined,
-            lastName: user.lastName || undefined,
-            profilePictureUrl: user.profilePictureUrl || undefined,
-            createdAt: new Date(user.createdAt),
-            updatedAt: new Date(user.updatedAt),
-        };
-        return sanitizedUser;
-    } catch (err) {
-        console.error(`Error sanitizing user: ${err}`);
-        return null;
+    // case 2: construct from firstName and familyName
+    const sanitizedFirstName = firstName ? firstName.trim() : "";
+    const sanitizedFamilyName = familyName ? familyName.trim() : "";
+    if (sanitizedFirstName && sanitizedFamilyName) {
+        return `${sanitizedFirstName} ${sanitizedFamilyName}`;
     }
+    // case 3: use whichever is available
+    if (sanitizedFirstName) {
+        return sanitizedFirstName;
+    }
+    if (sanitizedFamilyName) {
+        return sanitizedFamilyName;
+    }
+    // case 4: fallback to "Anonymous User"
+    return "Anonymous User";
 }
 
-export async function mergeMultipleOrganizationsUsers(
-    users: InsertUserDTO[]
-): Promise<InsertUserDTO[]> {
-    const userMap: Map<string, InsertUserDTO> = new Map();
-
-    users.forEach((user) => {
-        if (!user.externalId) return;
-        if (userMap.has(user.externalId)) {
-            const existingUser = userMap.get(user.externalId);
-            if (existingUser) {
-                if (!existingUser.labs) {
-                    existingUser.labs = [];
-                }
-                if (!user.labs) {
-                    user.labs = [];
-                }
-                // Merge organizationIds and roles
-                existingUser.labs = [...existingUser.labs, ...user.labs];
-            }
-        } else {
-            userMap.set(user.externalId, { ...user });
-        }
-    });
-
-    return Array.from(userMap.values());
-}
-
-export async function sanitizeUserDTO(
-    userToSanitize: UserDTO
-): Promise<UserDTO> {
-    return {
-        ...userToSanitize,
-        _id: String(userToSanitize._id),
-        labs: userToSanitize.labs?.map((lab) => ({
-            ...lab,
-            _id: String(lab._id),
+export function sanitizeToUserDTO(
+    user: UserFetched
+): UserDTO {
+    const userDTO: UserDTO = {
+        id: user.id,
+        email: user.email,
+        name: buildDisplayedName(user),
+        firstName: user.firstName ?? undefined,
+        lastName: user.familyName ?? undefined,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        labs: user.members.map((member) => ({
+            id: member.labId,
+            slug: member.lab.slug,
+            name: member.lab.name,
+            role: member.role,
         })),
+        profilePictureUrl: user.profilePictureUrl ?? undefined,
+        position: user.position ?? undefined,
+        publicEmail: user.publicEmail ?? undefined,
+        phoneNumber: user.phoneNumber ?? undefined,
+        website: user.website ?? undefined,
+        description: user.description ?? undefined,
+        banExpires: user.banExpires ?? undefined,
+        banReason: user.banReason ?? undefined,
+        banned: user.banned ?? undefined,
+        superAdmin: user.role === "admin",
+        storyCount: user._count.stories,
     };
-}
-export async function setStoryForUser(user: UserDTO) {
-    try {
-        if (!user) throw new Error("User not found");
-        const stories = await getStoriesByUserDTO(user._id);
-        return {
-            ...user,
-            stories: stories || [],
-        };
-    } catch (error) {
-        console.error("Error setting story for user:", error);
-        throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
-        );
-    }
-}
-export async function setStoriesForUsers(users: UserDTO[]) {
-    try {
-        if (!users) return [] as UserDTO[];
-        return await Promise.all(
-            users.map(async (user) => {
-                const userWithStories = await setStoryForUser(user);
-                return userWithStories;
-            })
-        );
-    } catch (error) {
-        console.error("Error setting stories for users:", error);
-        throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
-        );
-    }
+    return userDTO;
 }

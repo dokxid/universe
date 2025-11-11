@@ -1,0 +1,487 @@
+"use client";
+
+import {
+    ColumnFiltersState,
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
+    VisibilityState,
+} from "@tanstack/react-table";
+
+import { DataTableColumnHeader } from "@/app/components/data-tables/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { LabDTO } from "@/types/dtos";
+import { ChevronDown, Columns3, MoreHorizontal, UserPlus } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import { toast } from "sonner";
+import { LabVisibility } from "@/generated/prisma/enums";
+import { removeLabAction, setLabVisibilityAction } from "@/actions/mutate/mutate-lab";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
+
+const ManageLabsActionsCell = ({ lab }: { lab: LabDTO }) => {
+    const handleSetVisibility = async (visibility: LabVisibility) => {
+        try {
+            const result = await setLabVisibilityAction(
+                lab.slug,
+                visibility
+            );
+            if (result.success) {
+                toast.success(`Lab visibility updated to ${visibility}`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error changing lab visibility: " + error);
+        }
+    };
+    const handleRemoveLab = async () => {
+        try {
+            const result = await removeLabAction(
+                lab.slug,
+            );
+            if (result.success) {
+                toast.success(`Lab successfully removed`);
+                return;
+            }
+            if (result.error) {
+                throw new Error(result.error);
+            }
+        } catch (error) {
+            toast.error("Error removing lab: " + error);
+        }
+    };
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>
+                    <p className={"font-bold"}>Lab Actions</p>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <Link href={`/universe/labs/view/${lab.id}`}>
+                        View Lab details
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => handleSetVisibility(LabVisibility.public)}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set visibility to public
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => handleSetVisibility(LabVisibility.unlisted)}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set visibility to unlisted
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => handleSetVisibility(LabVisibility.private)}
+                        tabIndex={-1}
+                        type="button"
+                    >
+                        Set visibility to private
+                    </Button>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                className="w-full justify-start p-2 text-destructive"
+                                tabIndex={-1}
+                                type="button"
+                            >
+                                Remove Lab
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete the lab
+                                    and remove their stories from our servers.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction className={"bg-destructive text-secondary"} onClick={() => handleRemoveLab()}>Remove Lab</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
+interface DataTableProps {
+    data: string; // JSON stringified array of TData
+}
+
+export function ManageLabsTable({ data }: DataTableProps) {
+    const [rowSelection, setRowSelection] = React.useState({});
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([]);
+    const dataFetched = React.useMemo(
+        () => (JSON.parse(data) as LabDTO[]).filter((lab) => lab.slug !== "universe"),
+        [data],
+    );
+
+    const columnHelper = createColumnHelper<LabDTO>();
+
+    const columns = [
+        columnHelper.display({
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) =>
+                        table.toggleAllPageRowsSelected(!!value)
+                    }
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    className={"mr-2"}
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        }),
+        columnHelper.accessor("name", {
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Name" />
+            ),
+            cell: (info) => (
+                <Link href={`/universe/labs/view/${info.row.original.id}`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || "N/A"}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor("slug", {
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Slug" />
+            ),
+            cell: (info) => (
+                <Link href={`/${info.getValue()}`} target={"_blank"}>
+                    <span className={"hover:underline after:content-['_↗']"}>
+                        {`/${info.getValue()}` || "N/A"}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor((row) => row.amountStories, {
+            id: "labStoryCount",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Stories - Lab" />
+            ),
+            cell: (info) => (
+                <Link href={`/${info.row.original.slug}/stories`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || 0}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor((row) => row.amountUniverseStories, {
+            id: "universeStoryCount",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Stories - Universe" />
+            ),
+            cell: (info) => (
+                <Link href={`/universe/map?exp=${info.row.original.slug}`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || 0}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor((row) => row.amountMembers, {
+            id: "memberCount",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Members" />
+            ),
+            cell: (info) => (
+                <Link href={`/${info.row.original.slug}/contact`}>
+                    <span className={"hover:underline"}>
+                        {info.getValue() || 0}
+                    </span>
+                </Link>
+            ),
+        }),
+        columnHelper.accessor("visibility", {
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Visibility" />
+            ),
+            cell: (info) => (
+                <span className={""}>{info.getValue() || "N/A"}</span>
+            ),
+        }),
+        columnHelper.display({
+            id: "actions",
+            cell: ({ row }) => {
+                const lab = row.original;
+                return <ManageLabsActionsCell lab={lab} />;
+            },
+        }),
+    ];
+
+    const table = useReactTable({
+        data: dataFetched,
+        columns,
+        getRowId: (row) => row.id,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        enableRowSelection: true,
+        state: {
+            rowSelection,
+            sorting,
+            columnVisibility,
+            columnFilters,
+        },
+        onSortingChange: setSorting,
+    });
+
+    return (
+        <div className={"max-w-6xl w-full"}>
+            <div>
+                <div className="flex items-center py-4 justify-between">
+                    <Input
+                        placeholder="Filter users..."
+                        value={
+                            table.getColumn("name")?.getFilterValue() as string
+                        }
+                        onChange={(event) =>
+                            table
+                                .getColumn("name")
+                                ?.setFilterValue(event.target.value)
+                        }
+                        className="max-w-sm"
+                    />
+                    <div className={"flex items-center gap-2"}>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="primary_custom"
+                                    disabled={
+                                        Object.keys(rowSelection).length === 0
+                                    }
+                                    className="ml-auto"
+                                >
+                                    Bulk actions <ChevronDown size={16} />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        onClick={() => {
+                                            const selectedIds =
+                                                Object.keys(rowSelection);
+                                            toast.success(
+                                                `Elevation for ${selectedIds.length} stories have been requested`,
+                                            );
+                                        }}
+                                        tabIndex={-1}
+                                        type="button"
+                                    >
+                                        Request elevation
+                                    </Button>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        onClick={() => {
+                                            const selectedIds =
+                                                Object.keys(rowSelection);
+                                            toast.success(
+                                                `Updating Visibility for ${selectedIds.length} stories to: Draft.`,
+                                            );
+                                        }}
+                                        tabIndex={-1}
+                                        type="button"
+                                    >
+                                        Set visibility to Draft
+                                    </Button>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="w-full justify-start"
+                                        onClick={() => {
+                                            const selectedIds =
+                                                Object.keys(rowSelection);
+                                            toast.success(
+                                                `Updating Visibility for ${selectedIds.length} stories to: Map.`,
+                                            );
+                                        }}
+                                        tabIndex={-1}
+                                        type="button"
+                                    >
+                                        Set visibility to Map
+                                    </Button>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Link href={"/universe/labs/create"}>
+                            <Button variant={"secondary_custom"} className={""}>
+                                <UserPlus />
+                                Create new lab
+                            </Button>
+                        </Link>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="secondary_custom"
+                                    size={"icon"}
+                                    className="ml-auto"
+                                >
+                                    <Columns3 size={16} />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {table
+                                    .getAllColumns()
+                                    .filter((column) => column.getCanHide())
+                                    .map((column) => {
+                                        return (
+                                            <DropdownMenuCheckboxItem
+                                                key={column.id}
+                                                className=""
+                                                checked={column.getIsVisible()}
+                                                onCheckedChange={(value) =>
+                                                    column.toggleVisibility(
+                                                        !!value,
+                                                    )
+                                                }
+                                            >
+                                                {column.id}
+                                            </DropdownMenuCheckboxItem>
+                                        );
+                                    })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </div>
+                <div className="overflow-hidden rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column
+                                                            .columnDef.header,
+                                                        header.getContext(),
+                                                    )}
+                                            </TableHead>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={
+                                            row.getIsSelected() && "selected"
+                                        }
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext(),
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+        </div>
+    );
+}

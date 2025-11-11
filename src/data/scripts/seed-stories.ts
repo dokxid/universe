@@ -1,35 +1,76 @@
 "use server";
 
 import { test_story_doc } from "@/data/scripts/seeds/story-seeds";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
-import { UserModel } from "@/lib/data/mongodb/models/user-model";
-import { Experience } from "@/types/dtos";
+import { prisma } from "@/lib/data/prisma/connections";
 import { faker } from "@faker-js/faker";
+import { UNESCO_TAGS_SEEDS } from "./seeds/unesco-tags-seeds";
 
 export async function seedStories(
-    experienceSlug: string,
+    labSlug: string,
     center: number[],
-    numStories: number
+    numStories: number,
 ) {
     try {
-        await dbConnect();
-        const users = await UserModel.find({
-            "labs.slug": experienceSlug,
+        const users = await prisma.user.findMany({
+            where: {
+                members: {
+                    some: {
+                        lab: {
+                            slug: labSlug,
+                        },
+                    },
+                },
+            },
         });
         console.log(
-            `Found ${users.length} users for experience slug: ${experienceSlug}`
+            `Found ${users.length} users for lab slug: ${labSlug}`,
         );
         for (let i = 0; i < numStories; i++) {
             const user = faker.helpers.arrayElement(users);
+            const tags = faker.helpers.uniqueArray(
+                UNESCO_TAGS_SEEDS.map((tag) => tag.name),
+                faker.number.int({ min: 3, max: 8 }),
+            );
+            const tagIds = await prisma.tag.findMany({
+                where: {
+                    name: {
+                        in: tags
+                    }
+                },
+                select: { id: true },
+            });
 
-            const doc = await test_story_doc(center, experienceSlug, user._id);
-            await ExperienceModel.findOneAndUpdate(
-                { slug: experienceSlug },
-                { $push: { stories: doc } },
-                { safe: true, upsert: false }
+            const doc = await test_story_doc(center, labSlug, user?.id);
+            const storyInsertResult = await prisma.story.create({
+                data: {
+                    ...doc,
+                    elevationRequests: {
+                        create: [
+                            { status: "created", createdAt: faker.date.between({ from: new Date(2020, 0, 1), to: new Date(2021, 0, 1) }) },
+                        ],
+                    },
+                },
+            });
+
+            await Promise.all(
+                tagIds.map(async (tag) =>
+                    prisma.tagsOnStories.create({
+                        data: {
+                            story: { connect: { id: storyInsertResult.id } },
+                            tag: { connect: { id: tag.id } },
+                        },
+                    }),
+                ),
+            );
+
+
+            console.log(
+                `Inserted story ${storyInsertResult.id} for lab: ${labSlug}`,
             );
         }
+        console.log(
+            `Inserted ${numStories} stories for lab: ${labSlug}`,
+        );
     } catch (err) {
         console.error("Error inserting story:", err);
     }
@@ -37,19 +78,18 @@ export async function seedStories(
 
 export async function seedAllStories(numStories: number = 40) {
     try {
-        await dbConnect();
-        const allExperiences = (await ExperienceModel.find({})) as Experience[];
+        const allLabs = await prisma.lab.findMany();
         await Promise.all(
-            allExperiences.map(async (experience) => {
+            allLabs.map(async (lab) => {
                 await seedStories(
-                    experience.slug,
-                    experience.center.coordinates,
-                    numStories
+                    lab.slug,
+                    [lab.lngCenter, lab.latCenter],
+                    numStories,
                 );
                 console.log(
-                    `Seeded ${numStories} stories for experience: ${experience.slug}`
+                    `Seeded ${numStories} stories for lab: ${lab.slug}`,
                 );
-            })
+            }),
         );
         console.log("Stories seeding completed");
     } catch (error) {

@@ -1,20 +1,23 @@
 import { getUserDTO } from "@/data/dto/getters/get-user-dto";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { UserModel } from "@/lib/data/mongodb/models/user-model";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
 import {
     editUserDetailsFormSchema,
     editUserDisplayNameFormSchema,
     editUserProfilePictureFormSchema,
+    removeUserFormSchema,
 } from "@/types/form-schemas/user-form-schemas";
 import { revalidateTag } from "next/cache";
 import z from "zod";
-import { canEditUser } from "../auth/user-permissions";
+import { canEditUser, canKickUserFromLab } from "../auth/user-permissions";
+import { prisma } from "@/lib/data/prisma/connections";
+import { removeLabMember } from "@/lib/auth/betterauth/organization";
+import { getLabDTO } from "../getters/get-lab-dto";
+
 
 export async function editDisplayNameFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -35,21 +38,17 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
         }
 
         // update the user's display name in the database
-        await dbConnect();
-        await UserModel.updateOne(
-            { _id: result.data.userId },
-            {
-                $set: {
-                    displayName: result.data.displayName,
-                    firstName: result.data.firstName,
-                    lastName: result.data.lastName,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: result.data.userId },
+            data: {
+                displayName: result.data.displayName,
+                firstName: result.data.firstName,
+                familyName: result.data.lastName,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -59,7 +58,7 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
 
 export async function editUserDetailsFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -80,23 +79,19 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
         }
 
         // update the user's display name in the database
-        await dbConnect();
-        await UserModel.updateOne(
-            { _id: result.data.userId },
-            {
-                $set: {
-                    publicEmail: result.data.publicEmail,
-                    position: result.data.position,
-                    phoneNumber: result.data.phoneNumber,
-                    website: result.data.website,
-                    description: result.data.description,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: result.data.userId },
+            data: {
+                publicEmail: result.data.publicEmail,
+                position: result.data.position,
+                phoneNumber: result.data.phoneNumber,
+                website: result.data.website,
+                description: result.data.description,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -106,7 +101,7 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
 
 export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
     try {
-        // check if the user is allowed to edit this user
+        // check if the user is permitted to edit this user
         const userDTO = await getUserDTO(formData.get("userId") as string);
         if (!userDTO) throw new Error("User not found");
         const isAllowedToEdit = await canEditUser(userDTO);
@@ -139,22 +134,76 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await UserModel.updateOne(
-            { _id: data.userId },
-            {
-                $set: {
-                    profilePictureUrl: path,
-                    updatedAt: new Date(),
-                },
-            }
-        );
+        const mutate = await prisma.user.update({
+            where: { id: data.userId },
+            data: {
+                profilePictureUrl: path,
+            },
+        });
 
         // revalidate caches
-        revalidateTag(`users/${userDTO._id}`);
+        revalidateTag(`users/${mutate.id}`);
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
         );
     }
 }
+
+export async function removeUserDTO(formData: FormData) {
+    try {
+        // preprocess the FormData into the correct types
+        const rawData = Object.fromEntries(formData);
+        const result = removeUserFormSchema.safeParse(rawData);
+        if (!result.success) {
+            throw new Error(JSON.stringify(result.error.flatten()));
+        }
+        const data = result.data;
+
+        // check if the user is permitted to remove this user
+        const userToMutate = await getUserDTO(data.userId);
+        if (!userToMutate) throw new Error("User not found");
+        const isAllowedToRemove = await canEditUser(userToMutate)
+        if (!isAllowedToRemove)
+            throw new Error("User does not have permission to remove this user.");
+
+
+        // remove the user
+        const mutate = await prisma.user.delete({
+            where: { id: data.userId },
+        });
+
+        // revalidate caches
+        revalidateTag(`user/${data.userId}`);
+        return mutate;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+
+export async function removeUserFromLabDTO(userId: string, slug: string) {
+    try {
+        // check if the user is permitted to remove users in this organization
+        const userToMutate = await getUserDTO(userId);
+        if (!userToMutate) throw new Error("User not found");
+        const isAllowedToRemove = await canKickUserFromLab(userToMutate, slug)
+        if (!isAllowedToRemove)
+            throw new Error("User does not have permission to remove this user from the lab.");
+
+        // remove the user from the lab
+        const lab = await getLabDTO(slug);
+        if (!lab) throw new Error("Lab not found");
+        const mutate = await removeLabMember(userId, lab.id)
+
+        // revalidate caches
+        revalidateTag(`user/${userId}`);
+        return mutate;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error"
+        );
+    }
+}
+

@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getLabSlugFromPathname } from "@/lib/utils/pathname";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { editLabImageFormSchema } from "@/types/form-schemas/lab-form-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
@@ -35,7 +35,7 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import z from "zod";
 
-export function LabPictureForm({ experience }: { experience: ExperienceDTO }) {
+export function LabPictureForm({ lab }: { lab: LabDTO }) {
     const slug = getLabSlugFromPathname(usePathname());
     const editLabPictureForm = useForm({
         resolver: zodResolver(editLabImageFormSchema),
@@ -105,9 +105,10 @@ export function LabPictureForm({ experience }: { experience: ExperienceDTO }) {
                                     >
                                         <HostedImage
                                             fileName={
-                                                experience.featuredImageUrl
+                                                lab.logo ||
+                                                "/default-lab-banner.jpg"
                                             }
-                                            alt={experience.title}
+                                            alt={lab.name}
                                         />
                                     </AspectRatio>
                                 </SettingsBoxFormElement>

@@ -20,7 +20,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { StoryDTO, UnescoTagDTOWithCount } from "@/types/dtos";
+import { convertTagNamesToTagDTOs } from "@/lib/utils/tags";
+import { StoryDTO, TagDTO } from "@/types/dtos";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { LibraryBig, SortAsc, SortDesc } from "lucide-react";
 import Link from "next/link";
@@ -56,11 +57,12 @@ export function StoryCollection({
     tagsPromise,
 }: {
     storiesPromise: Promise<StoryDTO[]>;
-    tagsPromise: Promise<UnescoTagDTOWithCount[]>;
+    tagsPromise: Promise<TagDTO[]>;
 }) {
     const [titleFilter, setTitleFilter] = useState("");
     const [sorting, setSorting] = useState<"asc" | "desc">("desc");
     const stories = use(storiesPromise);
+    const tags = use(tagsPromise);
     const pathname = usePathname();
     const slug = pathname.split("/")[1];
     const searchParams = useSearchParams();
@@ -96,7 +98,7 @@ export function StoryCollection({
         );
         if (selectedFilterTags !== null) {
             filteredStories = filteredStories.filter((story) =>
-                story.tags.some((tag) => selectedFilterTags.includes(tag))
+                story.tags.some((tag) => selectedFilterTags.includes(tag.name))
             );
         }
         if (sorting === "asc") {
@@ -214,7 +216,10 @@ export function StoryCollection({
                                     ):
                                 </p>
                                 <TagList
-                                    tags={selectedFilterTags}
+                                    tags={convertTagNamesToTagDTOs(
+                                        tags,
+                                        selectedFilterTags
+                                    )}
                                     variant={"remove"}
                                 />
                             </div>
@@ -253,16 +258,15 @@ export function StoryCollection({
                                     key={virtualRow.key}
                                     className={`absolute grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`}
                                     style={{
-                                        transform: `translateY(${
-                                            virtualRow.start +
+                                        transform: `translateY(${virtualRow.start +
                                             24 * virtualRow.index
-                                        }px)`,
+                                            }px)`,
                                         height: `${virtualRow.size}px`,
                                     }}
                                 >
                                     {rowStories.map((story) => (
                                         <StoryCard
-                                            key={story._id}
+                                            key={story.id}
                                             story={story}
                                         />
                                     ))}
@@ -270,17 +274,6 @@ export function StoryCollection({
                             );
                         })}
                     </div>
-                    {/* {filteredStories.map((story) => (
-                    <StoryCard key={story._id} story={story} />
-                    ))}
-                    {filteredStories.length === 0 && (
-                        <>
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                            <ListExperiencesSkeleton />
-                        </>
-                    )} */}
                 </div>
             </div>
         </div>

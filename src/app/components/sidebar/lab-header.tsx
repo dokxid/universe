@@ -1,23 +1,20 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { shimmerDataUrl } from "@/lib/utils/shimmer";
-import { ExperienceDTO } from "@/types/dtos";
+import { LabDTO } from "@/types/dtos";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import parse from "html-react-parser";
 
-export default function LabHeader({
-    experience,
-}: {
-    experience: ExperienceDTO;
-}) {
+export default function LabHeader({ lab }: { lab: LabDTO }) {
     return (
         <SidebarHeader className="flex flex-col items-start px-0 py-0 gap-0">
             <AspectRatio ratio={16 / 9} className="relative w-full">
                 <Image
-                    key={experience.slug}
-                    src={experience.featuredImageUrl}
-                    alt={experience.title}
+                    key={lab.slug}
+                    src={lab.logo || "/default-lab-banner.jpg"}
+                    alt={lab.name}
                     width={400}
                     height={225}
                     className="object-cover w-full h-full rounded-none"
@@ -37,18 +34,18 @@ export default function LabHeader({
                             className={
                                 "hover:text-accent-blue-foreground hover:after:content-['_→'] transition-all duration-100"
                             }
-                            href={`/${experience.slug}/map`}
+                            href={`/${lab.slug}/map`}
                         >
-                            {experience.title}
+                            {lab.name}
                         </Link>
-                        {/* <CopyLinkClipboard link={experience.slug} /> */}
+                        {/* <CopyLinkClipboard link={lab.slug} /> */}
                     </h3>
                 </div>
-                <p className="text-sm">{experience.subtitle}</p>
-                <p className="my-1 text-xs line-clamp-5">
-                    {experience.content}
-                </p>
-                <Link href={`/${experience.slug}/about`}>
+                <p className="text-sm">{lab.subtitle}</p>
+                <div className="prose-sm dark:prose-invert prose-headings:mb-2 mt-3 text-xs line-clamp-5">
+                    {parse(lab.content)}
+                </div>
+                <Link href={`/${lab.slug}/about`}>
                     <p
                         className={
                             "text-xs text-muted-foreground hover:text-accent-blue-foreground w-fit transition-all duration-100"

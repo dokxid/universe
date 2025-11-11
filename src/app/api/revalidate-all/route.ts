@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         revalidateTag("stories");
-        revalidateTag("experiences");
+        revalidateTag("labs");
         revalidateTag("tags");
         return NextResponse.json({
             message: "Revalidation triggered for all tags",

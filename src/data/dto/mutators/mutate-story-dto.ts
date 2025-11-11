@@ -3,13 +3,12 @@ import {
     canUserCreateStory,
     canUserEditStoryId,
 } from "@/data/dto/auth/story-permissions";
-import { insertStory } from "@/data/fetcher/story-fetcher";
-import { getUserByWorkOSId } from "@/data/fetcher/user-fetcher";
-import dbConnect from "@/lib/data/mongodb/connections";
-import { ExperienceModel } from "@/lib/data/mongodb/models/experience-model";
+import { connectStoryTags, insertStory } from "@/data/fetcher/story-fetcher";
+import { License } from "@/generated/prisma/client";
+import { StoryCreateWithoutTagsInput } from "@/generated/prisma/models";
+import { prisma } from "@/lib/data/prisma/connections";
 import { uploadFile } from "@/lib/data/uploader/s3";
 import { uploadFileToPublicFolder } from "@/lib/data/uploader/server-store";
-import { NewStoryData } from "@/types/dtos";
 import {
     editContentFormSchema,
     editFeaturedPictureFormSchema,
@@ -23,15 +22,15 @@ import z from "zod";
 
 export async function submitStoryDTO(formData: FormData) {
     try {
-        // check if the user has permission to create a story for the given experience
+        // check if the user is permitted to create a story
         const user = await getCurrentUser();
-        const userId = (await getUserByWorkOSId(user.id))?._id;
-        if (!userId) {
+        if (!user) {
             throw new Error("User must be logged in to create a story.");
         }
+        const userId = user.id;
         if (!(await canUserCreateStory(formData.get("slug") as string))) {
             throw new Error(
-                "User does not have permission to create a story for this experience."
+                "User does not have permission to create a story for this lab.",
             );
         }
 
@@ -65,53 +64,53 @@ export async function submitStoryDTO(formData: FormData) {
 
         // prepare the data for insertion
         const data = validationResult.data;
+        const tags = await prisma.tag.findMany({
+            where: {
+                name: { in: data.tags },
+            },
+            select: { id: true },
+        });
+
         const storyToInsert = {
-            author: userId,
+            author: { connect: { id: userId } },
             content: data.content,
             title: data.title,
-            location: {
-                type: "Point",
-                coordinates: [data.longitude, data.latitude],
-            },
-            tags: data.tags,
+            longitude: data.longitude,
+            latitude: data.latitude,
             year: data.year,
-            license: data.license,
+            license: data.license as License,
             featuredImageUrl: path,
             draft: data.draft,
             visibleUniverse: data.universe,
-            elevationRequests: [
-                {
-                    status: "created",
-                    requestedAt: new Date(),
-                    resolvedAt: new Date(),
-                },
-            ],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        } as NewStoryData;
+            elevationRequests: {
+                create: [{ status: "created" }],
+            },
+            lab: { connect: { slug: data.slug } },
+        } satisfies StoryCreateWithoutTagsInput;
 
-        const newStoryId = await insertStory(storyToInsert, data.slug);
+        const newStoryId = await insertStory(storyToInsert, tags);
         revalidateTag(`stories`);
         return newStoryId;
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editStoryPictureDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const user = await getCurrentUser();
         if (!user) {
             throw new Error("User must be logged in to edit a story.");
         }
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -138,34 +137,34 @@ export async function editStoryPictureDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { "stories._id": data.storyId },
-            {
-                $set: {
-                    "stories.$.featured_image_url": path,
-                    "stories.$.updatedAt": new Date(),
-                },
-            }
-        );
+
+        const mutation = await prisma.story.update({
+            where: { id: data.storyId },
+            data: {
+                featuredImageUrl: path,
+                updatedAt: new Date(),
+            },
+        });
 
         // revalidate caches
         revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editContentFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -177,34 +176,32 @@ export async function editContentFormSchemaDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { "stories._id": result.data.storyId },
-            {
-                $set: {
-                    "stories.$.content": result.data.content,
-                    "stories.$.updatedAt": new Date(),
-                },
-            }
-        );
+        const mutation = await prisma.story.update({
+            where: { id: result.data.storyId },
+            data: {
+                content: result.data.content,
+            },
+        });
 
         // revalidate caches
         revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editStoryFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -220,38 +217,43 @@ export async function editStoryFormSchemaDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { "stories._id": result.data.storyId },
-            {
-                $set: {
-                    "stories.$.tags": result.data.tags,
-                    "stories.$.year": result.data.year,
-                    "stories.$.title": result.data.title,
-                    "stories.$.updatedAt": new Date(),
-                },
-            }
-        );
+        const tags = await prisma.tag.findMany({
+            where: {
+                name: { in: result.data.tags },
+            },
+        });
+        const mutation = await prisma.story.update({
+            where: { id: result.data.storyId },
+            data: {
+                year: result.data.year,
+                title: result.data.title,
+            },
+        });
+
+        const storyTagResult = await connectStoryTags(mutation.id, tags);
 
         // revalidate caches
         revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
+        return { mutation, storyTagResult };
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editVisibilityAndLicensingFormSchemaDTO(
-    formData: FormData
+    formData: FormData,
 ) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -268,35 +270,33 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { "stories._id": result.data.storyId },
-            {
-                $set: {
-                    "stories.$.license": result.data.license,
-                    "stories.$.draft": result.data.draft,
-                    "stories.$.updatedAt": new Date(),
-                },
-            }
-        );
+        const mutation = await prisma.story.update({
+            where: { id: result.data.storyId },
+            data: {
+                license: result.data.license,
+                draft: result.data.draft,
+            },
+        });
 
         // revalidate caches
         revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }
 
 export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
     try {
+        // check if the user is permitted to edit this story
         const isAllowedToEdit = await canUserEditStoryId(
-            formData.get("storyId") as string
+            formData.get("storyId") as string,
         );
         if (!isAllowedToEdit) {
             throw new Error(
-                "User does not have permission to edit this story."
+                "User does not have permission to edit this story.",
             );
         }
 
@@ -313,28 +313,97 @@ export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
         }
 
         // update the story's featured image URL in the database
-        await dbConnect();
-        await ExperienceModel.updateOne(
-            { "stories._id": result.data.storyId },
-            {
-                $set: {
-                    "stories.$.location": {
-                        type: "Point",
-                        coordinates: [
-                            result.data.longitude,
-                            result.data.latitude,
-                        ],
-                    },
-                    "stories.$.updatedAt": new Date(),
-                },
-            }
-        );
+        const mutation = await prisma.story.update({
+            where: { id: result.data.storyId },
+            data: {
+                ...result.data,
+            },
+        });
 
         // revalidate caches
         revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
     } catch (error) {
         throw new Error(
-            error instanceof Error ? error.message : "Unknown error"
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
+
+export async function setStoryDraftDTO(storyId: string, draft: boolean) {
+    try {
+        // check if the user is permitted to edit this story
+        const isAllowedToEdit = await canUserEditStoryId(storyId);
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story.",
+            );
+        }
+
+        // update the story's draft status in the database
+        const mutation = await prisma.story.update({
+            where: { id: storyId },
+            data: {
+                draft,
+            },
+        });
+
+        // revalidate caches
+        revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
+        return mutation;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
+        );
+    }
+}
+
+export async function setStoryVisibilityDTO(storyId: string, visibility: boolean) {
+    try {
+        // check if the user is permitted to edit this story
+        const isAllowedToEdit = await canUserEditStoryId(storyId);
+        if (!isAllowedToEdit) {
+            throw new Error(
+                "User does not have permission to edit this story.",
+            );
+        }
+        const story = await prisma.story.findUnique({
+            where: { id: storyId },
+            select: {
+                elevationRequests: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                    select: { status: true },
+                },
+            },
+        });
+
+        // check elevation request status
+        if (!story) throw new Error("Story not found.");
+        const latestElevationRequest = story.elevationRequests[0];
+        if (visibility && latestElevationRequest?.status !== "approved") {
+            throw new Error(
+                "Cannot make story visible while elevation request is not approved.",
+            );
+        }
+
+        // update the story's draft status in the database
+        const mutation = await prisma.story.update({
+            where: { id: storyId },
+            data: {
+                visibleUniverse: visibility,
+            },
+        });
+
+        // revalidate caches
+        revalidateTag(`stories`);
+        revalidateTag(`stories/${mutation.id}`);
+        return mutation;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error ? error.message : "Unknown error",
         );
     }
 }

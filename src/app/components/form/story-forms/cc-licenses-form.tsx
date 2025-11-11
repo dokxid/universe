@@ -86,7 +86,7 @@ export function CCLicensesFormField({ story }: { story: StoryDTO }) {
                     <input
                         type={"hidden"}
                         {...editVisibilityAndLicensingForm.register("storyId")}
-                        defaultValue={story._id}
+                        defaultValue={story.id}
                     />
                     <Collapsible>
                         <CollapsibleTrigger asChild>

@@ -1,18 +1,18 @@
 import { getLineStringFromLocations } from "@/lib/utils/geo";
-import { StoryDTO } from "@/types/dtos";
+import { StoryPinDTO, TagDTO } from "@/types/dtos";
 
 export type TaggedLineConnectionStringDTO = {
-    tag: string;
+    tag: TagDTO;
     lineStrings: GeoJSON.LineString[];
 };
 
-type TaggedConnectionDTO = {
+export type TaggedConnectionDTO = {
     from: [longitude: number, latitude: number];
     to: [longitude: number, latitude: number];
-    tag: string;
+    tag: TagDTO;
 };
 
-export function getTagLines(stories: StoryDTO[]): GeoJSON.LineString[] {
+export function getTagLines(stories: StoryPinDTO[]): GeoJSON.LineString[] {
     const storiesLocations = stories.map((story) => {
         return {
             longitude: story.location.coordinates[0],
@@ -24,13 +24,13 @@ export function getTagLines(stories: StoryDTO[]): GeoJSON.LineString[] {
 }
 
 export function getTagLineStrings(
-    stories: StoryDTO[],
-    tags: string[]
+    stories: StoryPinDTO[],
+    tags: TagDTO[]
 ): TaggedLineConnectionStringDTO[] {
     const allConnections: TaggedLineConnectionStringDTO[] = [];
     for (const tag of tags) {
-        const filteredStories = stories.filter((story) =>
-            story.tags.includes(tag)
+        const filteredStories = stories.filter(
+            (story) => story.tags && story.tags.map((t) => t.name).includes(tag.name)
         );
         const tagLines = getTagLines(filteredStories);
         allConnections.push({
@@ -42,8 +42,8 @@ export function getTagLineStrings(
 }
 
 export function getTaggedConnectionDTO(
-    stories: StoryDTO[],
-    tags: string[]
+    stories: StoryPinDTO[],
+    tags: TagDTO[]
 ): TaggedConnectionDTO[] {
     const lineStrings: TaggedLineConnectionStringDTO[] = getTagLineStrings(
         stories,
@@ -58,6 +58,7 @@ export function getTaggedConnectionDTO(
                         from: coords[0] as [number, number],
                         to: coords[1] as [number, number],
                         tag: connection.tag,
+                        color: connection.tag.color,
                     };
                 });
             }
