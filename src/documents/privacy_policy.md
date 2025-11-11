@@ -157,7 +157,3 @@ PO Box 93374
 2509 AJ Den Haag
 The Netherlands
 Website: [https://autoriteitpersoonsgegevens.nl/](https://autoriteitpersoonsgegevens.nl/)
-
----
-
-Would you like me to make a **version optimized for a website footer and modal popup** (shortened + linked to this full policy)? That’s common for platforms like yours.

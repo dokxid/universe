@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 const options = {
-    refreshInerval: 3000,
+    refreshInterval: 3000,
     dedupingInterval: 2000,
     revalidateOnFocus: false,
 };

@@ -211,7 +211,7 @@ export function TagPickerFilter({
             setInputTags(tagObjects);
             setInputTagStrings(tagObjects.map((tag) => tag.name));
         }
-    }, [availableTags, selectedTags, searchParams]);
+    }, [availableTags, selectedTags]);
 
     useEffect(() => {
         if (tagParams.length > 0 && availableTags) {

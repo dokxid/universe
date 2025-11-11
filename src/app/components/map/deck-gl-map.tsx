@@ -340,7 +340,7 @@ export function DeckGLMap({
                     addSelectedTagParam(
                         pathname,
                         searchParams,
-                        info.object?.tag,
+                        info.object.tag.name,
                     );
                     return true;
                 },
@@ -440,7 +440,7 @@ export function DeckGLMap({
                             }}
                         >
                             <p>{`click to filter for:`}</p>
-                            <p>{`${hoverInfo.object.tag}`}</p>
+                            <p>{`${hoverInfo.object.tag.name}`}</p>
                             {settingsState.debug && (
                                 <div className={"pt-2"}>
                                     <p className={"text-xs font-mono"}>
@@ -458,7 +458,10 @@ export function DeckGLMap({
                                         )}]`}
                                     </p>
                                     <p className={"text-xs font-mono"}>
-                                        {`tag: ${hoverInfo.object.tag}`}{" "}
+                                        {`theme: ${hoverInfo.object.tag.theme}`}{" "}
+                                    </p>
+                                    <p className={"text-xs font-mono"}>
+                                        {`category: ${hoverInfo.object.tag.category}`}{" "}
                                     </p>
                                 </div>
                             )}

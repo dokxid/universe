@@ -58,7 +58,7 @@ export function getTaggedConnectionDTO(
                         from: coords[0] as [number, number],
                         to: coords[1] as [number, number],
                         tag: connection.tag,
-                        color: connection.tag
+                        color: connection.tag.color,
                     };
                 });
             }
