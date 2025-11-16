@@ -319,6 +319,10 @@ const inviteAdminToLab = async (labId: string, adminEmail: string) => {
             throw new Error("Failed to invite admin user to organization");
         return inviteResult;
     } catch (error) {
+        if (error instanceof Error && error.message.includes("already a member")) {
+            // Ignore the error if the user is already a member
+            return;
+        }
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
         );
