@@ -29,14 +29,7 @@ function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
             <article className="prose dark:prose-invert prose-sm">
                 <h1>Heritage Labs</h1>
                 <p className="text-muted-foreground">
-                    To support the communities, this public access, independent
-                    online platform brings together a multidisciplinary team of
-                    researchers, educators, web developers, and community
-                    organizers. HeritageLab&apos;s ambition to understand
-                    personal connections as a way to incorporate self-reflection
-                    into the meaning of a location. Our contributors do not aim
-                    toward a solution-oriented approach but rather consider
-                    heritage as a matter of ethics and practice.
+                    Each Heritage Lab is a community of people who come together to document, explore, and share stories about heritage. Labs can be started anywhere in the world and grow from the people and places they belong to. These locally rooted communities encourage collaboration and exchange across disciplines, cultures, and perspectives. At their core, Heritage Labs aim to understand personal connections as a way to bring self-reflection into the meaning of place. They view heritage as a living field of ethics and practice — a shared process of remembering, interpreting, and reimagining the past in relation to the present.
                 </p>
             </article>
             <Separator className="w-full my-2" />
