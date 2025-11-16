@@ -149,7 +149,7 @@ export default async function AboutPage({
                                         <ContactStoriesLink
                                             href={`/${slug}/user/view/${user.id}#stories`}
                                             numStories={
-                                                user.stories?.length || 0
+                                                user.storyCount || 0
                                             }
                                         />
                                     </RowButtonGroup>

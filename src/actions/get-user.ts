@@ -14,8 +14,8 @@ export async function getUserAction(userId: string): Promise<UserDTO | null> {
         const user = await getUserDTO(userId);
         return user;
     } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
+        console.error("Error fetching user:", error);
+        throw new Error("Failed to fetch user data");
     }
 }
 
@@ -28,8 +28,8 @@ export async function getCurrentUserAction(
         const user = await getUserDTO(currentUser.id);
         return user;
     } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
+        console.error("Error fetching current user:", error);
+        throw new Error("Failed to fetch current user data");
     }
 }
 
@@ -40,8 +40,8 @@ export async function getUserFromIdAction(
         const user = await getUserDTO(userId);
         return user;
     } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
+        console.error("Error fetching user:", error);
+        throw new Error("Failed to fetch user data");
     }
 }
 
@@ -55,8 +55,8 @@ export async function getUserPermissionAction(
         const permissions = await getPermissionsByUser(user, labSlug, storyId);
         return permissions.includes(permission);
     } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
+        console.error("Error fetching user permissions:", error);
+        throw new Error("Failed to fetch user permissions");
     }
 }
 
@@ -70,7 +70,7 @@ export async function getUserRoleAction(labSlug: string): Promise<Role> {
         if (permissions.includes("add_story")) return "editor";
         return "not_authorized";
     } catch (error) {
-        console.error("Error fetching lab:", error);
-        throw new Error("Failed to fetch lab data");
+        console.error("Error fetching user roles:", error);
+        throw new Error("Failed to fetch user roles");
     }
 }

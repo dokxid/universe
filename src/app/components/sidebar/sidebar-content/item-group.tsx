@@ -25,18 +25,20 @@ export function ItemGroup({
     children,
     items,
     groupLabel,
+    defaultOpen = true,
 }: {
     children?: React.ReactNode;
     items: SidebarItemGroup;
-    groupLabel: string;
+    groupLabel?: string;
+    defaultOpen?: boolean;
 }) {
     const { setOpenMobile } = useSidebar();
     const pathname = usePathname();
 
     return (
-        <Collapsible defaultOpen={true} className={"group/collapsible"}>
+        <Collapsible defaultOpen={defaultOpen} className={"group/collapsible"}>
             <SidebarGroup className={"py-2 gap-0.5"}>
-                <SidebarGroupLabel
+                {groupLabel && <SidebarGroupLabel
                     asChild
                     className={"font-[650] font-stretch-90%"}
                 >
@@ -48,7 +50,7 @@ export function ItemGroup({
                         <ChevronDown className="mr-1 -ml-0.25 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                         {groupLabel}
                     </CollapsibleTrigger>
-                </SidebarGroupLabel>
+                </SidebarGroupLabel>}
                 {children}
                 <CollapsibleContent>
                     {items.map((item) => (
@@ -61,21 +63,19 @@ export function ItemGroup({
                             <SidebarMenuButton asChild>
                                 <Link
                                     href={item.href}
-                                    className={`flex items-center w-full transition-all duration-100 ${
-                                        pathname === item.href
-                                            ? "bg-accent-blue/50 group-hover/menu-item:bg-accent-blue! text-accent-blue-foreground group-hover/menu-item:text-accent-blue-foreground/90! font-semibold rounded-md"
-                                            : "group-hover/menu-item:bg-accent-blue/30! group-hover/menu-item:font-semibold group-hover/menu-item:text-primary"
-                                    }`}
+                                    className={`flex items-center w-full transition-all duration-100 ${pathname === item.href
+                                        ? "bg-accent-blue/50 group-hover/menu-item:bg-accent-blue! text-accent-blue-foreground group-hover/menu-item:text-accent-blue-foreground/90! font-semibold rounded-md"
+                                        : "group-hover/menu-item:bg-accent-blue/30! group-hover/menu-item:font-semibold group-hover/menu-item:text-primary"
+                                        }`}
                                     aria-label={item.title}
                                     onClick={() => setOpenMobile(false)}
                                     prefetch={item.prefetch || true}
                                 >
                                     <item.icon
-                                        className={`transition-all duration-100 group-hover/menu-item:rotate-3 ${
-                                            pathname === item.href
-                                                ? "stroke-accent-blue-foreground group-hover/menu-item:stroke-accent-blue-foreground/90!"
-                                                : "stroke-muted-foreground group-hover/menu-item:stroke-primary"
-                                        }`}
+                                        className={`transition-all duration-100 group-hover/menu-item:rotate-3 ${pathname === item.href
+                                            ? "stroke-accent-blue-foreground group-hover/menu-item:stroke-accent-blue-foreground/90!"
+                                            : "stroke-muted-foreground group-hover/menu-item:stroke-primary"
+                                            }`}
                                     />
                                     <span>{item.title}</span>
                                     {/* <ChevronRight

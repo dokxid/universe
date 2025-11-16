@@ -107,9 +107,9 @@ export async function getStoryDTO(id: string): Promise<StoryDTO> {
     }
 }
 
-export async function getStoriesByUserDTO(userId: string): Promise<StoryDTO[]> {
+export async function getStoriesByUserDTO(userId: string, slug: string): Promise<StoryDTO[]> {
     try {
-        const stories = await getStoriesByUser(userId);
+        const stories = await getStoriesByUser(userId, slug);
         return stories;
     } catch (error) {
         console.error("Error getting stories by user:", error);
