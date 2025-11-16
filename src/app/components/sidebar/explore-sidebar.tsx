@@ -56,7 +56,7 @@ function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
             <Separator className="w-full my-2" />
             <div className="text-sm text-muted-foreground">
                 <p>
-                    Can&apos;t find your lab?{" "}<br />
+                    Can&apos;t find your lab?<br />
                     <Link
                         href="/universe/help/starting-a-heritage-lab"
                         className="underline hover:text-primary"
@@ -65,7 +65,7 @@ function ExploreSidebarContent({ labs }: { labs: LabDTO[] }) {
                     </Link>
                 </p>
             </div>
-        </div >
+        </div>
     );
 }
 

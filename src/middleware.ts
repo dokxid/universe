@@ -25,7 +25,7 @@ const GUEST_PATHS = [
     "/:slug/legal/imprint",
     "/:slug/legal/privacy",
     "/api/auth/reset-password/:token",
-    "/:slug/help/how-to-start-a-heritage-lab"
+    "/:slug/help/starting-a-heritage-lab"
 ];
 
 function addCSPHeaders(response: NextResponse): NextResponse {
