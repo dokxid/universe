@@ -32,7 +32,7 @@ const includeOptions = {
             },
         },
         _count: {
-            select: { stories: true }
+            select: { stories: { where: { draft: false } } }
         }
     }
 }

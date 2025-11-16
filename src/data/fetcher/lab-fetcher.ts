@@ -51,7 +51,7 @@ export async function getLab(
         return lab;
     } catch (err) {
         throw new Error(
-            `Failed to fetch lab: ${err instanceof Error ? err.message : "Unknown error"}`,
+            `Failed to get lab: ${err instanceof Error ? err.message : "Unknown error"}`,
         );
     }
 }
@@ -81,7 +81,7 @@ export async function getLabsDetails(whereInput: Prisma.LabWhereInput = {}): Pro
         return labsWithDetails;
     } catch (err) {
         throw new Error(
-            `Failed to fetch lab details: ${err instanceof Error ? err.message : "Unknown error"}`,
+            `Failed to get lab details: ${err instanceof Error ? err.message : "Unknown error"}`,
         );
     }
 }
@@ -103,7 +103,7 @@ export async function getLabs(
         return labs;
     } catch (err) {
         throw new Error(
-            `Failed to fetch labs: ${err instanceof Error ? err.message : "Unknown error"}`,
+            `Failed to get labs: ${err instanceof Error ? err.message : "Unknown error"}`,
         );
     }
 }

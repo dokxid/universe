@@ -55,7 +55,7 @@ export default async function UserViewPage({
 }) {
     const { slug, userId } = await params;
     const user = await getUserDTO(userId);
-    const stories = await getStoriesByUserDTO(userId);
+    const stories = await getStoriesByUserDTO(userId, slug);
 
     if (!user) {
         return <div>User not found.</div>;

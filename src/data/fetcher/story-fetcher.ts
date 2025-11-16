@@ -124,13 +124,17 @@ export async function insertStory(
     }
 }
 
-export async function getStoriesByUser(userId: string): Promise<StoryDTO[]> {
+export async function getStoriesByUser(userId: string, slug: string): Promise<StoryDTO[]> {
     try {
         const result = await prisma.story.findMany({
             where: {
+                draft: false,
                 author: {
                     id: userId,
                 },
+                lab: {
+                    slug: slug,
+                }
             },
             include: {
                 author: authorSelectFields,
