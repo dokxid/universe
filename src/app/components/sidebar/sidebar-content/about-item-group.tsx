@@ -19,5 +19,5 @@ export function AboutItemGroup() {
         },
     ];
 
-    return <ItemGroup items={aboutItems} groupLabel="Legal"></ItemGroup>;
+    return <ItemGroup items={aboutItems} groupLabel={"Legal"} defaultOpen={false}></ItemGroup>;
 }

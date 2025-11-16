@@ -47,6 +47,7 @@ export function LinksItemGroup({
         <ItemGroup
             items={isUniverseView ? linksItemsIfUniverse : linksItemsIfLab}
             groupLabel="More"
+            defaultOpen={false}
         ></ItemGroup>
     );
 }

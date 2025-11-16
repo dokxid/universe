@@ -28,10 +28,10 @@ export function AppSidebarContent() {
         return (
             <SidebarContent className={"px-1 flex flex-col gap-1"}>
                 <UserItemGroup isUniverseView={isUniverseView} />
-                <SuperAdminItemGroup visible={true} />
                 <AdminItemGroup visible={!isUniverseView} />
                 <EditorItemGroup visible={!isUniverseView} />
                 <div className={"flex-grow"}></div>
+                <SuperAdminItemGroup visible={true} />
                 <LinksItemGroup isUniverseView={isUniverseView} />
                 <AboutItemGroup />
             </SidebarContent>
@@ -44,8 +44,8 @@ export function AppSidebarContent() {
             <SidebarContent className={"px-1 flex flex-col gap-1"}>
                 <UserItemGroup isUniverseView={isUniverseView} />
                 <EditorItemGroup visible={true} />
-                <AdminItemGroup visible={roleInLab === "admin"} />
                 <div className={"flex-grow"}></div>
+                <AdminItemGroup visible={roleInLab === "admin"} />
                 <LinksItemGroup isUniverseView={isUniverseView} />
                 <AboutItemGroup />
             </SidebarContent>

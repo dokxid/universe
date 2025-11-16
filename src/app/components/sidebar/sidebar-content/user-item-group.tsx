@@ -61,7 +61,7 @@ export function UserItemGroup({ isUniverseView }: { isUniverseView: boolean }) {
                     ? featureItemsIfUniverseView
                     : featureItemsIfLabView
             }
-            groupLabel={isUniverseView ? "Explore Universe" : "Explore"}
+        // groupLabel={isUniverseView ? "Explore Universe" : "Explore"}
         />
     );
 }
