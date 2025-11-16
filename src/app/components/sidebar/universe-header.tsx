@@ -20,13 +20,7 @@ export function UniverseHeader() {
                 </h1>
             </Link>
             <p className={"mt-2 text-[12px]/[1.5]"}>
-                Heritage is not a hard science that can be completely defined by
-                a singular authorized interpretation around a practice or
-                object. It exists within and among communities, shaped by
-                memory, values, present realities, and future aspirations.
-                Encompassing our various projects, Heritage Universe explores
-                how heritage and memory overlap and differ between communities
-                and spaces.
+                Heritage reflects a plurality of meanings shaped by communities, traditions, and shared interpretations. It exists within and among people, formed through memory, values, present realities, and future aspirations. Through its diverse projects, Heritage Universe explores how heritage and memory overlap, evolve, and differ across communities and spaces.
             </p>
             <Separator className={"mt-4"} />
         </SidebarHeader>
