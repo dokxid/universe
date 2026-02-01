@@ -26,9 +26,9 @@ export async function startSeedingDatabase(
         }
         await initDatabase();
         await seedDatabase(numRandomCityCenters, numStories);
-        revalidateTag("labs");
-        revalidateTag("stories");
-        revalidateTag("tags");
+        revalidateTag("labs", 'default');
+        revalidateTag("stories", 'default');
+        revalidateTag("tags", 'default');
         return { success: true, error: null };
     } catch (error) {
         console.error("Error during database seeding:", error);

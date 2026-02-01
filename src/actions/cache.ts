@@ -11,7 +11,7 @@ export async function triggerRevalidateTagAction(tag: string) {
             throw new Error("Unauthorized");
         }
 
-        revalidateTag(tag);
+        revalidateTag(tag, 'default');
     } catch (error) {
         return JSON.stringify(error);
     }

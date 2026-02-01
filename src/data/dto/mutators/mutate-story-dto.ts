@@ -89,7 +89,7 @@ export async function submitStoryDTO(formData: FormData) {
         } satisfies StoryCreateWithoutTagsInput;
 
         const newStoryId = await insertStory(storyToInsert, tags);
-        revalidateTag(`stories`);
+        revalidateTag(`stories`, 'default');
         return newStoryId;
     } catch (error) {
         throw new Error(
@@ -147,8 +147,8 @@ export async function editStoryPictureDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
@@ -184,8 +184,8 @@ export async function editContentFormSchemaDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
@@ -233,8 +233,8 @@ export async function editStoryFormSchemaDTO(formData: FormData) {
         const storyTagResult = await connectStoryTags(mutation.id, tags);
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
         return { mutation, storyTagResult };
     } catch (error) {
         throw new Error(
@@ -279,8 +279,8 @@ export async function editVisibilityAndLicensingFormSchemaDTO(
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
@@ -321,8 +321,8 @@ export async function editStoryCoordinatesFormSchemaDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error",
@@ -349,8 +349,8 @@ export async function setStoryDraftDTO(storyId: string, draft: boolean) {
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
         return mutation;
     } catch (error) {
         throw new Error(
@@ -398,8 +398,8 @@ export async function setStoryVisibilityDTO(storyId: string, visibility: boolean
         });
 
         // revalidate caches
-        revalidateTag(`stories`);
-        revalidateTag(`stories/${mutation.id}`);
+        revalidateTag(`stories`, 'default');
+        revalidateTag(`stories/${mutation.id}`, 'default');
         return mutation;
     } catch (error) {
         throw new Error(

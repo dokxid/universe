@@ -48,7 +48,7 @@ export async function editDisplayNameFormSchemaDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`users/${mutate.id}`);
+        revalidateTag(`users/${mutate.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -91,7 +91,7 @@ export async function editUserDetailsFormSchemaDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`users/${mutate.id}`);
+        revalidateTag(`users/${mutate.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -142,7 +142,7 @@ export async function editUserProfilePictureFormSchemaDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`users/${mutate.id}`);
+        revalidateTag(`users/${mutate.id}`, 'default');
     } catch (error) {
         throw new Error(
             error instanceof Error ? error.message : "Unknown error"
@@ -174,7 +174,7 @@ export async function removeUserDTO(formData: FormData) {
         });
 
         // revalidate caches
-        revalidateTag(`user/${data.userId}`);
+        revalidateTag(`user/${data.userId}`, 'default');
         return mutate;
     } catch (error) {
         throw new Error(
@@ -198,7 +198,7 @@ export async function removeUserFromLabDTO(userId: string, slug: string) {
         const mutate = await removeLabMember(userId, lab.id)
 
         // revalidate caches
-        revalidateTag(`user/${userId}`);
+        revalidateTag(`user/${userId}`, 'default');
         return mutate;
     } catch (error) {
         throw new Error(

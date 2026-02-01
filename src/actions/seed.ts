@@ -14,9 +14,9 @@ export async function seedDatabaseAction(
         if (!result) {
             return { success: false, error: "Seeding failed" };
         }
-        revalidateTag("labs");
-        revalidateTag("stories");
-        revalidateTag("tags");
+        revalidateTag("labs", 'default');
+        revalidateTag("stories", 'default');
+        revalidateTag("tags", 'default');
         return result;
     } catch (error) {
         console.error("Error during database seeding:", error);
@@ -30,9 +30,9 @@ export async function initDatabaseAction() {
         if (!result) {
             return { success: false, error: "Initialization failed" };
         }
-        revalidateTag("labs");
-        revalidateTag("stories");
-        revalidateTag("tags");
+        revalidateTag("labs", 'default');
+        revalidateTag("stories", 'default');
+        revalidateTag("tags", 'default');
         return result;
     } catch (error) {
         console.error("Error during database initialization:", error);
@@ -61,8 +61,8 @@ export async function seedOneLabAction(
             organizationId,
             labStories
         );
-        revalidateTag("labs");
-        revalidateTag("stories");
+        revalidateTag("labs", 'default');
+        revalidateTag("stories", 'default');
     } catch (error) {
         console.error("Error during seeding single lab:", error);
         throw error;

@@ -57,7 +57,7 @@ export async function editLabPictureDTO(formData: FormData) {
         }
 
         // revalidate caches
-        revalidateTag(`labs/${data.lab}`);
+        revalidateTag(`labs/${data.lab}`, 'default');
         console.debug("Updated lab picture:", mutate);
         return { success: true };
     } catch (error) {
@@ -99,7 +99,7 @@ export async function editLabVisibilityDTO(
         }
 
         // revalidate cache
-        revalidateTag(`labs/${data.lab}`);
+        revalidateTag(`labs/${data.lab}`, 'default');
         return { success: true };
     } catch (error) {
         throw new Error(
@@ -140,7 +140,7 @@ export async function editLabAppearanceDTO(formData: FormData) {
         }
 
         // revalidate cache
-        revalidateTag(`labs/${mutate.slug}`);
+        revalidateTag(`labs/${mutate.slug}`, 'default');
         return {
             result: { success: true },
             redirect: `/${mutate.slug}/lab/settings`,
@@ -182,7 +182,7 @@ export async function editLabContentDTO(formData: FormData) {
         }
 
         // revalidate cache
-        revalidateTag(`labs/${mutate.slug}`);
+        revalidateTag(`labs/${mutate.slug}`, 'default');
         return { success: true, error: undefined };
     } catch (error) {
         throw new Error(
@@ -239,8 +239,8 @@ export async function createLabDTO(formData: FormData) {
         await createOrganization(data, adminEmail);
 
         // revalidate caches
-        revalidateTag(`labs`);
-        revalidateTag(`labs/${data.slug}`);
+        revalidateTag(`labs`, 'default');
+        revalidateTag(`labs/${data.slug}`, 'default');
         return { success: true, error: undefined };
     } catch (error) {
         throw new Error(
@@ -346,8 +346,8 @@ export const removeLabDTO = async (slug: string) => {
         }
 
         // revalidate cache
-        revalidateTag(`labs/${slug}`);
-        revalidateTag(`labs`);
+        revalidateTag(`labs/${slug}`, 'default');
+        revalidateTag(`labs`, 'default');
         return { success: true, error: null };
     } catch (error) {
         throw new Error(
